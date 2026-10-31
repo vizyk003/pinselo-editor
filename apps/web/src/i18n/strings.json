@@ -2700,7 +2700,7 @@
  "Uploading your recording…": "editor/VideoPanel.tsx",
  "Uploading {done} of {total}…": "pages/home/Uploads.tsx",
  "Uploading {name}…": "editor/VideoPanel.tsx",
- "Uploading {n} file…|Uploading {n} files…": "editor/EditorShell.tsx",
+ "Uploading {n} file…|Uploading {n} files…": "editor/BrandPanel.tsx",
  "Uploading {n}…": "editor/Panels.tsx",
  "Uploading…": "editor/DownloadPanel.tsx",
  "Uploads": "components/UnifiedSearch.tsx",

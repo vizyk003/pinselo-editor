@@ -268,6 +268,7 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
   const toast = useToast();
   const input = useRef<HTMLInputElement>(null);
   const [dropping, setDropping] = useState(false);
+  const [uploading, setUploading] = useState(0);
   // Your copies of the kit's files, so tiles can be dragged onto the page (or into a shape or frame).
   const [mine, setMine] = useState<Map<string, AssetRef>>(new Map());
   const key = ids.join();
@@ -281,6 +282,7 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
   }, [key]);
   const addFiles = async (files: File[]) => {
     const added: string[] = [];
+    setUploading((n) => n + files.length);
     for (const f of files) {
       try {
         if (!BRAND_IMAGE_TYPES.includes(f.type)) throw new Error(f.name);
@@ -289,6 +291,7 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
       } catch (x) {
         toast(t('Upload failed: {message}', { message: (x as Error).message }));
       }
+      setUploading((n) => n - 1);
     }
     if (added.length) onChange([...new Set([...ids, ...added])]);
   };
@@ -315,8 +318,12 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
             {canEdit && <button className="btn sm icon" style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22 }} aria-label={t('Remove')} onClick={() => onChange(ids.filter((x) => x !== id))}><Trash2 size={11} /></button>}
           </div>
         ))}
+        {Array.from({ length: uploading }, (_, i) => (
+          <div key={i} className="tile" style={{ display: 'grid', placeItems: 'center' }} aria-hidden><div className="spinner" /></div>
+        ))}
         {canEdit && <button className="tile" onClick={() => input.current?.click()} title={t('Upload')} aria-label={t('Upload')}><Plus size={22} /></button>}
       </div>
+      {uploading > 0 && <p className="faint" role="status" style={{ margin: '4px 0 0', fontSize: 12 }}>{tn(uploading, 'Uploading {n} file…', 'Uploading {n} files…')}</p>}
       <input ref={input} type="file" accept={BRAND_IMAGE_TYPES.join()} multiple hidden onChange={(e) => {
         const files = [...(e.target.files ?? [])];
         e.target.value = '';
