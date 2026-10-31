@@ -514,9 +514,12 @@ pub async fn load_client(s: &AppState, id: &str) -> OResult<OAuthClient> {
     if !matches!(doc.get("client_name"), Some(Value::String(n)) if !clean_name(n).is_empty()) {
         return Err(oe("invalid_client", "The client metadata document has no client_name.").into());
     }
-    if doc.get("token_endpoint_auth_method").is_some_and(|m| m != "none") {
+    if !cimd_is_public_client(&doc) {
         return Err(oe("invalid_client", "Client metadata documents must use token_endpoint_auth_method \"none\".").into());
     }
+    // ChatGPT names private_key_jwt as its method and also lists none; these clients are registered as public (PKCE).
+    let mut doc = doc;
+    doc.insert("token_endpoint_auth_method".into(), json!("none"));
     let m = client_metadata(&doc, "").map_err(|e| oe("invalid_client", format!("The client metadata document is invalid: {}", e.message)))?;
     let c: OAuthClient = sqlx::query_as(&format!(
         "INSERT INTO oauth_clients(id, kind, name, redirect_uris, client_uri, logo_uri, fetched_at) VALUES ($1,'cimd',$2,$3,$4,$5, now())
@@ -916,8 +919,25 @@ pub async fn disconnect(s: &AppState, user_id: Uuid, client_id: &str) -> Result<
     Ok(())
 }
 
+/// Whether a client metadata document allows the only method documents can use here: `none`, as its method or among
+/// `token_endpoint_auth_methods_supported`.
+fn cimd_is_public_client(doc: &Map<String, Value>) -> bool {
+    let supported = doc.get("token_endpoint_auth_methods_supported").and_then(Value::as_array).is_some_and(|l| l.iter().any(|m| m == "none"));
+    supported || doc.get("token_endpoint_auth_method").is_none_or(|m| m == "none")
+}
+
 #[cfg(test)]
 mod security_tests {
+    #[test]
+    fn client_documents_must_allow_public_clients() {
+        assert!(cimd_is_public_client(json!({}).as_object().unwrap()));
+        assert!(cimd_is_public_client(json!({ "token_endpoint_auth_method": "none" }).as_object().unwrap()));
+        // ChatGPT's document.
+        assert!(cimd_is_public_client(json!({ "token_endpoint_auth_method": "private_key_jwt", "token_endpoint_auth_methods_supported": ["none", "private_key_jwt"] }).as_object().unwrap()));
+        assert!(!cimd_is_public_client(json!({ "token_endpoint_auth_method": "private_key_jwt" }).as_object().unwrap()));
+        assert!(!cimd_is_public_client(json!({ "token_endpoint_auth_method": "client_secret_post", "token_endpoint_auth_methods_supported": ["client_secret_post"] }).as_object().unwrap()));
+    }
+
     use super::*;
 
     #[test]
