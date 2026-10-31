@@ -300,6 +300,22 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ("page", z::num().int().min(1.0).max(20.0).optional()),
         ]),
         "list_uploads" => z::obj([("query", z::str().max(100.0).optional()), ("limit", z::num().int().min(1.0).max(100.0).optional())]),
+        "upload_image" => z::obj([
+            ("filename", z::str().min(1.0).max(200.0).optional()),
+            ("data_base64", z::str().min(1.0).optional()),
+            // ChatGPT fills `file` in for a tool that declares it under `_meta["openai/fileParams"]`: an object with the
+            // attachment's download_url; a bare string is what a model passes when it has only an id.
+            (
+                "file",
+                z::union(vec![
+                    z::str().max(4096.0),
+                    z::obj([("download_url", z::str().optional()), ("file_id", z::str().optional()), ("mime_type", z::str().optional()), ("file_name", z::str().max(200.0).optional())]),
+                ])
+                .optional(),
+            ),
+        ]),
+        "create_upload_link" => z::obj([("filename", z::str().max(200.0).optional()), ("purpose", z::str().max(200.0).optional())]),
+        "get_upload_link" => z::obj([("id", z::str().uuid())]),
         "search_fonts" => z::obj([
             ("query", z::str().max(80.0).optional()),
             ("category", z::enumeration(&["sans", "serif", "display", "handwriting", "mono"]).optional()),
@@ -340,9 +356,9 @@ fn tool_schema(name: &str) -> Option<Schema> {
     })
 }
 
-pub const TOOLS: [&str; 16] = [
-    "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "get_brand_kit", "search_fonts", "create_design",
-    "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
+pub const TOOLS: [&str; 19] = [
+    "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link",
+    "get_brand_kit", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
 ];
 
 /// `getDotPath(path)` of the SDK.

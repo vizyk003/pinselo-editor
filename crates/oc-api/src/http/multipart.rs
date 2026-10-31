@@ -22,6 +22,41 @@ pub struct UploadedFile {
     pub truncated: bool,
 }
 
+/// Stream up to `max_files` files of the request into `dir` as `0`, `1`, …; further ones are drained and not kept.
+pub async fn save_files(req: &mut Req, file_size_limit: u64, dir: &Path, max_files: usize) -> Result<Vec<(std::path::PathBuf, UploadedFile)>, ApiError> {
+    let Body::Multipart { content_type, body } = std::mem::replace(&mut req.body, Body::None) else {
+        return Err(ApiError::status(406, "the request is not multipart"));
+    };
+    let Some(body) = body.into_inner().ok().flatten() else {
+        return Err(ApiError::status(406, "the request is not multipart"));
+    };
+    let boundary = multer::parse_boundary(&content_type).map_err(|_| ApiError::status(406, "the request is not multipart"))?;
+    let mut mp = multer::Multipart::new(body.into_data_stream(), boundary);
+    let mut out = Vec::new();
+    while let Some(mut field) = mp.next_field().await.map_err(|e| ApiError::status(400, e.to_string()))? {
+        let Some(filename) = field.file_name().filter(|n| !n.is_empty()).map(str::to_owned) else { continue };
+        if out.len() >= max_files {
+            continue;
+        }
+        let fieldname = field.name().unwrap_or("").to_owned();
+        let mimetype = field.content_type().map_or_else(|| "application/octet-stream".to_owned(), |m| m.to_string());
+        let dest = dir.join(out.len().to_string());
+        let mut file = tokio::fs::File::create(&dest).await?;
+        let (mut size, mut truncated) = (0u64, false);
+        while let Some(chunk) = field.chunk().await.map_err(|e| ApiError::status(400, e.to_string()))? {
+            if truncated || size + chunk.len() as u64 > file_size_limit {
+                truncated = true;
+                continue;
+            }
+            size += chunk.len() as u64;
+            file.write_all(&chunk).await?;
+        }
+        file.flush().await?;
+        out.push((dest, UploadedFile { filename, mimetype, fieldname, size, truncated }));
+    }
+    Ok(out)
+}
+
 /// Stream the first file of the request into `dest`.
 pub async fn save_file(req: &mut Req, file_size_limit: u64, dest: &Path) -> Result<Option<UploadedFile>, ApiError> {
     let Body::Multipart { content_type, body } = std::mem::replace(&mut req.body, Body::None) else {

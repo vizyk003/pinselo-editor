@@ -35,6 +35,7 @@ fn modules() -> Vec<(Router<AppState>, &'static [RouteLimit])> {
         (r::v1::routes(), r::v1::LIMITS),
         (r::oauth::routes(), r::oauth::LIMITS),
         (crate::mcp::routes(), crate::mcp::LIMITS),
+        (r::upload_links::routes(), r::upload_links::LIMITS),
         (r::social::routes(), r::social::LIMITS),
         (r::embeds::routes(), r::embeds::LIMITS),
         (r::print::routes(), r::print::LIMITS),

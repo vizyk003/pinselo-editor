@@ -30,4 +30,5 @@ pub mod sites;
 pub mod social;
 pub mod supabase;
 pub mod teams;
+pub mod upload_links;
 pub mod v1;

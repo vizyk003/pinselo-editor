@@ -167,6 +167,120 @@
    }
   },
   {
+   "name": "upload_image",
+   "title": "Upload an image",
+   "description": "Put an image the user gave you into their uploads and get its asset id for add_image { asset }. file: the user's attachment, where the chat app passes attachments to tools (ChatGPT does). data_base64: a very small file, up to 64 KB, such as an SVG logo, because base64 passes through your context. For anything else, create_upload_link.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "filename": {
+      "description": "The file's name",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+     },
+     "data_base64": {
+      "description": "The file, base64 encoded (up to 64 KB)",
+      "type": "string",
+      "minLength": 1
+     },
+     "file": {
+      "description": "An image attached to the conversation, as the chat app passes it to tools",
+      "type": "object",
+      "properties": {
+       "download_url": {
+        "type": "string"
+       },
+       "file_id": {
+        "type": "string"
+       },
+       "mime_type": {
+        "type": "string"
+       },
+       "file_name": {
+        "type": "string",
+        "maxLength": 200
+       }
+      },
+      "required": [
+       "download_url",
+       "file_id"
+      ]
+     }
+    }
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   },
+   "_meta": {
+    "openai/fileParams": [
+     "file"
+    ]
+   }
+  },
+  {
+   "name": "create_upload_link",
+   "title": "Create an upload link",
+   "description": "Get a private, single-use link (15 minutes) for a file that isn't public, such as a photo for this design. If you can run commands or make HTTP requests, send the file to it yourself: curl -T <file> \"<url>\" (a file attached to the chat is usually at /mnt/user-data/uploads/<name>); the reply names the asset for add_image { asset }. Otherwise give the url to the user, who opens it in a browser and picks the file, and get_upload_link tells you the asset. Offer this rather than leaving an image out, and tell the user plainly if an image couldn't be included. For a whole brand, use the Brand Hub import instead.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "filename": {
+      "description": "The file's name, if you know it",
+      "type": "string",
+      "maxLength": 200
+     },
+     "purpose": {
+      "description": "What the file is for; shown on the page",
+      "type": "string",
+      "maxLength": 200
+     }
+    }
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "get_upload_link",
+   "title": "Check an upload link",
+   "description": "Whether a file has arrived through a link from create_upload_link: pending, done (with the asset ids) or expired.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "id": {
+      "description": "The link's id",
+      "type": "string",
+      "format": "uuid"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
    "name": "get_brand_kit",
    "title": "Brand kit",
    "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name) and brand voice. Check this before designing for a brand.",

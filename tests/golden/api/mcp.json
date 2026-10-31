@@ -636,7 +636,7 @@
         "listChanged": true
        }
       },
-      "instructions": "Pinselo is a design editor (graphics, presentations, documents, websites, video). These tools create and edit the user's designs. Before designing for a brand, call get_brand_kit and use the kit whose name matches the design system or brand the user selected or named: place its logo, and use its graphics and photos with add_image { asset } wherever the design has room for a picture. Never draw an imitation of a brand element (logo, underline, brush stroke, mascot, illustration) with text or shapes when the kit has the real one, and never invent quotes, people, prices or figures. If you use an image from outside the kit or leave one out, say so in your reply.\nWorkflow: find or create a design (list_designs, search_templates, create_design) → read it with get_design → change it with edit_design (many operations per call), whose check field lists layout problems it found (text that doesn't fit or runs off the page, poor contrast, overlaps) → fix those, then look at the result with screenshot_page. Read get_design_guide once before your first edit.\nCoordinates are px at 96 dpi from the page's top-left; colours are hex. The user may have the design open: they watch your changes live, and can undo them all (undo_ai_changes, or \"Undo AI changes\" in the editor). Share the editUrl so they can open it.",
+      "instructions": "Pinselo is a design editor (graphics, presentations, documents, websites, video). These tools create and edit the user's designs. Before designing for a brand, call get_brand_kit and use the kit whose name matches the design system or brand the user selected or named: place its logo, and use its graphics and photos with add_image { asset } wherever the design has room for a picture. Never draw an imitation of a brand element (logo, underline, brush stroke, mascot, illustration) with text or shapes when the kit has the real one, and never invent quotes, people, prices or figures. If you use an image from outside the kit or leave one out, say so in your reply. An image the user gives you (attached to the chat, or a file you can read) goes into their uploads through upload_image or create_upload_link, then into the design with add_image { asset }; never leave it out silently.\nWorkflow: find or create a design (list_designs, search_templates, create_design) → read it with get_design → change it with edit_design (many operations per call), whose check field lists layout problems it found (text that doesn't fit or runs off the page, poor contrast, overlaps) → fix those, then look at the result with screenshot_page. Read get_design_guide once before your first edit.\nCoordinates are px at 96 dpi from the page's top-left; colours are hex. The user may have the design open: they watch your changes live, and can undo them all (undo_ai_changes, or \"Undo AI changes\" in the editor). Share the editUrl so they can open it.",
       "protocolVersion": "2025-06-18",
       "serverInfo": {
        "name": "pinselo",
@@ -683,7 +683,7 @@
         "listChanged": true
        }
       },
-      "instructions": "Pinselo is a design editor (graphics, presentations, documents, websites, video). These tools create and edit the user's designs. Before designing for a brand, call get_brand_kit and use the kit whose name matches the design system or brand the user selected or named: place its logo, and use its graphics and photos with add_image { asset } wherever the design has room for a picture. Never draw an imitation of a brand element (logo, underline, brush stroke, mascot, illustration) with text or shapes when the kit has the real one, and never invent quotes, people, prices or figures. If you use an image from outside the kit or leave one out, say so in your reply.\nWorkflow: find or create a design (list_designs, search_templates, create_design) → read it with get_design → change it with edit_design (many operations per call), whose check field lists layout problems it found (text that doesn't fit or runs off the page, poor contrast, overlaps) → fix those, then look at the result with screenshot_page. Read get_design_guide once before your first edit.\nCoordinates are px at 96 dpi from the page's top-left; colours are hex. The user may have the design open: they watch your changes live, and can undo them all (undo_ai_changes, or \"Undo AI changes\" in the editor). Share the editUrl so they can open it.",
+      "instructions": "Pinselo is a design editor (graphics, presentations, documents, websites, video). These tools create and edit the user's designs. Before designing for a brand, call get_brand_kit and use the kit whose name matches the design system or brand the user selected or named: place its logo, and use its graphics and photos with add_image { asset } wherever the design has room for a picture. Never draw an imitation of a brand element (logo, underline, brush stroke, mascot, illustration) with text or shapes when the kit has the real one, and never invent quotes, people, prices or figures. If you use an image from outside the kit or leave one out, say so in your reply. An image the user gives you (attached to the chat, or a file you can read) goes into their uploads through upload_image or create_upload_link, then into the design with add_image { asset }; never leave it out silently.\nWorkflow: find or create a design (list_designs, search_templates, create_design) → read it with get_design → change it with edit_design (many operations per call), whose check field lists layout problems it found (text that doesn't fit or runs off the page, poor contrast, overlaps) → fix those, then look at the result with screenshot_page. Read get_design_guide once before your first edit.\nCoordinates are px at 96 dpi from the page's top-left; colours are hex. The user may have the design open: they watch your changes live, and can undo them all (undo_ai_changes, or \"Undo AI changes\" in the editor). Share the editUrl so they can open it.",
       "protocolVersion": "2025-11-25",
       "serverInfo": {
        "name": "pinselo",
@@ -1907,6 +1907,120 @@
            "maximum": 100
           }
          }
+        },
+        "annotations": {
+         "readOnlyHint": true,
+         "destructiveHint": false,
+         "openWorldHint": false
+        },
+        "execution": {
+         "taskSupport": "forbidden"
+        }
+       },
+       {
+        "name": "upload_image",
+        "title": "Upload an image",
+        "description": "Put an image the user gave you into their uploads and get its asset id for add_image { asset }. file: the user's attachment, where the chat app passes attachments to tools (ChatGPT does). data_base64: a very small file, up to 64 KB, such as an SVG logo, because base64 passes through your context. For anything else, create_upload_link.",
+        "inputSchema": {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "type": "object",
+         "properties": {
+          "filename": {
+           "description": "The file's name",
+           "type": "string",
+           "minLength": 1,
+           "maxLength": 200
+          },
+          "data_base64": {
+           "description": "The file, base64 encoded (up to 64 KB)",
+           "type": "string",
+           "minLength": 1
+          },
+          "file": {
+           "description": "An image attached to the conversation, as the chat app passes it to tools",
+           "type": "object",
+           "properties": {
+            "download_url": {
+             "type": "string"
+            },
+            "file_id": {
+             "type": "string"
+            },
+            "mime_type": {
+             "type": "string"
+            },
+            "file_name": {
+             "type": "string",
+             "maxLength": 200
+            }
+           },
+           "required": [
+            "download_url",
+            "file_id"
+           ]
+          }
+         }
+        },
+        "annotations": {
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "openWorldHint": false
+        },
+        "execution": {
+         "taskSupport": "forbidden"
+        },
+        "_meta": {
+         "openai/fileParams": [
+          "file"
+         ]
+        }
+       },
+       {
+        "name": "create_upload_link",
+        "title": "Create an upload link",
+        "description": "Get a private, single-use link (15 minutes) for a file that isn't public, such as a photo for this design. If you can run commands or make HTTP requests, send the file to it yourself: curl -T <file> \"<url>\" (a file attached to the chat is usually at /mnt/user-data/uploads/<name>); the reply names the asset for add_image { asset }. Otherwise give the url to the user, who opens it in a browser and picks the file, and get_upload_link tells you the asset. Offer this rather than leaving an image out, and tell the user plainly if an image couldn't be included. For a whole brand, use the Brand Hub import instead.",
+        "inputSchema": {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "type": "object",
+         "properties": {
+          "filename": {
+           "description": "The file's name, if you know it",
+           "type": "string",
+           "maxLength": 200
+          },
+          "purpose": {
+           "description": "What the file is for; shown on the page",
+           "type": "string",
+           "maxLength": 200
+          }
+         }
+        },
+        "annotations": {
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "openWorldHint": false
+        },
+        "execution": {
+         "taskSupport": "forbidden"
+        }
+       },
+       {
+        "name": "get_upload_link",
+        "title": "Check an upload link",
+        "description": "Whether a file has arrived through a link from create_upload_link: pending, done (with the asset ids) or expired.",
+        "inputSchema": {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "type": "object",
+         "properties": {
+          "id": {
+           "description": "The link's id",
+           "type": "string",
+           "format": "uuid"
+          }
+         },
+         "required": [
+          "id"
+         ]
         },
         "annotations": {
          "readOnlyHint": true,
@@ -4364,6 +4478,120 @@
         }
        },
        {
+        "name": "upload_image",
+        "title": "Upload an image",
+        "description": "Put an image the user gave you into their uploads and get its asset id for add_image { asset }. file: the user's attachment, where the chat app passes attachments to tools (ChatGPT does). data_base64: a very small file, up to 64 KB, such as an SVG logo, because base64 passes through your context. For anything else, create_upload_link.",
+        "inputSchema": {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "type": "object",
+         "properties": {
+          "filename": {
+           "description": "The file's name",
+           "type": "string",
+           "minLength": 1,
+           "maxLength": 200
+          },
+          "data_base64": {
+           "description": "The file, base64 encoded (up to 64 KB)",
+           "type": "string",
+           "minLength": 1
+          },
+          "file": {
+           "description": "An image attached to the conversation, as the chat app passes it to tools",
+           "type": "object",
+           "properties": {
+            "download_url": {
+             "type": "string"
+            },
+            "file_id": {
+             "type": "string"
+            },
+            "mime_type": {
+             "type": "string"
+            },
+            "file_name": {
+             "type": "string",
+             "maxLength": 200
+            }
+           },
+           "required": [
+            "download_url",
+            "file_id"
+           ]
+          }
+         }
+        },
+        "annotations": {
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "openWorldHint": false
+        },
+        "execution": {
+         "taskSupport": "forbidden"
+        },
+        "_meta": {
+         "openai/fileParams": [
+          "file"
+         ]
+        }
+       },
+       {
+        "name": "create_upload_link",
+        "title": "Create an upload link",
+        "description": "Get a private, single-use link (15 minutes) for a file that isn't public, such as a photo for this design. If you can run commands or make HTTP requests, send the file to it yourself: curl -T <file> \"<url>\" (a file attached to the chat is usually at /mnt/user-data/uploads/<name>); the reply names the asset for add_image { asset }. Otherwise give the url to the user, who opens it in a browser and picks the file, and get_upload_link tells you the asset. Offer this rather than leaving an image out, and tell the user plainly if an image couldn't be included. For a whole brand, use the Brand Hub import instead.",
+        "inputSchema": {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "type": "object",
+         "properties": {
+          "filename": {
+           "description": "The file's name, if you know it",
+           "type": "string",
+           "maxLength": 200
+          },
+          "purpose": {
+           "description": "What the file is for; shown on the page",
+           "type": "string",
+           "maxLength": 200
+          }
+         }
+        },
+        "annotations": {
+         "readOnlyHint": false,
+         "destructiveHint": false,
+         "openWorldHint": false
+        },
+        "execution": {
+         "taskSupport": "forbidden"
+        }
+       },
+       {
+        "name": "get_upload_link",
+        "title": "Check an upload link",
+        "description": "Whether a file has arrived through a link from create_upload_link: pending, done (with the asset ids) or expired.",
+        "inputSchema": {
+         "$schema": "http://json-schema.org/draft-07/schema#",
+         "type": "object",
+         "properties": {
+          "id": {
+           "description": "The link's id",
+           "type": "string",
+           "format": "uuid"
+          }
+         },
+         "required": [
+          "id"
+         ]
+        },
+        "annotations": {
+         "readOnlyHint": true,
+         "destructiveHint": false,
+         "openWorldHint": false
+        },
+        "execution": {
+         "taskSupport": "forbidden"
+        }
+       },
+       {
         "name": "get_brand_kit",
         "title": "Brand kit",
         "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name) and brand voice. Check this before designing for a brand.",
@@ -6762,7 +6990,7 @@
      "result": {
       "content": [
        {
-        "text": "# Designing in Pinselo\n\n## Model\n- A design has pages of one size (get_design → size). Every element has a page-space box x, y, w, h in px (96 dpi), measured from the page's top-left. Rotation is in degrees around the box centre.\n- Elements are stacked bottom to top in the order get_design lists them; new elements go on top. Use reorder to change it.\n- Types: text, shape, line, image, frame (a photo placeholder with a clip shape), group, table, chart, qr, video, embed.\n- Locked elements (\"locked\": \"brand\") belong to a brand template; you cannot move or change them.\n\n## Editing (edit_design)\n- Send all the changes for a step in one call; they apply in order as one change. Give new elements a \"ref\" and use \"$ref\" later in the same call (for example to group, arrange or align what you just added).\n- Text: add_text with w (the wrap width). Leave h out so the box fits the text. Style with font, size (px), weight (100–900), color, align, lineHeight, letterSpacing, case. update with \"text\" replaces the words and keeps the style.\n- Images: add_image takes { url } (public https), { stock: { provider, id } } from search_media, { asset } from list_uploads, or { brand: { kit, name } } for a file in a brand kit by its file name (the name from the design system works). fit \"cover\" (default) crops to fill the box.\n- Layout: arrange stacks items in a row or column or on a grid, with gap, align, justify and stretch; within \"page\" lays them out inside the page minus padding. align and distribute line items up with the page or with each other.\n- Pages: add_page (optionally duplicate an existing page), update_page (background, title, speaker notes), move_page, delete_page.\n- Text everywhere: replace_text swaps every match of find for replace across the design (or one page, or given elements) and keeps each word's styling. Use it to fill in a template's placeholder text, rename a product, or translate (one replace_text per sentence).\n- Other formats: copy_design makes a copy, optionally resized to another preset (an Instagram story from a post, a banner, A4). Elements are repositioned to fit; fix what its check reports. Copy first when translating, so the original stays.\n- Many versions from data: bulk_create makes one copy per row (certificates, badges, a post per product). Put placeholder text in the design first (for example \"{name}\"), then pass rows like { \"{name}\": \"Ada\" }; elements bound to a column take the value for that column name. Its warning lists fields that matched nothing.\n- Shapes: rect, ellipse, triangle, right-triangle, diamond, squircle, pill, half-circle, arch, ring, block-arc, pie, snip-corner, snip-two, round-one, plaque, folded-corner, frame, ticket, cylinder, cube, pentagon, hexagon, octagon, polygon, parallelogram, trapezoid, shield, star, star-6, star-8, starburst-12, burst, seal, badge, sparkle, sun, gear, flower, heart, moon, drop, leaf, cloud, lightning, blob, cross, plus, cross-x, check, arrow, double-arrow, chevron, chevron-double, curved-arrow, u-turn-arrow, circular-arrow, tag, ribbon, flag, banner, wave, speech, callout-rect, callout-round, thought-bubble, document, multi-document, predefined-process, manual-input, delay, off-page, internal-storage, display.\n- Charts: column, bar, stacked-column, stacked-bar, line, area, combo, pie, donut, scatter, bubble, radar, funnel, progress-ring, progress-bar, gauge.\n\n## Good design\n- Start from the brand kit (get_brand_kit) whose name matches the design system or brand the user selected or named, and use only that kit's assets; if several could match, ask. Use its colours, its fonts for each role, its logo, and its graphics and photos: each comes with an asset id and file name, so choose by name and check with screenshot_page (a logo that suits the background, for example). A design system in the chat gives you colours, fonts and rules, but its files can't reach Pinselo from there, so use the kit's copies. Prefer a real image to a type-only layout when the format has room. Never draw an imitation of a brand element (logo, underline, brush stroke, mascot, illustration) with text or shapes when the kit has the real one: look through its graphics first. Use only facts the user or the brand gave you: never invent quotes, people, prices or figures, and mark anything you must assume as a placeholder and say so. If the kit lacks something the design needs, finish with what's there and say exactly what's missing. When a team's kit governs the design, get_design shows it as brand (fonts by role, colours); if brand.enforced is set, edit_design only accepts those colours and fonts.\n- Give elements a role (headline, subhead, body, cta, logo, hero-image, price, legal, …) when you add them, and use the brand font for that role. Roles keep the hierarchy clear for later edits and resizes.\n- Prefer a template (search_templates → create_design with template_id) for common formats; then replace its text (replace_text) and images.\n- Give each page one clear focal point. Use size and weight for hierarchy (for example a 1080 px square post: headline 72–110 px, body 28–36 px).\n- Keep margins generous (about 5–8% of the page width) and keep spacing consistent; align edges to each other.\n- Use at most two font families. Keep strong contrast between text and its background (dark on light or light on dark; check with a screenshot).\n- Presentations: one idea per slide, short text, large visuals; put the full script in speaker notes.\n- Fix every problem edit_design reports in its check field, then judge the overall look with screenshot_page.\n",
+        "text": "# Designing in Pinselo\n\n## Model\n- A design has pages of one size (get_design → size). Every element has a page-space box x, y, w, h in px (96 dpi), measured from the page's top-left. Rotation is in degrees around the box centre.\n- Elements are stacked bottom to top in the order get_design lists them; new elements go on top. Use reorder to change it.\n- Types: text, shape, line, image, frame (a photo placeholder with a clip shape), group, table, chart, qr, video, embed.\n- Locked elements (\"locked\": \"brand\") belong to a brand template; you cannot move or change them.\n\n## Editing (edit_design)\n- Send all the changes for a step in one call; they apply in order as one change. Give new elements a \"ref\" and use \"$ref\" later in the same call (for example to group, arrange or align what you just added).\n- Text: add_text with w (the wrap width). Leave h out so the box fits the text. Style with font, size (px), weight (100–900), color, align, lineHeight, letterSpacing, case. update with \"text\" replaces the words and keeps the style.\n- Images: add_image takes { url } (public https), { stock: { provider, id } } from search_media, { asset } from list_uploads, upload_image or an upload link, or { brand: { kit, name } } for a file in a brand kit by its file name (the name from the design system works). fit \"cover\" (default) crops to fill the box.\n- Files from the user: upload_image takes the attachment itself where the chat app passes attachments to tools (ChatGPT does: pass the attached file as file), or a very small file (up to 64 KB, such as an SVG logo) as data_base64, because base64 passes through your context. Otherwise create_upload_link: if you can run commands or make HTTP requests, send the file to the link yourself (curl -T <file> \"<url>\"; a file attached to the chat is usually at /mnt/user-data/uploads/<name>) and the reply names the asset. If you can't, give the user the link: they drop the file on that page, and get_upload_link tells you the asset. Offer this rather than leaving an image out, and if an image still couldn't be included, say so plainly.\n- Layout: arrange stacks items in a row or column or on a grid, with gap, align, justify and stretch; within \"page\" lays them out inside the page minus padding. align and distribute line items up with the page or with each other.\n- Pages: add_page (optionally duplicate an existing page), update_page (background, title, speaker notes), move_page, delete_page.\n- Text everywhere: replace_text swaps every match of find for replace across the design (or one page, or given elements) and keeps each word's styling. Use it to fill in a template's placeholder text, rename a product, or translate (one replace_text per sentence).\n- Other formats: copy_design makes a copy, optionally resized to another preset (an Instagram story from a post, a banner, A4). Elements are repositioned to fit; fix what its check reports. Copy first when translating, so the original stays.\n- Many versions from data: bulk_create makes one copy per row (certificates, badges, a post per product). Put placeholder text in the design first (for example \"{name}\"), then pass rows like { \"{name}\": \"Ada\" }; elements bound to a column take the value for that column name. Its warning lists fields that matched nothing.\n- Shapes: rect, ellipse, triangle, right-triangle, diamond, squircle, pill, half-circle, arch, ring, block-arc, pie, snip-corner, snip-two, round-one, plaque, folded-corner, frame, ticket, cylinder, cube, pentagon, hexagon, octagon, polygon, parallelogram, trapezoid, shield, star, star-6, star-8, starburst-12, burst, seal, badge, sparkle, sun, gear, flower, heart, moon, drop, leaf, cloud, lightning, blob, cross, plus, cross-x, check, arrow, double-arrow, chevron, chevron-double, curved-arrow, u-turn-arrow, circular-arrow, tag, ribbon, flag, banner, wave, speech, callout-rect, callout-round, thought-bubble, document, multi-document, predefined-process, manual-input, delay, off-page, internal-storage, display.\n- Charts: column, bar, stacked-column, stacked-bar, line, area, combo, pie, donut, scatter, bubble, radar, funnel, progress-ring, progress-bar, gauge.\n\n## Good design\n- Start from the brand kit (get_brand_kit) whose name matches the design system or brand the user selected or named, and use only that kit's assets; if several could match, ask. Use its colours, its fonts for each role, its logo, and its graphics and photos: each comes with an asset id and file name, so choose by name and check with screenshot_page (a logo that suits the background, for example). A design system in the chat gives you colours, fonts and rules, but its files can't reach Pinselo from there, so use the kit's copies. Prefer a real image to a type-only layout when the format has room. Never draw an imitation of a brand element (logo, underline, brush stroke, mascot, illustration) with text or shapes when the kit has the real one: look through its graphics first. Use only facts the user or the brand gave you: never invent quotes, people, prices or figures, and mark anything you must assume as a placeholder and say so. If the kit lacks something the design needs, finish with what's there and say exactly what's missing. When a team's kit governs the design, get_design shows it as brand (fonts by role, colours); if brand.enforced is set, edit_design only accepts those colours and fonts.\n- Give elements a role (headline, subhead, body, cta, logo, hero-image, price, legal, …) when you add them, and use the brand font for that role. Roles keep the hierarchy clear for later edits and resizes.\n- Prefer a template (search_templates → create_design with template_id) for common formats; then replace its text (replace_text) and images.\n- Give each page one clear focal point. Use size and weight for hierarchy (for example a 1080 px square post: headline 72–110 px, body 28–36 px).\n- Keep margins generous (about 5–8% of the page width) and keep spacing consistent; align edges to each other.\n- Use at most two font families. Keep strong contrast between text and its background (dark on light or light on dark; check with a screenshot).\n- Presentations: one idea per slide, short text, large visuals; put the full script in speaker notes.\n- Fix every problem edit_design reports in its check field, then judge the overall look with screenshot_page.\n",
         "type": "text"
        }
       ]
@@ -10585,6 +10813,830 @@
       "content": [
        {
         "text": "{\n \"id\": \"{{story}}\",\n \"editUrl\": \"https://app.example/design/{{story}}\",\n \"title\": \"Story\",\n \"type\": \"graphic\",\n \"size\": {\n  \"w\": 1080,\n  \"h\": 1920,\n  \"unit\": \"px\"\n },\n \"pageCount\": 1,\n \"pages\": [\n  {\n   \"id\": \"{{storyPage}}\",\n   \"index\": 1,\n   \"background\": \"#ffffff\",\n   \"elements\": [\n    {\n     \"id\": \"{{storyShape}}\",\n     \"type\": \"shape\",\n     \"role\": \"decor\",\n     \"x\": 10,\n     \"y\": 10,\n     \"w\": 100,\n     \"h\": 100,\n     \"shape\": \"ellipse\",\n     \"fill\": \"#ffffff\"\n    },\n    {\n     \"id\": \"{{storyHead}}\",\n     \"type\": \"text\",\n     \"role\": \"headline\",\n     \"x\": 80,\n     \"y\": 80,\n     \"w\": 900,\n     \"h\": 125,\n     \"text\": \"Autumn sale\",\n     \"font\": \"Playfair Display\",\n     \"size\": 96,\n     \"weight\": 400,\n     \"color\": \"#0c7a80\"\n    }\n   ]\n  }\n ],\n \"brand\": {\n  \"kits\": [\n   \"Acme\"\n  ],\n  \"fonts\": {\n   \"body\": \"Inter\",\n   \"heading\": \"Playfair Display\"\n  },\n  \"colors\": [\n   \"#0c7a80\",\n   \"#ffffff\"\n  ],\n  \"enforced\": [\n   \"colors\",\n   \"fonts\"\n  ],\n  \"note\": \"The team's brand controls are on: edit_design only accepts these colours and fonts.\"\n }\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpreadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.150"
+   },
+   "json": {
+    "id": 109,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {},
+     "name": "create_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link: without assets:write",
+   "response": {
+    "body": {
+     "id": 109,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "This connection is not allowed to do that (it needs the \"assets:write\" permission). Reconnect the app and allow it, or use a token with that scope.",
+        "type": "text"
+       }
+      ],
+      "isError": true
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "linkId": {
+     "from": "body.result.content.0.text",
+     "regex": "\"id\": \"([0-9a-f-]{36})\""
+    },
+    "link": {
+     "from": "body.result.content.0.text",
+     "regex": "\"url\": \"https://app\\.example(/api/upload-links/[^\"]+)\""
+    }
+   },
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.151"
+   },
+   "json": {
+    "id": 110,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "filename": "photo.svg",
+      "purpose": "Hero photo"
+     },
+     "name": "create_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link",
+   "response": {
+    "body": {
+     "id": 110,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"id\": \"{{linkId}}\",\n \"url\": \"https://app.example{{link}}\",\n \"expiresAt\": \"2025-01-01T12:15:00.000Z\",\n \"singleUse\": true,\n \"send\": \"curl -sS -T <file> \\\"https://app.example{{link}}\\\"\",\n \"next\": \"Send the file yourself if you can run commands or make HTTP requests (a file attached to the chat is usually at /mnt/user-data/uploads/<name>): the reply names the asset, which you place with add_image { asset }. If you can't, give the user the url: the page takes the file, and get_upload_link with id then tells you the asset.\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.152"
+   },
+   "json": {
+    "id": 111,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "id": "{{linkId}}"
+     },
+     "name": "get_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link: pending",
+   "response": {
+    "body": {
+     "id": 111,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"status\": \"pending\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "text/html,application/xhtml+xml",
+    "accept-language": "de-DE,de;q=0.9",
+    "x-forwarded-for": "198.51.100.153"
+   },
+   "name": "upload link: the page",
+   "response": {
+    "body": {
+     "$text": "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>Datei hinzufügen · Pinselo</title><style>body{font:16px system-ui,sans-serif;margin:0;padding:48px 16px;background:#f6f6f4;color:#1f2328}main{max-width:480px;margin:auto;background:#fff;border-radius:12px;padding:24px}h1{font-size:20px;margin:0 0 12px}label{display:block;font-weight:600;margin-top:12px}input[type=file]{display:block;width:100%;box-sizing:border-box;padding:40px 12px;border:2px dashed #b5b7ba;border-radius:10px;margin:8px 0 16px}button{font:inherit;padding:8px 16px}</style></head><body><main><h1>Datei hinzufügen</h1><p>Für: Hero photo</p><p>Wähle eine Datei oder ziehe sie in das Feld. Sie landet in deinen Uploads, danach funktioniert dieser Link nicht mehr.</p><form method=\"post\" enctype=\"multipart/form-data\"><label for=\"file\">Hochzuladende Dateien</label><input id=\"file\" type=\"file\" name=\"file\" multiple required><button type=\"submit\">Hochladen</button></form></main></body></html>"
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "text/html; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
+    },
+    "status": 200
+   },
+   "url": "{{link}}"
+  },
+  {
+   "capture": {
+    "asset": "body.asset"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.154"
+   },
+   "method": "PUT",
+   "name": "upload link: the file arrives (curl -T)",
+   "response": {
+    "body": {
+     "ok": true,
+     "files": [
+      {
+       "file": "photo.svg",
+       "status": "received",
+       "asset": "{{asset}}",
+       "w": 960,
+       "h": 640
+      }
+     ],
+     "asset": "{{asset}}",
+     "next": "Place it with add_image { asset }."
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "status": 200
+   },
+   "text": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"80\" viewBox=\"0 0 120 80\"><rect width=\"120\" height=\"80\" fill=\"#437613\"/></svg>",
+   "url": "{{link}}"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.155"
+   },
+   "json": {
+    "id": 112,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "id": "{{linkId}}"
+     },
+     "name": "get_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link: done",
+   "response": {
+    "body": {
+     "id": 112,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"status\": \"done\",\n \"asset\": \"{{asset}}\",\n \"assets\": [\n  \"{{asset}}\"\n ],\n \"next\": \"Place it with add_image { asset }.\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.156"
+   },
+   "method": "PUT",
+   "name": "upload link: used twice",
+   "response": {
+    "body": {
+     "error": "link_used_or_expired",
+     "message": "This upload link has expired or was already used. Ask your assistant for a new one."
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "status": 410
+   },
+   "text": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"80\" viewBox=\"0 0 120 80\"><rect width=\"120\" height=\"80\" fill=\"#437613\"/></svg>",
+   "url": "{{link}}"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.157"
+   },
+   "name": "upload link: unknown",
+   "response": {
+    "body": {
+     "error": "not_found",
+     "message": "This upload link doesn’t exist."
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "status": 404
+   },
+   "url": "/api/upload-links/nope"
+  },
+  {
+   "capture": {
+    "linkId2": {
+     "from": "body.result.content.0.text",
+     "regex": "\"id\": \"([0-9a-f-]{36})\""
+    },
+    "link2": {
+     "from": "body.result.content.0.text",
+     "regex": "\"url\": \"https://app\\.example(/api/upload-links/[^\"]+)\""
+    }
+   },
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.158"
+   },
+   "json": {
+    "id": 113,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "filename": "team.png"
+     },
+     "name": "create_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link for a browser",
+   "response": {
+    "body": {
+     "id": 113,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"id\": \"{{linkId2}}\",\n \"url\": \"https://app.example{{link2}}\",\n \"expiresAt\": \"2025-01-01T12:15:00.000Z\",\n \"singleUse\": true,\n \"send\": \"curl -sS -T <file> \\\"https://app.example{{link2}}\\\"\",\n \"next\": \"Send the file yourself if you can run commands or make HTTP requests (a file attached to the chat is usually at /mnt/user-data/uploads/<name>): the reply names the asset, which you place with add_image { asset }. If you can't, give the user the url: the page takes the file, and get_upload_link with id then tells you the asset.\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "text/html,application/xhtml+xml",
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.159"
+   },
+   "name": "upload link: someone else is signed in",
+   "response": {
+    "body": {
+     "$text": "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta name=\"robots\" content=\"noindex\"><title>This link can’t be used · Pinselo</title><style>body{font:16px system-ui,sans-serif;margin:0;padding:48px 16px;background:#f6f6f4;color:#1f2328}main{max-width:480px;margin:auto;background:#fff;border-radius:12px;padding:24px}h1{font-size:20px;margin:0 0 12px}label{display:block;font-weight:600;margin-top:12px}input[type=file]{display:block;width:100%;box-sizing:border-box;padding:40px 12px;border:2px dashed #b5b7ba;border-radius:10px;margin:8px 0 16px}button{font:inherit;padding:8px 16px}</style></head><body><main><h1>This link can’t be used</h1><p>This upload link belongs to another account. Sign out, or use a private window.</p></main></body></html>"
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "text/html; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'"
+    },
+    "status": 403
+   },
+   "url": "{{link2}}"
+  },
+  {
+   "name": "upload link: time passes",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "UPDATE upload_links SET expires_at = '2025-01-01T11:00:00Z' WHERE id = '{{linkId2}}' RETURNING 1 AS n"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.160"
+   },
+   "method": "PUT",
+   "name": "upload link: expired",
+   "response": {
+    "body": {
+     "error": "link_used_or_expired",
+     "message": "This upload link has expired or was already used. Ask your assistant for a new one."
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "status": 410
+   },
+   "text": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"120\" height=\"80\" viewBox=\"0 0 120 80\"><rect width=\"120\" height=\"80\" fill=\"#437613\"/></svg>",
+   "url": "{{link2}}"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.161"
+   },
+   "json": {
+    "id": 114,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "id": "{{linkId2}}"
+     },
+     "name": "get_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link: expired status",
+   "response": {
+    "body": {
+     "id": 114,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"status\": \"expired\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "linkId3": {
+     "from": "body.result.content.0.text",
+     "regex": "\"id\": \"([0-9a-f-]{36})\""
+    },
+    "link3": {
+     "from": "body.result.content.0.text",
+     "regex": "\"url\": \"https://app\\.example(/api/upload-links/[^\"]+)\""
+    }
+   },
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.162"
+   },
+   "json": {
+    "id": 115,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "purpose": "Team photo"
+     },
+     "name": "create_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link for a form",
+   "response": {
+    "body": {
+     "id": 115,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"id\": \"{{linkId3}}\",\n \"url\": \"https://app.example{{link3}}\",\n \"expiresAt\": \"2025-01-01T12:15:00.000Z\",\n \"singleUse\": true,\n \"send\": \"curl -sS -T <file> \\\"https://app.example{{link3}}\\\"\",\n \"next\": \"Send the file yourself if you can run commands or make HTTP requests (a file attached to the chat is usually at /mnt/user-data/uploads/<name>): the reply names the asset, which you place with add_image { asset }. If you can't, give the user the url: the page takes the file, and get_upload_link with id then tells you the asset.\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "asset3": "body.asset"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.163"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "team.png",
+    "hex": "89504e470d0a1a0a0000000d4948445200000002000000020802000000fdd49a730000001049444154789c63702e13062206080500171e0331c0d902ea0000000049454e44ae426082"
+   },
+   "name": "upload link: the form sends a file",
+   "response": {
+    "body": {
+     "ok": true,
+     "files": [
+      {
+       "file": "team.png",
+       "status": "received",
+       "asset": "{{asset3}}",
+       "w": 2,
+       "h": 2
+      }
+     ],
+     "asset": "{{asset3}}",
+     "next": "Place it with add_image { asset }."
+    },
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "referrer-policy": "strict-origin-when-cross-origin"
+    },
+    "status": 200
+   },
+   "url": "{{link3}}"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.164"
+   },
+   "json": {
+    "id": 116,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "id": "{{linkId3}}"
+     },
+     "name": "get_upload_link"
+    }
+   },
+   "method": "POST",
+   "name": "upload link: the form's file is done",
+   "response": {
+    "body": {
+     "id": 116,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"status\": \"done\",\n \"asset\": \"{{asset3}}\",\n \"assets\": [\n  \"{{asset3}}\"\n ],\n \"next\": \"Place it with add_image { asset }.\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "mark": {
+     "from": "body.result.content.0.text",
+     "regex": "\"asset\": \"([0-9A-Za-z]{16})\""
+    }
+   },
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.165"
+   },
+   "json": {
+    "id": 117,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "filename": "mark.svg",
+      "data_base64": "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDMyIDMyIj48Y2lyY2xlIGN4PSIxNiIgY3k9IjE2IiByPSIxNCIgZmlsbD0iI2YyYjQwMCIvPjwvc3ZnPg=="
+     },
+     "name": "upload_image"
+    }
+   },
+   "method": "POST",
+   "name": "upload_image: a small file as base64",
+   "response": {
+    "body": {
+     "id": 117,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"asset\": \"{{mark}}\",\n \"name\": \"mark.svg\",\n \"w\": 256,\n \"h\": 256,\n \"next\": \"Place it with add_image { asset }.\"\n}",
+        "type": "text"
+       }
+      ]
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.166"
+   },
+   "json": {
+    "id": 118,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {},
+     "name": "upload_image"
+    }
+   },
+   "method": "POST",
+   "name": "upload_image: nothing given",
+   "response": {
+    "body": {
+     "id": 118,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "Pass file (the attachment, where the chat app passes attachments to tools) or data_base64 (a file up to 64 KB). For anything larger, use create_upload_link.",
+        "type": "text"
+       }
+      ],
+      "isError": true
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.167"
+   },
+   "json": {
+    "id": 119,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "file": "file-abc123"
+     },
+     "name": "upload_image"
+    }
+   },
+   "method": "POST",
+   "name": "upload_image: an attachment the app didn't pass",
+   "response": {
+    "body": {
+     "id": 119,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "file must be the attachment as the chat app passes it to tools (with a download_url). If this app doesn't pass attachments, use create_upload_link.",
+        "type": "text"
+       }
+      ],
+      "isError": true
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.168"
+   },
+   "json": {
+    "id": 120,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "file": {
+       "download_url": "https://127.0.0.1/photo.png",
+       "file_id": "file-1",
+       "file_name": "photo.png"
+      }
+     },
+     "name": "upload_image"
+    }
+   },
+   "method": "POST",
+   "name": "upload_image: the attachment's link is not public",
+   "response": {
+    "body": {
+     "id": 120,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "Couldn’t fetch the file: media host not allowed",
+        "type": "text"
+       }
+      ],
+      "isError": true
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.169"
+   },
+   "json": {
+    "id": 121,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "filename": "note.txt",
+      "data_base64": "aGVsbG8="
+     },
+     "name": "upload_image"
+    }
+   },
+   "method": "POST",
+   "name": "upload_image: not an image",
+   "response": {
+    "body": {
+     "id": 121,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "That file is not an image (SVG, PNG, JPEG, WebP or GIF).",
+        "type": "text"
+       }
+      ],
+      "isError": true
+     }
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer oc_pat_mcpallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.170"
+   },
+   "json": {
+    "id": 122,
+    "jsonrpc": "2.0",
+    "method": "tools/call",
+    "params": {
+     "arguments": {
+      "query": "mark"
+     },
+     "name": "list_uploads"
+    }
+   },
+   "method": "POST",
+   "name": "uploads: the new file is listed",
+   "response": {
+    "body": {
+     "id": 122,
+     "jsonrpc": "2.0",
+     "result": {
+      "content": [
+       {
+        "text": "{\n \"uploads\": [\n  {\n   \"asset\": \"{{mark}}\",\n   \"name\": \"mark.svg\",\n   \"w\": 256,\n   \"h\": 256,\n   \"uploaded\": \"<ts>\"\n  }\n ]\n}",
         "type": "text"
        }
       ]

@@ -188,6 +188,13 @@ with the reason in the commit message. The steps below are how every existing gr
   codes spent only by a successful exchange; consent POST needs the exact Origin; export links bound to the user and
   grant (not single-use: assistants and chat previews fetch links); the worker drops OAuth clients unused for 30
   days without a live grant.
+* **Images from the user (Rust only, 2026-10-31):** how a picture the user gives an assistant reaches their uploads.
+  `upload_image` takes the attachment where the chat app passes attachments to tools (ChatGPT's
+  `_meta["openai/fileParams"]`: the server fetches the `download_url` through the stock-import downloader) or a
+  file up to 64 KB as base64; `create_upload_link` makes a single-use, 15-minute, user-bound link
+  (`routes/upload_links.rs`, table `upload_links`, migration 0032) that takes a raw PUT (`curl -T`, from Claude
+  Code, Codex or a chat sandbox with network access) or a browser form (POST multipart; GET shows the page);
+  `get_upload_link` reports pending/done/expired. Covered by the `mcp` transcript.
 
 * **Supabase token keys** (ring instead of WebCrypto): RSA keys over 8192 bits are refused (jose accepts them), and
   a P-256 JWK whose point is not on the curve fails verification (401) instead of the import (TS: 503). Neither

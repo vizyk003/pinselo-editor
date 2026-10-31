@@ -227,6 +227,71 @@ async fn import_image(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
     }
 }
 
+/// Base64 passes through the model's context: about 85,000 characters here, so only tiny files.
+const MAX_INLINE_IMAGE_BYTES: usize = 64 * 1024;
+const USE_LINK: &str = "Base64 has to pass through your context. Use create_upload_link.";
+
+/// An image sent through the tool call itself: the user's attachment as the chat app passes it (ChatGPT fills `file`
+/// in with a download link for a tool that declares it under `_meta["openai/fileParams"]`), or a small file as
+/// base64. Stored by the normal ingest (sniffing, hash gate, quota).
+async fn upload_image(s: &AppState, u: &BearerUser, a: &Value) -> R {
+    use crate::routes::assets::{Ingest, IngestOpts, TempDir, ingest_file, sniff};
+    need(u, "assets:write")?;
+    let dir = TempDir::new("oc-mcp-").await.map_err(|e| Fail::Other(e.to_string()))?;
+    let file = dir.0.join("src");
+    let mut name = opt_str(a, "filename");
+    if let Some(f) = a.get("file").filter(|f| !f.is_null()) {
+        let url = f.get("download_url").and_then(Value::as_str).or_else(|| f.as_str()).unwrap_or("").trim().to_owned();
+        if !url.starts_with("https://") {
+            return tool_err("file must be the attachment as the chat app passes it to tools (with a download_url). If this app doesn't pass attachments, use create_upload_link.");
+        }
+        if name.is_none() {
+            name = f.get("file_name").and_then(Value::as_str).map(str::to_owned);
+        }
+        crate::routes::content::download(&url, |_| true, &file).await.map_err(|m| Fail::Tool(format!("Couldn’t fetch the file: {m}")))?;
+    } else {
+        let data = a["data_base64"].as_str().unwrap_or("");
+        if data.is_empty() {
+            return tool_err("Pass file (the attachment, where the chat app passes attachments to tools) or data_base64 (a file up to 64 KB). For anything larger, use create_upload_link.");
+        }
+        // Decoded size, from the encoded length, before decoding anything too large.
+        if data.len() / 4 * 3 > MAX_INLINE_IMAGE_BYTES + 3 {
+            return tool_err(format!("That file is over the 64 KB limit of upload_image. {USE_LINK}"));
+        }
+        let Ok(bytes) = base64::engine::general_purpose::STANDARD.decode(data.trim()) else {
+            return tool_err("data_base64 isn't valid base64.");
+        };
+        if bytes.len() > MAX_INLINE_IMAGE_BYTES {
+            return tool_err(format!("That file is over the 64 KB limit of upload_image. {USE_LINK}"));
+        }
+        tokio::fs::write(&file, &bytes).await.map_err(|e| Fail::Other(e.to_string()))?;
+    }
+    // Only images here, checked before anything is stored.
+    let head = {
+        use tokio::io::AsyncReadExt as _;
+        let mut buf = vec![0u8; 4096];
+        let mut f = tokio::fs::File::open(&file).await.map_err(|e| Fail::Other(e.to_string()))?;
+        let mut off = 0;
+        while off < buf.len() {
+            let n = f.read(&mut buf[off..]).await.map_err(|e| Fail::Other(e.to_string()))?;
+            if n == 0 {
+                break;
+            }
+            off += n;
+        }
+        buf.truncate(off);
+        buf
+    };
+    if !matches!(sniff(&head), Some((_, "image" | "svg"))) {
+        return tool_err("That file is not an image (SVG, PNG, JPEG, WebP or GIF).");
+    }
+    let r = ingest_file(s, &file, &dir.0, IngestOpts { name: name.as_deref().filter(|n| !n.trim().is_empty()).unwrap_or("image"), owner_id: u.id, ip: None, source: None, attribution: None, skip_quota: false }).await?;
+    match r {
+        Ingest::Error { error, message, .. } => tool_err(message.unwrap_or_else(|| error.to_owned())),
+        Ingest::Asset(asset) => Ok(text(&json!({ "asset": asset["id"], "name": asset["name"], "w": asset["w"], "h": asset["h"], "next": "Place it with add_image { asset }." }))),
+    }
+}
+
 /// The render service's layout checks of the touched pages, as `[{ id, problem, message }]`; `None` when it can't
 /// answer in time (the edit itself has already succeeded).
 async fn page_check(s: &AppState, design_id: &str, page_id: Option<&str>, touched: &[String]) -> Option<Vec<Value>> {
@@ -404,6 +469,37 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             .await?;
             let list: Vec<Value> = rows.iter().map(|r| json!({ "asset": r["id"], "name": r["name"], "w": r["width"], "h": r["height"], "uploaded": r["created_at"] })).collect();
             Ok(text(&json!({ "uploads": list })))
+        }
+        "upload_image" => upload_image(s, u, a).await,
+        "create_upload_link" => {
+            need(u, "assets:write")?;
+            let Some(link) = crate::routes::upload_links::create(s, u.id, opt_str(a, "filename").as_deref(), opt_str(a, "purpose").as_deref()).await? else {
+                return tool_err("Too many upload links in the last hour. Try again later.");
+            };
+            Ok(text(&json!({
+                "id": link.id.to_string(),
+                "url": link.url,
+                "expiresAt": oc_js::iso_string(&link.expires_at),
+                "singleUse": true,
+                "send": format!("curl -sS -T <file> \"{}\"", link.url),
+                "next": "Send the file yourself if you can run commands or make HTTP requests (a file attached to the chat is usually at /mnt/user-data/uploads/<name>): the reply names the asset, which you place with add_image { asset }. If you can't, give the user the url: the page takes the file, and get_upload_link with id then tells you the asset.",
+            })))
+        }
+        "get_upload_link" => {
+            need(u, "assets:write")?;
+            let id = a["id"].as_str().and_then(|i| uuid::Uuid::parse_str(i).ok()).unwrap_or_default();
+            match crate::routes::upload_links::status(s, u.id, id).await? {
+                None => tool_err("No upload link with that id."),
+                Some((status, assets)) => {
+                    let mut out = json!({ "status": status });
+                    if let Some(a) = assets.first() {
+                        out["asset"] = json!(a);
+                        out["assets"] = json!(assets);
+                        out["next"] = json!("Place it with add_image { asset }.");
+                    }
+                    Ok(text(&out))
+                }
+            }
         }
         "get_brand_kit" => {
             need(u, "designs:read")?;
