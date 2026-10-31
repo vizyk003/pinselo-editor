@@ -1,0 +1,3485 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_UPLOAD_QUOTA": "3000"
+ },
+ "fake": {},
+ "objects": [
+  "89504e470d0a1a0a0000000d4948445200000008000000060806000000fe05dffb000000994944415478da0dcaa10dc5201440d197100443d43461044c4d3d0b60fe04180c8b90e0d900cf0c58349a2deeefd14744042b175e1e9204aa648614b674944c44dc85750fde0592cb545718aeb3dd44b9f385f86063c0c74c8a851a3b234e763ca8a8bfd002b6657c2ba4d6a96d32da61378d6af71756c6ae825f9db426751dc6d2ec75a3d6fb0553b0a6e3cd249943359a616eb67951e6c71f15d769913a824e570000000049454e44ae426082",
+  "6e6f74207265616c6c7920616e206d70342c206a75737420627974657320666f722074686520646f776e6c6f6164",
+  "3c73766720786d6c6e733d22687474703a2f2f7777772e77332e6f72672f323030302f737667222077696474683d223422206865696768743d2234223e3c726563742077696474683d223422206865696768743d2234222066696c6c3d2223306337613830222f3e3c2f7376673e",
+  "4944332070726574656e6420617564696f206279746573"
+ ],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, created_at) VALUES ('Sphoto0000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 300, 'Beach photo.png', '2025-01-01T01:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, created_at, duration_ms) VALUES ('Sclip00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, 'fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99', 'video/mp4', 'video', 900, 'Holiday clip.mp4', '2025-01-01T02:00:00Z', 500)",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, animated, source, created_at) VALUES ('Sloop00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, 'fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99', 'video/mp4', 'video', 50, 'dance loop', true, 'gif', '2025-01-01T03:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, created_at) VALUES ('Ssong00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b', 'audio/mpeg', 'audio', 200, 'beach_song.mp3', '2025-01-01T04:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, svg_sha256, created_at) VALUES ('Slogo00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/svg+xml', 'svg', 100, 'Logo 100% final', '6711e81f40805d2d6f761449fd3b2bdd5c35e8ea2eaff5d265006dbb25fab7a2', '2025-01-01T05:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, created_at) VALUES ('Soldsvg000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/svg+xml', 'svg', 100, NULL, '2025-01-01T06:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, created_at) VALUES ('Soddname00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 300, 'Café \"menu\"/v2\\draft.jpeg', '2025-01-01T07:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, source, created_at) VALUES ('Sstock0000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 300, 'Stock beach', 'stock', '2025-01-01T08:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, moderation, created_at) VALUES ('Slivereported000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 10, 'reported', 'pending', '2025-01-01T09:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, trashed_at, created_at) VALUES ('Strashok00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 300, 'Old beach', '2025-01-01T09:30:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, moderation, trashed_at, created_at) VALUES ('Strashheld000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 20, 'Held', 'quarantined', '2025-01-01T10:30:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, moderation, trashed_at, created_at) VALUES ('Strashremoved000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 20, 'Gone', 'removed', '2025-01-01T10:45:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, trashed_at, created_at) VALUES ('Strashbig0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 4, 4, 'fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99', 'video/mp4', 'video', 5000, 'Huge video', '2025-01-01T08:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, width, height, sha256, mime, kind, bytes, name, created_at) VALUES ('Sbobs00000000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 4, 4, '523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a', 'image/png', 'image', 300, 'Bob beach', '2025-01-01T01:00:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "list signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "list (defaults)",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "10",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slivereported000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "reported",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T07:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soddname00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T06:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soldsvg000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": null,
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": true,
+       "attribution": null,
+       "bytes": "50",
+       "created_at": "2025-01-01T03:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sloop00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "dance loop",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "gif",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "900",
+       "created_at": "2025-01-01T02:00:00.000Z",
+       "durationMs": 500,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sclip00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "Holiday clip.mp4",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Beach photo.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 8,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "search",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Beach photo.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 2,
+      "audio": 1,
+      "files": 0,
+      "images": 1,
+      "videos": 0
+     },
+     "quotaBytes": 3000,
+     "total": 2,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?q=beach"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "name": "search: LIKE wildcards are literal",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 1,
+      "audio": 0,
+      "files": 0,
+      "images": 1,
+      "videos": 0
+     },
+     "quotaBytes": 3000,
+     "total": 1,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?q=100%25"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "name": "search: underscore is literal",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 1,
+      "audio": 1,
+      "files": 0,
+      "images": 0,
+      "videos": 0
+     },
+     "quotaBytes": 3000,
+     "total": 1,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?q=h_s"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "name": "type images",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "10",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slivereported000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "reported",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T07:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soddname00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T06:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soldsvg000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": null,
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": true,
+       "attribution": null,
+       "bytes": "50",
+       "created_at": "2025-01-01T03:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sloop00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "dance loop",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "gif",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Beach photo.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 6,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?type=images"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "name": "type videos",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "900",
+       "created_at": "2025-01-01T02:00:00.000Z",
+       "durationMs": 500,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sclip00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "Holiday clip.mp4",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 1,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?type=videos"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "name": "type audio + search",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 2,
+      "audio": 1,
+      "files": 0,
+      "images": 1,
+      "videos": 0
+     },
+     "quotaBytes": 3000,
+     "total": 1,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?type=audio&q=BEACH"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "name": "type files",
+   "response": {
+    "body": {
+     "assets": [],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 0,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?type=files"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "name": "sort oldest",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Beach photo.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "900",
+       "created_at": "2025-01-01T02:00:00.000Z",
+       "durationMs": 500,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sclip00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "Holiday clip.mp4",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": true,
+       "attribution": null,
+       "bytes": "50",
+       "created_at": "2025-01-01T03:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sloop00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "dance loop",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "gif",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T06:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soldsvg000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": null,
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T07:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soddname00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "10",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slivereported000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "reported",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 8,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?sort=oldest"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "name": "sort name",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T06:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soldsvg000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": null,
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Beach photo.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T07:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soddname00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": true,
+       "attribution": null,
+       "bytes": "50",
+       "created_at": "2025-01-01T03:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sloop00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "dance loop",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "gif",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "900",
+       "created_at": "2025-01-01T02:00:00.000Z",
+       "durationMs": 500,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sclip00000000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "Holiday clip.mp4",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "10",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slivereported000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "reported",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 8,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?sort=name"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "sort size, paged",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T07:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soddname00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Beach photo.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 8,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?sort=size&limit=2&offset=1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "name": "one by id",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 8,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?id=Slogo00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "name": "someone else’s id",
+   "response": {
+    "body": {
+     "assets": [],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 3000,
+     "total": 8,
+     "usedBytes": 2260
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?id=Sbobs00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "name": "invalid type",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"all\"|\"images\"|\"videos\"|\"audio\"|\"files\"",
+       "path": [
+        "type"
+       ],
+       "values": [
+        "all",
+        "images",
+        "videos",
+        "audio",
+        "files"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets?type=docs"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "name": "invalid limit",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected number to be >=1",
+       "minimum": 1,
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets?limit=0"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "name": "invalid offset",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected number to be >=0",
+       "minimum": 0,
+       "origin": "number",
+       "path": [
+        "offset"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets?offset=-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "trash",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "20",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": true,
+       "id": "Strashheld000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Held",
+       "purge_at": "2025-01-31T10:30:00.000Z",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "2025-01-01T10:30:00.000Z",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": false,
+       "id": "Strashok00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Old beach",
+       "purge_at": "2025-01-31T09:30:00.000Z",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "2025-01-01T09:30:00.000Z",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "5000",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": false,
+       "id": "Strashbig0000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "Huge video",
+       "purge_at": "2025-01-31T08:00:00.000Z",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "upload",
+       "trashed_at": "2025-01-01T08:00:00.000Z",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 3,
+      "audio": 0,
+      "files": 0,
+      "images": 2,
+      "videos": 1
+     },
+     "total": 3
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "name": "trash: sort oldest",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "5000",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": false,
+       "id": "Strashbig0000000",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "Huge video",
+       "purge_at": "2025-01-31T08:00:00.000Z",
+       "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+       "source": "upload",
+       "trashed_at": "2025-01-01T08:00:00.000Z",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": false,
+       "id": "Strashok00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Old beach",
+       "purge_at": "2025-01-31T09:30:00.000Z",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "2025-01-01T09:30:00.000Z",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "20",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": true,
+       "id": "Strashheld000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Held",
+       "purge_at": "2025-01-31T10:30:00.000Z",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "2025-01-01T10:30:00.000Z",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 3,
+      "audio": 0,
+      "files": 0,
+      "images": 2,
+      "videos": 1
+     },
+     "total": 3
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash?sort=oldest"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "name": "trash: search + type",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": false,
+       "id": "Strashok00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Old beach",
+       "purge_at": "2025-01-31T09:30:00.000Z",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "2025-01-01T09:30:00.000Z",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 1,
+      "audio": 0,
+      "files": 0,
+      "images": 1,
+      "videos": 0
+     },
+     "total": 1
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash?q=beach&type=images"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "name": "trash of someone else",
+   "response": {
+    "body": {
+     "assets": [],
+     "counts": {
+      "all": 0,
+      "audio": 0,
+      "files": 0,
+      "images": 0,
+      "videos": 0
+     },
+     "total": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "trash signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/assets/trash"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Sbobs00000000000",
+       "moderation": "ok",
+       "name": "Bob beach",
+       "trashed": false
+      },
+      {
+       "id": "Sclip00000000000",
+       "moderation": "ok",
+       "name": "Holiday clip.mp4",
+       "trashed": false
+      },
+      {
+       "id": "Slivereported000",
+       "moderation": "pending",
+       "name": "reported",
+       "trashed": false
+      },
+      {
+       "id": "Slogo00000000000",
+       "moderation": "ok",
+       "name": "Logo 100% final",
+       "trashed": false
+      },
+      {
+       "id": "Sloop00000000000",
+       "moderation": "ok",
+       "name": "dance loop",
+       "trashed": false
+      },
+      {
+       "id": "Soddname00000000",
+       "moderation": "ok",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "trashed": false
+      },
+      {
+       "id": "Soldsvg000000000",
+       "moderation": "ok",
+       "name": null,
+       "trashed": false
+      },
+      {
+       "id": "Sphoto0000000000",
+       "moderation": "ok",
+       "name": "Sunset",
+       "trashed": false
+      },
+      {
+       "id": "Ssong00000000000",
+       "moderation": "ok",
+       "name": "beach_song.mp3",
+       "trashed": false
+      },
+      {
+       "id": "Sstock0000000000",
+       "moderation": "ok",
+       "name": "Stock beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashbig0000000",
+       "moderation": "ok",
+       "name": "Huge video",
+       "trashed": true
+      },
+      {
+       "id": "Strashheld000000",
+       "moderation": "quarantined",
+       "name": "Held",
+       "trashed": true
+      },
+      {
+       "id": "Strashok00000000",
+       "moderation": "ok",
+       "name": "Old beach",
+       "trashed": true
+      },
+      {
+       "id": "Strashremoved000",
+       "moderation": "removed",
+       "name": "Gone",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "json": {
+    "name": "  Sunset  "
+   },
+   "method": "PATCH",
+   "name": "rename",
+   "response": {
+    "body": {
+     "name": "Sunset",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sphoto0000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "json": {
+    "name": "   "
+   },
+   "method": "PATCH",
+   "name": "rename: empty",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/Sphoto0000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "json": {
+    "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   },
+   "method": "PATCH",
+   "name": "rename: too long",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 200,
+       "message": "Too big: expected string to have <=200 characters",
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/Sphoto0000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "json": {
+    "name": "Back"
+   },
+   "method": "PATCH",
+   "name": "rename: trashed",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Strashok00000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "json": {
+    "name": "Mine"
+   },
+   "method": "PATCH",
+   "name": "rename: not mine",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Sphoto0000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "name": "download a PNG",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"Sunset.png\"; filename*=UTF-8''Sunset.png",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sphoto0000000000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "name": "download: odd name",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"Caf_ menuv2draft.png\"; filename*=UTF-8''Caf%C3%A9%20menuv2draft.png",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Soddname00000000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "name": "download an SVG (its source)",
+   "response": {
+    "body": {
+     "$text": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"4\" height=\"4\"><rect width=\"4\" height=\"4\" fill=\"#0c7a80\"/></svg>"
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"Logo 100_ final.svg\"; filename*=UTF-8''Logo%20100%25%20final.svg",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "image/svg+xml",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Slogo00000000000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "name": "download an old SVG (its PNG)",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"upload.png\"; filename*=UTF-8''upload.png",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Soldsvg000000000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "name": "download a video",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "fee7e242efed19dd8de49d5265213d51323ffdb6906c290cec59e1c87bc95f99",
+      "size": 46
+     }
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"Holiday clip.mp4\"; filename*=UTF-8''Holiday%20clip.mp4",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "video/mp4",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sclip00000000000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "name": "download a reported upload",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"reported.png\"; filename*=UTF-8''reported.png",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Slivereported000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "name": "download a removed upload",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Strashremoved000/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "name": "download: not mine",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Sphoto0000000000/download"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "name": "download signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/assets/Sphoto0000000000/download"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "name": "bytes (CORS headers)",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sphoto0000000000"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Sbobs00000000000",
+       "moderation": "ok",
+       "name": "Bob beach",
+       "trashed": false
+      },
+      {
+       "id": "Sclip00000000000",
+       "moderation": "ok",
+       "name": "Holiday clip.mp4",
+       "trashed": true
+      },
+      {
+       "id": "Slivereported000",
+       "moderation": "pending",
+       "name": "reported",
+       "trashed": false
+      },
+      {
+       "id": "Slogo00000000000",
+       "moderation": "ok",
+       "name": "Logo 100% final",
+       "trashed": false
+      },
+      {
+       "id": "Sloop00000000000",
+       "moderation": "ok",
+       "name": "dance loop",
+       "trashed": false
+      },
+      {
+       "id": "Soddname00000000",
+       "moderation": "ok",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "trashed": false
+      },
+      {
+       "id": "Soldsvg000000000",
+       "moderation": "ok",
+       "name": null,
+       "trashed": false
+      },
+      {
+       "id": "Sphoto0000000000",
+       "moderation": "ok",
+       "name": "Sunset",
+       "trashed": false
+      },
+      {
+       "id": "Ssong00000000000",
+       "moderation": "ok",
+       "name": "beach_song.mp3",
+       "trashed": false
+      },
+      {
+       "id": "Sstock0000000000",
+       "moderation": "ok",
+       "name": "Stock beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashbig0000000",
+       "moderation": "ok",
+       "name": "Huge video",
+       "trashed": true
+      },
+      {
+       "id": "Strashheld000000",
+       "moderation": "quarantined",
+       "name": "Held",
+       "trashed": true
+      },
+      {
+       "id": "Strashok00000000",
+       "moderation": "ok",
+       "name": "Old beach",
+       "trashed": true
+      },
+      {
+       "id": "Strashremoved000",
+       "moderation": "removed",
+       "name": "Gone",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "method": "DELETE",
+   "name": "delete → trash",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sclip00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "method": "DELETE",
+   "name": "delete again: already in the trash",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sclip00000000000"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Sbobs00000000000",
+       "moderation": "ok",
+       "name": "Bob beach",
+       "trashed": false
+      },
+      {
+       "id": "Slivereported000",
+       "moderation": "pending",
+       "name": "reported",
+       "trashed": false
+      },
+      {
+       "id": "Slogo00000000000",
+       "moderation": "ok",
+       "name": "Logo 100% final",
+       "trashed": false
+      },
+      {
+       "id": "Sloop00000000000",
+       "moderation": "ok",
+       "name": "dance loop",
+       "trashed": false
+      },
+      {
+       "id": "Soddname00000000",
+       "moderation": "ok",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "trashed": false
+      },
+      {
+       "id": "Soldsvg000000000",
+       "moderation": "ok",
+       "name": null,
+       "trashed": false
+      },
+      {
+       "id": "Sphoto0000000000",
+       "moderation": "ok",
+       "name": "Sunset",
+       "trashed": false
+      },
+      {
+       "id": "Ssong00000000000",
+       "moderation": "ok",
+       "name": "beach_song.mp3",
+       "trashed": false
+      },
+      {
+       "id": "Sstock0000000000",
+       "moderation": "ok",
+       "name": "Stock beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashbig0000000",
+       "moderation": "ok",
+       "name": "Huge video",
+       "trashed": true
+      },
+      {
+       "id": "Strashheld000000",
+       "moderation": "quarantined",
+       "name": "Held",
+       "trashed": true
+      },
+      {
+       "id": "Strashok00000000",
+       "moderation": "ok",
+       "name": "Old beach",
+       "trashed": true
+      },
+      {
+       "id": "Strashremoved000",
+       "moderation": "removed",
+       "name": "Gone",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "method": "DELETE",
+   "name": "delete forever",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Sclip00000000000?permanent=1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "method": "DELETE",
+   "name": "delete forever: held for review",
+   "response": {
+    "body": {
+     "error": "on_hold",
+     "message": "This upload is being reviewed and can’t be deleted yet."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/assets/Strashheld000000?permanent=1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "method": "DELETE",
+   "name": "delete: removed by moderation",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Strashremoved000?permanent=1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "method": "DELETE",
+   "name": "delete: reported live upload goes to the trash",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Slivereported000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "method": "DELETE",
+   "name": "delete forever: it is still reported",
+   "response": {
+    "body": {
+     "error": "on_hold",
+     "message": "This upload is being reviewed and can’t be deleted yet."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/assets/Slivereported000?permanent=1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "method": "DELETE",
+   "name": "delete: not mine",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Sphoto0000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "method": "DELETE",
+   "name": "delete: unknown",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/nope"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Sbobs00000000000",
+       "moderation": "ok",
+       "name": "Bob beach",
+       "trashed": false
+      },
+      {
+       "id": "Slivereported000",
+       "moderation": "pending",
+       "name": "reported",
+       "trashed": true
+      },
+      {
+       "id": "Slogo00000000000",
+       "moderation": "ok",
+       "name": "Logo 100% final",
+       "trashed": false
+      },
+      {
+       "id": "Sloop00000000000",
+       "moderation": "ok",
+       "name": "dance loop",
+       "trashed": false
+      },
+      {
+       "id": "Soddname00000000",
+       "moderation": "ok",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "trashed": false
+      },
+      {
+       "id": "Soldsvg000000000",
+       "moderation": "ok",
+       "name": null,
+       "trashed": false
+      },
+      {
+       "id": "Sphoto0000000000",
+       "moderation": "ok",
+       "name": "Sunset",
+       "trashed": false
+      },
+      {
+       "id": "Ssong00000000000",
+       "moderation": "ok",
+       "name": "beach_song.mp3",
+       "trashed": false
+      },
+      {
+       "id": "Sstock0000000000",
+       "moderation": "ok",
+       "name": "Stock beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashbig0000000",
+       "moderation": "ok",
+       "name": "Huge video",
+       "trashed": true
+      },
+      {
+       "id": "Strashheld000000",
+       "moderation": "quarantined",
+       "name": "Held",
+       "trashed": true
+      },
+      {
+       "id": "Strashok00000000",
+       "moderation": "ok",
+       "name": "Old beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashremoved000",
+       "moderation": "removed",
+       "name": "Gone",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "method": "POST",
+   "name": "restore",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/Strashok00000000/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "method": "POST",
+   "name": "restore: over the quota",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "message": "Restoring would go over your 0 GB of storage. Delete uploads to make room."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/assets/Strashbig0000000/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "method": "POST",
+   "name": "restore: held",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Strashheld000000/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "method": "POST",
+   "name": "restore: not in the trash",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Sphoto0000000000/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "method": "POST",
+   "name": "restore: not mine",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/Strashbig0000000/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "json": {
+    "action": "purge",
+    "ids": [
+     "Sloop00000000000"
+    ]
+   },
+   "method": "POST",
+   "name": "batch: invalid action",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"trash\"|\"restore\"|\"delete\"",
+       "path": [
+        "action"
+       ],
+       "values": [
+        "trash",
+        "restore",
+        "delete"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.53"
+   },
+   "json": {
+    "action": "trash",
+    "ids": []
+   },
+   "method": "POST",
+   "name": "batch: no ids",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "ids"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Sbobs00000000000",
+       "moderation": "ok",
+       "name": "Bob beach",
+       "trashed": false
+      },
+      {
+       "id": "Slivereported000",
+       "moderation": "pending",
+       "name": "reported",
+       "trashed": true
+      },
+      {
+       "id": "Slogo00000000000",
+       "moderation": "ok",
+       "name": "Logo 100% final",
+       "trashed": false
+      },
+      {
+       "id": "Sloop00000000000",
+       "moderation": "ok",
+       "name": "dance loop",
+       "trashed": true
+      },
+      {
+       "id": "Soddname00000000",
+       "moderation": "ok",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "trashed": false
+      },
+      {
+       "id": "Soldsvg000000000",
+       "moderation": "ok",
+       "name": null,
+       "trashed": false
+      },
+      {
+       "id": "Sphoto0000000000",
+       "moderation": "ok",
+       "name": "Sunset",
+       "trashed": false
+      },
+      {
+       "id": "Ssong00000000000",
+       "moderation": "ok",
+       "name": "beach_song.mp3",
+       "trashed": true
+      },
+      {
+       "id": "Sstock0000000000",
+       "moderation": "ok",
+       "name": "Stock beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashbig0000000",
+       "moderation": "ok",
+       "name": "Huge video",
+       "trashed": true
+      },
+      {
+       "id": "Strashheld000000",
+       "moderation": "quarantined",
+       "name": "Held",
+       "trashed": true
+      },
+      {
+       "id": "Strashok00000000",
+       "moderation": "ok",
+       "name": "Old beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashremoved000",
+       "moderation": "removed",
+       "name": "Gone",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "json": {
+    "action": "trash",
+    "ids": [
+     "Sloop00000000000",
+     "Ssong00000000000",
+     "Ssong00000000000",
+     "Sbobs00000000000",
+     "nope"
+    ]
+   },
+   "method": "POST",
+   "name": "batch trash (skips others’ and unknown ids)",
+   "response": {
+    "body": {
+     "ids": [
+      "Sloop00000000000",
+      "Ssong00000000000"
+     ],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "json": {
+    "action": "delete",
+    "ids": [
+     "Sphoto0000000000",
+     "Sloop00000000000"
+    ]
+   },
+   "method": "POST",
+   "name": "batch delete: the live photo is skipped",
+   "response": {
+    "body": {
+     "ids": [
+      "Sloop00000000000"
+     ],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "json": {
+    "action": "restore",
+    "ids": [
+     "Ssong00000000000",
+     "Strashheld000000"
+    ]
+   },
+   "method": "POST",
+   "name": "batch restore",
+   "response": {
+    "body": {
+     "ids": [
+      "Ssong00000000000"
+     ],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "json": {
+    "action": "restore",
+    "ids": [
+     "Strashbig0000000",
+     "Sloop00000000000"
+    ]
+   },
+   "method": "POST",
+   "name": "batch restore: over the quota",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "message": "Restoring would go over your 0 GB of storage. Delete uploads to make room."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Sbobs00000000000",
+       "moderation": "ok",
+       "name": "Bob beach",
+       "trashed": false
+      },
+      {
+       "id": "Slivereported000",
+       "moderation": "pending",
+       "name": "reported",
+       "trashed": true
+      },
+      {
+       "id": "Slogo00000000000",
+       "moderation": "ok",
+       "name": "Logo 100% final",
+       "trashed": false
+      },
+      {
+       "id": "Soddname00000000",
+       "moderation": "ok",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "trashed": false
+      },
+      {
+       "id": "Soldsvg000000000",
+       "moderation": "ok",
+       "name": null,
+       "trashed": false
+      },
+      {
+       "id": "Sphoto0000000000",
+       "moderation": "ok",
+       "name": "Sunset",
+       "trashed": false
+      },
+      {
+       "id": "Ssong00000000000",
+       "moderation": "ok",
+       "name": "beach_song.mp3",
+       "trashed": false
+      },
+      {
+       "id": "Sstock0000000000",
+       "moderation": "ok",
+       "name": "Stock beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashheld000000",
+       "moderation": "quarantined",
+       "name": "Held",
+       "trashed": true
+      },
+      {
+       "id": "Strashok00000000",
+       "moderation": "ok",
+       "name": "Old beach",
+       "trashed": false
+      },
+      {
+       "id": "Strashremoved000",
+       "moderation": "removed",
+       "name": "Gone",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "json": {
+    "action": "delete",
+    "ids": [
+     "Strashbig0000000",
+     "Strashheld000000",
+     "Strashremoved000"
+    ]
+   },
+   "method": "POST",
+   "name": "batch delete forever",
+   "response": {
+    "body": {
+     "ids": [
+      "Strashbig0000000"
+     ],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "name": "list after",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T07:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soddname00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Café \"menu\"/v2\\draft.jpeg",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T06:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Soldsvg000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": null,
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "100",
+       "created_at": "2025-01-01T05:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Slogo00000000000",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "Logo 100% final",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "200",
+       "created_at": "2025-01-01T04:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Ssong00000000000",
+       "kind": "audio",
+       "mime": "audio/mpeg",
+       "name": "beach_song.mp3",
+       "sha256": "340549753711c91a9e1ee41b35d9043c1de4f2030845c3cd565269d0e34fe40b",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Sphoto0000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Sunset",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "300",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "id": "Strashok00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Old beach",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 6,
+      "audio": 1,
+      "files": 0,
+      "images": 5,
+      "videos": 0
+     },
+     "quotaBytes": 3000,
+     "total": 6,
+     "usedBytes": 1600
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.60"
+   },
+   "name": "trash after",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "10",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": true,
+       "id": "Slivereported000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "reported",
+       "purge_at": "<ts>",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "<ts>",
+       "w": 4
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "20",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "durationMs": null,
+       "h": 4,
+       "hasAudio": false,
+       "held": true,
+       "id": "Strashheld000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "Held",
+       "purge_at": "2025-01-31T10:30:00.000Z",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "trashed_at": "2025-01-01T10:30:00.000Z",
+       "w": 4
+      }
+     ],
+     "counts": {
+      "all": 2,
+      "audio": 0,
+      "files": 0,
+      "images": 2,
+      "videos": 0
+     },
+     "total": 2
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash"
+  }
+ ],
+ "vars": {}
+}

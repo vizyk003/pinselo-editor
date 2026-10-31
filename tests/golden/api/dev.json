@@ -1,0 +1,212 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {},
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO email_outbox(id, to_email, subject, html, text, category, status, created_at) VALUES ('00000000-0000-4000-8000-000000008001', 'ada@example.test', 'Your sign-in link', '<p>Your sign-in link</p>', 'Your sign-in link', 'security', 'queued', '2025-01-01T10:00:00Z')",
+  "INSERT INTO email_outbox(id, to_email, subject, html, text, category, status, created_at) VALUES ('00000000-0000-4000-8000-000000008002', 'bob@example.test', 'Invite', '<p>Invite</p>', 'Invite', 'security', 'sent', '2025-01-01T11:00:00Z')",
+  "INSERT INTO email_outbox(id, to_email, subject, html, text, category, status, created_at) VALUES ('00000000-0000-4000-8000-000000008003', 'ada@example.test', 'Verify your email', '<p>Verify your email</p>', 'Verify your email', 'security', 'queued', '2025-01-01T11:30:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "all mail (newest first)",
+   "response": {
+    "body": {
+     "messages": [
+      {
+       "createdAt": "2025-01-01T11:30:00.000Z",
+       "html": "<p>Verify your email</p>",
+       "id": "00000000-0000-4000-8000-000000008003",
+       "status": "queued",
+       "subject": "Verify your email",
+       "text": "Verify your email",
+       "to": "ada@example.test"
+      },
+      {
+       "createdAt": "2025-01-01T11:00:00.000Z",
+       "html": "<p>Invite</p>",
+       "id": "00000000-0000-4000-8000-000000008002",
+       "status": "sent",
+       "subject": "Invite",
+       "text": "Invite",
+       "to": "bob@example.test"
+      },
+      {
+       "createdAt": "2025-01-01T10:00:00.000Z",
+       "html": "<p>Your sign-in link</p>",
+       "id": "00000000-0000-4000-8000-000000008001",
+       "status": "queued",
+       "subject": "Your sign-in link",
+       "text": "Your sign-in link",
+       "to": "ada@example.test"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/dev/mail"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "mail to one address (case-insensitive)",
+   "response": {
+    "body": {
+     "messages": [
+      {
+       "createdAt": "2025-01-01T11:30:00.000Z",
+       "html": "<p>Verify your email</p>",
+       "id": "00000000-0000-4000-8000-000000008003",
+       "status": "queued",
+       "subject": "Verify your email",
+       "text": "Verify your email",
+       "to": "ada@example.test"
+      },
+      {
+       "createdAt": "2025-01-01T10:00:00.000Z",
+       "html": "<p>Your sign-in link</p>",
+       "id": "00000000-0000-4000-8000-000000008001",
+       "status": "queued",
+       "subject": "Your sign-in link",
+       "text": "Your sign-in link",
+       "to": "ada@example.test"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/dev/mail?to=Ada@Example.TEST"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "mail to nobody",
+   "response": {
+    "body": {
+     "messages": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/dev/mail?to=ghost@example.test"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "name": "empty to",
+   "response": {
+    "body": {
+     "messages": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/dev/mail?to="
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "name": "repeated to",
+   "response": {
+    "body": {
+     "messages": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/dev/mail?to=ada@example.test&to=bob@example.test"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "method": "POST",
+   "name": "POST is not a route",
+   "response": {
+    "body": {
+     "error": "Not Found",
+     "message": "Route POST:/api/dev/mail not found",
+     "statusCode": 404
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 404
+   },
+   "url": "/api/dev/mail"
+  }
+ ],
+ "vars": {}
+}

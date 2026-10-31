@@ -1,0 +1,52 @@
+[package]
+name = "oc-wasm"
+description = "Pinselo browser bridge: the Rust core (editor, schema, geometry, CRDT, text) for WebAssembly via wasm-bindgen"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+publish = false
+
+# Built by `pnpm --filter @oc/engine build` (packages/engine/scripts/build.mjs), which sets the size-optimised
+# release profile through CARGO_PROFILE_RELEASE_* (opt-level "z", fat LTO, one codegen unit, panic=abort): profiles
+# can only live in the workspace root, and the native services keep their own release settings.
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook", "complex-scripts", "sheet", "render"]
+# Log Rust panics to the browser console (adds a few KB).
+console_error_panic_hook = ["dep:console_error_panic_hook"]
+# Dictionary line breaking for Thai/Lao/Khmer/Myanmar, as on the server (oc-text). Adds the ICU4X dictionaries.
+complex-scripts = ["oc-text/complex-scripts", "oc-render?/complex-scripts"]
+# Sheets (oc-sheet: formula engine, model writes, CSV, XLSX). oc-sheet is AGPL-3.0-only, like @oc/sheet: so is
+# a binary built with this feature. rust_xlsxwriter's `wasm` clock is target-gated, so this is fine natively.
+sheet = ["dep:oc-sheet", "oc-sheet/xlsx-wasm"]
+# The renderer (oc-render: display lists, tiny-skia painter) that replaces CanvasKit in the browser.
+render = ["dep:oc-render"]
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+oc-geometry = { path = "../oc-geometry" }
+oc-crdt = { path = "../oc-crdt" }
+oc-editor-core = { path = "../oc-editor-core" }
+oc-text = { path = "../oc-text", default-features = false }
+oc-sheet = { path = "../oc-sheet", default-features = false, optional = true }
+oc-render = { path = "../oc-render", default-features = false, optional = true }
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
+indexmap = { version = "2", features = ["serde"] }
+yrs = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+wasm-bindgen = { workspace = true }
+js-sys = { workspace = true }
+serde-wasm-bindgen = { workspace = true }
+console_error_panic_hook = { workspace = true, optional = true }
+
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+[dev-dependencies]
+wasm-bindgen-test = { workspace = true }
+base64 = { workspace = true }

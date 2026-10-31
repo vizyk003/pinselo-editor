@@ -1,0 +1,194 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Manual runs on any branch (e.g. rust-core before its PR exists).
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    # The TypeScript side: apps/web on @oc/engine (the Rust core compiled to WebAssembly), its tests (including the
+    # PS-1 WebAssembly-vs-native check against tests/golden/ps1) and the tooling. A cold WebAssembly release build
+    # (fat LTO, one codegen unit) takes most of the time; rust-cache keeps later runs short.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm fonts:sync && pnpm emoji:sync && pnpm graphics:sync && pnpm icc:sync
+      # apps/web runs on @oc/engine (crates/oc-wasm): wasm32 target + the wasm-bindgen CLI pinned by Cargo.lock.
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - name: wasm-bindgen version (Cargo.lock)
+        id: wb
+        run: echo "version=$(grep -A1 '^name = "wasm-bindgen"$' Cargo.lock | sed -n 's/^version = "\(.*\)"$/\1/p')" >> "$GITHUB_OUTPUT"
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: wasm-bindgen@${{ steps.wb.outputs.version }}
+      - name: Build @oc/engine
+        run: pnpm --filter @oc/engine build
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit tests
+        run: pnpm test
+      # Without the benchmark (test/bench.test.ts asserts frame rates, which shared runners do not give reliably).
+      - name: Engine tests (goldens, PS-1 WebAssembly vs native)
+        run: pnpm --filter @oc/engine exec vitest run --config vitest.config.ts --exclude test/bench.test.ts
+      - name: Build web
+        run: pnpm --filter @oc/web build
+
+  rust-smoke:
+    # The backend that `pnpm dev` and the deploy image run (oc-api, oc-collab, oc-worker,
+    # oc-render-svc, migrated by oc-migrate) boot against Postgres and pass the API smoke test, then
+    # tests/smoke/stack.ts: sign-in, a collab edit read back from Postgres, a PNG export through render.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: oc
+          POSTGRES_PASSWORD: oc
+          POSTGRES_DB: opencanvas
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U oc" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      OC_DATABASE_URL: postgres://oc:oc@localhost:5432/opencanvas
+      OC_SECRET: ci-only-secret
+      OC_STAFF_EMAILS: staff@example.com
+      CARGO_TERM_COLOR: always
+      RUST_BACKTRACE: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: System packages (ffmpeg for render and the worker)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      # Node only for the fixtures (fonts, emoji, graphics, ICC profiles) and the editor's collab client.
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm fonts:sync && pnpm emoji:sync && pnpm graphics:sync && pnpm icc:sync
+      - name: Build the Rust services
+        run: cargo build --locked -p oc-api -p oc-collab -p oc-worker -p oc-render-svc -p oc-db
+      - name: Migrate (oc-migrate)
+        run: target/debug/oc-migrate
+      - name: Start the Rust services
+        run: |
+          for b in oc-api oc-collab oc-worker oc-render-svc; do (target/debug/$b > /tmp/$b.log 2>&1 &); done
+          for i in $(seq 1 60); do
+            curl -sf localhost:4000/healthz > /dev/null && curl -sf localhost:4200/healthz > /dev/null && curl -sf localhost:4100/ > /dev/null && break
+            sleep 1
+          done
+          curl -sf localhost:4000/healthz && curl -sf localhost:4200/healthz && curl -sf localhost:4100/
+      - name: API smoke test
+        run: bash tests/smoke/api.sh http://localhost:4000
+      - name: Stack smoke test (collab edit, render export)
+        run: pnpm exec tsx tests/smoke/stack.ts http://localhost:4000 ws://localhost:4100
+      - name: Service logs
+        if: failure()
+        run: tail -n 100 /tmp/oc-*.log || true
+
+  docker:
+    # The deploy images build (Rust services; gateway with the web app and the WebAssembly engine). Nothing is pushed.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build the runtime image (Rust services)
+        uses: docker/build-push-action@v6
+        with: { context: ., file: deploy/Dockerfile, target: runtime, tags: 'opencanvas-runtime:ci', load: true, cache-from: 'type=gha,scope=runtime', cache-to: 'type=gha,scope=runtime,mode=max' }
+      - name: Build the gateway image (web app, engine)
+        uses: docker/build-push-action@v6
+        with: { context: ., file: deploy/Dockerfile, target: gateway, tags: 'opencanvas-gateway:ci', load: true, cache-from: 'type=gha,scope=gateway', cache-to: 'type=gha,scope=gateway,mode=max' }
+      - name: Check the images
+        run: |
+          docker run --rm opencanvas-runtime:ci sh -c 'for b in oc-api oc-collab oc-worker oc-render-svc oc-migrate; do command -v $b; done && ls fixtures/fonts/files | head -3 && ls crates/oc-platform/oc-db/migrations | tail -1'
+          docker run --rm -e OC_APP_HOST=app.example.test -e OC_USERCONTENT_HOST=usercontent.example.test -e OC_ACME_EMAIL=ops@example.test \
+            opencanvas-gateway:ci sh -c 'ls /srv/web/assets/*.wasm /srv/web/assets/*.wasm.br && caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile'
+
+  golden:
+    # ADR-0001 parity: the Rust crates match the committed goldens (written by the deleted TS reference) and the PS-1
+    # baselines (tools/golden/check.sh: `cargo test --workspace`, the only job that runs the whole Rust workspace's
+    # tests, against this job's Postgres; it fails when a test rewrites tests/golden/).
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: oc
+          POSTGRES_PASSWORD: oc
+          POSTGRES_DB: opencanvas
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U oc" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Server for throwaway databases only (oc_db::testing::TestDb).
+      OC_DATABASE_URL: postgres://oc:oc@localhost:5432/opencanvas
+      CARGO_TERM_COLOR: always
+      # Two test threads per test binary (binaries run one after another): each DB test holds a throwaway database
+      # with a pool of up to 10 connections (oc_db::pool_options), which keeps the total well under postgres:17's
+      # default max_connections of 100.
+      RUST_TEST_THREADS: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: System packages (ffmpeg, poppler for the render-video/import/render-svc tests)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg poppler-utils
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm fonts:sync && pnpm emoji:sync && pnpm graphics:sync && pnpm icc:sync
+      - name: Rust matches the committed goldens
+        run: bash tools/golden/check.sh
+
+  clippy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+      # Pinned so that lints added in a later stable release do not fail CI unannounced; bump deliberately.
+      - uses: dtolnay/rust-toolchain@1.99.0
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Clippy (whole workspace, all targets, warnings are errors)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Dependency vulnerabilities (high and above)
+        run: pnpm audit --audit-level high

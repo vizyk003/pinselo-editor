@@ -1,0 +1,10 @@
+# Keep dev/test builds small: no incremental cache, no debuginfo for dependencies,
+# line tables only for workspace crates (enough for panic backtraces).
+[build]
+incremental = false
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false

@@ -1,0 +1,57 @@
+# Production-shaped stack. Copy .env.example to .env and fill it in, then: docker compose up -d
+# The services are the Rust binaries of the `runtime` image: oc-migrate, oc-api, oc-collab, oc-render-svc, oc-worker.
+# Supabase database (docs/supabase.md): set OC_DATABASE_URL and OC_DATABASE_SSL_CA in .env, mount the CA below,
+# and start the services without the bundled database: docker compose up -d --no-deps migrate api collab render worker gateway
+x-service: &service
+  build: { context: .., dockerfile: deploy/Dockerfile, target: runtime }
+  env_file: .env
+  environment:
+    OC_DATABASE_URL: ${OC_DATABASE_URL:-postgres://oc:${POSTGRES_PASSWORD}@db:5432/opencanvas}
+    OC_RENDER_URL: http://render:4200
+    # AI connector: the API joins documents as a live collaborator through the collab server.
+    OC_COLLAB_URL: ws://collab:4100
+    OC_WEB_ORIGIN: https://${OC_APP_HOST}
+    OC_API_URL: https://${OC_APP_HOST}
+    OC_USERCONTENT_ORIGIN: https://${OC_USERCONTENT_HOST}
+    OC_DATA_DIR: /data
+    OC_RENDER_HOST: 0.0.0.0
+  volumes:
+    - data:/data
+    # Supabase CA certificate for OC_DATABASE_SSL_CA=/run/secrets/supabase-ca.crt:
+    # - ./supabase-ca.crt:/run/secrets/supabase-ca.crt:ro
+  depends_on:
+    db: { condition: service_healthy }
+  restart: unless-stopped
+
+services:
+  db:
+    image: postgres:17
+    environment: { POSTGRES_USER: oc, POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}', POSTGRES_DB: opencanvas }
+    volumes: [pg:/var/lib/postgresql/data]
+    healthcheck: { test: ['CMD', 'pg_isready', '-U', 'oc'], interval: 5s, retries: 20 }
+    restart: unless-stopped
+  migrate:
+    <<: *service
+    command: ['oc-migrate']
+    restart: 'no'
+  api:
+    <<: *service
+    command: ['oc-api']
+  collab:
+    <<: *service
+    command: ['oc-collab']
+  render:
+    <<: *service
+    command: ['oc-render-svc']
+  worker:
+    <<: *service
+    command: ['oc-worker']
+  gateway:
+    build: { context: .., dockerfile: deploy/Dockerfile, target: gateway }
+    env_file: .env
+    ports: ['80:80', '443:443']
+    volumes: [caddy:/data]
+    depends_on: [api, collab]
+    restart: unless-stopped
+
+volumes: { pg: {}, data: {}, caddy: {} }

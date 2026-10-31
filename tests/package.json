@@ -1,0 +1,14 @@
+{
+  "name": "@oc/tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "@oc/engine": "workspace:*",
+    "pg": "8.23.1"
+  },
+  "devDependencies": {
+    "yjs": "13.6.33"
+  }
+}

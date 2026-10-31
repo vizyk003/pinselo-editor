@@ -1,0 +1,30 @@
+[package]
+name = "oc-text"
+description = "Pinselo text engine (Rust port of @oc/text): font registry, glyph fallback, paragraph layout on parley/HarfRust/skrifa"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[features]
+default = ["complex-scripts"]
+# Dictionary-based line breaking for scripts without spaces (Thai, Lao, Khmer, Myanmar), like ICU in
+# SkParagraph. Adds the segmentation dictionaries to the binary.
+complex-scripts = ["parley/complex-scripts"]
+# Filesystem font loading (server). The library itself only takes bytes, so it builds for wasm32.
+native = []
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+parley = { workspace = true }
+skrifa = { workspace = true }
+icu_properties = { workspace = true }
+icu_segmenter = { workspace = true }
+
+[dev-dependencies]
+icu_segmenter = { workspace = true }
+serde_json = { workspace = true }

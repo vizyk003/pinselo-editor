@@ -1,0 +1,63 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_SMTP_URL": "smtp://127.0.0.1:1"
+ },
+ "fake": {},
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO email_outbox(id, to_email, subject, html, text, category, created_at) VALUES ('00000000-0000-4000-8000-000000008001', 'ada@example.test', 'Hi', '<p>Hi</p>', 'Hi', 'security', '2025-01-01T10:00:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "mailbox off with SMTP",
+   "response": {
+    "body": {
+     "error": "Not Found",
+     "message": "Route GET:/api/dev/mail not found",
+     "statusCode": 404
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 404
+   },
+   "url": "/api/dev/mail"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "mailbox off with SMTP (query)",
+   "response": {
+    "body": {
+     "error": "Not Found",
+     "message": "Route GET:/api/dev/mail?to=ada@example.test not found",
+     "statusCode": 404
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 404
+   },
+   "url": "/api/dev/mail?to=ada@example.test"
+  }
+ ],
+ "vars": {}
+}

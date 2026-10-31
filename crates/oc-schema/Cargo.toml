@@ -1,0 +1,23 @@
+[package]
+name = "oc-schema"
+description = "Pinselo document model (Rust port of @oc/schema): serde types, validation, pure helpers"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+# `preserve_order`: JSON objects keep insertion order like JS objects (stable round-trips of unknown fields).
+serde_json = { workspace = true, features = ["preserve_order"] }
+thiserror = { workspace = true }
+indexmap = { version = "2", features = ["serde"] }
+# Backreferences and look-arounds used by the SVG sanitiser/recolourer regexes (pure Rust, wasm-friendly).
+fancy-regex = "0.14"
+# WHATWG URL parsing (embeds, zod `.url()` validation).
+url = "2"
+
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+[target.'cfg(not(all(target_arch = "wasm32", target_os = "unknown")))'.dependencies]
+getrandom = "0.3"

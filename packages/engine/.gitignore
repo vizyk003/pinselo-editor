@@ -1,0 +1,2 @@
+# wasm-bindgen output of `pnpm --filter @oc/engine build` (regenerated from crates/oc-wasm; see README)
+pkg/

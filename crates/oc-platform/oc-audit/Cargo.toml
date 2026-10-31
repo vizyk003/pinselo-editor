@@ -1,0 +1,22 @@
+[package]
+name = "oc-audit"
+description = "Tamper-evident hash-chained audit log (port of @oc/audit, chain v2)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-db = { workspace = true }
+oc-js = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+oc-config = { workspace = true }
+oc-db = { workspace = true }

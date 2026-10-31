@@ -1,0 +1,40 @@
+{
+  "name": "opencanvas",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.15.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx tools/scripts/dev.ts",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:migrate": "tsx tools/scripts/rust.ts oc-migrate",
+    "fonts:sync": "tsx tools/scripts/fonts-sync.ts",
+    "fonts:catalog": "tsx tools/scripts/google-fonts-catalog.ts",
+    "setup": "pnpm fonts:sync && pnpm emoji:sync && pnpm graphics:sync && pnpm icc:sync && pnpm db:migrate && pnpm seed",
+    "verify": "pnpm typecheck && pnpm test",
+    "seed": "tsx tools/scripts/seed.ts",
+    "emoji:sync": "tsx tools/scripts/emoji-sync.ts",
+    "graphics:sync": "tsx tools/scripts/graphics-sync.ts",
+    "icc:sync": "tsx tools/scripts/icc-sync.ts",
+    "i18n:check": "tsx tools/scripts/i18n-extract.ts",
+    "tpl:preview": "tsx tools/scripts/tpl-preview.ts",
+    "tpl:photos": "tsx tools/scripts/tpl-photos.ts",
+    "tpl:picsum": "tsx tools/scripts/tpl-picsum.ts",
+    "golden:check": "bash tools/golden/check.sh"
+  },
+  "devDependencies": {
+    "@oc/config": "workspace:*",
+    "@oc/engine": "workspace:*",
+    "@resvg/resvg-js": "2.6.2",
+    "@types/node": "22.20.5",
+    "tsx": "4.23.15",
+    "turbo": "2.11.7",
+    "typescript": "6.0.3",
+    "vitest": "5.0.3"
+  }
+}

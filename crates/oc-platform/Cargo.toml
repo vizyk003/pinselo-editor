@@ -1,0 +1,21 @@
+[package]
+name = "oc-platform"
+description = "Facade over the oc-platform crates (this directory must be a package because the workspace glob `crates/*` matches it)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[dependencies]
+oc-js = { workspace = true }
+oc-config = { workspace = true }
+oc-db = { workspace = true }
+oc-auth = { path = "oc-auth" }
+oc-storage = { workspace = true }
+oc-jobs = { workspace = true }
+oc-mail = { path = "oc-mail" }
+oc-webhooks = { path = "oc-webhooks" }
+oc-audit = { path = "oc-audit" }
+oc-gfonts = { path = "oc-gfonts" }

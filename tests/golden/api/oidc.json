@@ -1,0 +1,1300 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_OIDC_CLIENT_ID": "golden-client",
+  "OC_OIDC_CLIENT_SECRET": "golden-secret",
+  "OC_OIDC_ISSUER": "{{FAKE}}/oidc",
+  "OC_OIDC_LABEL": "Golden SSO"
+ },
+ "fake": {
+  "/oidc/.well-known/openid-configuration": {
+   "json": {
+    "authorization_endpoint": "{{FAKE}}/oidc/auth?prompt=login",
+    "issuer": "{{FAKE}}/oidc",
+    "jwks_uri": "{{FAKE}}/oidc/jwks",
+    "token_endpoint": "{{FAKE}}/oidc/token"
+   }
+  },
+  "/oidc/jwks": {
+   "json": {
+    "keys": [
+     {
+      "alg": "RS256",
+      "e": "AQAB",
+      "kid": "golden",
+      "kty": "RSA",
+      "n": "4um9nsHbMGMWHVfZtkrbgcsEtrjtmaMXAlEIqTWTv6RR7uvz5_13uiV7067Rae0NHQ6SSlU1UpF-wX_TvhfTrxHBfQM4qZYcvGg4mWcUVq6U2YPjvkkbIzxndm5qeA7h_boAuQl8MxijtAoCmu2mUjGNVNl7wZDlHru_8LCsNbrN9iKaNoCkva-1OoNaoVGuqLFZeei4dUC_n8uzNrHhVSGY1YXVix3_m59TD7bWHwCs8EvQsKPRH8iKWT5uyN9mJOJGSMPVfaLumvTa26bhpHYGDlYH2VDiXYEI580a1V9Kvwx4ddoYqYeEuoa6FvVQB2WCz09OD_kju2wkSsdJow",
+      "use": "sig"
+     }
+    ]
+   }
+  },
+  "/oidc/token": {
+   "idToken": {
+    "claims": {
+     "aud": "golden-client",
+     "email": "Sso.User@Example.test",
+     "email_verified": true,
+     "exp": 1735736400,
+     "iat": 1735732800,
+     "iss": "{{FAKE}}/oidc",
+     "name": "Sso User",
+     "sub": "sso-subject-1"
+    },
+    "kid": "golden",
+    "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+   }
+  }
+ },
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "UPDATE users SET totp_secret = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP' WHERE id = '00000000-0000-4000-8000-000000000002'"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "providers",
+   "response": {
+    "body": {
+     "devLogin": true,
+     "passkeys": true,
+     "providers": [
+      {
+       "id": "oidc",
+       "label": "Golden SSO"
+      }
+     ],
+     "signup": "open",
+     "supabase": null,
+     "termsVersion": "2026-10-01"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/providers"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "start: unknown provider",
+   "response": {
+    "body": {
+     "error": "unknown_provider"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/auth/oauth/google/start"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "callback without the cookie",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=oauth",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=x&state=y"
+  },
+  {
+   "capture": {
+    "ssoCookie": "cookie.oc_oauth",
+    "ssoState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "sso",
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/.well-known/openid-configuration"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "name": "first sign-in creates the account: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{ssoState}}&code_challenge=<token:1>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{ssoCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2Fdesign%2Fabc"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "sso",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-sso",
+      "code_verifier": "<token:2>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "name": "first sign-in creates the account: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "golden-client",
+        "email": "Sso.User@Example.test",
+        "email_verified": true,
+        "exp": 1735736400,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Sso User",
+        "sub": "sso-subject-1"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/design/abc",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth=; Max-Age=0; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax",
+      "oc_session=<token:3>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-sso&state={{ssoState}}"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, email_verified_at IS NOT NULL AS verified FROM users ORDER BY email"
+    }
+   ],
+   "client": "sso",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "email": "bob@example.test",
+       "name": "Bob",
+       "verified": true
+      },
+      {
+       "email": "sso.user@example.test",
+       "name": "Sso User",
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "name": "signed in",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#16a34a",
+      "email": "sso.user@example.test",
+      "id": "<uuid:1>",
+      "locale": "en",
+      "mfa": false,
+      "name": "Sso User",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "capture": {
+    "c2": "cookie.oc_oauth",
+    "s2": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "sso2",
+   "headers": {
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "name": "start again",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{s2}}&code_challenge=<token:4>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{c2}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start"
+  },
+  {
+   "client": "sso2",
+   "headers": {
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "name": "callback: state mismatch",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=oauth",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=x&state=wrong"
+  },
+  {
+   "client": "sso2",
+   "headers": {
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "name": "callback: no code",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=oauth",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?state={{s2}}"
+  },
+  {
+   "client": "sso2",
+   "headers": {
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "name": "callback: other provider",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=oauth",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/apple/callback?code=x&state={{s2}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_oauth=%7B%22state%22%3A%22x%22%7D.bad",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "name": "callback: tampered cookie",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=oauth",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=x&state={{s2}}"
+  },
+  {
+   "client": "sso2",
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "x",
+      "code_verifier": "<token:5>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "callback: linked account signs in",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "golden-client",
+        "email": "renamed@example.test",
+        "email_verified": true,
+        "exp": 1735736400,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Sso User",
+        "sub": "sso-subject-1"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth=; Max-Age=0; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax",
+      "oc_session=<token:6>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=x&state={{s2}}"
+  },
+  {
+   "capture": {
+    "unverifiedCookie": "cookie.oc_oauth",
+    "unverifiedState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "unverified",
+   "headers": {
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "name": "unverified email: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{unverifiedState}}&code_challenge=<token:7>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{unverifiedCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2Fdesign%2Fabc"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "unverified",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-unverified",
+      "code_verifier": "<token:8>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "name": "unverified email: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "golden-client",
+        "email": "new@example.test",
+        "email_verified": false,
+        "exp": 1735736400,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Sso User",
+        "sub": "sso-subject-2"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=unverified_email",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-unverified&state={{unverifiedState}}"
+  },
+  {
+   "capture": {
+    "noidCookie": "cookie.oc_oauth",
+    "noidState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "noid",
+   "headers": {
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "name": "no id_token: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{noidState}}&code_challenge=<token:9>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{noidCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2Fdesign%2Fabc"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "noid",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-noid",
+      "code_verifier": "<token:10>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "name": "no id_token: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "json": {
+       "access_token": "x",
+       "token_type": "Bearer"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?error=oauth",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-noid&state={{noidState}}"
+  },
+  {
+   "capture": {
+    "forgedCookie": "cookie.oc_oauth",
+    "forgedState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "forged",
+   "headers": {
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "name": "forged token: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{forgedState}}&code_challenge=<token:11>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{forgedCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2Fdesign%2Fabc"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "forged",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-forged",
+      "code_verifier": "<token:12>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "forged token: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "golden-client",
+        "email": "Sso.User@Example.test",
+        "email_verified": true,
+        "exp": 1735736400,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Sso User",
+        "sub": "sso-subject-3"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a3020100028201010094d3e027b0ae5a5f9fe5a941c148eda6b58e85080bf31c529b84e477b7a67df222ecbfb939f6f82e563244a86bc0ebf1d0686e103d6efe2769f9ffdf13d0cc0c8dba0dada5a36196be3e31326a14e2660df256927fad9707787fe8a6de30f9c4e72b7d42f1d49663b0664cb814f0051fe7b9e908dc483ec547e14845535bdd1319d620cd3d707ef99574e8cb327eaee2b83d8f1f7d0f177c1fa29f691499323d66ace9c8d28991989403fbf08946f38b0f6bfc72e7bbee6fbc38b4baf1ad88af2a23d490a1c17f1e8b48861bca3c25db5a8fce523f7227c35384231000067027f08a945a63189c78eafa7d2ee1a9404a6f782bc25f14c49b6c2146f005ae2dd70203010001028201001bb91c1848a131d47e4499b2d5fe6fc68e2b6e3c817d57d94b7f05d00735cc603e813b7595869bd485d9f750284257b143d1302f764226b5d0d7f101ecff08038ea309c93f01a03c2454117602acc13fa1797306f721aef08551ce54c72ef857e578046d63fee5c4cc27424348232dd133a93def98991c98433b83eae60c46b1ef59e02d1ad508ae6748718da7b5508689806fd16be241544192aabb453352470dcb44d5aa3edf0b271dbecb8a01952ac0a54810af1b2b6659b175baea94dd3a0f8f0cc3263ee21fea3107e4e3b0a3c305da6156891665174723f29379554a2b410c91d90fca08013a79c4b07fbdac06229373093a4202b576b026264f81278102818100ce2984757a319ea8849af5b655c5ba44bb3cb336e0d6e2313ec96a0f308350a1186cb6a52adec165db0beaa03ee5ba59c7e5dd18d53bca9f3783964f0a647636653b08e7b6cab195189d6bed70c7587472175b8a0d017feefda6333120bcf2d7d2d019d41c55182a27644b336214d1c708559e080ed1f6510afb06e93b02226502818100b8ce2c222f3cca19b4c6a3c57c5ddb8a516856ab4cf5d5888d7eb234fc45b4191de334cc1aa7994c6da05fa14d1fd0967bdd2ca5bfb6f1ca5f4d1ed53fdde0d6722e5329b18c44abbf7b6a3ee1e56149da1902b32d22da8a99bddbeb5f4563cd5d500f0a6fa1cd36e3e6bcabe34454ef22272218a696bfb4e08747f18916ed8b028180402c4c3f053a4cd8c7ee346dfd64ff0646022f06f615ed72c6c88b6b0efed12a542002fa86cdb005b49990ff3094f1dce08c7cb62e29de78911f34ba85d19fba6ee8616d3f48f8de203b604d18bdf49acaa8daa5ae46b93bfb58b0b6aa2a26ad67c1bf48774945ac5976aeb1dfe5fb26a9417d5fa4bd569f037c003ab95380c102818100b8a8a266c2069ef6d2b0cd820e8406538e86905b787a0814fb3586c1f4f57d40bfa180e7151734d1ae94da1965e40d5be0869f0f3ba284b5af467331a8307f7228036bebb4523167dfdc64cc52920e056a5d255a7e165e82b19e897a05e7631318535fc410c97f3182c5d2ee7a17943aa248b20429a96603497b4382f075ad830281803f51652a659b11e4993f8db11e63223a8599202b9400bd23cb4f7109c9d444913cfcdcff5096344124f856fbc7b78fd4e12c55c715a2872834869c6b56fdf32f99fb0244c644cc162fe52b2a8e0dc148746e08fdef88cb9592081ed141536a2c7d1c14fdf16772b798af6c18b342aec68f075da1c636240296286a75a8435b95"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-forged&state={{forgedState}}"
+  },
+  {
+   "capture": {
+    "expiredCookie": "cookie.oc_oauth",
+    "expiredState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "expired",
+   "headers": {
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "name": "expired token: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{expiredState}}&code_challenge=<token:13>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{expiredCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2Fdesign%2Fabc"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "expired",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-expired",
+      "code_verifier": "<token:14>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "name": "expired token: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "golden-client",
+        "email": "Sso.User@Example.test",
+        "email_verified": true,
+        "exp": 1735732790,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Sso User",
+        "sub": "sso-subject-4"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-expired&state={{expiredState}}"
+  },
+  {
+   "capture": {
+    "audCookie": "cookie.oc_oauth",
+    "audState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "aud",
+   "headers": {
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "name": "wrong audience: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{audState}}&code_challenge=<token:15>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{audCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2Fdesign%2Fabc"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "aud",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-aud",
+      "code_verifier": "<token:16>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "wrong audience: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "someone-else",
+        "email": "Sso.User@Example.test",
+        "email_verified": true,
+        "exp": 1735736400,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Sso User",
+        "sub": "sso-subject-5"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-aud&state={{audState}}"
+  },
+  {
+   "capture": {
+    "bobCookie": "cookie.oc_oauth",
+    "bobState": {
+     "from": "header.location",
+     "regex": "state=([^&]+)"
+    }
+   },
+   "client": "bob",
+   "headers": {
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "name": "2FA account: start",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "{{FAKE}}/oidc/auth?client_id=golden-client&response_type=code&scope=openid+email+profile&redirect_uri=https%3A%2F%2Fapi.example%2Fapi%2Fauth%2Foauth%2Foidc%2Fcallback&state={{bobState}}&code_challenge=<token:17>&code_challenge_method=S256",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth={{bobCookie}}; Max-Age=600; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/start?next=%2F%2Fevil.example"
+  },
+  {
+   "checks": [
+    {
+     "name": "links",
+     "sql": "SELECT provider, subject, user_id, email FROM oauth_accounts ORDER BY subject"
+    }
+   ],
+   "client": "bob",
+   "db": [
+    {
+     "name": "links",
+     "rows": [
+      {
+       "email": "bob@example.test",
+       "provider": "oidc",
+       "subject": "sso-bob",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "email": "sso.user@example.test",
+       "provider": "oidc",
+       "subject": "sso-subject-1",
+       "user_id": "<uuid:1>"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/oidc/jwks"
+    },
+    {
+     "body": {
+      "client_id": "golden-client",
+      "client_secret": "golden-secret",
+      "code": "code-bob",
+      "code_verifier": "<token:18>",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://api.example/api/auth/oauth/oidc/callback"
+     },
+     "headers": {
+      "content-type": "application/x-www-form-urlencoded"
+     },
+     "method": "POST",
+     "path": "/oidc/token"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "name": "2FA account: callback",
+   "replies": {
+    "/oidc/token": [
+     {
+      "idToken": {
+       "claims": {
+        "aud": "golden-client",
+        "email": "bob@example.test",
+        "email_verified": true,
+        "exp": 1735736400,
+        "iat": 1735732800,
+        "iss": "{{FAKE}}/oidc",
+        "name": "Bob",
+        "sub": "sso-bob"
+       },
+       "kid": "golden",
+       "pkcs8": "308204bd020100300d06092a864886f70d0101010500048204a7308204a30201000282010100e2e9bd9ec1db3063161d57d9b64adb81cb04b6b8ed99a317025108a93593bfa451eeebf3e7fd77ba257bd3aed169ed0d1d0e924a553552917ec17fd3be17d3af11c17d0338a9961cbc683899671456ae94d983e3be491b233c67766e6a780ee1fdba00b9097c3318a3b40a029aeda652318d54d97bc190e51ebbbff0b0ac35bacdf6229a3680a4bdafb53a835aa151aea8b15979e8b87540bf9fcbb336b1e1552198d585d58b1dff9b9f530fb6d61f00acf04bd0b0a3d11fc88a593e6ec8df6624e24648c3d57da2ee9af4dadba6e1a476060e5607d950e25d8108e7cd1ad55f4abf0c7875da18a98784ba86ba16f550076582cf4f4e0ff923bb6c244ac749a3020301000102820100358a50670eb7b0bd9880b8f3524b6c6abe23f117465ccb7a08de64ec440b861af808275d681e4aeb3d9fef8d1eb55f2d0a6f9f3df1c800a0fae71e49b05f3fdfdd912975a29f851f67a731bfa46e4c9ba9dc7efdb42edcbbde2b4d6af52d39d9c1fbeae2be25b38abb49a6590204540badcc7aba4c349a832d52c091c2a6079107fa6799f0895712778d8692ade52cdd18c4678ed1d307d045ff7505361e2ca9eff9955b713deff4d7a5ff41f1835a044ded35b6f36327fab0f335dc30c7c5f48b9704574a7e90a3beb6387b496980fdf3b6b69795a5a780a712166fdf3fe4d0767086d62d3d05d4dacf34108a0fae14965e5a67304f57f6b4194af8c486eea902818100f4c32d63ca48deb04652e310bec6d215328ca99892f3f76780ae10faaf36f44fed977de41b860914d19132bac77790833ca0601cdf9515fe04911628e71f5e331b3d110a427bb1b6f8a6b308f207a9cb6dc8f27fc0476d37103f6673b8105a14b0187e32a6ab0e436d746656bf3021d88bb14ed86808889bc6a4cadeaa9668b902818100ed54c536af718c97c09cf82d8a98e2e03fbe41524ae291e88bc1941a6cf3d6f9afcff3f1d7edbc57b85e63153e376b792d3d29537f4e7ec6443e8c600f08ad1708b140c2ec9066c1ae74027cfeb1196974a16d7b5f19595cd66d9699c44e373e770a6d9d46ea51b646a112825f6feee2c71aec47b6b2c79b25725c55e204df3b02818100ecb4e4eca0f0a00c31b66f49fe76212dc6d92a1b17e340dca421b2e1fd195465080d7dfe606fdbd07a6bc577c4f7e89642c786abe5be34aa989807aa3efaa30b21c888f6371d90dcb6d3e04942680ed961aef8767be997c1acc0e3bffdbe329fd73d98ae3b692a3e235872b069ed8e8df16ae4297d52e36a634d73b4ab9d126102818058a75ed7f3a785ee35fc2cd4ce3e1819ce95e24ebc3c70669eb61bfdd70f2b11b0340d1b1d1ee849184ce1d4509e611e2de0f7ec01d52f941e7002fdeaffc1b0a605987c77e3e50e9a7d2964c9bb1c1401863fa06340d3d9d31bb2b313da67d6849f379d159d78128fc5a16564032b083979fc2339c304bf16b8e6770a6be97b0281801e58828cac183a8fdf730bfce875bd07f3bbb682eb073996501e879f4958ca1ec83de7097b5d2a8513d815347cf0322c48b7e2224bf8057c094d3fc509055d911bf4cdaba9669679244dfed03f4039d4fe815cf35440e1175f8ec5b51f2a93ca2f25f59210db30c334a902a809f108ba912803b6a54cc2f7865a465dc72ffbf5"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "location": "https://app.example/login?mfa=<token:19>&next=%2F",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_oauth=; Max-Age=0; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 302
+   },
+   "url": "/api/auth/oauth/oidc/callback?code=code-bob&state={{bobState}}"
+  },
+  {
+   "name": "audit",
+   "rows": [
+    {
+     "action": "auth.login",
+     "actor_id": "<uuid:1>",
+     "meta": {
+      "method": "oidc"
+     }
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "<uuid:1>",
+     "meta": {
+      "method": "oidc"
+     }
+    }
+   ],
+   "sql": "SELECT actor_id, action, meta FROM audit_events ORDER BY id"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-nobody",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "name": "seeded cookie does not matter",
+   "response": {
+    "body": {
+     "user": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  }
+ ],
+ "vars": {}
+}

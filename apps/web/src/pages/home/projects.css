@@ -1,0 +1,128 @@
+/* ---------------------------------------------------------------- projects hub (plan 11 g17/g18/g20) */
+.pj-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pj-toolbar .pj-count { font-size: 13px; }
+.pj-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+
+/* Breadcrumbs: Projects › Clients › Acme */
+.pj-crumbs { display: flex; align-items: center; gap: 2px; min-width: 0; flex-wrap: wrap; }
+/* Same size as PageHeader's title; the first crumb's hover padding hangs into the gutter so its text sits on it. */
+.pj-crumbs { margin-inline-start: -6px; }
+.pj-crumbs a { color: var(--text-2); font-size: 24px; font-weight: 600; padding: 2px 6px; border-radius: var(--radius-sm); text-decoration: none; }
+.pj-crumbs a:hover { background: var(--surface-3); color: var(--text); }
+.pj-crumbs h2 { margin: 0; font-size: 24px; letter-spacing: -.02em; padding: 2px 6px; display: inline-flex; align-items: center; gap: 8px; }
+.pj-crumbs .pj-sep { color: var(--text-3); display: inline-flex; }
+/* Chevrons that point "forward" (breadcrumb separators, collapsed tree rows, the Recents arrows) mirror right-to-left. */
+[dir='rtl'] .pj-sep svg, [dir='rtl'] .pj-nav svg, [dir='rtl'] .pj-tree-tw svg { transform: scaleX(-1); }
+/* Phones: the breadcrumbs keep their own row (with the folder's star and menu) and clip long names instead of
+   painting under the buttons next to them; search and Add new go on the row below. */
+@media (max-width: 720px) {
+  .home .topbar.pj-topbar { flex-wrap: wrap; row-gap: 8px; }
+  .pj-topbar > .pj-crumbs { flex: 1 1 0; flex-wrap: nowrap; overflow: hidden; }
+  .pj-topbar > .grow { order: 1; flex-basis: 100%; height: 0; }
+  .pj-topbar > .search-field { order: 2; flex: 1 1 0; width: auto; }
+  .pj-topbar > .btn.primary { order: 2; }
+  .pj-crumbs > * { min-width: 0; flex-shrink: 1; overflow: hidden; }
+  .pj-crumbs .pj-sep { flex: none; }
+  /* Deep folders show Projects › parent › current; the levels in between are a tap away through the parent. */
+  .pj-crumbs > :not(:first-child):not(:last-child):not(:nth-last-child(2)) { display: none; }
+  /* The current folder keeps most of the room; the crumbs before it shrink first. */
+  .pj-crumbs > :last-child { flex-shrink: 0; max-width: 60%; }
+  .pj-crumbs a, .pj-crumbs h2 { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+}
+
+/* An item's name as its keyboard entry point (the row or tile around it is only a mouse target). */
+.pj-open { display: block; max-width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.pj-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+
+/* Selection checkbox: shows on hover and focus, when checked, and on every item once something is selected. */
+.pj-check { width: 18px; height: 18px; margin: 0; accent-color: var(--accent); cursor: pointer; opacity: 0; transition: opacity .1s; }
+.pj-check:focus-visible, .pj-check:checked, .pj-selecting .pj-check { opacity: 1; }
+
+/* Design cards (grid) */
+.card.pj-card .thumb { position: relative; }
+.card.pj-card > .pj-check { position: absolute; top: 10px; inset-inline-start: 10px; z-index: 2; box-shadow: 0 0 0 3px var(--surface); border-radius: 3px; }
+.card.pj-card:hover > .pj-check { opacity: 1; }
+.card.pj-card.selected .thumb { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.card.pj-card .pj-actions { position: absolute; top: 8px; inset-inline-end: 8px; display: flex; gap: 4px; z-index: 2; }
+.pj-actions > * { opacity: 0; transition: opacity .1s; }
+.card.pj-card:hover .pj-actions > *, .pj-row:hover .pj-actions > *, .pj-folder:hover .pj-actions > *, .pj-actions > *:focus-visible, .pj-actions > *[aria-expanded='true'], .pj-actions .pj-star.on { opacity: 1; }
+.pj-star { color: var(--text-2); }
+.pj-star.on { color: #f59e0b; }
+.card.pj-card .pj-actions .btn { background: var(--surface); border-color: var(--border); }
+.pj-badge {
+  position: absolute; inset-inline-start: 8px; bottom: 8px; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; line-height: 16px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent); color: var(--text-2); border: 1px solid var(--border); pointer-events: none;
+}
+
+/* Folder tiles */
+.pj-folders { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+.pj-folder {
+  position: relative; display: flex; align-items: center; gap: 10px; height: 60px; padding-block: 0; padding-inline: 14px 8px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); text-align: start;
+}
+.pj-folder:hover { border-color: var(--border-strong); box-shadow: var(--shadow-1); }
+.pj-folder:has(.pj-open:focus-visible) { border-color: var(--accent); }
+.pj-folder.selected { border-color: var(--accent); background: var(--accent-soft); }
+.pj-folder .pj-ficon { display: inline-grid; place-items: center; color: var(--text-2); width: 20px; flex: none; }
+.pj-folder > .pj-check { position: absolute; inset-inline-start: 15px; top: 50%; transform: translateY(-50%); }
+.pj-folder:hover > .pj-check { opacity: 1; }
+.pj-folder:hover .pj-ficon, .pj-folder.selected .pj-ficon, .pj-selecting .pj-folder .pj-ficon, .pj-folder:has(> .pj-check:focus-visible) .pj-ficon { visibility: hidden; }
+.pj-folder .pj-fname { font-weight: 600; }
+.pj-folder .pj-fsub { font-size: 11px; color: var(--text-3); font-weight: 400; }
+.pj-folder .pj-actions { display: flex; gap: 2px; }
+
+/* List view */
+.pj-list { display: flex; flex-direction: column; }
+.pj-row {
+  display: grid; grid-template-columns: 22px 56px minmax(0, 1fr) 120px 150px 140px 70px; align-items: center; gap: 12px;
+  min-height: 58px; padding: 4px 8px; border-bottom: 1px solid var(--border); cursor: pointer; position: relative;
+}
+.pj-row:hover { background: var(--surface-2); }
+.pj-row:hover > .pj-check { opacity: 1; }
+.pj-row.selected { background: var(--accent-soft); }
+.pj-row.head { min-height: 34px; font-size: 12px; font-weight: 600; color: var(--text-3); cursor: default; background: none; }
+.pj-thumb {
+  width: 56px; height: 42px; border-radius: 4px; background: var(--surface-3); display: grid; place-items: center; overflow: hidden;
+  border: 1px solid var(--border); color: var(--text-3); flex: none;
+}
+.pj-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.pj-row .pj-title { font-weight: 600; }
+.pj-row .pj-sub { font-size: 12px; color: var(--text-3); }
+.pj-row .pj-col { font-size: 13px; color: var(--text-2); }
+.pj-row .pj-actions { display: flex; gap: 2px; justify-content: flex-end; }
+@media (max-width: 900px) {
+  .pj-row { grid-template-columns: 22px 48px minmax(0, 1fr) 70px; }
+  .pj-row .pj-col { display: none; }
+}
+
+/* Recents carousel */
+.pj-track { display: grid; grid-auto-flow: column; grid-auto-columns: 220px; gap: 18px; overflow-x: auto; scroll-snap-type: x proximity; padding: 2px 2px 8px; margin-inline: -2px; scrollbar-width: thin; }
+.pj-track > * { scroll-snap-align: start; }
+
+/* Bulk actions bar */
+.pj-bulk {
+  position: sticky; bottom: 16px; z-index: 6; align-self: center; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding-block: 6px; padding-inline: 16px 8px; border-radius: 999px; background: var(--text); color: var(--bg); box-shadow: var(--shadow-2); max-width: 100%;
+}
+.pj-bulk .pj-bulk-n { font-weight: 600; font-size: 13px; margin-inline-end: 6px; white-space: nowrap; }
+.pj-bulk .btn { background: transparent; color: inherit; border-color: transparent; }
+.pj-bulk .btn:hover { background: color-mix(in srgb, var(--bg) 18%, transparent); }
+.pj-bulk .btn.danger { color: inherit; }
+
+/* Folder picker tree */
+.pj-tree { max-height: min(46vh, 380px); overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px; }
+.pj-tree-row {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 34px; padding: 0 8px; border: 0; border-radius: var(--radius-sm);
+  background: none; color: var(--text); cursor: pointer; text-align: start; font: inherit;
+}
+.pj-tree-row:hover { background: var(--surface-2); }
+.pj-tree-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.pj-tree-row.on { background: var(--accent-soft); color: var(--accent); }
+.pj-tree-row.off { color: var(--text-3); cursor: default; }
+.pj-tree-row.off > svg, .pj-tree-row.off > .grow { opacity: .6; }
+.pj-tree-tw { display: inline-grid; place-items: center; width: 16px; height: 16px; flex: none; color: var(--text-3); }
+
+/* Details dialog */
+.pj-details { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; margin: 0; font-size: 13px; }
+.pj-details dt { color: var(--text-3); font-weight: 600; }
+.pj-details dd { margin: 0; overflow-wrap: anywhere; }

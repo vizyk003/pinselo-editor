@@ -1,0 +1,6054 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {
+  "/internal/thumbnail": {
+   "json": {
+    "ok": true
+   }
+  }
+ },
+ "objects": [
+  "89504e470d0a1a0a0000000d49484452000000020000000308060000009dd2f04c0000000d49444154789c63f8cfc0f01f000502027f5a3e7a4b0000000049454e44ae426082",
+  "255044462d312e3420676f6c64656e206578706f7274"
+ ],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'dis@example.test', 'Dis', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Dis''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "UPDATE users SET disabled_at = '2025-01-01T00:00:00Z' WHERE id = '00000000-0000-4000-8000-000000000003'",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('b71dc2cccdc97ec1869c7aa79d9f5d9169ad49d170c7f6ebe3746bb6b879f8a3', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, brand_controls, created_at) VALUES ('00000000-0000-4000-8000-000000005000', 'Agency', false, '00000000-0000-4000-8000-000000000001', '{\"requireApproval\":true}'::jsonb, '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'owner'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'designer')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at) VALUES ('00000000-0000-4000-8000-000000009000', '00000000-0000-4000-8000-000000000001', 'token 9000', 'b153e2463d54fbb207842c659f5bc95e05692bd6703e5e225d5c366dc3c35c2a', 'oc_pat_adaal', '{designs:read,designs:write,assets:write,exports,webhooks}', '2025-01-01T00:00:00Z')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at) VALUES ('00000000-0000-4000-8000-000000009001', '00000000-0000-4000-8000-000000000001', 'token 9001', '92d7b4083d68e66e56b20ab129e465a2cdb5850fa0a81b84201afdd4a6c80849', 'oc_pat_adare', '{designs:read}', '2025-01-01T00:00:00Z')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at) VALUES ('00000000-0000-4000-8000-000000009002', '00000000-0000-4000-8000-000000000001', 'token 9002', '0a7e3e04ef91232f1b05a4e8cd0529d701a07e6b79501a6146f2861cfed637ad', 'oc_pat_adaho', '{webhooks}', '2025-01-01T00:00:00Z')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at, expires_at) VALUES ('00000000-0000-4000-8000-000000009003', '00000000-0000-4000-8000-000000000001', 'token 9003', 'a0f576bf54756b3f062849a078de7881e8c6f5a988581680866d66a2020fa29b', 'oc_pat_expir', '{designs:read,designs:write,assets:write,exports,webhooks}', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at, revoked_at) VALUES ('00000000-0000-4000-8000-000000009004', '00000000-0000-4000-8000-000000000001', 'token 9004', '933d32e05c824750ceb9df63ed47c9a72ff168de19c8f777a0e8941295a59526', 'oc_pat_revok', '{designs:read,designs:write,assets:write,exports,webhooks}', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at) VALUES ('00000000-0000-4000-8000-000000009005', '00000000-0000-4000-8000-000000000003', 'token 9005', '6e66eb88f9437ffcfc7f87f0134c0db1ad985eea1c5a10f251e92a304ef5ad20', 'oc_pat_disab', '{designs:read,designs:write,assets:write,exports,webhooks}', '2025-01-01T00:00:00Z')",
+  "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, created_at) VALUES ('00000000-0000-4000-8000-000000009006', '00000000-0000-4000-8000-000000000002', 'token 9006', 'c41c58c77ec937f781083a713647acf9cb75782794d80b90ddffcaf85c4575f7', 'oc_pat_bobal', '{designs:read,designs:write,assets:write,exports,webhooks}', '2025-01-01T00:00:00Z')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Salpha0000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Alpha poster', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T10:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Salpha0000000000', decode('010c8eace7900a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770c416c70686120706f737465722801046d6574610565706f6368017d00270105706167657310537061676531303030303030303030300128008eace7900a080269640177105370616765313030303030303030303028008eace7900a08056f72646572017702613028008eace7900a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbravo0000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Bravo deck', 'presentation', 1080, 1080, 'px', 3, '2025-01-01T00:00:00Z', '2025-01-01T09:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbravo0000000000', decode('010cd998ccde02002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770a427261766f206465636b2801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800d998ccde0208026964017710537061676531303030303030303030302800d998ccde0208056f7264657201770261302800d998ccde02080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Scharlie00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Charlie poster', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T08:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Scharlie00000000', decode('010cb4fa93a607002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770e436861726c696520706f737465722801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800b4fa93a60708026964017710537061676531303030303030303030302800b4fa93a60708056f7264657201770261302800b4fa93a607080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbobshared000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Shared with Ada', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T07:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbobshared000000', decode('010ceed9e5f40a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770f5368617265642077697468204164612801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800eed9e5f40a08026964017710537061676531303030303030303030302800eed9e5f40a08056f7264657201770261302800eed9e5f40a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sagencyad0000000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'Agency ad', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T06:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sagencyad0000000', decode('010ccdef9ff60f002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177094167656e63792061642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800cdef9ff60f08026964017710537061676531303030303030303030302800cdef9ff60f08056f7264657201770261302800cdef9ff60f080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbobsown00000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Bob private', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbobsown00000000', decode('010c83c191ae01002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770b426f6220707269766174652801046d6574610565706f6368017d002701057061676573105370616765313030303030303030303001280083c191ae010802696401771053706167653130303030303030303030280083c191ae0108056f726465720177026130280083c191ae01080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, trashed_at) VALUES ('Strashed00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Trashed', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Strashed00000000', decode('010ce3d5eade0d002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c65017707547261736865642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800e3d5eade0d08026964017710537061676531303030303030303030302800e3d5eade0d08056f7264657201770261302800e3d5eade0d080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, template_id, brand_workspace_id, template_version) VALUES ('Sautotpl00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Card template', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T05:00:00Z', 'tpl_brand', '00000000-0000-4000-8000-000000005000', 4)",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sautotpl00000000', decode('0142cbdbbbf907002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770d436172642074656d706c6174652801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800cbdbbbf90708026964017710537061676531303030303030303030302800cbdbbbf90708056f7264657201770261302800cbdbbbf907080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d01270108656c656d656e7473105374657874656c303030303030303030012700cbdbbbf9070c0570726f7073012800cbdbbbf9070c0269640177105374657874656c3030303030303030302800cbdbbbf9070c0474797065017704746578742800cbdbbbf9070c08706172656e744964017710537061676531303030303030303030302800cbdbbbf9070c017a01770261302800cbdbbbf9070c076f706163697479017d012800cbdbbbf9070c02786601760501787d0001797d0001777d900601687d3c03726f747d002800cbdbbbf9070c0b6461746142696e64696e6701760106636f6c756d6e77046e616d652700cbdbbbf9070c0474657874040700cbdbbbf9071503097061726167726170680700cbdbbbf90716062800cbdbbbf9071605616c69676e01770663656e7465720600cbdbbbf907170473697a6502333286cbdbbbf90719067765696768740337303084cbdbbbf9071a094e616d65206865726586cbdbbbf907230473697a65046e756c6c86cbdbbbf9072406776569676874046e756c6c84cbdbbbf9072501212800cbdbbbf9070d0a64656661756c7452756e017f270108656c656d656e74731053696d67656c30303030303030303030012700cbdbbbf907280570726f7073012800cbdbbbf9072802696401771053696d67656c303030303030303030302800cbdbbbf907280474797065017705696d6167652800cbdbbbf9072808706172656e744964017710537061676531303030303030303030302800cbdbbbf90728017a01770261312800cbdbbbf90728076f706163697479017d012800cbdbbbf9072802786601760501787d0001797da40101777d880301687da40103726f747d002800cbdbbbf90729056173736574017710536173736574696d67303030303030302800cbdbbbf907290463726f7001760401787d0001797d0001777d0101687d012800cbdbbbf907280b6461746142696e64696e6701760106636f6c756d6e770570686f746f270108656c656d656e747310536672616d65656c3030303030303030012700cbdbbbf907330570726f7073012800cbdbbbf90733026964017710536672616d65656c30303030303030302800cbdbbbf9073304747970650177056672616d652800cbdbbbf9073308706172656e744964017710537061676531303030303030303030302800cbdbbbf90733017a01770261322800cbdbbbf90733076f706163697479017d012800cbdbbbf9073302786601760501787dac0401797da40101777da40101687dac0403726f747d002800cbdbbbf90734057368617065017706636972636c652800cbdbbbf907330b6461746142696e64696e6701760106636f6c756d6e77046c6f676f270108656c656d656e74731053706c61696e656c3030303030303030012700cbdbbbf9073d0570726f7073012800cbdbbbf9073d02696401771053706c61696e656c30303030303030302800cbdbbbf9073d047479706501770573686170652800cbdbbbf9073d08706172656e744964017710537061676531303030303030303030302800cbdbbbf9073d017a01770261332800cbdbbbf9073d076f706163697479017d012800cbdbbbf9073d02786601760501787d0a01797d1401777dac0401687d880303726f747d002800cbdbbbf9073e046b696e64017704726563742800cbdbbbf9073e06706172616d730176002800cbdbbbf9073e0566696c6c730175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727c3f00000001677c3e80000001627d0101617d012800cbdbbbf9073e077374726f6b65730175002800cbdbbbf9073d0b6461746142696e64696e6701760106636f6c756d6e7706756e7573656400', 'hex'))",
+  "INSERT INTO design_shares(design_id, user_id, role) VALUES ('Sbobshared000000', '00000000-0000-4000-8000-000000000001', 'view')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name) VALUES\n      ('Sassetimg0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41', 'image/png', 'image', 70, 400, 100, 'wide.png'),\n      ('Sassetvid0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', '9999999999999999999999999999999999999999999999999999999999999999', 'video/mp4', 'video', 1000, 640, 360, 'clip.mp4'),\n      ('Sassetbob0000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41', 'image/png', 'image', 70, 2, 3, 'bob.png')",
+  "INSERT INTO jobs(id, queue, owner_id, status, payload, progress, created_at, result) VALUES ('00000000-0000-4000-8000-000000007000', 'export', '00000000-0000-4000-8000-000000000001', 'done', '{}', 1, '2025-01-01T00:00:00Z', '{\"sha\":\"772aeeb042762dfe20947e54a9cfed0b460b17fe794e3ffe4755fdd58a1ac517\",\"type\":\"application/pdf\",\"filename\":\"Alpha \\\"poster\\\".pdf\",\"size\":22}'::jsonb)",
+  "INSERT INTO jobs(id, queue, owner_id, status, payload, progress, created_at, error) VALUES ('00000000-0000-4000-8000-000000007001', 'export', '00000000-0000-4000-8000-000000000001', 'failed', '{}', 0.5, '2025-01-01T00:00:00Z', 'render crashed')",
+  "INSERT INTO jobs(id, queue, owner_id, status, payload, progress, created_at) VALUES ('00000000-0000-4000-8000-000000007002', 'email', '00000000-0000-4000-8000-000000000001', 'done', '{}', 0.5, '2025-01-01T00:00:00Z')",
+  "INSERT INTO jobs(id, queue, owner_id, status, payload, progress, created_at, result) VALUES ('00000000-0000-4000-8000-000000007003', 'export', '00000000-0000-4000-8000-000000000002', 'done', '{}', 0.5, '2025-01-01T00:00:00Z', '{\"sha\":\"772aeeb042762dfe20947e54a9cfed0b460b17fe794e3ffe4755fdd58a1ac517\",\"type\":\"application/pdf\",\"filename\":\"b.pdf\",\"size\":1}'::jsonb)",
+  "INSERT INTO jobs(id, queue, owner_id, status, payload, progress, created_at) VALUES ('00000000-0000-4000-8000-000000007004', 'export', '00000000-0000-4000-8000-000000000001', 'running', '{}', 0.25, '2025-01-01T00:00:00Z')",
+  "INSERT INTO webhooks(id, user_id, url, events, secret, created_at) VALUES ('00000000-0000-4000-8000-000000009100', '00000000-0000-4000-8000-000000000001', 'https://hooks.example/a', '{design.created}', 'whsec_a', '2025-01-01T00:00:00Z')",
+  "INSERT INTO webhook_deliveries(id, webhook_id, event, payload, status, attempts, response_code, created_at) VALUES ('00000000-0000-4000-8000-000000009200', '00000000-0000-4000-8000-000000009100', 'design.created', '{}', 'delivered', 1, 200, '2025-01-01T00:00:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "openapi",
+   "response": {
+    "body": {
+     "components": {
+      "schemas": {
+       "Design": {
+        "properties": {
+         "createdAt": {
+          "format": "date-time",
+          "type": "string"
+         },
+         "editUrl": {
+          "type": "string"
+         },
+         "height": {
+          "type": "number"
+         },
+         "id": {
+          "type": "string"
+         },
+         "pages": {
+          "type": "integer"
+         },
+         "thumbnailUrl": {
+          "type": "string"
+         },
+         "title": {
+          "type": "string"
+         },
+         "type": {
+          "type": "string"
+         },
+         "updatedAt": {
+          "format": "date-time",
+          "type": "string"
+         },
+         "width": {
+          "type": "number"
+         }
+        },
+        "type": "object"
+       },
+       "Export": {
+        "properties": {
+         "downloadUrl": {
+          "type": "string"
+         },
+         "error": {
+          "type": "string"
+         },
+         "filename": {
+          "type": "string"
+         },
+         "id": {
+          "type": "string"
+         },
+         "progress": {
+          "type": "number"
+         },
+         "size": {
+          "type": "integer"
+         },
+         "status": {
+          "enum": [
+           "queued",
+           "running",
+           "done",
+           "error",
+           "cancelled"
+          ]
+         }
+        },
+        "type": "object"
+       },
+       "PrintOptions": {
+        "description": "Professional print PDF (format pdf-print): bleed, printer marks, PDF/X and the output colour profile.",
+        "properties": {
+         "bleedMm": {
+          "maximum": 10,
+          "minimum": 0,
+          "type": "number"
+         },
+         "colorBars": {
+          "type": "boolean"
+         },
+         "cropMarks": {
+          "type": "boolean"
+         },
+         "flatten": {
+          "type": "boolean"
+         },
+         "intent": {
+          "enum": [
+           "relative",
+           "perceptual"
+          ]
+         },
+         "profile": {
+          "description": "A bundled profile id (pso-coated-v3, pso-uncoated-v3, iso-coated-v2, srgb) or { id } of an uploaded profile",
+          "oneOf": [
+           {
+            "type": "string"
+           },
+           {
+            "properties": {
+             "id": {
+              "format": "uuid",
+              "type": "string"
+             }
+            },
+            "required": [
+             "id"
+            ],
+            "type": "object"
+           }
+          ]
+         },
+         "registrationMarks": {
+          "type": "boolean"
+         },
+         "slugMm": {
+          "maximum": 20,
+          "minimum": 0,
+          "type": "number"
+         },
+         "standard": {
+          "enum": [
+           "none",
+           "pdfx4",
+           "pdfx1a"
+          ]
+         }
+        },
+        "required": [
+         "bleedMm",
+         "cropMarks"
+        ],
+        "type": "object"
+       },
+       "Webhook": {
+        "properties": {
+         "active": {
+          "type": "boolean"
+         },
+         "events": {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         "id": {
+          "type": "string"
+         },
+         "url": {
+          "type": "string"
+         }
+        },
+        "type": "object"
+       }
+      },
+      "securitySchemes": {
+       "bearer": {
+        "description": "oc_pat_… token",
+        "scheme": "bearer",
+        "type": "http"
+       }
+      }
+     },
+     "info": {
+      "description": "Create, fill and export designs. Authenticate with a personal access token from Settings → Developers. Webhook requests carry `OC-Signature: t=<unix>,v1=<hex HMAC-SHA256(secret, \"<t>.<body>\")>`.",
+      "title": "Pinselo API",
+      "version": "1.0.0"
+     },
+     "openapi": "3.1.0",
+     "paths": {
+      "/v1/assets": {
+       "post": {
+        "requestBody": {
+         "content": {
+          "multipart/form-data": {
+           "schema": {
+            "properties": {
+             "file": {
+              "format": "binary",
+              "type": "string"
+             }
+            },
+            "type": "object"
+           }
+          }
+         }
+        },
+        "responses": {
+         "201": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "type": "object"
+            }
+           }
+          },
+          "description": "Created"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Upload an image, video or audio file (scope assets:write)"
+       }
+      },
+      "/v1/designs": {
+       "get": {
+        "parameters": [
+         {
+          "in": "query",
+          "name": "limit",
+          "schema": {
+           "maximum": 100,
+           "type": "integer"
+          }
+         },
+         {
+          "in": "query",
+          "name": "before",
+          "schema": {
+           "format": "date-time",
+           "type": "string"
+          }
+         },
+         {
+          "in": "query",
+          "name": "q",
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "properties": {
+              "items": {
+               "items": {
+                "$ref": "#/components/schemas/Design"
+               },
+               "type": "array"
+              },
+              "next": {
+               "type": [
+                "string",
+                "null"
+               ]
+              }
+             },
+             "type": "object"
+            }
+           }
+          },
+          "description": "OK"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "List designs (scope designs:read)"
+       },
+       "post": {
+        "requestBody": {
+         "content": {
+          "application/json": {
+           "schema": {
+            "properties": {
+             "document": {
+              "description": "A full design document (see GET …/document)",
+              "type": "object"
+             },
+             "height": {
+              "type": "number"
+             },
+             "preset": {
+              "description": "Size preset id, e.g. ig-post",
+              "type": "string"
+             },
+             "title": {
+              "type": "string"
+             },
+             "width": {
+              "type": "number"
+             }
+            },
+            "type": "object"
+           }
+          }
+         }
+        },
+        "responses": {
+         "201": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "$ref": "#/components/schemas/Design"
+            }
+           }
+          },
+          "description": "Created"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Create a design (scope designs:write)"
+       }
+      },
+      "/v1/designs/{id}": {
+       "get": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "$ref": "#/components/schemas/Design"
+            }
+           }
+          },
+          "description": "OK"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Get a design"
+       }
+      },
+      "/v1/designs/{id}/autofill": {
+       "post": {
+        "description": "Keys of `data` are the field names set with Bulk create → Connect data. Text fields take text; image fields take an https URL or an asset id.",
+        "parameters": [
+         {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "requestBody": {
+         "content": {
+          "application/json": {
+           "schema": {
+            "properties": {
+             "data": {
+              "additionalProperties": {
+               "type": "string"
+              },
+              "type": "object"
+             },
+             "title": {
+              "type": "string"
+             }
+            },
+            "required": [
+             "data"
+            ],
+            "type": "object"
+           }
+          }
+         },
+         "required": true
+        },
+        "responses": {
+         "201": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "properties": {
+              "editUrl": {
+               "type": "string"
+              },
+              "id": {
+               "type": "string"
+              }
+             },
+             "type": "object"
+            }
+           }
+          },
+          "description": "Created"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Copy a template and fill its data-bound fields (scope designs:write)"
+       }
+      },
+      "/v1/designs/{id}/document": {
+       "get": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "type": "object"
+            }
+           }
+          },
+          "description": "OK"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "The design document (JSON)"
+       }
+      },
+      "/v1/designs/{id}/exports": {
+       "post": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "requestBody": {
+         "content": {
+          "application/json": {
+           "schema": {
+            "properties": {
+             "format": {
+              "enum": [
+               "pdf",
+               "pdf-print",
+               "pptx",
+               "mp4",
+               "gif",
+               "m4a"
+              ]
+             },
+             "print": {
+              "$ref": "#/components/schemas/PrintOptions"
+             },
+             "quality": {
+              "enum": [
+               "720p",
+               "1080p",
+               "4k"
+              ]
+             }
+            },
+            "required": [
+             "format"
+            ],
+            "type": "object"
+           }
+          }
+         },
+         "required": true
+        },
+        "responses": {
+         "202": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "$ref": "#/components/schemas/Export"
+            }
+           }
+          },
+          "description": "Accepted"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Start an export (scope exports)"
+       }
+      },
+      "/v1/exports/{job}": {
+       "get": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "job",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "$ref": "#/components/schemas/Export"
+            }
+           }
+          },
+          "description": "OK"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Export status"
+       }
+      },
+      "/v1/exports/{job}/file": {
+       "get": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "job",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "200": {
+          "description": "The file"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Download a finished export"
+       }
+      },
+      "/v1/me": {
+       "get": {
+        "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "type": "object"
+            }
+           }
+          },
+          "description": "OK"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "The token’s user and scopes"
+       }
+      },
+      "/v1/webhooks": {
+       "get": {
+        "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "properties": {
+              "items": {
+               "items": {
+                "$ref": "#/components/schemas/Webhook"
+               },
+               "type": "array"
+              }
+             },
+             "type": "object"
+            }
+           }
+          },
+          "description": "OK"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "List webhooks (scope webhooks)"
+       },
+       "post": {
+        "requestBody": {
+         "content": {
+          "application/json": {
+           "schema": {
+            "properties": {
+             "events": {
+              "items": {
+               "enum": [
+                "design.created",
+                "design.deleted",
+                "export.completed",
+                "form.response",
+                "comment.created",
+                "site.published",
+                "ping"
+               ]
+              },
+              "type": "array"
+             },
+             "url": {
+              "type": "string"
+             }
+            },
+            "required": [
+             "url",
+             "events"
+            ],
+            "type": "object"
+           }
+          }
+         },
+         "required": true
+        },
+        "responses": {
+         "201": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "$ref": "#/components/schemas/Webhook"
+            }
+           }
+          },
+          "description": "Created"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Subscribe a URL to events; the response includes the signing secret"
+       }
+      },
+      "/v1/webhooks/{id}": {
+       "delete": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "204": {
+          "description": "Deleted"
+         },
+         "401": {
+          "description": "Missing or invalid token"
+         },
+         "403": {
+          "description": "Token lacks the required scope"
+         },
+         "404": {
+          "description": "Not found"
+         }
+        },
+        "summary": "Delete a webhook"
+       }
+      }
+     },
+     "security": [
+      {
+       "bearer": []
+      }
+     ],
+     "servers": [
+      {
+       "url": "https://app.example"
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/openapi.json"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "no token",
+   "response": {
+    "body": {
+     "error": "unauthenticated",
+     "message": "Send Authorization: Bearer <personal access token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Basic YTpi",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "basic auth",
+   "response": {
+    "body": {
+     "error": "unauthenticated",
+     "message": "Send Authorization: Bearer <personal access token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_short",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "name": "token too short",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx!",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "name": "token with bad characters",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_unknownxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "name": "unknown token",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_expiredxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "name": "expired token",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_revokedxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "name": "revoked token",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_disabledxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "name": "disabled user",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "content-type": "application/json",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "method": "POST",
+   "name": "no token: body not parsed first",
+   "response": {
+    "body": {
+     "error": "unauthenticated",
+     "message": "Send Authorization: Bearer <personal access token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "text": "{oops",
+   "url": "/v1/designs"
+  },
+  {
+   "checks": [
+    {
+     "name": "last used",
+     "sql": "SELECT id, last_used_at IS NOT NULL AS used FROM api_tokens ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "last used",
+     "rows": [
+      {
+       "id": "00000000-0000-4000-8000-000000009000",
+       "used": true
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000009001",
+       "used": false
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000009002",
+       "used": false
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000009003",
+       "used": false
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000009004",
+       "used": false
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000009005",
+       "used": false
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000009006",
+       "used": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "name": "me",
+   "response": {
+    "body": {
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports",
+      "webhooks"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "me again (same counter)",
+   "response": {
+    "body": {
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports",
+      "webhooks"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "content-type": "application/json",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "method": "POST",
+   "name": "malformed JSON after the token check",
+   "response": {
+    "body": {
+     "error": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "{oops",
+   "url": "/v1/designs"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "name": "list without designs:read",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the designs:read scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "name": "list: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected number to be >=1",
+       "minimum": 1,
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      },
+      {
+       "code": "invalid_format",
+       "format": "datetime",
+       "message": "Invalid ISO datetime",
+       "origin": "string",
+       "path": [
+        "before"
+       ],
+       "pattern": "/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$/"
+      },
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 100,
+       "message": "Too big: expected string to have <=100 characters",
+       "origin": "string",
+       "path": [
+        "q"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs?limit=0&before=yesterday&q=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "name": "list",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Salpha0000000000",
+       "height": 1080,
+       "id": "Salpha0000000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Salpha0000000000/thumbnail.png",
+       "title": "Alpha poster",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T10:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sbravo0000000000",
+       "height": 1080,
+       "id": "Sbravo0000000000",
+       "pages": 3,
+       "thumbnailUrl": "https://app.example/api/designs/Sbravo0000000000/thumbnail.png",
+       "title": "Bravo deck",
+       "type": "presentation",
+       "updatedAt": "2025-01-01T09:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Scharlie00000000",
+       "height": 1080,
+       "id": "Scharlie00000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Scharlie00000000/thumbnail.png",
+       "title": "Charlie poster",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T08:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sbobshared000000",
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sbobshared000000/thumbnail.png",
+       "title": "Shared with Ada",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T07:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sagencyad0000000",
+       "height": 1080,
+       "id": "Sagencyad0000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sagencyad0000000/thumbnail.png",
+       "title": "Agency ad",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T06:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sautotpl00000000",
+       "height": 1080,
+       "id": "Sautotpl00000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sautotpl00000000/thumbnail.png",
+       "title": "Card template",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T05:00:00.000Z",
+       "width": 1080
+      }
+     ],
+     "next": null
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "capture": {
+    "next": "body.next"
+   },
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "name": "list: page 1",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Salpha0000000000",
+       "height": 1080,
+       "id": "Salpha0000000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Salpha0000000000/thumbnail.png",
+       "title": "Alpha poster",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T10:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sbravo0000000000",
+       "height": 1080,
+       "id": "Sbravo0000000000",
+       "pages": 3,
+       "thumbnailUrl": "https://app.example/api/designs/Sbravo0000000000/thumbnail.png",
+       "title": "Bravo deck",
+       "type": "presentation",
+       "updatedAt": "{{next}}",
+       "width": 1080
+      }
+     ],
+     "next": "{{next}}"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs?limit=2"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "list: page 2",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Scharlie00000000",
+       "height": 1080,
+       "id": "Scharlie00000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Scharlie00000000/thumbnail.png",
+       "title": "Charlie poster",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T08:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sbobshared000000",
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sbobshared000000/thumbnail.png",
+       "title": "Shared with Ada",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T07:00:00.000Z",
+       "width": 1080
+      }
+     ],
+     "next": "2025-01-01T07:00:00.000Z"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "116",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs?limit=2&before={{next}}"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "name": "list: search",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Salpha0000000000",
+       "height": 1080,
+       "id": "Salpha0000000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Salpha0000000000/thumbnail.png",
+       "title": "Alpha poster",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T10:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Scharlie00000000",
+       "height": 1080,
+       "id": "Scharlie00000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Scharlie00000000/thumbnail.png",
+       "title": "Charlie poster",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T08:00:00.000Z",
+       "width": 1080
+      }
+     ],
+     "next": null
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "115",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs?q=POSTER"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_boballxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "name": "list as Bob (team designs)",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sbobshared000000",
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sbobshared000000/thumbnail.png",
+       "title": "Shared with Ada",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T07:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sagencyad0000000",
+       "height": 1080,
+       "id": "Sagencyad0000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sagencyad0000000/thumbnail.png",
+       "title": "Agency ad",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T06:00:00.000Z",
+       "width": 1080
+      },
+      {
+       "createdAt": "2025-01-01T00:00:00.000Z",
+       "editUrl": "https://app.example/design/Sbobsown00000000",
+       "height": 1080,
+       "id": "Sbobsown00000000",
+       "pages": 1,
+       "thumbnailUrl": "https://app.example/api/designs/Sbobsown00000000/thumbnail.png",
+       "title": "Bob private",
+       "type": "graphic",
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "width": 1080
+      }
+     ],
+     "next": null
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "name": "read",
+   "response": {
+    "body": {
+     "createdAt": "2025-01-01T00:00:00.000Z",
+     "editUrl": "https://app.example/design/Sbravo0000000000",
+     "height": 1080,
+     "id": "Sbravo0000000000",
+     "pages": 3,
+     "thumbnailUrl": "https://app.example/api/designs/Sbravo0000000000/thumbnail.png",
+     "title": "Bravo deck",
+     "type": "presentation",
+     "updatedAt": "{{next}}",
+     "width": 1080
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs/Sbravo0000000000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "read shared",
+   "response": {
+    "body": {
+     "createdAt": "2025-01-01T00:00:00.000Z",
+     "editUrl": "https://app.example/design/Sbobshared000000",
+     "height": 1080,
+     "id": "Sbobshared000000",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/Sbobshared000000/thumbnail.png",
+     "title": "Shared with Ada",
+     "type": "graphic",
+     "updatedAt": "2025-01-01T07:00:00.000Z",
+     "width": 1080
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs/Sbobshared000000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "name": "read without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/designs/Sbobsown00000000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "name": "read trashed",
+   "response": {
+    "body": {
+     "createdAt": "2025-01-01T00:00:00.000Z",
+     "editUrl": "https://app.example/design/Strashed00000000",
+     "height": 1080,
+     "id": "Strashed00000000",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/Strashed00000000/thumbnail.png",
+     "title": "Trashed",
+     "type": "graphic",
+     "updatedAt": "2025-01-01T00:00:00.000Z",
+     "width": 1080
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "116",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs/Strashed00000000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "name": "read unknown",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "115",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/designs/nope"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "name": "read without scope",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the designs:read scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/designs/Sbravo0000000000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "name": "document",
+   "response": {
+    "body": {
+     "document": {
+      "assets": {},
+      "elements": {},
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 1080,
+        "unit": "px",
+        "w": 1080
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "title": "Alpha poster"
+      },
+      "pages": {
+       "<id:1>": {
+        "background": [
+         {
+          "color": {
+           "a": 1,
+           "b": 1,
+           "g": 1,
+           "r": 1,
+           "space": "srgb"
+          },
+          "k": "solid"
+         }
+        ],
+        "id": "<id:1>",
+        "order": "a0"
+       }
+      }
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs/Salpha0000000000/document"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "name": "document without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/designs/Sbobsown00000000/document"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "create without designs:write",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the designs:write scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "json": {
+    "height": "x",
+    "title": "",
+    "width": 10
+   },
+   "method": "POST",
+   "name": "create: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "title"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected number to be >=16",
+       "minimum": 16,
+       "origin": "number",
+       "path": [
+        "width"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "number",
+       "message": "Invalid input: expected number, received string",
+       "path": [
+        "height"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "capture": {
+    "n1": "body.id"
+   },
+   "fake": [
+    {
+     "body": {
+      "designId": "{{n1}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "method": "POST",
+   "name": "create (defaults)",
+   "response": {
+    "body": {
+     "createdAt": "<ts>",
+     "editUrl": "https://app.example/design/{{n1}}",
+     "height": 1080,
+     "id": "{{n1}}",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/{{n1}}/thumbnail.png",
+     "title": "Untitled design",
+     "type": "graphic",
+     "updatedAt": "<ts>",
+     "width": 1080
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "capture": {
+    "n2": "body.id"
+   },
+   "fake": [
+    {
+     "body": {
+      "designId": "{{n2}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "json": {
+    "preset": "presentation",
+    "title": "Pitch"
+   },
+   "method": "POST",
+   "name": "create from a preset",
+   "response": {
+    "body": {
+     "createdAt": "<ts>",
+     "editUrl": "https://app.example/design/{{n2}}",
+     "height": 1080,
+     "id": "{{n2}}",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/{{n2}}/thumbnail.png",
+     "title": "Pitch",
+     "type": "presentation",
+     "updatedAt": "<ts>",
+     "width": 1920
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "116",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "capture": {
+    "n4": "body.id"
+   },
+   "fake": [
+    {
+     "body": {
+      "designId": "{{n4}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "json": {
+    "preset": "a4",
+    "title": "Half A4",
+    "width": 500
+   },
+   "method": "POST",
+   "name": "create with a size (preset unit kept)",
+   "response": {
+    "body": {
+     "createdAt": "<ts>",
+     "editUrl": "https://app.example/design/{{n4}}",
+     "height": 1122.52,
+     "id": "{{n4}}",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/{{n4}}/thumbnail.png",
+     "title": "Half A4",
+     "type": "print",
+     "updatedAt": "<ts>",
+     "width": 500
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "115",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "capture": {
+    "n5": "body.id"
+   },
+   "fake": [
+    {
+     "body": {
+      "designId": "{{n5}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "json": {
+    "height": 300,
+    "preset": "nope"
+   },
+   "method": "POST",
+   "name": "create from an unknown preset",
+   "response": {
+    "body": {
+     "createdAt": "<ts>",
+     "editUrl": "https://app.example/design/{{n5}}",
+     "height": 300,
+     "id": "{{n5}}",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/{{n5}}/thumbnail.png",
+     "title": "Untitled design",
+     "type": "graphic",
+     "updatedAt": "<ts>",
+     "width": 1080
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "114",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "capture": {
+    "n3": "body.id"
+   },
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, title, surface, width, height, unit, page_count, owner_id, template_id, brand_workspace_id, template_version FROM designs ORDER BY created_at, title"
+    },
+    {
+     "name": "deliveries",
+     "sql": "SELECT d.event, d.webhook_id, d.payload->'data' AS data, d.payload->>'event' AS ev FROM webhook_deliveries d ORDER BY d.created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sagencyad0000000",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Agency ad",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Salpha0000000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Alpha poster",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sbobsown00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Bob private",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sbravo0000000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 3,
+       "surface": "presentation",
+       "template_id": null,
+       "template_version": null,
+       "title": "Bravo deck",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": "00000000-0000-4000-8000-000000005000",
+       "height": 1080,
+       "id": "Sautotpl00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": "tpl_brand",
+       "template_version": 4,
+       "title": "Card template",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Scharlie00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Charlie poster",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Shared with Ada",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Strashed00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Trashed",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "{{n1}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Untitled design",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "{{n2}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "presentation",
+       "template_id": null,
+       "template_version": null,
+       "title": "Pitch",
+       "unit": "px",
+       "width": 1920
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1122.52,
+       "id": "{{n4}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "print",
+       "template_id": null,
+       "template_version": null,
+       "title": "Half A4",
+       "unit": "mm",
+       "width": 500
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 300,
+       "id": "{{n5}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Untitled design",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 480,
+       "id": "{{n3}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "From doc",
+       "unit": "px",
+       "width": 640
+      }
+     ]
+    },
+    {
+     "name": "deliveries",
+     "rows": [
+      {
+       "data": null,
+       "ev": null,
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n1}}",
+        "title": "Untitled design",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n2}}",
+        "title": "Pitch",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n4}}",
+        "title": "Half A4",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n5}}",
+        "title": "Untitled design",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n3}}",
+        "title": "From doc",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": {
+      "designId": "{{n3}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "json": {
+    "document": {
+     "assets": {},
+     "elements": {
+      "Splainel00000000": {
+       "fills": [
+        {
+         "color": {
+          "a": 1,
+          "b": 1,
+          "g": 0.25,
+          "r": 0.5,
+          "space": "srgb"
+         },
+         "k": "solid"
+        }
+       ],
+       "id": "Splainel00000000",
+       "kind": "rect",
+       "opacity": 1,
+       "params": {},
+       "parentId": "Spage10000000000",
+       "strokes": [],
+       "type": "shape",
+       "xf": {
+        "h": 200,
+        "rot": 0,
+        "w": 300,
+        "x": 10,
+        "y": 20
+       },
+       "z": "a0"
+      }
+     },
+     "meta": {
+      "dims": {
+       "dpi": 96,
+       "h": 480,
+       "unit": "px",
+       "w": 640
+      },
+      "epoch": 0,
+      "lang": "en",
+      "layoutVersion": 1,
+      "minClientSchema": 1,
+      "schemaVersion": 1,
+      "surface": "graphic",
+      "title": "Ignored title"
+     },
+     "pages": {
+      "Spage10000000000": {
+       "background": [
+        {
+         "color": {
+          "a": 1,
+          "b": 1,
+          "g": 1,
+          "r": 1,
+          "space": "srgb"
+         },
+         "k": "solid"
+        }
+       ],
+       "id": "Spage10000000000",
+       "order": "a0"
+      }
+     }
+    },
+    "title": "From doc"
+   },
+   "method": "POST",
+   "name": "create from a document",
+   "response": {
+    "body": {
+     "createdAt": "<ts>",
+     "editUrl": "https://app.example/design/{{n3}}",
+     "height": 480,
+     "id": "{{n3}}",
+     "pages": 1,
+     "thumbnailUrl": "https://app.example/api/designs/{{n3}}/thumbnail.png",
+     "title": "From doc",
+     "type": "graphic",
+     "updatedAt": "<ts>",
+     "width": 640
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "113",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "name": "created document",
+   "response": {
+    "body": {
+     "document": {
+      "assets": {},
+      "elements": {
+       "<id:2>": {
+        "fills": [
+         {
+          "color": {
+           "a": 1,
+           "b": 1,
+           "g": 0.25,
+           "r": 0.5,
+           "space": "srgb"
+          },
+          "k": "solid"
+         }
+        ],
+        "id": "<id:2>",
+        "kind": "rect",
+        "opacity": 1,
+        "params": {},
+        "parentId": "<id:1>",
+        "strokes": [],
+        "type": "shape",
+        "xf": {
+         "h": 200,
+         "rot": 0,
+         "w": 300,
+         "x": 10,
+         "y": 20
+        },
+        "z": "a0"
+       }
+      },
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 480,
+        "unit": "px",
+        "w": 640
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "title": "From doc"
+      },
+      "pages": {
+       "<id:1>": {
+        "background": [
+         {
+          "color": {
+           "a": 1,
+           "b": 1,
+           "g": 1,
+           "r": 1,
+           "space": "srgb"
+          },
+          "k": "solid"
+         }
+        ],
+        "id": "<id:1>",
+        "order": "a0"
+       }
+      }
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs/{{n3}}/document"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "json": {
+    "data": {}
+   },
+   "method": "POST",
+   "name": "autofill without designs:write",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the designs:write scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "json": {
+    "data": {}
+   },
+   "method": "POST",
+   "name": "autofill: unknown design",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/designs/nope/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "json": {
+    "data": {
+     "name": 7
+    },
+    "title": 5
+   },
+   "method": "POST",
+   "name": "autofill: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "title"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "data",
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "autofill: data missing",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "record",
+       "message": "Invalid input: expected record, received undefined",
+       "path": [
+        "data"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "capture": {
+    "af": "body.id"
+   },
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, title, surface, width, height, unit, page_count, owner_id, template_id, brand_workspace_id, template_version FROM designs ORDER BY created_at, title"
+    },
+    {
+     "name": "deliveries",
+     "sql": "SELECT d.event, d.webhook_id, d.payload->'data' AS data, d.payload->>'event' AS ev FROM webhook_deliveries d ORDER BY d.created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sagencyad0000000",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Agency ad",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Salpha0000000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Alpha poster",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sbobsown00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Bob private",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sbravo0000000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 3,
+       "surface": "presentation",
+       "template_id": null,
+       "template_version": null,
+       "title": "Bravo deck",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": "00000000-0000-4000-8000-000000005000",
+       "height": 1080,
+       "id": "Sautotpl00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": "tpl_brand",
+       "template_version": 4,
+       "title": "Card template",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Scharlie00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Charlie poster",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Shared with Ada",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "Strashed00000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Trashed",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "{{n1}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Untitled design",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1080,
+       "id": "{{n2}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "presentation",
+       "template_id": null,
+       "template_version": null,
+       "title": "Pitch",
+       "unit": "px",
+       "width": 1920
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 1122.52,
+       "id": "{{n4}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "print",
+       "template_id": null,
+       "template_version": null,
+       "title": "Half A4",
+       "unit": "mm",
+       "width": 500
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 300,
+       "id": "{{n5}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "Untitled design",
+       "unit": "px",
+       "width": 1080
+      },
+      {
+       "brand_workspace_id": null,
+       "height": 480,
+       "id": "{{n3}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": null,
+       "template_version": null,
+       "title": "From doc",
+       "unit": "px",
+       "width": 640
+      },
+      {
+       "brand_workspace_id": "00000000-0000-4000-8000-000000005000",
+       "height": 1080,
+       "id": "{{af}}",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "page_count": 1,
+       "surface": "graphic",
+       "template_id": "tpl_brand",
+       "template_version": 4,
+       "title": "Card template (autofill)",
+       "unit": "px",
+       "width": 1080
+      }
+     ]
+    },
+    {
+     "name": "deliveries",
+     "rows": [
+      {
+       "data": null,
+       "ev": null,
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n1}}",
+        "title": "Untitled design",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n2}}",
+        "title": "Pitch",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n4}}",
+        "title": "Half A4",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n5}}",
+        "title": "Untitled design",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n3}}",
+        "title": "From doc",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{af}}",
+        "template": "Sautotpl00000000",
+        "title": "Card template (autofill)",
+        "via": "autofill"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": {
+      "designId": "{{af}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "json": {
+    "data": {
+     "extra": "x",
+     "logo": "Sassetimg0000000",
+     "name": "Ada Lovelace\r\nEngineer",
+     "photo": "Sassetimg0000000"
+    }
+   },
+   "method": "POST",
+   "name": "autofill",
+   "response": {
+    "body": {
+     "editUrl": "https://app.example/design/{{af}}",
+     "id": "{{af}}"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "name": "autofilled document",
+   "response": {
+    "body": {
+     "document": {
+      "assets": {
+       "Sassetimg0000000": {
+        "h": 100,
+        "id": "Sassetimg0000000",
+        "kind": "image",
+        "mime": "image/png",
+        "name": "wide.png",
+        "sha256": "cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41",
+        "w": 400
+       }
+      },
+      "elements": {
+       "<id:2>": {
+        "dataBinding": {
+         "column": "unused"
+        },
+        "fills": [
+         {
+          "color": {
+           "a": 1,
+           "b": 1,
+           "g": 0.25,
+           "r": 0.5,
+           "space": "srgb"
+          },
+          "k": "solid"
+         }
+        ],
+        "id": "<id:2>",
+        "kind": "rect",
+        "opacity": 1,
+        "params": {},
+        "parentId": "<id:1>",
+        "strokes": [],
+        "type": "shape",
+        "xf": {
+         "h": 200,
+         "rot": 0,
+         "w": 300,
+         "x": 10,
+         "y": 20
+        },
+        "z": "a3"
+       },
+       "<id:3>": {
+        "content": {
+         "asset": "Sassetimg0000000",
+         "crop": {
+          "h": 1,
+          "w": 0.08333333333333333,
+          "x": 0.4583333333333333,
+          "y": 0
+         }
+        },
+        "dataBinding": {
+         "column": "logo"
+        },
+        "id": "<id:3>",
+        "opacity": 1,
+        "parentId": "<id:1>",
+        "shape": "circle",
+        "type": "frame",
+        "xf": {
+         "h": 300,
+         "rot": 0,
+         "w": 100,
+         "x": 300,
+         "y": 100
+        },
+        "z": "a2"
+       },
+       "<id:4>": {
+        "asset": "Sassetimg0000000",
+        "crop": {
+         "h": 1,
+         "w": 0.5,
+         "x": 0.25,
+         "y": 0
+        },
+        "dataBinding": {
+         "column": "photo"
+        },
+        "id": "<id:4>",
+        "opacity": 1,
+        "parentId": "<id:1>",
+        "type": "image",
+        "xf": {
+         "h": 100,
+         "rot": 0,
+         "w": 200,
+         "x": 0,
+         "y": 100
+        },
+        "z": "a1"
+       },
+       "<id:5>": {
+        "body": {
+         "paragraphs": [
+          {
+           "align": "center",
+           "lineHeight": 1.3,
+           "runs": [
+            {
+             "style": {
+              "size": 32,
+              "weight": 700
+             },
+             "text": "Ada Lovelace"
+            }
+           ],
+           "spaceAfter": 0
+          },
+          {
+           "align": "center",
+           "lineHeight": 1.3,
+           "runs": [
+            {
+             "style": {
+              "size": 32,
+              "weight": 700
+             },
+             "text": "Engineer"
+            }
+           ],
+           "spaceAfter": 0
+          }
+         ]
+        },
+        "dataBinding": {
+         "column": "name"
+        },
+        "id": "<id:5>",
+        "opacity": 1,
+        "parentId": "<id:1>",
+        "type": "text",
+        "xf": {
+         "h": 60,
+         "rot": 0,
+         "w": 400,
+         "x": 0,
+         "y": 0
+        },
+        "z": "a0"
+       }
+      },
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 1080,
+        "unit": "px",
+        "w": 1080
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "title": "Card template (autofill)"
+      },
+      "pages": {
+       "<id:1>": {
+        "background": [
+         {
+          "color": {
+           "a": 1,
+           "b": 1,
+           "g": 1,
+           "r": 1,
+           "space": "srgb"
+          },
+          "k": "solid"
+         }
+        ],
+        "id": "<id:1>",
+        "order": "a0"
+       }
+      }
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/designs/{{af}}/document"
+  },
+  {
+   "capture": {
+    "af2": "body.id"
+   },
+   "fake": [
+    {
+     "body": {
+      "designId": "{{af2}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "json": {
+    "data": {
+     "name": "Solo"
+    },
+    "title": "Named"
+   },
+   "method": "POST",
+   "name": "autofill with a title, text only",
+   "response": {
+    "body": {
+     "editUrl": "https://app.example/design/{{af2}}",
+     "id": "{{af2}}"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "json": {
+    "data": {
+     "photo": "Sassetvid0000000"
+    }
+   },
+   "method": "POST",
+   "name": "autofill: a video is not an image",
+   "response": {
+    "body": {
+     "error": "bad_image",
+     "message": "“photo” must be an https image URL or one of your image asset ids."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "json": {
+    "data": {
+     "photo": "Sassetbob0000000"
+    }
+   },
+   "method": "POST",
+   "name": "autofill: someone else’s asset",
+   "response": {
+    "body": {
+     "error": "bad_image",
+     "message": "“photo” must be an https image URL or one of your image asset ids."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "json": {
+    "data": {
+     "photo": "https://localhost/x.png"
+    }
+   },
+   "method": "POST",
+   "name": "autofill: private host",
+   "response": {
+    "body": {
+     "error": "bad_url"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "json": {
+    "data": {
+     "logo": "https://10.1.2.3/logo.png"
+    }
+   },
+   "method": "POST",
+   "name": "autofill: private address",
+   "response": {
+    "body": {
+     "error": "bad_url"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Sautotpl00000000/autofill"
+  },
+  {
+   "capture": {
+    "af3": "body.id"
+   },
+   "checks": [
+    {
+     "name": "count",
+     "sql": "SELECT count(*)::int AS n FROM designs"
+    }
+   ],
+   "db": [
+    {
+     "name": "count",
+     "rows": [
+      {
+       "n": 16
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": {
+      "designId": "{{af3}}"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/thumbnail"
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_boballxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "json": {
+    "data": {}
+   },
+   "method": "POST",
+   "name": "autofill a shared design",
+   "response": {
+    "body": {
+     "editUrl": "https://app.example/design/{{af3}}",
+     "id": "{{af3}}"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "30",
+     "x-ratelimit-remaining": "29",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/designs/Sbobshared000000/autofill"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "json": {
+    "format": "pdf"
+   },
+   "method": "POST",
+   "name": "export without scope",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the exports scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/designs/Salpha0000000000/exports"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "json": {
+    "format": "png",
+    "quality": "8k"
+   },
+   "method": "POST",
+   "name": "export: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"pdf\"|\"pdf-print\"|\"pptx\"|\"mp4\"|\"gif\"|\"m4a\"",
+       "path": [
+        "format"
+       ],
+       "values": [
+        "pdf",
+        "pdf-print",
+        "pptx",
+        "mp4",
+        "gif",
+        "m4a"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"720p\"|\"1080p\"|\"4k\"",
+       "path": [
+        "quality"
+       ],
+       "values": [
+        "720p",
+        "1080p",
+        "4k"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/designs/Salpha0000000000/exports"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "json": {
+    "format": "pdf"
+   },
+   "method": "POST",
+   "name": "export without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/designs/Sbobsown00000000/exports"
+  },
+  {
+   "capture": {
+    "job": "body.id"
+   },
+   "checks": [
+    {
+     "name": "jobs",
+     "sql": "SELECT queue, payload, owner_id, max_attempts, status FROM jobs WHERE created_at > '2025-06-01' ORDER BY queue, created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "jobs",
+     "rows": [
+      {
+       "max_attempts": 2,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {
+        "designId": "Salpha0000000000",
+        "format": "mp4",
+        "quality": "4k",
+        "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "export",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:1>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:2>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:3>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:4>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:5>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:6>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:7>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "json": {
+    "format": "mp4",
+    "quality": "4k"
+   },
+   "method": "POST",
+   "name": "export",
+   "response": {
+    "body": {
+     "id": "{{job}}",
+     "status": "queued",
+     "statusUrl": "https://app.example/v1/exports/{{job}}"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 202
+   },
+   "url": "/v1/designs/Salpha0000000000/exports"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_boballxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.53"
+   },
+   "json": {
+    "format": "pdf"
+   },
+   "method": "POST",
+   "name": "export waits for approval",
+   "response": {
+    "body": {
+     "error": "approval_required",
+     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
+     "status": "none"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/designs/Sagencyad0000000/exports"
+  },
+  {
+   "checks": [
+    {
+     "name": "jobs",
+     "sql": "SELECT queue, payload, owner_id, max_attempts, status FROM jobs WHERE created_at > '2025-06-01' ORDER BY queue, created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "jobs",
+     "rows": [
+      {
+       "max_attempts": 2,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {
+        "designId": "Salpha0000000000",
+        "format": "mp4",
+        "quality": "4k",
+        "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "export",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 2,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {
+        "designId": "Sagencyad0000000",
+        "format": "pdf-print",
+        "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "export",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:1>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:2>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:3>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:4>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:5>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:6>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 6,
+       "owner_id": null,
+       "payload": {
+        "deliveryId": "<uuid:7>"
+       },
+       "queue": "webhook",
+       "status": "queued"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "json": {
+    "format": "pdf-print"
+   },
+   "method": "POST",
+   "name": "team owner exports without approval",
+   "response": {
+    "body": {
+     "id": "<uuid:8>",
+     "status": "queued",
+     "statusUrl": "https://app.example/v1/exports/<uuid:8>"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "116",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 202
+   },
+   "url": "/v1/designs/Sagencyad0000000/exports"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "name": "export status (queued)",
+   "response": {
+    "body": {
+     "id": "{{job}}",
+     "progress": 0,
+     "status": "queued"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/exports/{{job}}"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "name": "export status (done)",
+   "response": {
+    "body": {
+     "downloadUrl": "https://app.example/v1/exports/00000000-0000-4000-8000-000000007000/file",
+     "filename": "Alpha \"poster\".pdf",
+     "id": "00000000-0000-4000-8000-000000007000",
+     "progress": 1,
+     "size": 22,
+     "status": "done"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "name": "export status (failed)",
+   "response": {
+    "body": {
+     "error": "render crashed",
+     "id": "00000000-0000-4000-8000-000000007001",
+     "progress": 0.5,
+     "status": "error"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007001"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "name": "export status (running)",
+   "response": {
+    "body": {
+     "id": "00000000-0000-4000-8000-000000007004",
+     "progress": 0.25,
+     "status": "running"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "116",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007004"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "name": "export status: another queue",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "115",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007002"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.60"
+   },
+   "name": "export status: someone else’s",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "114",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007003"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.61"
+   },
+   "name": "export status: not a uuid",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "113",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/exports/nope"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.62"
+   },
+   "name": "export status without scope",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the exports scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007000"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.63"
+   },
+   "name": "download",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "772aeeb042762dfe20947e54a9cfed0b460b17fe794e3ffe4755fdd58a1ac517",
+      "size": 22
+     }
+    },
+    "headers": {
+     "content-disposition": "attachment; filename=\"Alpha poster.pdf\"",
+     "content-type": "application/pdf",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007000/file"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.64"
+   },
+   "name": "download: not ready",
+   "response": {
+    "body": {
+     "error": "not_ready"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/exports/{{job}}/file"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.65"
+   },
+   "name": "download: another queue (not checked)",
+   "response": {
+    "body": {
+     "error": "not_ready"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007002/file"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_boballxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.66"
+   },
+   "name": "download: someone else’s",
+   "response": {
+    "body": {
+     "error": "not_ready"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/v1/exports/00000000-0000-4000-8000-000000007000/file"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.67"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "dot.png",
+    "hex": "89504e470d0a1a0a0000000d49484452000000020000000308060000009dd2f04c0000000d49444154789c63f8cfc0f01f000502027f5a3e7a4b0000000049454e44ae426082"
+   },
+   "name": "upload without scope",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the assets:write scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/assets"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.68"
+   },
+   "json": {
+    "file": "x"
+   },
+   "method": "POST",
+   "name": "upload: not multipart",
+   "response": {
+    "body": {
+     "error": "the request is not multipart"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 406
+   },
+   "url": "/v1/assets"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.69"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "dot.png",
+    "hex": "89504e470d0a1a0a0000000d49484452000000020000000308060000009dd2f04c0000000d49444154789c63f8cfc0f01f000502027f5a3e7a4b0000000049454e44ae426082"
+   },
+   "name": "upload",
+   "response": {
+    "body": {
+     "asset": {
+      "h": 3,
+      "id": "<id:6>",
+      "kind": "image",
+      "mime": "image/png",
+      "name": "dot.png",
+      "sha256": "cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41",
+      "w": 2
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/assets"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adaallxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.70"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "text/plain",
+    "field": "file",
+    "filename": "notes.txt",
+    "hex": "68656c6c6f"
+   },
+   "name": "upload: unsupported type",
+   "response": {
+    "body": {
+     "error": "unsupported_type",
+     "message": "Upload images (PNG, JPEG, WebP, GIF, SVG), video (MP4, MOV, WebM) or audio (MP3, M4A, WAV, OGG)."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 415
+   },
+   "url": "/v1/assets"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adareadxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.71"
+   },
+   "name": "webhooks without scope",
+   "response": {
+    "body": {
+     "error": "insufficient_scope",
+     "message": "This token needs the webhooks scope."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/v1/webhooks"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.72"
+   },
+   "name": "webhooks",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "active": true,
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "events": [
+        "design.created"
+       ],
+       "id": "00000000-0000-4000-8000-000000009100",
+       "url": "https://hooks.example/a"
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/webhooks"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.73"
+   },
+   "json": {
+    "events": [],
+    "url": "not a url"
+   },
+   "method": "POST",
+   "name": "webhook: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "url",
+       "message": "Invalid URL",
+       "path": [
+        "url"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "events"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/webhooks"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.74"
+   },
+   "json": {
+    "events": [
+     "design.created",
+     "nope"
+    ],
+    "url": "https://hooks.example/b"
+   },
+   "method": "POST",
+   "name": "webhook: unknown event",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"design.created\"|\"design.deleted\"|\"export.completed\"|\"form.response\"|\"comment.created\"|\"site.published\"|\"ping\"",
+       "path": [
+        "events",
+        1
+       ],
+       "values": [
+        "design.created",
+        "design.deleted",
+        "export.completed",
+        "form.response",
+        "comment.created",
+        "site.published",
+        "ping"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/v1/webhooks"
+  },
+  {
+   "capture": {
+    "wh": "body.id",
+    "whs": "body.secret"
+   },
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.75"
+   },
+   "json": {
+    "events": [
+     "design.created",
+     "export.completed"
+    ],
+    "url": "https://hooks.example/b"
+   },
+   "method": "POST",
+   "name": "webhook",
+   "response": {
+    "body": {
+     "events": [
+      "design.created",
+      "export.completed"
+     ],
+     "id": "{{wh}}",
+     "secret": "{{whs}}",
+     "url": "https://hooks.example/b"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "117",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/v1/webhooks"
+  },
+  {
+   "checks": [
+    {
+     "name": "webhooks",
+     "sql": "SELECT id, user_id, url, events, active FROM webhooks ORDER BY created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "webhooks",
+     "rows": [
+      {
+       "active": true,
+       "events": [
+        "design.created"
+       ],
+       "id": "00000000-0000-4000-8000-000000009100",
+       "url": "https://hooks.example/a",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.76"
+   },
+   "method": "DELETE",
+   "name": "webhook delete",
+   "response": {
+    "body": null,
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 204
+   },
+   "url": "/v1/webhooks/{{wh}}"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_boballxxxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.77"
+   },
+   "method": "DELETE",
+   "name": "webhook delete: someone else’s (no-op)",
+   "response": {
+    "body": null,
+    "headers": {
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 204
+   },
+   "url": "/v1/webhooks/00000000-0000-4000-8000-000000009100"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer oc_pat_adahooksxxxxxxxxxxxxxxxx",
+    "x-forwarded-for": "198.51.100.78"
+   },
+   "method": "DELETE",
+   "name": "webhook delete: not a uuid",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "118",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/v1/webhooks/nope"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.79"
+   },
+   "name": "developer signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/developer"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.80"
+   },
+   "name": "developer",
+   "response": {
+    "body": {
+     "events": [
+      "design.created",
+      "design.deleted",
+      "export.completed",
+      "form.response",
+      "comment.created",
+      "site.published",
+      "ping"
+     ],
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports",
+      "webhooks"
+     ],
+     "tokens": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009000",
+       "last_used_at": "<ts>",
+       "name": "token 9000",
+       "prefix": "oc_pat_adaal",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "last_used_at": "<ts>",
+       "name": "token 9001",
+       "prefix": "oc_pat_adare",
+       "scopes": [
+        "designs:read"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "last_used_at": "<ts>",
+       "name": "token 9002",
+       "prefix": "oc_pat_adaho",
+       "scopes": [
+        "webhooks"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000009003",
+       "last_used_at": null,
+       "name": "token 9003",
+       "prefix": "oc_pat_expir",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      }
+     ],
+     "webhooks": [
+      {
+       "active": true,
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "deliveries": [
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:7>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:6>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:5>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:4>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:3>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:2>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:1>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 1,
+         "created_at": "2025-01-01T00:00:00+00:00",
+         "error": null,
+         "event": "design.created",
+         "id": "00000000-0000-4000-8000-000000009200",
+         "response_code": 200,
+         "status": "delivered"
+        }
+       ],
+       "events": [
+        "design.created"
+       ],
+       "failures": 0,
+       "id": "00000000-0000-4000-8000-000000009100",
+       "url": "https://hooks.example/a"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.81"
+   },
+   "json": {
+    "expiresInDays": 400,
+    "name": "",
+    "scopes": [
+     "admin"
+    ]
+   },
+   "method": "POST",
+   "name": "token: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"designs:read\"|\"designs:write\"|\"assets:write\"|\"exports\"|\"webhooks\"",
+       "path": [
+        "scopes",
+        0
+       ],
+       "values": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      },
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 366,
+       "message": "Too big: expected number to be <=366",
+       "origin": "number",
+       "path": [
+        "expiresInDays"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/developer/tokens"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.82"
+   },
+   "json": {
+    "name": "CI",
+    "scopes": []
+   },
+   "method": "POST",
+   "name": "token: no scopes",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "scopes"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/developer/tokens"
+  },
+  {
+   "capture": {
+    "pat": "body.token",
+    "patId": "body.id",
+    "patPrefix": {
+     "from": "body.token",
+     "regex": "^(.{12})"
+    }
+   },
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, prefix, scopes, expires_at, revoked_at FROM api_tokens WHERE name = 'CI'"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "expires_at": "<ts>",
+       "name": "CI",
+       "prefix": "{{patPrefix}}",
+       "revoked_at": null,
+       "scopes": [
+        "designs:read"
+       ]
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.83"
+   },
+   "json": {
+    "expiresInDays": 30,
+    "name": "CI",
+    "scopes": [
+     "designs:read"
+    ]
+   },
+   "method": "POST",
+   "name": "token",
+   "response": {
+    "body": {
+     "id": "{{patId}}",
+     "token": "{{pat}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/tokens"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer {{pat}}",
+    "x-forwarded-for": "198.51.100.84"
+   },
+   "name": "the new token works",
+   "response": {
+    "body": {
+     "scopes": [
+      "designs:read"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/v1/me"
+  },
+  {
+   "capture": {
+    "pat2": "body.token",
+    "pat2Prefix": {
+     "from": "body.token",
+     "regex": "^(.{12})"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.85"
+   },
+   "json": {
+    "name": "Forever",
+    "scopes": [
+     "webhooks",
+     "exports"
+    ]
+   },
+   "method": "POST",
+   "name": "token without expiry",
+   "response": {
+    "body": {
+     "id": "<uuid:9>",
+     "token": "{{pat2}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/tokens"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.86"
+   },
+   "name": "developer with tokens",
+   "response": {
+    "body": {
+     "events": [
+      "design.created",
+      "design.deleted",
+      "export.completed",
+      "form.response",
+      "comment.created",
+      "site.published",
+      "ping"
+     ],
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports",
+      "webhooks"
+     ],
+     "tokens": [
+      {
+       "created_at": "<ts>",
+       "expires_at": null,
+       "id": "<uuid:9>",
+       "last_used_at": null,
+       "name": "Forever",
+       "prefix": "{{pat2Prefix}}",
+       "scopes": [
+        "webhooks",
+        "exports"
+       ]
+      },
+      {
+       "created_at": "<ts>",
+       "expires_at": "<ts>",
+       "id": "{{patId}}",
+       "last_used_at": "<ts>",
+       "name": "CI",
+       "prefix": "{{patPrefix}}",
+       "scopes": [
+        "designs:read"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009000",
+       "last_used_at": "<ts>",
+       "name": "token 9000",
+       "prefix": "oc_pat_adaal",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "last_used_at": "<ts>",
+       "name": "token 9001",
+       "prefix": "oc_pat_adare",
+       "scopes": [
+        "designs:read"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "last_used_at": "<ts>",
+       "name": "token 9002",
+       "prefix": "oc_pat_adaho",
+       "scopes": [
+        "webhooks"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000009003",
+       "last_used_at": null,
+       "name": "token 9003",
+       "prefix": "oc_pat_expir",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      }
+     ],
+     "webhooks": [
+      {
+       "active": true,
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "deliveries": [
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:7>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:6>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:5>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:4>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:3>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:2>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:1>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 1,
+         "created_at": "2025-01-01T00:00:00+00:00",
+         "error": null,
+         "event": "design.created",
+         "id": "00000000-0000-4000-8000-000000009200",
+         "response_code": 200,
+         "status": "delivered"
+        }
+       ],
+       "events": [
+        "design.created"
+       ],
+       "failures": 0,
+       "id": "00000000-0000-4000-8000-000000009100",
+       "url": "https://hooks.example/a"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.87"
+   },
+   "method": "DELETE",
+   "name": "revoke",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/tokens/{{patId}}"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer {{pat}}",
+    "x-forwarded-for": "198.51.100.88"
+   },
+   "name": "revoked token fails",
+   "response": {
+    "body": {
+     "error": "invalid_token"
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.89"
+   },
+   "method": "DELETE",
+   "name": "revoke: not a uuid",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/developer/tokens/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.90"
+   },
+   "json": {
+    "events": [
+     "ping"
+    ],
+    "url": "https://"
+   },
+   "method": "POST",
+   "name": "dev webhook: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "url",
+       "message": "Invalid URL",
+       "path": [
+        "url"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/developer/webhooks"
+  },
+  {
+   "capture": {
+    "dwh": "body.id",
+    "dwhs": "body.secret"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.91"
+   },
+   "json": {
+    "events": [
+     "form.response"
+    ],
+    "url": "https://hooks.example/c"
+   },
+   "method": "POST",
+   "name": "dev webhook",
+   "response": {
+    "body": {
+     "id": "{{dwh}}",
+     "secret": "{{dwhs}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/webhooks"
+  },
+  {
+   "checks": [
+    {
+     "name": "webhooks",
+     "sql": "SELECT url, events, active, failures FROM webhooks ORDER BY created_at"
+    },
+    {
+     "name": "deliveries",
+     "sql": "SELECT d.event, d.webhook_id, d.payload->'data' AS data, d.payload->>'event' AS ev FROM webhook_deliveries d ORDER BY d.created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "webhooks",
+     "rows": [
+      {
+       "active": true,
+       "events": [
+        "design.created"
+       ],
+       "failures": 0,
+       "url": "https://hooks.example/a"
+      },
+      {
+       "active": true,
+       "events": [
+        "form.response",
+        "ping"
+       ],
+       "failures": 0,
+       "url": "https://hooks.example/c"
+      }
+     ]
+    },
+    {
+     "name": "deliveries",
+     "rows": [
+      {
+       "data": null,
+       "ev": null,
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n1}}",
+        "title": "Untitled design",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n2}}",
+        "title": "Pitch",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n4}}",
+        "title": "Half A4",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n5}}",
+        "title": "Untitled design",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{n3}}",
+        "title": "From doc",
+        "via": "api"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{af}}",
+        "template": "Sautotpl00000000",
+        "title": "Card template (autofill)",
+        "via": "autofill"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "designId": "{{af2}}",
+        "template": "Sautotpl00000000",
+        "title": "Named",
+        "via": "autofill"
+       },
+       "ev": "design.created",
+       "event": "design.created",
+       "webhook_id": "00000000-0000-4000-8000-000000009100"
+      },
+      {
+       "data": {
+        "message": "Hello from Pinselo"
+       },
+       "ev": "ping",
+       "event": "ping",
+       "webhook_id": "{{dwh}}"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.92"
+   },
+   "method": "POST",
+   "name": "ping",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/webhooks/{{dwh}}/ping"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.93"
+   },
+   "method": "POST",
+   "name": "ping an unknown webhook",
+   "response": {
+    "body": {
+     "ok": false
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/webhooks/00000000-0000-4000-8000-000000009999/ping"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.94"
+   },
+   "name": "developer with deliveries",
+   "response": {
+    "body": {
+     "events": [
+      "design.created",
+      "design.deleted",
+      "export.completed",
+      "form.response",
+      "comment.created",
+      "site.published",
+      "ping"
+     ],
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports",
+      "webhooks"
+     ],
+     "tokens": [
+      {
+       "created_at": "<ts>",
+       "expires_at": null,
+       "id": "<uuid:9>",
+       "last_used_at": null,
+       "name": "Forever",
+       "prefix": "{{pat2Prefix}}",
+       "scopes": [
+        "webhooks",
+        "exports"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009000",
+       "last_used_at": "<ts>",
+       "name": "token 9000",
+       "prefix": "oc_pat_adaal",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "last_used_at": "<ts>",
+       "name": "token 9001",
+       "prefix": "oc_pat_adare",
+       "scopes": [
+        "designs:read"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "last_used_at": "<ts>",
+       "name": "token 9002",
+       "prefix": "oc_pat_adaho",
+       "scopes": [
+        "webhooks"
+       ]
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "expires_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000009003",
+       "last_used_at": null,
+       "name": "token 9003",
+       "prefix": "oc_pat_expir",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "assets:write",
+        "exports",
+        "webhooks"
+       ]
+      }
+     ],
+     "webhooks": [
+      {
+       "active": true,
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "deliveries": [
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:7>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:6>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:5>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:4>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:3>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:2>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "design.created",
+         "id": "<uuid:1>",
+         "response_code": null,
+         "status": "pending"
+        },
+        {
+         "attempts": 1,
+         "created_at": "2025-01-01T00:00:00+00:00",
+         "error": null,
+         "event": "design.created",
+         "id": "00000000-0000-4000-8000-000000009200",
+         "response_code": 200,
+         "status": "delivered"
+        }
+       ],
+       "events": [
+        "design.created"
+       ],
+       "failures": 0,
+       "id": "00000000-0000-4000-8000-000000009100",
+       "url": "https://hooks.example/a"
+      },
+      {
+       "active": true,
+       "created_at": "<ts>",
+       "deliveries": [
+        {
+         "attempts": 0,
+         "created_at": "<ts>",
+         "error": null,
+         "event": "ping",
+         "id": "<uuid:10>",
+         "response_code": null,
+         "status": "pending"
+        }
+       ],
+       "events": [
+        "form.response",
+        "ping"
+       ],
+       "failures": 0,
+       "id": "{{dwh}}",
+       "url": "https://hooks.example/c"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer"
+  },
+  {
+   "checks": [
+    {
+     "name": "webhooks",
+     "sql": "SELECT url FROM webhooks ORDER BY created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "webhooks",
+     "rows": [
+      {
+       "url": "https://hooks.example/a"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.95"
+   },
+   "method": "DELETE",
+   "name": "dev webhook delete",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer/webhooks/{{dwh}}"
+  },
+  {
+   "name": "final jobs",
+   "rows": [
+    {
+     "max_attempts": 2,
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "payload": {
+      "designId": "Salpha0000000000",
+      "format": "mp4",
+      "quality": "4k",
+      "userId": "00000000-0000-4000-8000-000000000001"
+     },
+     "queue": "export",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 2,
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "payload": {
+      "designId": "Sagencyad0000000",
+      "format": "pdf-print",
+      "userId": "00000000-0000-4000-8000-000000000001"
+     },
+     "queue": "export",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:1>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:2>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:3>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:4>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:5>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:6>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:7>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 6,
+     "owner_id": null,
+     "payload": {
+      "deliveryId": "<uuid:10>"
+     },
+     "queue": "webhook",
+     "status": "queued"
+    }
+   ],
+   "sql": "SELECT queue, payload, owner_id, max_attempts, status FROM jobs WHERE created_at > '2025-06-01' ORDER BY queue, created_at"
+  }
+ ],
+ "vars": {}
+}

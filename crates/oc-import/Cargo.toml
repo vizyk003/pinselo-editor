@@ -1,0 +1,24 @@
+[package]
+name = "oc-import"
+description = "File importers (Rust port of services/api/src/importers and the Word conversion of routes/docs.ts): PowerPoint and PDF → DesignDoc, Word → HTML."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
+indexmap = { version = "2", features = ["serde"] }
+thiserror = { workspace = true }
+zip = { workspace = true }
+quick-xml = { workspace = true }
+# PDF: hayro-syntax (objects, streams, content operators) + hayro-cmap (ToUnicode/CID maps) for text, and the
+# hayro rasteriser for the page graphics picture.
+hayro = { workspace = true, features = ["embed-fonts"] }
+phf = { workspace = true }
+unicode-normalization = { workspace = true }
+png = "0.18"
+
+[dev-dependencies]
+sha2 = { workspace = true }
+hex = { workspace = true }

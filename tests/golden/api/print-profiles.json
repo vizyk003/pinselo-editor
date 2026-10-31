@@ -1,0 +1,3273 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_ICC_DIR": "/nonexistent/oc-golden-icc"
+ },
+ "fake": {
+  "/internal/export": {
+   "echoExport": true,
+   "headers": {
+    "content-type": "application/pdf"
+   }
+  }
+ },
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'cy@example.test', 'Cy', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Cy''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('868e6ccfb81ed51de495925533c9cba5022e8326126a7e2a2aec434e24a4bc7e', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000004', 'dan@example.test', 'Dan', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001004', 'Dan''s workspace', true, '00000000-0000-4000-8000-000000000004', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001004', '00000000-0000-4000-8000-000000000004', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000004')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('9e5fe99ee660b960ebb7fdd6184e2eefcc6591ee0d3af6aa8443240785d78973', '00000000-0000-4000-8000-000000000004', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000005000', 'Studio', false, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000005001', 'Other', false, '00000000-0000-4000-8000-000000000004', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'owner'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'designer'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000003', 'member'), ('00000000-0000-4000-8000-000000005001', '00000000-0000-4000-8000-000000000004', 'owner')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, width, height, created_at, updated_at) VALUES ('Sflyer0000000000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000003', 'Flyer', 600, 400, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sflyer0000000000', decode('010c8eace7900a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777d980901687d900604756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c65017705466c7965722801046d6574610565706f6368017d00270105706167657310537061676531303030303030303030300128008eace7900a080269640177105370616765313030303030303030303028008eace7900a08056f72646572017702613028008eace7900a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "profiles: signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "profiles: bundled only",
+   "response": {
+    "body": {
+     "profiles": [
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA51",
+       "default": true,
+       "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+       "id": "pso-coated-v3",
+       "kind": "bundled",
+       "name": "PSO Coated v3",
+       "paper": "coated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA52",
+       "default": false,
+       "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+       "id": "pso-uncoated-v3",
+       "kind": "bundled",
+       "name": "PSO Uncoated v3",
+       "paper": "uncoated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "default": false,
+       "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+       "id": "iso-coated-v2",
+       "kind": "bundled",
+       "name": "ISO Coated v2 (ECI)",
+       "paper": "coated"
+      },
+      {
+       "available": true,
+       "colorSpace": "RGB",
+       "conditionId": "sRGB IEC61966-2.1",
+       "default": false,
+       "description": "Screens and RGB print workflows (digital presses, photo labs).",
+       "id": "srgb",
+       "kind": "bundled",
+       "name": "sRGB IEC61966-2.1",
+       "paper": "none"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "profiles: invalid teamId",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "teamId"
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:1>|<uuid:2>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/profiles?teamId=nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "name": "profiles: not a member of the team",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles?teamId=00000000-0000-4000-8000-000000005001"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "name": "profiles: personal workspace is not a team",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles?teamId=00000000-0000-4000-8000-000000001001"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": ""
+   },
+   "name": "upload: empty file",
+   "response": {
+    "body": {
+     "error": "no_file"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329",
+    "padTo": 10485761
+   },
+   "name": "upload: too large",
+   "response": {
+    "body": {
+     "error": "too_large",
+     "message": "Colour profiles can be up to 10 MB."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 413
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "teamId\"\r\n\r\nnope\r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: invalid teamId",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "teamId"
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:1>|<uuid:2>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "name\"\r\n\r\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: name too long",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 120,
+       "message": "Too big: expected string to have <=120 characters",
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "teamId\"\r\n\r\n00000000-0000-4000-8000-000000005001\r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: team of someone else",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "teamId\"\r\n\r\n00000000-0000-4000-8000-000000005000\r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: plain team member",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only team owners, admins and designers can add colour profiles."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: invalid ICC",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "json": {
+       "error": "invalid_icc",
+       "message": "profile header: bad signature",
+       "ok": false
+      },
+      "status": 422
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "invalid_icc",
+     "message": "profile header: bad signature"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 422
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: RGB display profile",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "json": {
+       "channels": 3,
+       "class": "mntr",
+       "colorSpace": "RGB",
+       "description": "sRGB",
+       "ok": true,
+       "version": "2.1.0"
+      },
+      "status": 200
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "unsupported_profile",
+     "message": "Upload a CMYK output (printer) profile. RGB, display and device-link profiles cannot be used for print export."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 422
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: CMYK device link",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "json": {
+       "channels": 4,
+       "class": "link",
+       "colorSpace": "CMYK",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "ok": true,
+       "version": "2.1.0"
+      },
+      "status": 200
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "unsupported_profile",
+     "message": "Upload a CMYK output (printer) profile. RGB, display and device-link profiles cannot be used for print export."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 422
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: render service unreachable",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "close": true
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "render_unavailable",
+     "message": "render service is not running"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 502
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: render service without the route",
+   "response": {
+    "body": {
+     "error": "render_unavailable",
+     "message": "render service answered 404"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 502
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: render service error",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "status": 500,
+      "text": "panic"
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "render_unavailable",
+     "message": "render service answered 500"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 502
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "capture": {
+    "adaProfile": "body.profile.id"
+   },
+   "checks": [
+    {
+     "name": "profiles",
+     "sql": "SELECT id, user_id, team_id, name, description, color_space, condition_id, sha, size FROM icc_profiles ORDER BY created_at, id"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "profiles",
+     "rows": [
+      {
+       "color_space": "CMYK",
+       "condition_id": null,
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{adaProfile}}",
+       "name": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "sha": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61,
+       "team_id": null,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "print.profile_uploaded",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.19",
+       "meta": {
+        "name": "Coated FOGRA39 (ISO 12647-2:2004)",
+        "size": 61
+       },
+       "target": "{{adaProfile}}",
+       "workspace_id": null
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: personal (name from the profile)",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "json": {
+       "channels": 4,
+       "class": "prtr",
+       "colorSpace": "CMYK",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "ok": true,
+       "version": "2.1.0"
+      },
+      "status": 200
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "profile": {
+      "canDelete": true,
+      "colorSpace": "CMYK",
+      "conditionId": null,
+      "createdAt": "<ts>",
+      "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+      "id": "{{adaProfile}}",
+      "kind": "custom",
+      "name": "Coated FOGRA39 (ISO 12647-2:2004)",
+      "size": 61,
+      "teamId": null
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "capture": {
+    "teamProfile": "body.profile.id"
+   },
+   "checks": [
+    {
+     "name": "profiles",
+     "sql": "SELECT id, user_id, team_id, name, description, color_space, condition_id, sha, size FROM icc_profiles ORDER BY created_at, id"
+    }
+   ],
+   "db": [
+    {
+     "name": "profiles",
+     "rows": [
+      {
+       "color_space": "CMYK",
+       "condition_id": null,
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{adaProfile}}",
+       "name": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "sha": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61,
+       "team_id": null,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "color_space": "CMYK",
+       "condition_id": "FOGRA39",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{teamProfile}}",
+       "name": "House stock",
+       "sha": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61,
+       "team_id": "00000000-0000-4000-8000-000000005000",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "name\"\r\n\r\n  House stock  \r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"teamId\"\r\n\r\n00000000-0000-4000-8000-000000005000\r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"conditionId\"\r\n\r\nFOGRA39\r\n------ocgoldenboundary\r\nContent-Disposition: form-data; name=\"file",
+    "filename": "Custom.icc",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: team profile by a designer",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "json": {
+       "channels": 4,
+       "class": "prtr",
+       "colorSpace": "CMYK",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "ok": true,
+       "version": "2.1.0"
+      },
+      "status": 200
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "profile": {
+      "canDelete": true,
+      "colorSpace": "CMYK",
+      "conditionId": "FOGRA39",
+      "createdAt": "<ts>",
+      "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+      "id": "{{teamProfile}}",
+      "kind": "custom",
+      "name": "House stock",
+      "size": 61,
+      "teamId": "00000000-0000-4000-8000-000000005000"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "capture": {
+    "danProfile": "body.profile.id"
+   },
+   "fake": [
+    {
+     "body": {
+      "$binary": {
+       "dims": null,
+       "sha256": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61
+      }
+     },
+     "headers": {
+      "content-type": "application/vnd.iccprofile",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/icc/inspect"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/vnd.iccprofile",
+    "field": "file",
+    "filename": "Newsprint.ICM",
+    "hex": "676f6c64656e206963632070726f66696c65206279746573202866616b653a207468652072656e64657220736572766963652076616c69646174657329"
+   },
+   "name": "upload: no description, file name",
+   "replies": {
+    "/internal/icc/inspect": [
+     {
+      "json": {
+       "channels": 4,
+       "class": "prtr",
+       "colorSpace": "CMYK",
+       "description": "",
+       "ok": true,
+       "version": "2.1.0"
+      },
+      "status": 200
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "profile": {
+      "canDelete": true,
+      "colorSpace": "CMYK",
+      "conditionId": null,
+      "createdAt": "<ts>",
+      "description": "",
+      "id": "{{danProfile}}",
+      "kind": "custom",
+      "name": "Newsprint",
+      "size": 61,
+      "teamId": null
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "profiles: Ada (own + team, delete rights)",
+   "response": {
+    "body": {
+     "profiles": [
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA51",
+       "default": true,
+       "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+       "id": "pso-coated-v3",
+       "kind": "bundled",
+       "name": "PSO Coated v3",
+       "paper": "coated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA52",
+       "default": false,
+       "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+       "id": "pso-uncoated-v3",
+       "kind": "bundled",
+       "name": "PSO Uncoated v3",
+       "paper": "uncoated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "default": false,
+       "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+       "id": "iso-coated-v2",
+       "kind": "bundled",
+       "name": "ISO Coated v2 (ECI)",
+       "paper": "coated"
+      },
+      {
+       "available": true,
+       "colorSpace": "RGB",
+       "conditionId": "sRGB IEC61966-2.1",
+       "default": false,
+       "description": "Screens and RGB print workflows (digital presses, photo labs).",
+       "id": "srgb",
+       "kind": "bundled",
+       "name": "sRGB IEC61966-2.1",
+       "paper": "none"
+      },
+      {
+       "canDelete": true,
+       "colorSpace": "CMYK",
+       "conditionId": null,
+       "createdAt": "<ts>",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{adaProfile}}",
+       "kind": "custom",
+       "name": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "size": 61,
+       "teamId": null
+      },
+      {
+       "canDelete": true,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "createdAt": "<ts>",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{teamProfile}}",
+       "kind": "custom",
+       "name": "House stock",
+       "size": 61,
+       "teamId": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "name": "profiles: Cy (team member)",
+   "response": {
+    "body": {
+     "profiles": [
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA51",
+       "default": true,
+       "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+       "id": "pso-coated-v3",
+       "kind": "bundled",
+       "name": "PSO Coated v3",
+       "paper": "coated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA52",
+       "default": false,
+       "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+       "id": "pso-uncoated-v3",
+       "kind": "bundled",
+       "name": "PSO Uncoated v3",
+       "paper": "uncoated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "default": false,
+       "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+       "id": "iso-coated-v2",
+       "kind": "bundled",
+       "name": "ISO Coated v2 (ECI)",
+       "paper": "coated"
+      },
+      {
+       "available": true,
+       "colorSpace": "RGB",
+       "conditionId": "sRGB IEC61966-2.1",
+       "default": false,
+       "description": "Screens and RGB print workflows (digital presses, photo labs).",
+       "id": "srgb",
+       "kind": "bundled",
+       "name": "sRGB IEC61966-2.1",
+       "paper": "none"
+      },
+      {
+       "canDelete": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "createdAt": "<ts>",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{teamProfile}}",
+       "kind": "custom",
+       "name": "House stock",
+       "size": 61,
+       "teamId": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "name": "profiles: Bob filtered to the team",
+   "response": {
+    "body": {
+     "profiles": [
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA51",
+       "default": true,
+       "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+       "id": "pso-coated-v3",
+       "kind": "bundled",
+       "name": "PSO Coated v3",
+       "paper": "coated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA52",
+       "default": false,
+       "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+       "id": "pso-uncoated-v3",
+       "kind": "bundled",
+       "name": "PSO Uncoated v3",
+       "paper": "uncoated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "default": false,
+       "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+       "id": "iso-coated-v2",
+       "kind": "bundled",
+       "name": "ISO Coated v2 (ECI)",
+       "paper": "coated"
+      },
+      {
+       "available": true,
+       "colorSpace": "RGB",
+       "conditionId": "sRGB IEC61966-2.1",
+       "default": false,
+       "description": "Screens and RGB print workflows (digital presses, photo labs).",
+       "id": "srgb",
+       "kind": "bundled",
+       "name": "sRGB IEC61966-2.1",
+       "paper": "none"
+      },
+      {
+       "canDelete": true,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "createdAt": "<ts>",
+       "description": "Coated FOGRA39 (ISO 12647-2:2004)",
+       "id": "{{teamProfile}}",
+       "kind": "custom",
+       "name": "House stock",
+       "size": 61,
+       "teamId": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles?teamId=00000000-0000-4000-8000-000000005000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "name": "profiles: Dan",
+   "response": {
+    "body": {
+     "profiles": [
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA51",
+       "default": true,
+       "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+       "id": "pso-coated-v3",
+       "kind": "bundled",
+       "name": "PSO Coated v3",
+       "paper": "coated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA52",
+       "default": false,
+       "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+       "id": "pso-uncoated-v3",
+       "kind": "bundled",
+       "name": "PSO Uncoated v3",
+       "paper": "uncoated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "default": false,
+       "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+       "id": "iso-coated-v2",
+       "kind": "bundled",
+       "name": "ISO Coated v2 (ECI)",
+       "paper": "coated"
+      },
+      {
+       "available": true,
+       "colorSpace": "RGB",
+       "conditionId": "sRGB IEC61966-2.1",
+       "default": false,
+       "description": "Screens and RGB print workflows (digital presses, photo labs).",
+       "id": "srgb",
+       "kind": "bundled",
+       "name": "sRGB IEC61966-2.1",
+       "paper": "none"
+      },
+      {
+       "canDelete": true,
+       "colorSpace": "CMYK",
+       "conditionId": null,
+       "createdAt": "<ts>",
+       "description": "",
+       "id": "{{danProfile}}",
+       "kind": "custom",
+       "name": "Newsprint",
+       "size": 61,
+       "teamId": null
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": "pso-coated-v3"
+   },
+   "method": "POST",
+   "name": "gamut: signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "json": {
+    "colors": [],
+    "intent": "saturation",
+    "profile": "fogra99"
+   },
+   "method": "POST",
+   "name": "gamut: invalid body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_union",
+       "errors": [
+        [
+         {
+          "code": "invalid_value",
+          "message": "Invalid option: expected one of \"pso-coated-v3\"|\"pso-uncoated-v3\"|\"iso-coated-v2\"|\"srgb\"",
+          "path": [],
+          "values": [
+           "pso-coated-v3",
+           "pso-uncoated-v3",
+           "iso-coated-v2",
+           "srgb"
+          ]
+         }
+        ],
+        [
+         {
+          "code": "invalid_type",
+          "expected": "object",
+          "message": "Invalid input: expected object, received string",
+          "path": []
+         }
+        ]
+       ],
+       "message": "Invalid input",
+       "path": [
+        "profile"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"relative\"|\"perceptual\"",
+       "path": [
+        "intent"
+       ],
+       "values": [
+        "relative",
+        "perceptual"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "colors"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "json": {
+    "profile": "pso-coated-v3"
+   },
+   "method": "POST",
+   "name": "gamut: missing colors",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "array",
+       "message": "Invalid input: expected array, received undefined",
+       "path": [
+        "colors"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "json": {
+    "colors": [
+     {
+      "r": 1,
+      "space": "srgb"
+     }
+    ],
+    "profile": "pso-coated-v3"
+   },
+   "method": "POST",
+   "name": "gamut: bad colour",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_union",
+       "errors": [
+        [
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "g"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "b"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "a"
+          ]
+         }
+        ],
+        [
+         {
+          "code": "invalid_value",
+          "message": "Invalid input: expected \"cmyk\"",
+          "path": [
+           "space"
+          ],
+          "values": [
+           "cmyk"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "c"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "m"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "y"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "k"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "a"
+          ]
+         }
+        ],
+        [
+         {
+          "code": "invalid_value",
+          "message": "Invalid input: expected \"spot\"",
+          "path": [
+           "space"
+          ],
+          "values": [
+           "spot"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "Invalid input: expected string, received undefined",
+          "path": [
+           "swatch"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "tint"
+          ]
+         },
+         {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Invalid input: expected number, received undefined",
+          "path": [
+           "a"
+          ]
+         }
+        ]
+       ],
+       "message": "Invalid input",
+       "path": [
+        "colors",
+        0
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": {
+     "id": "nope"
+    }
+   },
+   "method": "POST",
+   "name": "gamut: profile id not a uuid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "profile",
+        "id"
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:1>|<uuid:2>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": {
+     "id": "00000000-0000-4000-8000-000000009999"
+    }
+   },
+   "method": "POST",
+   "name": "gamut: unknown profile",
+   "response": {
+    "body": {
+     "error": "profile_not_found",
+     "message": "That colour profile does not exist or is not shared with you."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": {
+     "id": "{{adaProfile}}"
+    }
+   },
+   "method": "POST",
+   "name": "gamut: someone else’s personal profile",
+   "response": {
+    "body": {
+     "error": "profile_not_found",
+     "message": "That colour profile does not exist or is not shared with you."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "colors": [
+       {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 1,
+        "space": "srgb"
+       },
+       {
+        "a": 1,
+        "b": 0,
+        "g": 1,
+        "r": 0,
+        "space": "srgb"
+       }
+      ],
+      "intent": "relative",
+      "profile": "pso-coated-v3"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/print/gamut"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": "pso-coated-v3"
+   },
+   "method": "POST",
+   "name": "gamut: bundled profile",
+   "replies": {
+    "/internal/print/gamut": [
+     {
+      "json": {
+       "results": [
+        {
+         "cmyk": [
+          0,
+          100,
+          100,
+          0
+         ],
+         "deltaE": 0.42,
+         "inGamut": true
+        },
+        {
+         "cmyk": [
+          64,
+          0,
+          100,
+          0
+         ],
+         "deltaE": 7.31,
+         "inGamut": false
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "results": [
+      {
+       "cmyk": [
+        0,
+        100,
+        100,
+        0
+       ],
+       "deltaE": 0.42,
+       "inGamut": true
+      },
+      {
+       "cmyk": [
+        64,
+        0,
+        100,
+        0
+       ],
+       "deltaE": 7.31,
+       "inGamut": false
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "colors": [
+       {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 1,
+        "space": "srgb"
+       },
+       {
+        "a": 1,
+        "b": 0,
+        "g": 1,
+        "r": 0,
+        "space": "srgb"
+       }
+      ],
+      "intent": "perceptual",
+      "profile": {
+       "asset": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "conditionId": "FOGRA39",
+       "name": "House stock"
+      }
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/print/gamut"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "intent": "perceptual",
+    "profile": {
+     "id": "{{teamProfile}}"
+    }
+   },
+   "method": "POST",
+   "name": "gamut: team profile, perceptual",
+   "replies": {
+    "/internal/print/gamut": [
+     {
+      "json": {
+       "results": [
+        {
+         "cmyk": [
+          0,
+          100,
+          100,
+          0
+         ],
+         "deltaE": 0.42,
+         "inGamut": true
+        },
+        {
+         "cmyk": [
+          64,
+          0,
+          100,
+          0
+         ],
+         "deltaE": 7.31,
+         "inGamut": false
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "results": [
+      {
+       "cmyk": [
+        0,
+        100,
+        100,
+        0
+       ],
+       "deltaE": 0.42,
+       "inGamut": true
+      },
+      {
+       "cmyk": [
+        64,
+        0,
+        100,
+        0
+       ],
+       "deltaE": 7.31,
+       "inGamut": false
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "colors": [
+       {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 1,
+        "space": "srgb"
+       },
+       {
+        "a": 1,
+        "b": 0,
+        "g": 1,
+        "r": 0,
+        "space": "srgb"
+       }
+      ],
+      "intent": "relative",
+      "profile": "iso-coated-v2"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/print/gamut"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": "iso-coated-v2"
+   },
+   "method": "POST",
+   "name": "gamut: render client error passes through",
+   "replies": {
+    "/internal/print/gamut": [
+     {
+      "json": {
+       "error": "profile_unavailable",
+       "message": "run pnpm icc:sync"
+      },
+      "status": 422
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "profile_unavailable",
+     "message": "run pnpm icc:sync"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 422
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "colors": [
+       {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 1,
+        "space": "srgb"
+       },
+       {
+        "a": 1,
+        "b": 0,
+        "g": 1,
+        "r": 0,
+        "space": "srgb"
+       }
+      ],
+      "intent": "relative",
+      "profile": "pso-coated-v3"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/print/gamut"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": "pso-coated-v3"
+   },
+   "method": "POST",
+   "name": "gamut: render service unreachable",
+   "replies": {
+    "/internal/print/gamut": [
+     {
+      "close": true
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "render_unavailable",
+     "message": "render service is not running"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 502
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "colors": [
+       {
+        "a": 1,
+        "b": 0,
+        "g": 0,
+        "r": 1,
+        "space": "srgb"
+       },
+       {
+        "a": 1,
+        "b": 0,
+        "g": 1,
+        "r": 0,
+        "space": "srgb"
+       }
+      ],
+      "intent": "relative",
+      "profile": "pso-coated-v3"
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/print/gamut"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "json": {
+    "colors": [
+     {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 1,
+      "space": "srgb"
+     },
+     {
+      "a": 1,
+      "b": 0,
+      "g": 1,
+      "r": 0,
+      "space": "srgb"
+     }
+    ],
+    "profile": "pso-coated-v3"
+   },
+   "method": "POST",
+   "name": "gamut: render service error",
+   "replies": {
+    "/internal/print/gamut": [
+     {
+      "status": 500,
+      "text": "panic"
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "render_unavailable",
+     "message": "render service answered 500"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 502
+   },
+   "url": "/api/print/gamut"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "json": {
+    "format": "pdf-print",
+    "print": {
+     "bleedMm": 12,
+     "cropMarks": "yes",
+     "profile": "fogra99",
+     "standard": "pdfx3"
+    }
+   },
+   "method": "POST",
+   "name": "export: invalid print options",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 10,
+       "message": "Too big: expected number to be <=10",
+       "origin": "number",
+       "path": [
+        "print",
+        "bleedMm"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received string",
+       "path": [
+        "print",
+        "cropMarks"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"none\"|\"pdfx4\"|\"pdfx1a\"",
+       "path": [
+        "print",
+        "standard"
+       ],
+       "values": [
+        "none",
+        "pdfx4",
+        "pdfx1a"
+       ]
+      },
+      {
+       "code": "invalid_union",
+       "errors": [
+        [
+         {
+          "code": "invalid_value",
+          "message": "Invalid option: expected one of \"pso-coated-v3\"|\"pso-uncoated-v3\"|\"iso-coated-v2\"|\"srgb\"",
+          "path": [],
+          "values": [
+           "pso-coated-v3",
+           "pso-uncoated-v3",
+           "iso-coated-v2",
+           "srgb"
+          ]
+         }
+        ],
+        [
+         {
+          "code": "invalid_type",
+          "expected": "object",
+          "message": "Invalid input: expected object, received string",
+          "path": []
+         }
+        ]
+       ],
+       "message": "Invalid input",
+       "path": [
+        "print",
+        "profile"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Sflyer0000000000/export"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "json": {
+    "format": "pdf-print",
+    "print": {
+     "bleedMm": 3,
+     "colorBars": true,
+     "cropMarks": true,
+     "intent": "perceptual",
+     "profile": {
+      "id": "{{danProfile}}"
+     },
+     "registrationMarks": true,
+     "slugMm": 10,
+     "standard": "pdfx4"
+    }
+   },
+   "method": "POST",
+   "name": "export: someone else’s profile",
+   "response": {
+    "body": {
+     "error": "profile_not_found",
+     "message": "That colour profile does not exist or is not shared with you."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Sflyer0000000000/export"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "designId": "Sflyer0000000000",
+      "embeds": [],
+      "format": "pdf-print",
+      "print": {
+       "bleedMm": 3,
+       "colorBars": true,
+       "cropMarks": true,
+       "intent": "perceptual",
+       "profile": {
+        "asset": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+        "conditionId": "FOGRA39",
+        "name": "House stock"
+       },
+       "registrationMarks": true,
+       "slugMm": 10,
+       "standard": "pdfx4"
+      },
+      "quality": 90,
+      "scale": 1,
+      "transparent": false
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/export"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "json": {
+    "format": "pdf-print",
+    "print": {
+     "bleedMm": 3,
+     "colorBars": true,
+     "cropMarks": true,
+     "intent": "perceptual",
+     "profile": {
+      "id": "{{teamProfile}}"
+     },
+     "registrationMarks": true,
+     "slugMm": 10,
+     "standard": "pdfx4"
+    }
+   },
+   "method": "POST",
+   "name": "export: team profile resolved for the render service",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "<sha:1>",
+      "size": 33
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-disposition": "attachment",
+     "content-type": "application/pdf",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sflyer0000000000/export"
+  },
+  {
+   "fake": [
+    {
+     "body": {
+      "designId": "Sflyer0000000000",
+      "embeds": [],
+      "format": "pdf-print",
+      "print": {
+       "bleedMm": 0,
+       "cropMarks": false,
+       "profile": "iso-coated-v2",
+       "standard": "pdfx1a"
+      },
+      "quality": 90,
+      "scale": 1,
+      "transparent": false
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/export"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "json": {
+    "format": "pdf-print",
+    "print": {
+     "bleedMm": 0,
+     "cropMarks": false,
+     "profile": "iso-coated-v2",
+     "standard": "pdfx1a"
+    }
+   },
+   "method": "POST",
+   "name": "export: bundled profile passes through",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "<sha:1>",
+      "size": 33
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-disposition": "attachment",
+     "content-type": "application/pdf",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sflyer0000000000/export"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "json": {
+    "format": "pdf-print",
+    "print": {
+     "bleedMm": 3,
+     "colorBars": true,
+     "cropMarks": true,
+     "intent": "perceptual",
+     "profile": {
+      "id": "{{adaProfile}}"
+     },
+     "registrationMarks": true,
+     "slugMm": 10,
+     "standard": "pdfx4"
+    }
+   },
+   "method": "POST",
+   "name": "export job: someone else’s profile",
+   "response": {
+    "body": {
+     "error": "profile_not_found",
+     "message": "That colour profile does not exist or is not shared with you."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Sflyer0000000000/export-jobs"
+  },
+  {
+   "checks": [
+    {
+     "name": "jobs",
+     "sql": "SELECT queue, payload, status, owner_id FROM jobs WHERE queue = 'export' ORDER BY created_at, id"
+    }
+   ],
+   "db": [
+    {
+     "name": "jobs",
+     "rows": [
+      {
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "payload": {
+        "designId": "Sflyer0000000000",
+        "embeds": [],
+        "format": "pdf-print",
+        "print": {
+         "bleedMm": 3,
+         "colorBars": true,
+         "cropMarks": true,
+         "intent": "perceptual",
+         "profile": {
+          "asset": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+          "conditionId": "FOGRA39",
+          "name": "House stock"
+         },
+         "registrationMarks": true,
+         "slugMm": 10,
+         "standard": "pdfx4"
+        },
+        "userId": "00000000-0000-4000-8000-000000000003"
+       },
+       "queue": "export",
+       "status": "queued"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "json": {
+    "format": "pdf-print",
+    "print": {
+     "bleedMm": 3,
+     "colorBars": true,
+     "cropMarks": true,
+     "intent": "perceptual",
+     "profile": {
+      "id": "{{teamProfile}}"
+     },
+     "registrationMarks": true,
+     "slugMm": 10,
+     "standard": "pdfx4"
+    }
+   },
+   "method": "POST",
+   "name": "export job: team profile",
+   "response": {
+    "body": {
+     "id": "<uuid:3>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sflyer0000000000/export-jobs"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "method": "DELETE",
+   "name": "delete: signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/print/profiles/{{teamProfile}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "method": "DELETE",
+   "name": "delete: not an id",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "method": "DELETE",
+   "name": "delete: team member",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles/{{teamProfile}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "method": "DELETE",
+   "name": "delete: someone else’s personal profile",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles/{{adaProfile}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "method": "DELETE",
+   "name": "delete: team owner removes a designer’s team profile",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles/{{teamProfile}}"
+  },
+  {
+   "checks": [
+    {
+     "name": "profiles",
+     "sql": "SELECT id, user_id, team_id, name, description, color_space, condition_id, sha, size FROM icc_profiles ORDER BY created_at, id"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "profiles",
+     "rows": [
+      {
+       "color_space": "CMYK",
+       "condition_id": null,
+       "description": "",
+       "id": "{{danProfile}}",
+       "name": "Newsprint",
+       "sha": "c985f0488c141dfd62b3aba91151d8e56ef815e028024bb8d8cac7bdef7f1b46",
+       "size": 61,
+       "team_id": null,
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "print.profile_uploaded",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.19",
+       "meta": {
+        "name": "Coated FOGRA39 (ISO 12647-2:2004)",
+        "size": 61
+       },
+       "target": "{{adaProfile}}",
+       "workspace_id": null
+      },
+      {
+       "action": "print.profile_uploaded",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "ip": "198.51.100.20",
+       "meta": {
+        "name": "House stock",
+        "size": 61
+       },
+       "target": "{{teamProfile}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "print.profile_uploaded",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "ip": "198.51.100.21",
+       "meta": {
+        "name": "Newsprint",
+        "size": 61
+       },
+       "target": "{{danProfile}}",
+       "workspace_id": null
+      },
+      {
+       "action": "print.profile_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.48",
+       "meta": null,
+       "target": "{{teamProfile}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "print.profile_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.49",
+       "meta": null,
+       "target": "{{adaProfile}}",
+       "workspace_id": null
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "method": "DELETE",
+   "name": "delete: own profile",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles/{{adaProfile}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "method": "DELETE",
+   "name": "delete: already gone",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/print/profiles/{{adaProfile}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "name": "profiles: Ada after deletes",
+   "response": {
+    "body": {
+     "profiles": [
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA51",
+       "default": true,
+       "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+       "id": "pso-coated-v3",
+       "kind": "bundled",
+       "name": "PSO Coated v3",
+       "paper": "coated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA52",
+       "default": false,
+       "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+       "id": "pso-uncoated-v3",
+       "kind": "bundled",
+       "name": "PSO Uncoated v3",
+       "paper": "uncoated"
+      },
+      {
+       "available": false,
+       "colorSpace": "CMYK",
+       "conditionId": "FOGRA39",
+       "default": false,
+       "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+       "id": "iso-coated-v2",
+       "kind": "bundled",
+       "name": "ISO Coated v2 (ECI)",
+       "paper": "coated"
+      },
+      {
+       "available": true,
+       "colorSpace": "RGB",
+       "conditionId": "sRGB IEC61966-2.1",
+       "default": false,
+       "description": "Screens and RGB print workflows (digital presses, photo labs).",
+       "id": "srgb",
+       "kind": "bundled",
+       "name": "sRGB IEC61966-2.1",
+       "paper": "none"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/print/profiles"
+  }
+ ],
+ "vars": {}
+}

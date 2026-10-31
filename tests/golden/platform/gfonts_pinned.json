@@ -1,0 +1,20 @@
+{
+ "file": "gf/roboto/700i.ttf",
+ "requests": [
+  {
+   "url": "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,700&display=swap",
+   "ua": "Mozilla/4.0 (compatible; Pinselo font fetch)"
+  },
+  {
+   "url": "https://fonts.gstatic.com/s/roboto/v1/abc.ttf",
+   "ua": null
+  }
+ ],
+ "bytesHex": "0001000009080706",
+ "row": {
+  "file": "gf/roboto/700i.ttf",
+  "sha256": "9583c7237debec30c505242f3f9823108073d1a93459690a5a77a0fe5366d71d",
+  "bytes": 8,
+  "source_url": "https://fonts.gstatic.com/s/roboto/v1/abc.ttf"
+ }
+}

@@ -1,0 +1,5061 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {},
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'cy@example.test', 'Cy', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Cy''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('868e6ccfb81ed51de495925533c9cba5022e8326126a7e2a2aec434e24a4bc7e', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000004', 'dan@example.test', 'Dan', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001004', 'Dan''s workspace', true, '00000000-0000-4000-8000-000000000004', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001004', '00000000-0000-4000-8000-000000000004', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000004')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('9e5fe99ee660b960ebb7fdd6184e2eefcc6591ee0d3af6aa8443240785d78973', '00000000-0000-4000-8000-000000000004', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000005', 'eve@example.test', 'Eve', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001005', 'Eve''s workspace', true, '00000000-0000-4000-8000-000000000005', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001005', '00000000-0000-4000-8000-000000000005', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000005')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('bdbb83a9d3b95b35c07a35de33dfb188e45db72c033d0061e99d9adef148fcd4', '00000000-0000-4000-8000-000000000005', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, brand_controls, created_at) VALUES ('00000000-0000-4000-8000-000000005000', 'Studio', false, '00000000-0000-4000-8000-000000000001', '{\"requireApproval\":true}'::jsonb, '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'owner'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'member'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000003', 'designer'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000004', 'admin')",
+  "INSERT INTO brand_kits(id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_at, updated_at)\n   VALUES ('00000000-0000-4000-8000-000000006000', '00000000-0000-4000-8000-000000005000', 'Studio kit', true, '[{\"name\":\"Primary\",\"hex\":\"#7c3aed\"}]'::jsonb, '[]', '{\"heading\":\"Inter\"}'::jsonb, '[]', '[]', '[]', 'Friendly', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO brand_kits(id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_at, updated_at)\n   VALUES ('00000000-0000-4000-8000-000000006001', '00000000-0000-4000-8000-000000001001', 'Ada personal', true, '[]'::jsonb, '[]', '{\"heading\":\"Inter\"}'::jsonb, '[]', '[]', '[]', 'Friendly', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Stplsource000000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'Brand post source', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Stplsource000000', decode('0119d998ccde02002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c6501770d4272616e6420706f73742076332801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d0127010570616765731053706167653130303030303030303030012800d998ccde0208026964017710537061676531303030303030303030302800d998ccde0208056f7264657201770261302800d998ccde02080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d01057370616365770473726762270108656c656d656e747310536c6f676f3130303030303030303030012700d998ccde020c0570726f7073012800d998ccde020c017a01770261302800d998ccde020c026964017710536c6f676f31303030303030303030302800d998ccde020c02786601760501687d880301777dac0401787d1e01797d1403726f747d002800d998ccde020d046b696e64017704726563742800d998ccde020c046c6f636b01760302627977056272616e64046d6f766578057374796c65782800d998ccde020c047479706501770573686170652800d998ccde020d0566696c6c730175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0001727d010573706163657704737267622800d998ccde020d06706172616d730176002800d998ccde020c076f706163697479017d012800d998ccde020d077374726f6b65730175002800d998ccde020c08706172656e7449640177105370616765313030303030303030303000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, template_id, brand_workspace_id, template_version) VALUES ('Sderived10000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Bob post 1', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', 'Stplbrand0000000', '00000000-0000-4000-8000-000000005000', 1)",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sderived10000000', decode('0125b4fa93a607002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c6501770a426f6220706f737420312801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d0127010570616765731053706167653130303030303030303030012800b4fa93a60708026964017710537061676531303030303030303030302800b4fa93a60708056f7264657201770261302800b4fa93a607080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d01057370616365770473726762270108656c656d656e74731053626f62733130303030303030303030012700b4fa93a6070c0570726f7073012800b4fa93a6070c017a01770261302800b4fa93a6070c02696401771053626f627331303030303030303030302800b4fa93a6070c02786601760501687d880301777dac0401787d980901797d1403726f747d002800b4fa93a6070d046b696e64017704726563742800b4fa93a6070c047479706501770573686170652800b4fa93a6070d0566696c6c730175017602016b7705736f6c696405636f6c6f72760501617d0101627d0001677d0001727d000573706163657704737267622800b4fa93a6070d06706172616d730176002800b4fa93a6070c076f706163697479017d012800b4fa93a6070d077374726f6b65730175002800b4fa93a6070c08706172656e74496401771053706167653130303030303030303030270108656c656d656e747310536c6f676f3130303030303030303030012700b4fa93a607180570726f7073012800b4fa93a60718017a01770261302800b4fa93a60718026964017710536c6f676f31303030303030303030302800b4fa93a6071802786601760501687d880301777dac0401787d3201797d1403726f747d002800b4fa93a60719046b696e64017704726563742800b4fa93a60718046c6f636b01760302627977056272616e64046d6f766578057374796c65782800b4fa93a60718047479706501770573686170652800b4fa93a607190566696c6c730175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0001727d000573706163657704737267622800b4fa93a6071906706172616d730176002800b4fa93a60718076f706163697479017c3f0000002800b4fa93a60719077374726f6b65730175002800b4fa93a6071808706172656e7449640177105370616765313030303030303030303000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, template_id, brand_workspace_id) VALUES ('Sderived20000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Bob post 2', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', 'Stplbrand0000000', '00000000-0000-4000-8000-000000005000')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sderived20000000', decode('010ceed9e5f40a002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c6501770a426f6220706f737420322801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d0127010570616765731053706167653130303030303030303030012800eed9e5f40a08026964017710537061676531303030303030303030302800eed9e5f40a08056f7264657201770261302800eed9e5f40a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d0105737061636577047372676200', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, template_id, brand_workspace_id, template_version) VALUES ('Sderived30000000', '00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'Cy post', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', 'Stplbrand0000000', '00000000-0000-4000-8000-000000005000', 2)",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sderived30000000', decode('0119cdef9ff60f002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c65017707437920706f73742801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d0127010570616765731053706167653130303030303030303030012800cdef9ff60f08026964017710537061676531303030303030303030302800cdef9ff60f08056f7264657201770261302800cdef9ff60f080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d01057370616365770473726762270108656c656d656e747310536c6f676f3130303030303030303030012700cdef9ff60f0c0570726f7073012800cdef9ff60f0c017a01770261302800cdef9ff60f0c026964017710536c6f676f31303030303030303030302800cdef9ff60f0c02786601760501687d880301777dac0401787d0a01797d1403726f747d002800cdef9ff60f0d046b696e64017704726563742800cdef9ff60f0c046c6f636b01760302627977056272616e64046d6f766578057374796c65782800cdef9ff60f0c047479706501770573686170652800cdef9ff60f0d0566696c6c730175017602016b7705736f6c696405636f6c6f72760501617d0101627d0001677d0001727d010573706163657704737267622800cdef9ff60f0d06706172616d730176002800cdef9ff60f0c076f706163697479017d012800cdef9ff60f0d077374726f6b65730175002800cdef9ff60f0c08706172656e7449640177105370616765313030303030303030303000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Steamdesign00000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000003', 'Team design', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Steamdesign00000', decode('011883c191ae01002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c6501770b5465616d2064657369676e2801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012701057061676573105370616765313030303030303030303001280083c191ae010802696401771053706167653130303030303030303030280083c191ae0108056f726465720177026130280083c191ae01080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d01057370616365770473726762270108656c656d656e747310537465616d656c31303030303030303001270083c191ae010c0570726f707301280083c191ae010c017a0177026130280083c191ae010c026964017710537465616d656c313030303030303030280083c191ae010c02786601760501687d880301777dac0401787d0a01797d1403726f747d00280083c191ae010d046b696e6401770472656374280083c191ae010c04747970650177057368617065280083c191ae010d0566696c6c730175017602016b7705736f6c696405636f6c6f72760501617d0101627d0001677d0001727d01057370616365770473726762280083c191ae010d06706172616d73017600280083c191ae010c076f706163697479017d01280083c191ae010d077374726f6b6573017500280083c191ae010c08706172656e7449640177105370616765313030303030303030303000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Snostate00000000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'No state', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sevesown00000000', '00000000-0000-4000-8000-000000001005', '00000000-0000-4000-8000-000000000005', 'Eve design', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sevesown00000000', decode('010ce3d5eade0d002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c6501770a4576652064657369676e2801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d0127010570616765731053706167653130303030303030303030012800e3d5eade0d08026964017710537061676531303030303030303030302800e3d5eade0d08056f7264657201770261302800e3d5eade0d080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d0105737061636577047372676200', 'hex'))",
+  "INSERT INTO templates(id, title, category, preset, width, height, doc, published, premium, workspace_id, brand, locks, version, source_design_id, created_at) VALUES\n      ('Stplbrand0000000', 'Brand post', 'brand', 'ig-post', 1080, 1080, '{\"meta\":{\"dims\":{\"h\":1080,\"w\":1080,\"dpi\":96,\"unit\":\"px\"},\"lang\":\"en\",\"epoch\":0,\"title\":\"Brand post\",\"surface\":\"graphic\",\"layoutVersion\":1,\"schemaVersion\":1,\"minClientSchema\":1},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":1,\"g\":1,\"r\":1,\"space\":\"srgb\"}}]}},\"assets\":{},\"elements\":{\"Sextra1000000000\":{\"z\":\"a0\",\"id\":\"Sextra1000000000\",\"xf\":{\"h\":200,\"w\":300,\"x\":400,\"y\":20,\"rot\":0},\"kind\":\"rect\",\"type\":\"shape\",\"fills\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":0,\"g\":1,\"r\":0,\"space\":\"srgb\"}}],\"params\":{},\"opacity\":1,\"strokes\":[],\"parentId\":\"Spage10000000000\"},\"Slogo10000000000\":{\"z\":\"a0\",\"id\":\"Slogo10000000000\",\"xf\":{\"h\":200,\"w\":300,\"x\":10,\"y\":20,\"rot\":0},\"kind\":\"rect\",\"lock\":{\"by\":\"brand\",\"move\":true,\"style\":true},\"type\":\"shape\",\"fills\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":0,\"g\":0,\"r\":1,\"space\":\"srgb\"}}],\"params\":{},\"opacity\":1,\"strokes\":[],\"parentId\":\"Spage10000000000\"}}}'::jsonb, true, false, '00000000-0000-4000-8000-000000005000', true, '{\"Slogo10000000000\":{\"by\":\"brand\",\"move\":true,\"style\":true}}'::jsonb, 2, 'Stplsource000000', '2025-01-01T00:00:00Z'),\n      ('Stplplain0000000', 'Public flyer', 'flyers', 'ig-post', 1080, 1080, '{\"meta\":{\"dims\":{\"h\":1080,\"w\":1080,\"dpi\":96,\"unit\":\"px\"},\"lang\":\"en\",\"epoch\":0,\"title\":\"Brand post\",\"surface\":\"graphic\",\"layoutVersion\":1,\"schemaVersion\":1,\"minClientSchema\":1},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":1,\"g\":1,\"r\":1,\"space\":\"srgb\"}}]}},\"assets\":{},\"elements\":{\"Sextra1000000000\":{\"z\":\"a0\",\"id\":\"Sextra1000000000\",\"xf\":{\"h\":200,\"w\":300,\"x\":400,\"y\":20,\"rot\":0},\"kind\":\"rect\",\"type\":\"shape\",\"fills\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":0,\"g\":1,\"r\":0,\"space\":\"srgb\"}}],\"params\":{},\"opacity\":1,\"strokes\":[],\"parentId\":\"Spage10000000000\"},\"Slogo10000000000\":{\"z\":\"a0\",\"id\":\"Slogo10000000000\",\"xf\":{\"h\":200,\"w\":300,\"x\":10,\"y\":20,\"rot\":0},\"kind\":\"rect\",\"lock\":{\"by\":\"brand\",\"move\":true,\"style\":true},\"type\":\"shape\",\"fills\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":0,\"g\":0,\"r\":1,\"space\":\"srgb\"}}],\"params\":{},\"opacity\":1,\"strokes\":[],\"parentId\":\"Spage10000000000\"}}}'::jsonb, true, false, NULL, false, '{}', 1, NULL, '2025-01-01T00:00:00Z'),\n      ('Stplempty0000000', 'Team plain', 'team', 'ig-post', 500, 500, '{\"meta\":{\"dims\":{\"h\":1080,\"w\":1080,\"dpi\":96,\"unit\":\"px\"},\"lang\":\"en\",\"epoch\":0,\"title\":\"Brand post\",\"surface\":\"graphic\",\"layoutVersion\":1,\"schemaVersion\":1,\"minClientSchema\":1},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":1,\"g\":1,\"r\":1,\"space\":\"srgb\"}}]}},\"assets\":{},\"elements\":{\"Sextra1000000000\":{\"z\":\"a0\",\"id\":\"Sextra1000000000\",\"xf\":{\"h\":200,\"w\":300,\"x\":400,\"y\":20,\"rot\":0},\"kind\":\"rect\",\"type\":\"shape\",\"fills\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":0,\"g\":1,\"r\":0,\"space\":\"srgb\"}}],\"params\":{},\"opacity\":1,\"strokes\":[],\"parentId\":\"Spage10000000000\"},\"Slogo10000000000\":{\"z\":\"a0\",\"id\":\"Slogo10000000000\",\"xf\":{\"h\":200,\"w\":300,\"x\":10,\"y\":20,\"rot\":0},\"kind\":\"rect\",\"lock\":{\"by\":\"brand\",\"move\":true,\"style\":true},\"type\":\"shape\",\"fills\":[{\"k\":\"solid\",\"color\":{\"a\":1,\"b\":0,\"g\":0,\"r\":1,\"space\":\"srgb\"}}],\"params\":{},\"opacity\":1,\"strokes\":[],\"parentId\":\"Spage10000000000\"}}}'::jsonb, true, false, '00000000-0000-4000-8000-000000005000', false, '{}', 1, 'Snostate00000000', '2025-01-01T00:00:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "kits signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "kits (owner)",
+   "response": {
+    "body": {
+     "kits": [
+      {
+       "canEdit": true,
+       "colors": [],
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "isDefault": true,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "personal": true,
+       "photos": [],
+       "role": "owner",
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "voice": "Friendly",
+       "workspace": "Ada's workspace",
+       "workspaceId": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "canEdit": true,
+       "colors": [
+        {
+         "hex": "#7c3aed",
+         "name": "Primary"
+        }
+       ],
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "isDefault": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "personal": false,
+       "photos": [],
+       "role": "owner",
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "voice": "Friendly",
+       "workspace": "Studio",
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "workspaces": [
+      {
+       "canEdit": true,
+       "controls": {},
+       "id": "00000000-0000-4000-8000-000000001001",
+       "name": "Ada's workspace",
+       "personal": true,
+       "role": "owner"
+      },
+      {
+       "canEdit": true,
+       "controls": {
+        "requireApproval": true
+       },
+       "id": "00000000-0000-4000-8000-000000005000",
+       "name": "Studio",
+       "personal": false,
+       "role": "owner"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "kits (member)",
+   "response": {
+    "body": {
+     "kits": [
+      {
+       "canEdit": false,
+       "colors": [
+        {
+         "hex": "#7c3aed",
+         "name": "Primary"
+        }
+       ],
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "isDefault": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "personal": false,
+       "photos": [],
+       "role": "member",
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "voice": "Friendly",
+       "workspace": "Studio",
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "workspaces": [
+      {
+       "canEdit": true,
+       "controls": {},
+       "id": "00000000-0000-4000-8000-000000001002",
+       "name": "Bob's workspace",
+       "personal": true,
+       "role": "owner"
+      },
+      {
+       "canEdit": false,
+       "controls": {
+        "requireApproval": true
+       },
+       "id": "00000000-0000-4000-8000-000000005000",
+       "name": "Studio",
+       "personal": false,
+       "role": "member"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": {
+    "colors": [
+     {
+      "hex": "red",
+      "name": "x"
+     }
+    ],
+    "fonts": {
+     "heading": 5
+    },
+    "logos": [
+     "short"
+    ],
+    "name": "",
+    "voice": null,
+    "workspaceId": "nope"
+   },
+   "method": "POST",
+   "name": "create kit: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      },
+      {
+       "code": "invalid_format",
+       "format": "regex",
+       "message": "Invalid string: must match pattern /^#[0-9a-fA-F]{6}$/",
+       "origin": "string",
+       "path": [
+        "colors",
+        0,
+        "hex"
+       ],
+       "pattern": "/^#[0-9a-fA-F]{6}$/"
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "fonts",
+        "heading"
+       ]
+      },
+      {
+       "code": "invalid_format",
+       "format": "regex",
+       "message": "Invalid string: must match pattern /^[0-9A-Za-z]{16}$/",
+       "origin": "string",
+       "path": [
+        "logos",
+        0
+       ],
+       "pattern": "/^[0-9A-Za-z]{16}$/"
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received null",
+       "path": [
+        "voice"
+       ]
+      },
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "workspaceId"
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:1>|<uuid:2>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "method": "POST",
+   "name": "create kit: no body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "capture": {
+    "kitA": "body.id"
+   },
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by FROM brand_kits ORDER BY workspace_id, created_at, name"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "is_default": true,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#111111",
+         "name": "Ink"
+        }
+       ],
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "fonts": {
+        "body": "Inter",
+        "heading": "Poppins"
+       },
+       "graphics": [],
+       "id": "{{kitA}}",
+       "is_default": false,
+       "logos": [
+        "<id:1>"
+       ],
+       "name": "Second",
+       "palettes": [
+        {
+         "colors": [
+          {
+           "hex": "#ffaa00",
+           "name": "Sun"
+          }
+         ],
+         "name": "Warm"
+        }
+       ],
+       "photos": [],
+       "voice": "Bold",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#7c3aed",
+         "name": "Primary"
+        }
+       ],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "is_default": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.6",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "colors": [
+     {
+      "hex": "#111111",
+      "name": "Ink"
+     }
+    ],
+    "fonts": {
+     "body": "Inter",
+     "heading": "Poppins"
+    },
+    "logos": [
+     "Slogoasset000000"
+    ],
+    "name": "Second",
+    "palettes": [
+     {
+      "colors": [
+       {
+        "hex": "#ffaa00",
+        "name": "Sun"
+       }
+      ],
+      "name": "Warm"
+     }
+    ],
+    "voice": "Bold"
+   },
+   "method": "POST",
+   "name": "create a personal kit",
+   "response": {
+    "body": {
+     "id": "{{kitA}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "json": {
+    "name": "Nope",
+    "workspaceId": "00000000-0000-4000-8000-000000005000"
+   },
+   "method": "POST",
+   "name": "member creates a team kit",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only owners, admins and designers can create brand kits."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "capture": {
+    "kitC": "body.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "name": "Campaign",
+    "workspaceId": "00000000-0000-4000-8000-000000005000"
+   },
+   "method": "POST",
+   "name": "designer creates a team kit",
+   "response": {
+    "body": {
+     "id": "{{kitC}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "json": {
+    "name": "Nope",
+    "workspaceId": "00000000-0000-4000-8000-000000005000"
+   },
+   "method": "POST",
+   "name": "outsider creates a team kit",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only owners, admins and designers can create brand kits."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "env": {
+    "OC_BILLING": "1"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "json": {
+    "name": "Third"
+   },
+   "method": "POST",
+   "name": "kit limit on the free plan",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "feature": "brandKits",
+     "message": "The Free plan includes one brand kit. Upgrade to Pro or Teams for more."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "name": "Team third",
+    "workspaceId": "00000000-0000-4000-8000-000000005000"
+   },
+   "method": "POST",
+   "name": "team kit limit is at least one",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "feature": "brandKits",
+     "message": "The Free plan includes one brand kit. Upgrade to Pro or Teams for more."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "env": {
+    "OC_BILLING": null
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "kit",
+   "response": {
+    "body": {
+     "kit": {
+      "canEdit": true,
+      "colors": [
+       {
+        "hex": "#111111",
+        "name": "Ink"
+       }
+      ],
+      "fonts": {
+       "body": "Inter",
+       "heading": "Poppins"
+      },
+      "graphics": [],
+      "id": "{{kitA}}",
+      "isDefault": false,
+      "logos": [
+       "<id:1>"
+      ],
+      "name": "Second",
+      "palettes": [
+       {
+        "colors": [
+         {
+          "hex": "#ffaa00",
+          "name": "Sun"
+         }
+        ],
+        "name": "Warm"
+       }
+      ],
+      "photos": [],
+      "updatedAt": "<ts>",
+      "voice": "Bold",
+      "workspaceId": "00000000-0000-4000-8000-000000001001"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/{{kitA}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "name": "team kit as member (read only)",
+   "response": {
+    "body": {
+     "kit": {
+      "canEdit": false,
+      "colors": [
+       {
+        "hex": "#7c3aed",
+        "name": "Primary"
+       }
+      ],
+      "fonts": {
+       "heading": "Inter"
+      },
+      "graphics": [],
+      "id": "00000000-0000-4000-8000-000000006000",
+      "isDefault": true,
+      "logos": [],
+      "name": "Studio kit",
+      "palettes": [],
+      "photos": [],
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "voice": "Friendly",
+      "workspaceId": "00000000-0000-4000-8000-000000005000"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "name": "team kit as outsider",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "name": "kit id not a uuid",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/brand-kits/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "name": "unknown kit",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006999"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": {
+    "colors": "red",
+    "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   },
+   "method": "PATCH",
+   "name": "patch kit: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 80,
+       "message": "Too big: expected string to have <=80 characters",
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "array",
+       "message": "Invalid input: expected array, received string",
+       "path": [
+        "colors"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/brand-kits/{{kitA}}"
+  },
+  {
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by FROM brand_kits ORDER BY workspace_id, created_at, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "is_default": true,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#111111",
+         "name": "Ink"
+        }
+       ],
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "fonts": {
+        "body": "Inter",
+        "heading": "Poppins"
+       },
+       "graphics": [],
+       "id": "{{kitA}}",
+       "is_default": false,
+       "logos": [
+        "<id:1>"
+       ],
+       "name": "Renamed",
+       "palettes": [
+        {
+         "colors": [
+          {
+           "hex": "#ffaa00",
+           "name": "Sun"
+          }
+         ],
+         "name": "Warm"
+        }
+       ],
+       "photos": [],
+       "voice": "Bold",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#7c3aed",
+         "name": "Primary"
+        }
+       ],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "is_default": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "colors": [],
+       "created_by": "00000000-0000-4000-8000-000000000003",
+       "fonts": {},
+       "graphics": [],
+       "id": "{{kitC}}",
+       "is_default": false,
+       "logos": [],
+       "name": "Campaign",
+       "palettes": [],
+       "photos": [],
+       "voice": "",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "json": {
+    "name": "Renamed"
+   },
+   "method": "PATCH",
+   "name": "patch kit name only (keeps the rest)",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/{{kitA}}"
+  },
+  {
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by FROM brand_kits ORDER BY workspace_id, created_at, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "is_default": true,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#111111",
+         "name": "Ink"
+        }
+       ],
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "fonts": {
+        "body": "Inter",
+        "heading": "Poppins"
+       },
+       "graphics": [],
+       "id": "{{kitA}}",
+       "is_default": false,
+       "logos": [
+        "<id:1>"
+       ],
+       "name": "Renamed",
+       "palettes": [
+        {
+         "colors": [
+          {
+           "hex": "#ffaa00",
+           "name": "Sun"
+          }
+         ],
+         "name": "Warm"
+        }
+       ],
+       "photos": [],
+       "voice": "Bold",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#00aaaa",
+         "name": "Teal"
+        }
+       ],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "is_default": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "photos": [],
+       "voice": "Calm",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "colors": [],
+       "created_by": "00000000-0000-4000-8000-000000000003",
+       "fonts": {},
+       "graphics": [],
+       "id": "{{kitC}}",
+       "is_default": false,
+       "logos": [],
+       "name": "Campaign",
+       "palettes": [],
+       "photos": [],
+       "voice": "",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "json": {
+    "colors": [
+     {
+      "hex": "#00aaaa",
+      "name": "Teal"
+     }
+    ],
+    "voice": "Calm"
+   },
+   "method": "PATCH",
+   "name": "patch kit voice and colors",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "json": {
+    "name": "Mine"
+   },
+   "method": "PATCH",
+   "name": "patch kit as member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "json": {},
+   "method": "PATCH",
+   "name": "patch unknown kit",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006999"
+  },
+  {
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by FROM brand_kits ORDER BY workspace_id, created_at, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "is_default": false,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#111111",
+         "name": "Ink"
+        }
+       ],
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "fonts": {
+        "body": "Inter",
+        "heading": "Poppins"
+       },
+       "graphics": [],
+       "id": "{{kitA}}",
+       "is_default": true,
+       "logos": [
+        "<id:1>"
+       ],
+       "name": "Renamed",
+       "palettes": [
+        {
+         "colors": [
+          {
+           "hex": "#ffaa00",
+           "name": "Sun"
+          }
+         ],
+         "name": "Warm"
+        }
+       ],
+       "photos": [],
+       "voice": "Bold",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#00aaaa",
+         "name": "Teal"
+        }
+       ],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "is_default": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "photos": [],
+       "voice": "Calm",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "colors": [],
+       "created_by": "00000000-0000-4000-8000-000000000003",
+       "fonts": {},
+       "graphics": [],
+       "id": "{{kitC}}",
+       "is_default": false,
+       "logos": [],
+       "name": "Campaign",
+       "palettes": [],
+       "photos": [],
+       "voice": "",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "method": "POST",
+   "name": "make default",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/{{kitA}}/default"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "method": "POST",
+   "name": "make default as member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000/default"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "method": "POST",
+   "name": "make default as outsider",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000/default"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "method": "DELETE",
+   "name": "delete as member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by FROM brand_kits ORDER BY workspace_id, created_at, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "is_default": true,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [
+        {
+         "hex": "#00aaaa",
+         "name": "Teal"
+        }
+       ],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006000",
+       "is_default": true,
+       "logos": [],
+       "name": "Studio kit",
+       "palettes": [],
+       "photos": [],
+       "voice": "Calm",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "colors": [],
+       "created_by": "00000000-0000-4000-8000-000000000003",
+       "fonts": {},
+       "graphics": [],
+       "id": "{{kitC}}",
+       "is_default": false,
+       "logos": [],
+       "name": "Campaign",
+       "palettes": [],
+       "photos": [],
+       "voice": "",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "method": "DELETE",
+   "name": "delete the default kit",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/{{kitA}}"
+  },
+  {
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by FROM brand_kits ORDER BY workspace_id, created_at, name"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "created_by": null,
+       "fonts": {
+        "heading": "Inter"
+       },
+       "graphics": [],
+       "id": "00000000-0000-4000-8000-000000006001",
+       "is_default": true,
+       "logos": [],
+       "name": "Ada personal",
+       "palettes": [],
+       "photos": [],
+       "voice": "Friendly",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "colors": [],
+       "created_by": "00000000-0000-4000-8000-000000000003",
+       "fonts": {},
+       "graphics": [],
+       "id": "{{kitC}}",
+       "is_default": true,
+       "logos": [],
+       "name": "Campaign",
+       "palettes": [],
+       "photos": [],
+       "voice": "",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.6",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.8",
+       "meta": null,
+       "target": "{{kitC}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.26",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.27",
+       "meta": null,
+       "target": "00000000-0000-4000-8000-000000006000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "method": "DELETE",
+   "name": "delete the team default kit",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "method": "DELETE",
+   "name": "delete again",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/brand-kits/00000000-0000-4000-8000-000000006000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "name": "kits after changes",
+   "response": {
+    "body": {
+     "kits": [
+      {
+       "canEdit": true,
+       "colors": [],
+       "fonts": {},
+       "graphics": [],
+       "id": "{{kitC}}",
+       "isDefault": true,
+       "logos": [],
+       "name": "Campaign",
+       "palettes": [],
+       "personal": false,
+       "photos": [],
+       "role": "designer",
+       "updatedAt": "<ts>",
+       "voice": "",
+       "workspace": "Studio",
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "workspaces": [
+      {
+       "canEdit": true,
+       "controls": {},
+       "id": "00000000-0000-4000-8000-000000001003",
+       "name": "Cy's workspace",
+       "personal": true,
+       "role": "owner"
+      },
+      {
+       "canEdit": true,
+       "controls": {
+        "requireApproval": true
+       },
+       "id": "00000000-0000-4000-8000-000000005000",
+       "name": "Studio",
+       "personal": false,
+       "role": "designer"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand-kits"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "name": "controls (owner)",
+   "response": {
+    "body": {
+     "canEdit": true,
+     "controls": {
+      "requireApproval": true
+     },
+     "entitled": {
+      "approvals": true,
+      "brandControls": true
+     },
+     "role": "owner"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "name": "controls (member)",
+   "response": {
+    "body": {
+     "canEdit": false,
+     "controls": {
+      "requireApproval": true
+     },
+     "entitled": {
+      "approvals": true,
+      "brandControls": true
+     },
+     "role": "member"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "name": "controls (outsider)",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "name": "controls of a personal workspace",
+   "response": {
+    "body": {
+     "canEdit": true,
+     "controls": {},
+     "entitled": {
+      "approvals": true,
+      "brandControls": true
+     },
+     "role": "owner"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000001001/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "name": "controls: workspace id not a uuid",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/workspaces/nope/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "json": {
+    "colors": "yes",
+    "fonts": 1
+   },
+   "method": "PUT",
+   "name": "set controls: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received string",
+       "path": [
+        "colors"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received number",
+       "path": [
+        "fonts"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "json": {
+    "colors": true
+   },
+   "method": "PUT",
+   "name": "set controls as designer",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only team owners and admins can change brand controls."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "json": {
+    "colors": true
+   },
+   "method": "PUT",
+   "name": "set controls on a personal workspace",
+   "response": {
+    "body": {
+     "error": "team_only",
+     "message": "Brand controls apply to teams."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000001001/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "json": {
+    "colors": true
+   },
+   "method": "PUT",
+   "name": "set controls on an unknown workspace",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only team owners and admins can change brand controls."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005999/brand-controls"
+  },
+  {
+   "checks": [
+    {
+     "name": "workspace",
+     "sql": "SELECT brand_controls FROM workspaces WHERE id = '00000000-0000-4000-8000-000000005000'"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "workspace",
+     "rows": [
+      {
+       "brand_controls": {
+        "colors": true,
+        "fonts": false,
+        "requireApproval": true
+       }
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.6",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.8",
+       "meta": null,
+       "target": "{{kitC}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.26",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.27",
+       "meta": null,
+       "target": "00000000-0000-4000-8000-000000006000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.controls_changed",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "ip": "198.51.100.39",
+       "meta": {
+        "colors": true,
+        "fonts": false,
+        "requireApproval": true
+       },
+       "target": null,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "json": {
+    "colors": true,
+    "fonts": false,
+    "other": true
+   },
+   "method": "PUT",
+   "name": "set controls (admin)",
+   "response": {
+    "body": {
+     "controls": {
+      "colors": true,
+      "fonts": false,
+      "requireApproval": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "env": {
+    "OC_BILLING": "1"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "json": {
+    "colors": false
+   },
+   "method": "PUT",
+   "name": "controls need the Teams plan",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "feature": "approvals",
+     "message": "Required approvals are part of the Teams plan."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "json": {
+    "colors": false,
+    "fonts": false
+   },
+   "method": "PUT",
+   "name": "approvals need the Teams plan",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "feature": "approvals",
+     "message": "Required approvals are part of the Teams plan."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "name": "controls with plans on",
+   "response": {
+    "body": {
+     "canEdit": true,
+     "controls": {
+      "colors": true,
+      "fonts": false,
+      "requireApproval": true
+     },
+     "entitled": {
+      "approvals": false,
+      "brandControls": false
+     },
+     "role": "owner"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "env": {
+    "OC_BILLING": null
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "json": {
+    "colors": false
+   },
+   "method": "PUT",
+   "name": "turn off colors",
+   "response": {
+    "body": {
+     "controls": {
+      "colors": false,
+      "fonts": false,
+      "requireApproval": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/brand-controls"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "name": "brand context of a derived design (member)",
+   "response": {
+    "body": {
+     "approval": null,
+     "brandAdmin": false,
+     "controls": {
+      "colors": false,
+      "fonts": false,
+      "requireApproval": true
+     },
+     "published": [],
+     "role": "member",
+     "template": {
+      "brand": true,
+      "id": "Stplbrand0000000",
+      "latest": 2,
+      "title": "Brand post",
+      "version": 1
+     },
+     "workspaceId": "00000000-0000-4000-8000-000000005000"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sderived10000000/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "name": "brand context of the source design",
+   "response": {
+    "body": {
+     "approval": null,
+     "brandAdmin": true,
+     "controls": {
+      "colors": false,
+      "fonts": false,
+      "requireApproval": true
+     },
+     "published": [
+      {
+       "brand": true,
+       "id": "Stplbrand0000000",
+       "title": "Brand post",
+       "version": 2
+      }
+     ],
+     "role": "owner",
+     "template": null,
+     "workspaceId": "00000000-0000-4000-8000-000000005000"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Stplsource000000/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "name": "brand context of her own design",
+   "response": {
+    "body": {
+     "approval": null,
+     "brandAdmin": true,
+     "controls": {},
+     "published": [],
+     "role": null,
+     "template": null,
+     "workspaceId": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sevesown00000000/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "name": "brand context without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Sderived10000000/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "method": "POST",
+   "name": "push as member",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only team owners and admins can update designs from a template."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/templates/Stplbrand0000000/push"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "method": "POST",
+   "name": "push as designer",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only team owners and admins can update designs from a template."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/templates/Stplbrand0000000/push"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "method": "POST",
+   "name": "push a non-brand template",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/templates/Stplplain0000000/push"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "method": "POST",
+   "name": "push an unknown template",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/templates/nope/push"
+  },
+  {
+   "checks": [
+    {
+     "name": "derived",
+     "sql": "SELECT id, template_version, (SELECT count(*)::int FROM doc_updates u WHERE u.design_id = d.id) AS updates FROM designs d WHERE template_id = 'Stplbrand0000000' ORDER BY id"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "derived",
+     "rows": [
+      {
+       "id": "Sderived10000000",
+       "template_version": 2,
+       "updates": 1
+      },
+      {
+       "id": "Sderived20000000",
+       "template_version": 2,
+       "updates": 1
+      },
+      {
+       "id": "Sderived30000000",
+       "template_version": 2,
+       "updates": 0
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.6",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.8",
+       "meta": null,
+       "target": "{{kitC}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.26",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.27",
+       "meta": null,
+       "target": "00000000-0000-4000-8000-000000006000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.controls_changed",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "ip": "198.51.100.39",
+       "meta": {
+        "colors": true,
+        "fonts": false,
+        "requireApproval": true
+       },
+       "target": null,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.controls_changed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.43",
+       "meta": {
+        "colors": false,
+        "fonts": false,
+        "requireApproval": true
+       },
+       "target": null,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "template.pushed",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "ip": "198.51.100.52",
+       "meta": {
+        "failed": 0,
+        "updated": 2
+       },
+       "target": "Stplbrand0000000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "method": "POST",
+   "name": "push",
+   "response": {
+    "body": {
+     "failed": [],
+     "total": 2,
+     "updated": 2
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/templates/Stplbrand0000000/push"
+  },
+  {
+   "name": "derived design 1 back on version 1",
+   "rows": [
+    {
+     "id": "Sderived10000000"
+    }
+   ],
+   "sql": "UPDATE designs SET template_version = 1 WHERE id = 'Sderived10000000' RETURNING id"
+  },
+  {
+   "checks": [
+    {
+     "name": "derived",
+     "sql": "SELECT id, template_version, (SELECT count(*)::int FROM doc_updates u WHERE u.design_id = d.id) AS updates FROM designs d WHERE template_id = 'Stplbrand0000000' ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "derived",
+     "rows": [
+      {
+       "id": "Sderived10000000",
+       "template_version": 2,
+       "updates": 1
+      },
+      {
+       "id": "Sderived20000000",
+       "template_version": 2,
+       "updates": 1
+      },
+      {
+       "id": "Sderived30000000",
+       "template_version": 2,
+       "updates": 0
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "method": "POST",
+   "name": "push again (already in line: no new update)",
+   "response": {
+    "body": {
+     "failed": [],
+     "total": 1,
+     "updated": 1
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/templates/Stplbrand0000000/push"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "method": "POST",
+   "name": "push with nothing to do",
+   "response": {
+    "body": {
+     "failed": [],
+     "total": 0,
+     "updated": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/templates/Stplbrand0000000/push"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "method": "POST",
+   "name": "republish as member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/templates/Stplbrand0000000/republish"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "method": "POST",
+   "name": "republish as outsider",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/templates/Stplbrand0000000/republish"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "method": "POST",
+   "name": "republish a public template",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/templates/Stplplain0000000/republish"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "method": "POST",
+   "name": "republish without a source snapshot",
+   "response": {
+    "body": {
+     "error": "empty"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/templates/Stplempty0000000/republish"
+  },
+  {
+   "checks": [
+    {
+     "name": "templates",
+     "sql": "SELECT id, version, width, height, locks, doc FROM templates ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "templates",
+     "rows": [
+      {
+       "doc": {
+        "assets": {},
+        "elements": {
+         "<id:2>": {
+          "fills": [
+           {
+            "color": {
+             "a": 1,
+             "b": 1,
+             "g": 0,
+             "r": 1,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:2>",
+          "kind": "rect",
+          "lock": {
+           "by": "brand",
+           "move": true,
+           "style": true
+          },
+          "opacity": 1,
+          "params": {},
+          "parentId": "<id:3>",
+          "strokes": [],
+          "type": "shape",
+          "xf": {
+           "h": 200,
+           "rot": 0,
+           "w": 300,
+           "x": 30,
+           "y": 20
+          },
+          "z": "a0"
+         }
+        },
+        "meta": {
+         "dims": {
+          "dpi": 96,
+          "h": 1080,
+          "unit": "px",
+          "w": 1080
+         },
+         "epoch": 0,
+         "lang": "en",
+         "layoutVersion": 1,
+         "minClientSchema": 1,
+         "schemaVersion": 1,
+         "surface": "graphic",
+         "title": "Brand post v3"
+        },
+        "pages": {
+         "<id:3>": {
+          "background": [
+           {
+            "color": {
+             "a": 1,
+             "b": 1,
+             "g": 1,
+             "r": 1,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:3>",
+          "order": "a0"
+         }
+        }
+       },
+       "height": 1080,
+       "id": "Stplbrand0000000",
+       "locks": {
+        "<id:2>": {
+         "by": "brand",
+         "move": true,
+         "style": true
+        }
+       },
+       "version": 3,
+       "width": 1080
+      },
+      {
+       "doc": {
+        "assets": {},
+        "elements": {
+         "<id:2>": {
+          "fills": [
+           {
+            "color": {
+             "a": 1,
+             "b": 0,
+             "g": 0,
+             "r": 1,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:2>",
+          "kind": "rect",
+          "lock": {
+           "by": "brand",
+           "move": true,
+           "style": true
+          },
+          "opacity": 1,
+          "params": {},
+          "parentId": "<id:3>",
+          "strokes": [],
+          "type": "shape",
+          "xf": {
+           "h": 200,
+           "rot": 0,
+           "w": 300,
+           "x": 10,
+           "y": 20
+          },
+          "z": "a0"
+         },
+         "<id:4>": {
+          "fills": [
+           {
+            "color": {
+             "a": 1,
+             "b": 0,
+             "g": 1,
+             "r": 0,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:4>",
+          "kind": "rect",
+          "opacity": 1,
+          "params": {},
+          "parentId": "<id:3>",
+          "strokes": [],
+          "type": "shape",
+          "xf": {
+           "h": 200,
+           "rot": 0,
+           "w": 300,
+           "x": 400,
+           "y": 20
+          },
+          "z": "a0"
+         }
+        },
+        "meta": {
+         "dims": {
+          "dpi": 96,
+          "h": 1080,
+          "unit": "px",
+          "w": 1080
+         },
+         "epoch": 0,
+         "lang": "en",
+         "layoutVersion": 1,
+         "minClientSchema": 1,
+         "schemaVersion": 1,
+         "surface": "graphic",
+         "title": "Brand post"
+        },
+        "pages": {
+         "<id:3>": {
+          "background": [
+           {
+            "color": {
+             "a": 1,
+             "b": 1,
+             "g": 1,
+             "r": 1,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:3>",
+          "order": "a0"
+         }
+        }
+       },
+       "height": 500,
+       "id": "Stplempty0000000",
+       "locks": {},
+       "version": 1,
+       "width": 500
+      },
+      {
+       "doc": {
+        "assets": {},
+        "elements": {
+         "<id:2>": {
+          "fills": [
+           {
+            "color": {
+             "a": 1,
+             "b": 0,
+             "g": 0,
+             "r": 1,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:2>",
+          "kind": "rect",
+          "lock": {
+           "by": "brand",
+           "move": true,
+           "style": true
+          },
+          "opacity": 1,
+          "params": {},
+          "parentId": "<id:3>",
+          "strokes": [],
+          "type": "shape",
+          "xf": {
+           "h": 200,
+           "rot": 0,
+           "w": 300,
+           "x": 10,
+           "y": 20
+          },
+          "z": "a0"
+         },
+         "<id:4>": {
+          "fills": [
+           {
+            "color": {
+             "a": 1,
+             "b": 0,
+             "g": 1,
+             "r": 0,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:4>",
+          "kind": "rect",
+          "opacity": 1,
+          "params": {},
+          "parentId": "<id:3>",
+          "strokes": [],
+          "type": "shape",
+          "xf": {
+           "h": 200,
+           "rot": 0,
+           "w": 300,
+           "x": 400,
+           "y": 20
+          },
+          "z": "a0"
+         }
+        },
+        "meta": {
+         "dims": {
+          "dpi": 96,
+          "h": 1080,
+          "unit": "px",
+          "w": 1080
+         },
+         "epoch": 0,
+         "lang": "en",
+         "layoutVersion": 1,
+         "minClientSchema": 1,
+         "schemaVersion": 1,
+         "surface": "graphic",
+         "title": "Brand post"
+        },
+        "pages": {
+         "<id:3>": {
+          "background": [
+           {
+            "color": {
+             "a": 1,
+             "b": 1,
+             "g": 1,
+             "r": 1,
+             "space": "srgb"
+            },
+            "k": "solid"
+           }
+          ],
+          "id": "<id:3>",
+          "order": "a0"
+         }
+        }
+       },
+       "height": 1080,
+       "id": "Stplplain0000000",
+       "locks": {},
+       "version": 1,
+       "width": 1080
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.60"
+   },
+   "method": "POST",
+   "name": "republish (designer)",
+   "response": {
+    "body": {
+     "ok": true,
+     "version": 3
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/templates/Stplbrand0000000/republish"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.61"
+   },
+   "name": "brand context after republish",
+   "response": {
+    "body": {
+     "approval": null,
+     "brandAdmin": false,
+     "controls": {
+      "colors": false,
+      "fonts": false,
+      "requireApproval": true
+     },
+     "published": [],
+     "role": "member",
+     "template": {
+      "brand": true,
+      "id": "Stplbrand0000000",
+      "latest": 3,
+      "title": "Brand post",
+      "version": 2
+     },
+     "workspaceId": "00000000-0000-4000-8000-000000005000"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sderived10000000/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.62"
+   },
+   "name": "approval: none yet",
+   "response": {
+    "body": {
+     "approval": null,
+     "required": true,
+     "suggestedReviewers": [
+      {
+       "color": "#7c3aed",
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "dan@example.test",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "name": "Dan"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.63"
+   },
+   "name": "approval without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.64"
+   },
+   "name": "approval of a personal design",
+   "response": {
+    "body": {
+     "approval": null,
+     "required": false,
+     "suggestedReviewers": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sevesown00000000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.65"
+   },
+   "name": "gate (designer, no approval)",
+   "response": {
+    "body": {
+     "allowed": false,
+     "error": "approval_required",
+     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
+     "status": "none"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/gate"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.66"
+   },
+   "name": "gate (owner is not gated)",
+   "response": {
+    "body": {
+     "allowed": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/gate"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.67"
+   },
+   "name": "gate without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Steamdesign00000/approval/gate"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.68"
+   },
+   "json": {
+    "message": 5,
+    "reviewerIds": [
+     "nope"
+    ]
+   },
+   "method": "POST",
+   "name": "request: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "message"
+       ]
+      },
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "reviewerIds",
+        0
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:1>|<uuid:2>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.69"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "request as member (comment access)",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.70"
+   },
+   "json": {
+    "reviewerIds": [
+     "00000000-0000-4000-8000-000000000005",
+     "00000000-0000-4000-8000-000000000003"
+    ]
+   },
+   "method": "POST",
+   "name": "request: reviewer cannot open the design",
+   "response": {
+    "body": {
+     "error": "no_reviewers",
+     "message": "Choose at least one reviewer who can open this design."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "capture": {
+    "appr1": "body.id"
+   },
+   "checks": [
+    {
+     "name": "approvals",
+     "sql": "SELECT id, design_id, workspace_id, requested_by, reviewers, message, status, decided_by, decision_note, decided_at IS NOT NULL AS decided,\n  approved_snapshot IS NOT NULL AS has_snapshot, approved_doc_at IS NOT NULL AS has_doc_at FROM design_approvals ORDER BY created_at, status"
+    },
+    {
+     "name": "comments",
+     "sql": "SELECT design_id, author_id, body FROM comments ORDER BY created_at, body"
+    },
+    {
+     "name": "notifications",
+     "sql": "SELECT user_id, kind, design_id, actor_id, body FROM notifications ORDER BY created_at, user_id"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "approvals",
+     "rows": [
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision_note": null,
+       "design_id": "Steamdesign00000",
+       "has_doc_at": false,
+       "has_snapshot": false,
+       "id": "{{appr1}}",
+       "message": "Ready for launch",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "pending",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    {
+     "name": "comments",
+     "rows": [
+      {
+       "author_id": "00000000-0000-4000-8000-000000000003",
+       "body": "Sent for approval: Ready for launch",
+       "design_id": "Steamdesign00000"
+      }
+     ]
+    },
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "body": "Cy asked you to approve “Team design”: Ready for launch",
+       "design_id": "Steamdesign00000",
+       "kind": "approval",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "body": "Cy asked you to approve “Team design”: Ready for launch",
+       "design_id": "Steamdesign00000",
+       "kind": "approval",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“Ready for launch”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "ada@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“Ready for launch”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "dan@example.test"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.6",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_created",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.8",
+       "meta": null,
+       "target": "{{kitC}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.26",
+       "meta": null,
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_deleted",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.27",
+       "meta": null,
+       "target": "00000000-0000-4000-8000-000000006000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.controls_changed",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "ip": "198.51.100.39",
+       "meta": {
+        "colors": true,
+        "fonts": false,
+        "requireApproval": true
+       },
+       "target": null,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.controls_changed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.43",
+       "meta": {
+        "colors": false,
+        "fonts": false,
+        "requireApproval": true
+       },
+       "target": null,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "template.pushed",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "ip": "198.51.100.52",
+       "meta": {
+        "failed": 0,
+        "updated": 2
+       },
+       "target": "Stplbrand0000000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "template.pushed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.54",
+       "meta": {
+        "failed": 0,
+        "updated": 1
+       },
+       "target": "Stplbrand0000000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "template.pushed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.55",
+       "meta": {
+        "failed": 0,
+        "updated": 0
+       },
+       "target": "Stplbrand0000000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "design.approval_requested",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.71",
+       "meta": {
+        "reviewers": 2
+       },
+       "target": "Steamdesign00000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.71"
+   },
+   "json": {
+    "message": "Ready for launch"
+   },
+   "method": "POST",
+   "name": "request (default reviewers)",
+   "response": {
+    "body": {
+     "id": "{{appr1}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.72"
+   },
+   "name": "approval pending (requester)",
+   "response": {
+    "body": {
+     "approval": {
+      "canReview": false,
+      "createdAt": "<ts>",
+      "current": false,
+      "decidedAt": null,
+      "decidedBy": null,
+      "id": "{{appr1}}",
+      "message": "Ready for launch",
+      "note": null,
+      "requestedBy": {
+       "color": "#7c3aed",
+       "email": "cy@example.test",
+       "id": "00000000-0000-4000-8000-000000000003",
+       "name": "Cy"
+      },
+      "reviewers": [
+       {
+        "color": "#7c3aed",
+        "email": "ada@example.test",
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Ada"
+       },
+       {
+        "color": "#7c3aed",
+        "email": "dan@example.test",
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Dan"
+       }
+      ],
+      "status": "pending"
+     },
+     "required": true,
+     "suggestedReviewers": [
+      {
+       "color": "#7c3aed",
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "dan@example.test",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "name": "Dan"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.73"
+   },
+   "name": "approval pending (owner reviews)",
+   "response": {
+    "body": {
+     "approval": {
+      "canReview": true,
+      "createdAt": "<ts>",
+      "current": false,
+      "decidedAt": null,
+      "decidedBy": null,
+      "id": "{{appr1}}",
+      "message": "Ready for launch",
+      "note": null,
+      "requestedBy": {
+       "color": "#7c3aed",
+       "email": "cy@example.test",
+       "id": "00000000-0000-4000-8000-000000000003",
+       "name": "Cy"
+      },
+      "reviewers": [
+       {
+        "color": "#7c3aed",
+        "email": "ada@example.test",
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Ada"
+       },
+       {
+        "color": "#7c3aed",
+        "email": "dan@example.test",
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Dan"
+       }
+      ],
+      "status": "pending"
+     },
+     "required": true,
+     "suggestedReviewers": [
+      {
+       "color": "#7c3aed",
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "dan@example.test",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "name": "Dan"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.74"
+   },
+   "name": "review queue (admin)",
+   "response": {
+    "body": {
+     "approvals": [
+      {
+       "createdAt": "<ts>",
+       "designId": "Steamdesign00000",
+       "id": "{{appr1}}",
+       "message": "Ready for launch",
+       "requestedBy": "Cy",
+       "title": "Team design"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/approvals"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.75"
+   },
+   "name": "review queue (member)",
+   "response": {
+    "body": {
+     "approvals": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/approvals"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.76"
+   },
+   "json": {
+    "decision": "maybe",
+    "note": 5
+   },
+   "method": "POST",
+   "name": "decide: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"approve\"|\"changes\"",
+       "path": [
+        "decision"
+       ],
+       "values": [
+        "approve",
+        "changes"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "note"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Steamdesign00000/approval/decision"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.77"
+   },
+   "json": {
+    "decision": "approve"
+   },
+   "method": "POST",
+   "name": "decide as requester (not a reviewer)",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "You are not a reviewer of this design."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Steamdesign00000/approval/decision"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.78"
+   },
+   "json": {
+    "decision": "approve"
+   },
+   "method": "POST",
+   "name": "decide without access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Steamdesign00000/approval/decision"
+  },
+  {
+   "checks": [
+    {
+     "name": "approvals",
+     "sql": "SELECT id, design_id, workspace_id, requested_by, reviewers, message, status, decided_by, decision_note, decided_at IS NOT NULL AS decided,\n  approved_snapshot IS NOT NULL AS has_snapshot, approved_doc_at IS NOT NULL AS has_doc_at FROM design_approvals ORDER BY created_at, status"
+    },
+    {
+     "name": "comments",
+     "sql": "SELECT design_id, author_id, body FROM comments ORDER BY created_at, body"
+    },
+    {
+     "name": "notifications",
+     "sql": "SELECT user_id, kind, design_id, actor_id, body FROM notifications ORDER BY created_at, user_id"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    }
+   ],
+   "db": [
+    {
+     "name": "approvals",
+     "rows": [
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000004",
+       "decision_note": "Looks great",
+       "design_id": "Steamdesign00000",
+       "has_doc_at": true,
+       "has_snapshot": true,
+       "id": "{{appr1}}",
+       "message": "Ready for launch",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "approved",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    {
+     "name": "comments",
+     "rows": [
+      {
+       "author_id": "00000000-0000-4000-8000-000000000003",
+       "body": "Sent for approval: Ready for launch",
+       "design_id": "Steamdesign00000"
+      },
+      {
+       "author_id": "00000000-0000-4000-8000-000000000004",
+       "body": "Approved: Looks great",
+       "design_id": "Steamdesign00000"
+      }
+     ]
+    },
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "body": "Cy asked you to approve “Team design”: Ready for launch",
+       "design_id": "Steamdesign00000",
+       "kind": "approval",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "body": "Cy asked you to approve “Team design”: Ready for launch",
+       "design_id": "Steamdesign00000",
+       "kind": "approval",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "body": "Dan approved “Team design”: Looks great",
+       "design_id": "Steamdesign00000",
+       "kind": "approval",
+       "user_id": "00000000-0000-4000-8000-000000000003"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“Ready for launch”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "ada@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“Ready for launch”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "dan@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "“Team design” was approved",
+       "text": "“Team design” was approved\n\nBy Dan\n\n“Looks great”\n\nOpen design: https://app.example/design/Steamdesign00000\n",
+       "to_email": "cy@example.test"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.79"
+   },
+   "json": {
+    "decision": "approve",
+    "note": "Looks great"
+   },
+   "method": "POST",
+   "name": "approve",
+   "response": {
+    "body": {
+     "ok": true,
+     "status": "approved"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/decision"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.80"
+   },
+   "json": {
+    "decision": "changes"
+   },
+   "method": "POST",
+   "name": "decide again",
+   "response": {
+    "body": {
+     "error": "no_request",
+     "message": "There is no pending approval request for this design."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/designs/Steamdesign00000/approval/decision"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.81"
+   },
+   "name": "gate after approval",
+   "response": {
+    "body": {
+     "allowed": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/gate"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.82"
+   },
+   "name": "approval approved",
+   "response": {
+    "body": {
+     "approval": {
+      "canReview": false,
+      "createdAt": "<ts>",
+      "current": true,
+      "decidedAt": "<ts>",
+      "decidedBy": {
+       "color": "#7c3aed",
+       "email": "dan@example.test",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "name": "Dan"
+      },
+      "id": "{{appr1}}",
+      "message": "Ready for launch",
+      "note": "Looks great",
+      "requestedBy": {
+       "color": "#7c3aed",
+       "email": "cy@example.test",
+       "id": "00000000-0000-4000-8000-000000000003",
+       "name": "Cy"
+      },
+      "reviewers": [
+       {
+        "color": "#7c3aed",
+        "email": "ada@example.test",
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Ada"
+       },
+       {
+        "color": "#7c3aed",
+        "email": "dan@example.test",
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Dan"
+       }
+      ],
+      "status": "approved"
+     },
+     "required": true,
+     "suggestedReviewers": [
+      {
+       "color": "#7c3aed",
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "dan@example.test",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "name": "Dan"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.83"
+   },
+   "name": "brand context with an approval",
+   "response": {
+    "body": {
+     "approval": {
+      "current": true,
+      "status": "approved"
+     },
+     "brandAdmin": true,
+     "controls": {
+      "colors": false,
+      "fonts": false,
+      "requireApproval": true
+     },
+     "published": [],
+     "role": "designer",
+     "template": null,
+     "workspaceId": "00000000-0000-4000-8000-000000005000"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/brand"
+  },
+  {
+   "name": "an edit after approval",
+   "rows": [
+    {
+     "design_id": "Steamdesign00000"
+    }
+   ],
+   "sql": "INSERT INTO doc_updates(design_id, update) VALUES ('Steamdesign00000', decode('010c8eace7900a002801046d6574610464696d7301760401687db81001777db810036470697da00104756e6974770270782801046d657461046c616e67017702656e2801046d6574610565706f6368017d002801046d657461057469746c650177145465616d2064657369676e2028656469746564292801046d6574610773757266616365017707677261706869632801046d6574610d6c61796f757456657273696f6e017d012801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d01270105706167657310537061676531303030303030303030300128008eace7900a080269640177105370616765313030303030303030303028008eace7900a08056f72646572017702613028008eace7900a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760501617d0101627d0101677d0101727d0105737061636577047372676200', 'hex')) RETURNING design_id"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.85"
+   },
+   "name": "gate after an edit (stale)",
+   "response": {
+    "body": {
+     "allowed": false,
+     "error": "approval_required",
+     "message": "This design changed after it was approved. Send it for approval again before downloading, sharing or publishing.",
+     "status": "stale"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/gate"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.86"
+   },
+   "method": "DELETE",
+   "name": "cancel without a pending request",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "capture": {
+    "appr2": "body.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.87"
+   },
+   "json": {
+    "reviewerIds": [
+     "00000000-0000-4000-8000-000000000002",
+     "00000000-0000-4000-8000-000000000003"
+    ]
+   },
+   "method": "POST",
+   "name": "request again (picked reviewer)",
+   "response": {
+    "body": {
+     "id": "{{appr2}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.88"
+   },
+   "name": "member reviewer sees the queue",
+   "response": {
+    "body": {
+     "approvals": [
+      {
+       "createdAt": "<ts>",
+       "designId": "Steamdesign00000",
+       "id": "{{appr2}}",
+       "message": "",
+       "requestedBy": "Cy",
+       "title": "Team design"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/approvals"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.89"
+   },
+   "method": "DELETE",
+   "name": "cancel without access",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "checks": [
+    {
+     "name": "approvals",
+     "sql": "SELECT id, design_id, workspace_id, requested_by, reviewers, message, status, decided_by, decision_note, decided_at IS NOT NULL AS decided,\n  approved_snapshot IS NOT NULL AS has_snapshot, approved_doc_at IS NOT NULL AS has_doc_at FROM design_approvals ORDER BY created_at, status"
+    }
+   ],
+   "db": [
+    {
+     "name": "approvals",
+     "rows": [
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000004",
+       "decision_note": "Looks great",
+       "design_id": "Steamdesign00000",
+       "has_doc_at": true,
+       "has_snapshot": true,
+       "id": "{{appr1}}",
+       "message": "Ready for launch",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "approved",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision_note": null,
+       "design_id": "Steamdesign00000",
+       "has_doc_at": false,
+       "has_snapshot": false,
+       "id": "{{appr2}}",
+       "message": "",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000002"
+       ],
+       "status": "cancelled",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.90"
+   },
+   "method": "DELETE",
+   "name": "cancel as someone else (admin = owner role)",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.91"
+   },
+   "json": {
+    "message": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm"
+   },
+   "method": "POST",
+   "name": "request a third time",
+   "response": {
+    "body": {
+     "id": "<uuid:3>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.92"
+   },
+   "method": "DELETE",
+   "name": "cancel as member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "checks": [
+    {
+     "name": "approvals",
+     "sql": "SELECT id, design_id, workspace_id, requested_by, reviewers, message, status, decided_by, decision_note, decided_at IS NOT NULL AS decided,\n  approved_snapshot IS NOT NULL AS has_snapshot, approved_doc_at IS NOT NULL AS has_doc_at FROM design_approvals ORDER BY created_at, status"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    }
+   ],
+   "db": [
+    {
+     "name": "approvals",
+     "rows": [
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000004",
+       "decision_note": "Looks great",
+       "design_id": "Steamdesign00000",
+       "has_doc_at": true,
+       "has_snapshot": true,
+       "id": "{{appr1}}",
+       "message": "Ready for launch",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "approved",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision_note": null,
+       "design_id": "Steamdesign00000",
+       "has_doc_at": false,
+       "has_snapshot": false,
+       "id": "{{appr2}}",
+       "message": "",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000002"
+       ],
+       "status": "cancelled",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision_note": "Use the new logo",
+       "design_id": "Steamdesign00000",
+       "has_doc_at": true,
+       "has_snapshot": false,
+       "id": "<uuid:3>",
+       "message": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "changes_requested",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“Ready for launch”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "ada@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“Ready for launch”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "dan@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "“Team design” was approved",
+       "text": "“Team design” was approved\n\nBy Dan\n\n“Looks great”\n\nOpen design: https://app.example/design/Steamdesign00000\n",
+       "to_email": "cy@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "ada@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Cy asked you to approve “Team design”",
+       "text": "Approval requested\n\n“mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm”\n\nReview design: https://app.example/design/Steamdesign00000?approval=1\n",
+       "to_email": "dan@example.test"
+      },
+      {
+       "category": "comments",
+       "subject": "Changes requested on “Team design”",
+       "text": "Changes requested on “Team design”\n\nBy Ada\n\n“Use the new logo”\n\nOpen design: https://app.example/design/Steamdesign00000\n",
+       "to_email": "cy@example.test"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.93"
+   },
+   "json": {
+    "decision": "changes",
+    "note": "Use the new logo"
+   },
+   "method": "POST",
+   "name": "request changes",
+   "response": {
+    "body": {
+     "ok": true,
+     "status": "changes_requested"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/decision"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.94"
+   },
+   "name": "gate after changes requested",
+   "response": {
+    "body": {
+     "allowed": false,
+     "error": "approval_required",
+     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
+     "status": "changes_requested"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval/gate"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.95"
+   },
+   "method": "POST",
+   "name": "request a fourth time",
+   "response": {
+    "body": {
+     "id": "<uuid:4>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "checks": [
+    {
+     "name": "approvals",
+     "sql": "SELECT id, design_id, workspace_id, requested_by, reviewers, message, status, decided_by, decision_note, decided_at IS NOT NULL AS decided,\n  approved_snapshot IS NOT NULL AS has_snapshot, approved_doc_at IS NOT NULL AS has_doc_at FROM design_approvals ORDER BY created_at, status"
+    }
+   ],
+   "db": [
+    {
+     "name": "approvals",
+     "rows": [
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000004",
+       "decision_note": "Looks great",
+       "design_id": "Steamdesign00000",
+       "has_doc_at": true,
+       "has_snapshot": true,
+       "id": "{{appr1}}",
+       "message": "Ready for launch",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "approved",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision_note": null,
+       "design_id": "Steamdesign00000",
+       "has_doc_at": false,
+       "has_snapshot": false,
+       "id": "{{appr2}}",
+       "message": "",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000002"
+       ],
+       "status": "cancelled",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision_note": "Use the new logo",
+       "design_id": "Steamdesign00000",
+       "has_doc_at": true,
+       "has_snapshot": false,
+       "id": "<uuid:3>",
+       "message": "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "changes_requested",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision_note": null,
+       "design_id": "Steamdesign00000",
+       "has_doc_at": false,
+       "has_snapshot": false,
+       "id": "<uuid:4>",
+       "message": "",
+       "requested_by": "00000000-0000-4000-8000-000000000003",
+       "reviewers": [
+        "00000000-0000-4000-8000-000000000001",
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "status": "cancelled",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.96"
+   },
+   "method": "DELETE",
+   "name": "cancel own request",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamdesign00000/approval"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.97"
+   },
+   "name": "review queue (owner) after all",
+   "response": {
+    "body": {
+     "approvals": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/approvals"
+  }
+ ],
+ "vars": {}
+}

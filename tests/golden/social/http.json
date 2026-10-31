@@ -1,0 +1,150 @@
+{
+ "form": [
+  {
+   "data": [
+    [
+     "a",
+     "1"
+    ],
+    [
+     "b",
+     "two words"
+    ],
+    [
+     "c",
+     null
+    ],
+    [
+     "d",
+     "true"
+    ],
+    [
+     "e",
+     "0"
+    ]
+   ],
+   "encoded": "a=1&b=two+words&d=true&e=0",
+   "withQuery": "https://h.example/p?a=1&b=two+words&d=true&e=0",
+   "withQueryExisting": "https://h.example/p?z=1&a=1&b=two+words&d=true&e=0"
+  },
+  {
+   "data": [
+    [
+     "scope",
+     "tweet.read tweet.write users.read"
+    ],
+    [
+     "redirect_uri",
+     "https://app/cb?x=1&y=2"
+    ],
+    [
+     "code_challenge_method",
+     "S256"
+    ]
+   ],
+   "encoded": "scope=tweet.read+tweet.write+users.read&redirect_uri=https%3A%2F%2Fapp%2Fcb%3Fx%3D1%26y%3D2&code_challenge_method=S256",
+   "withQuery": "https://h.example/p?scope=tweet.read+tweet.write+users.read&redirect_uri=https%3A%2F%2Fapp%2Fcb%3Fx%3D1%26y%3D2&code_challenge_method=S256",
+   "withQueryExisting": "https://h.example/p?z=1&scope=tweet.read+tweet.write+users.read&redirect_uri=https%3A%2F%2Fapp%2Fcb%3Fx%3D1%26y%3D2&code_challenge_method=S256"
+  },
+  {
+   "data": [
+    [
+     "fields",
+     "status_code,status"
+    ],
+    [
+     "user.fields",
+     "profile_image_url"
+    ]
+   ],
+   "encoded": "fields=status_code%2Cstatus&user.fields=profile_image_url",
+   "withQuery": "https://h.example/p?fields=status_code%2Cstatus&user.fields=profile_image_url",
+   "withQueryExisting": "https://h.example/p?z=1&fields=status_code%2Cstatus&user.fields=profile_image_url"
+  },
+  {
+   "data": [
+    [
+     "special",
+     "*-._~!'()+=/?#[]@ %"
+    ],
+    [
+     "unicode",
+     "Été 日本 👍🏽"
+    ]
+   ],
+   "encoded": "special=*-._%7E%21%27%28%29%2B%3D%2F%3F%23%5B%5D%40+%25&unicode=%C3%89t%C3%A9+%E6%97%A5%E6%9C%AC+%F0%9F%91%8D%F0%9F%8F%BD",
+   "withQuery": "https://h.example/p?special=*-._%7E%21%27%28%29%2B%3D%2F%3F%23%5B%5D%40+%25&unicode=%C3%89t%C3%A9+%E6%97%A5%E6%9C%AC+%F0%9F%91%8D%F0%9F%8F%BD",
+   "withQueryExisting": "https://h.example/p?z=1&special=*-._%7E%21%27%28%29%2B%3D%2F%3F%23%5B%5D%40+%25&unicode=%C3%89t%C3%A9+%E6%97%A5%E6%9C%AC+%F0%9F%91%8D%F0%9F%8F%BD"
+  },
+  {
+   "data": [],
+   "encoded": "",
+   "withQuery": "https://h.example/p",
+   "withQueryExisting": "https://h.example/p?z=1"
+  }
+ ],
+ "classify": [
+  {
+   "status": 200,
+   "transient": false,
+   "reauth": false
+  },
+  {
+   "status": 400,
+   "transient": false,
+   "reauth": false
+  },
+  {
+   "status": 401,
+   "transient": false,
+   "reauth": true
+  },
+  {
+   "status": 403,
+   "transient": false,
+   "reauth": false
+  },
+  {
+   "status": 404,
+   "transient": false,
+   "reauth": false
+  },
+  {
+   "status": 408,
+   "transient": true,
+   "reauth": false
+  },
+  {
+   "status": 425,
+   "transient": true,
+   "reauth": false
+  },
+  {
+   "status": 429,
+   "transient": true,
+   "reauth": false
+  },
+  {
+   "status": 500,
+   "transient": true,
+   "reauth": false
+  },
+  {
+   "status": 503,
+   "transient": true,
+   "reauth": false
+  }
+ ],
+ "basic": [
+  {
+   "id": "x-id",
+   "secret": "x-secret",
+   "header": "Basic eC1pZDp4LXNlY3JldA=="
+  },
+  {
+   "id": "ü",
+   "secret": "p:w",
+   "header": "Basic w7w6cDp3"
+  }
+ ]
+}

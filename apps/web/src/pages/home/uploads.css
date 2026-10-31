@@ -1,0 +1,77 @@
+/* ---------------------------------------------------------------- uploads library & trash (g19, g22, g87) */
+.up-crumb-sep { color: var(--text-3); flex: none; }
+[dir='rtl'] .up-crumb-sep { transform: scaleX(-1); }
+
+.up-head { display: flex; flex-direction: column; gap: 12px; }
+/* The Trash tab panel lays its parts out like the page content around it. */
+.trash-panel { display: flex; flex-direction: column; gap: 16px; }
+.up-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.up-toolbar .up-search { flex: 0 1 280px; }
+.up-toolbar select.input { width: auto; }
+.up-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.up-chips .chip { height: 30px; display: inline-flex; align-items: center; gap: 6px; }
+.up-chips .chip .n { font-weight: 500; color: var(--text-3); }
+
+.up-usage { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-3); }
+.up-usage .bar { flex: 0 0 160px; height: 6px; border-radius: 3px; background: var(--surface-3); overflow: hidden; }
+.up-usage .bar > span { display: block; height: 100%; background: var(--accent); }
+.up-usage .bar.full > span { background: var(--danger); }
+
+.up-selbar {
+  position: sticky; top: 64px; z-index: 4; display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  border-radius: var(--radius); background: var(--accent-soft); color: var(--text); font-size: 13px; font-weight: 600;
+}
+.up-selbar.idle { position: static; background: none; padding: 0; font-weight: 400; }
+.up-check { width: 16px; height: 16px; margin: 0; accent-color: var(--accent); cursor: pointer; }
+
+/* Grid cards: the shared .card with a checkbox in the top-left corner. */
+.up-grid .card .thumb { position: relative; }
+/* The preview button fills the tile; the checkbox sits on top of it. */
+.up-grid .card .thumb > .up-open { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; border-radius: inherit; overflow: hidden; }
+.up-grid .card .thumb > .up-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.up-grid .card .thumb > .up-open > img.up-img, .up-grid .card .thumb > img.up-img { position: absolute; inset: 0; max-width: none; max-height: none; width: 100%; height: 100%; object-fit: cover; box-shadow: none; border-radius: 0; }
+.up-grid .card .thumb > img.up-img.contain, .up-list .mini > img.contain { object-fit: contain; padding: 8%; box-sizing: border-box; }
+.up-grid .card.selected .thumb { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.up-grid .card .pick { position: absolute; top: 8px; inset-inline-start: 8px; opacity: 0; transition: opacity .1s; z-index: 1; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; background: var(--surface); box-shadow: var(--shadow-1); }
+.up-grid .card:hover .pick, .up-grid .card .pick:focus-within, .up-grid.selecting .card .pick, .up-grid .card.selected .pick { opacity: 1; }
+.up-grid .card .t.trash-left, .up-list .trash-left { color: var(--danger); }
+.up-badge { position: absolute; inset-inline-start: 8px; bottom: 8px; background: rgba(0,0,0,.65); color: #fff; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; }
+.up-audio { display: grid; place-items: center; gap: 6px; color: var(--text-2); font-size: 12px; padding: 12px; text-align: center; }
+
+/* List view */
+.up-list { width: 100%; border-collapse: collapse; font-size: 13px; }
+.up-list th { text-align: start; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); padding: 8px 10px; border-bottom: 1px solid var(--border); font-weight: 700; white-space: nowrap; }
+.up-list td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.up-list tr:hover td { background: var(--surface-2); }
+.up-list tr.selected td { background: var(--accent-soft); }
+.up-list .thumbcell { width: 56px; }
+.up-list .mini { position: relative; width: 48px; height: 36px; border-radius: 6px; background: var(--surface-3); display: grid; place-items: center; overflow: hidden; color: var(--text-3); }
+.up-list .mini > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.up-list .name { font-weight: 600; max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.up-list button.up-name { display: block; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 600; text-align: start; }
+.up-list button.up-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.up-list .num { white-space: nowrap; color: var(--text-2); }
+@media (max-width: 720px) { .up-list .wide { display: none; } }
+
+/* Details dialog */
+.up-details { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 640px) { .up-details { grid-template-columns: 1fr; } }
+.up-details .preview { background: var(--surface-3); border-radius: var(--radius); display: grid; place-items: center; min-height: 200px; max-height: 60vh; overflow: hidden; }
+.up-details .preview img, .up-details .preview video { max-width: 100%; max-height: 60vh; object-fit: contain; }
+.up-details dl { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 13px; align-content: start; }
+.up-details dt { color: var(--text-3); }
+.up-details dd { margin: 0; overflow-wrap: anywhere; }
+
+/* Editor Uploads panel */
+.up-panel-actions { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; }
+.up-panel-drop { position: relative; display: flex; flex-direction: column; gap: 10px; }
+.up-panel-drop.over::after {
+  content: ''; position: absolute; inset: -4px; border: 2px dashed var(--accent); border-radius: 10px; pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.masonry .m-tile .up-del { position: absolute; top: 4px; inset-inline-end: 4px; width: 24px; height: 24px; opacity: 0; transition: opacity .1s; }
+.masonry .m-tile:hover .up-del, .masonry .m-tile .up-del:focus-visible { opacity: 1; }
+.up-audio-row { position: relative; }
+.up-audio-row .up-del { opacity: 0; }
+.up-audio-row:hover .up-del, .up-audio-row .up-del:focus-visible { opacity: 1; }
+.masonry .m-tile .up-ins { display: block; width: 100%; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }

@@ -1,0 +1,176 @@
+[
+ {
+  "id": "local",
+  "label": "Download & remind",
+  "env": [],
+  "limits": {
+   "maxChars": 100000,
+   "images": 100,
+   "video": true,
+   "imageTypes": [
+    "image/png",
+    "image/jpeg"
+   ]
+  },
+  "hasRefresh": false
+ },
+ {
+  "id": "instagram",
+  "label": "Instagram",
+  "env": [
+   "OC_FACEBOOK_CLIENT_ID",
+   "OC_FACEBOOK_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 2200,
+   "images": 10,
+   "video": true,
+   "imageTypes": [
+    "image/jpeg"
+   ],
+   "maxImageBytes": 8388608
+  },
+  "hasRefresh": false
+ },
+ {
+  "id": "facebook",
+  "label": "Facebook Page",
+  "env": [
+   "OC_FACEBOOK_CLIENT_ID",
+   "OC_FACEBOOK_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 63206,
+   "images": 10,
+   "video": true,
+   "imageTypes": [
+    "image/png",
+    "image/jpeg"
+   ]
+  },
+  "hasRefresh": false
+ },
+ {
+  "id": "linkedin",
+  "label": "LinkedIn",
+  "env": [
+   "OC_LINKEDIN_CLIENT_ID",
+   "OC_LINKEDIN_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 3000,
+   "images": 20,
+   "video": true,
+   "imageTypes": [
+    "image/png",
+    "image/jpeg"
+   ]
+  },
+  "hasRefresh": true
+ },
+ {
+  "id": "x",
+  "label": "X (Twitter)",
+  "env": [
+   "OC_X_CLIENT_ID",
+   "OC_X_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 280,
+   "images": 4,
+   "video": true,
+   "imageTypes": [
+    "image/png",
+    "image/jpeg"
+   ],
+   "maxImageBytes": 5242880
+  },
+  "hasRefresh": true
+ },
+ {
+  "id": "tiktok",
+  "label": "TikTok",
+  "env": [
+   "OC_TIKTOK_CLIENT_KEY",
+   "OC_TIKTOK_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 2200,
+   "images": 35,
+   "video": true,
+   "imageTypes": [
+    "image/jpeg"
+   ]
+  },
+  "hasRefresh": true
+ },
+ {
+  "id": "youtube",
+  "label": "YouTube",
+  "env": [
+   "OC_YOUTUBE_CLIENT_ID",
+   "OC_YOUTUBE_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 5000,
+   "images": 0,
+   "video": true,
+   "imageTypes": []
+  },
+  "hasRefresh": true
+ },
+ {
+  "id": "pinterest",
+  "label": "Pinterest",
+  "env": [
+   "OC_PINTEREST_CLIENT_ID",
+   "OC_PINTEREST_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 500,
+   "images": 5,
+   "video": true,
+   "imageTypes": [
+    "image/png",
+    "image/jpeg"
+   ],
+   "maxImageBytes": 20971520
+  },
+  "hasRefresh": true
+ },
+ {
+  "id": "threads",
+  "label": "Threads",
+  "env": [
+   "OC_THREADS_CLIENT_ID",
+   "OC_THREADS_CLIENT_SECRET"
+  ],
+  "limits": {
+   "maxChars": 500,
+   "images": 20,
+   "video": true,
+   "imageTypes": [
+    "image/png",
+    "image/jpeg"
+   ],
+   "maxImageBytes": 8388608
+  },
+  "hasRefresh": true
+ },
+ {
+  "id": "bluesky",
+  "label": "Bluesky",
+  "env": [],
+  "limits": {
+   "maxChars": 300,
+   "images": 4,
+   "video": false,
+   "imageTypes": [
+    "image/jpeg",
+    "image/png"
+   ],
+   "maxImageBytes": 1000000
+  },
+  "hasRefresh": true
+ }
+]

@@ -1,0 +1,436 @@
+{
+ "slugs": [
+  {
+   "family": "Roboto",
+   "slug": "roboto"
+  },
+  {
+   "family": "Noto Sans JP",
+   "slug": "noto-sans-jp"
+  },
+  {
+   "family": "  M PLUS 1p!",
+   "slug": "m-plus-1p"
+  },
+  {
+   "family": "Zilla Slab Highlight",
+   "slug": "zilla-slab-highlight"
+  },
+  {
+   "family": "--a--",
+   "slug": "a"
+  },
+  {
+   "family": "Ünïcödé Sans",
+   "slug": "n-c-d-sans"
+  },
+  {
+   "family": "ΣΊΣΥΦΟΣ",
+   "slug": ""
+  },
+  {
+   "family": "IBM Plex Sans KR",
+   "slug": "ibm-plex-sans-kr"
+  }
+ ],
+ "metadata": {
+  "familyMetadataList": [
+   {
+    "family": "Zeta Sans",
+    "category": "Sans Serif",
+    "fonts": {
+     "400": {},
+     "700": {},
+     "1000": {},
+     "400i": {},
+     "x": {}
+    },
+    "popularity": 3,
+    "subsets": [
+     "menu",
+     "latin",
+     "greek"
+    ]
+   },
+   {
+    "family": "Alpha Serif",
+    "category": "Serif",
+    "fonts": {
+     "300": {}
+    },
+    "popularity": 1,
+    "subsets": [
+     "latin"
+    ]
+   },
+   {
+    "family": "No Faces",
+    "category": "Display",
+    "fonts": {},
+    "popularity": 0,
+    "subsets": []
+   },
+   {
+    "family": "Only Bad Faces",
+    "category": "Display",
+    "fonts": {
+     "abc": {}
+    },
+    "popularity": 0,
+    "subsets": []
+   },
+   {
+    "family": "Mystery",
+    "category": "Symbols",
+    "fonts": {
+     "400": {}
+    },
+    "popularity": 3,
+    "subsets": [
+     "menu"
+    ]
+   },
+   {
+    "family": "Code Mono",
+    "category": "Monospace",
+    "fonts": {
+     "400": {},
+     "700i": {}
+    },
+    "popularity": 2.5,
+    "subsets": [
+     "latin"
+    ]
+   },
+   {
+    "family": "Hand Write",
+    "category": "Handwriting",
+    "fonts": {
+     "400": {}
+    },
+    "popularity": 2,
+    "subsets": [
+     "latin"
+    ]
+   }
+  ]
+ },
+ "catalog": [
+  {
+   "family": "Alpha Serif",
+   "slug": "alpha-serif",
+   "category": "serif",
+   "faces": [
+    "300"
+   ],
+   "popularity": 1,
+   "subsets": [
+    "latin"
+   ]
+  },
+  {
+   "family": "Hand Write",
+   "slug": "hand-write",
+   "category": "handwriting",
+   "faces": [
+    "400"
+   ],
+   "popularity": 2,
+   "subsets": [
+    "latin"
+   ]
+  },
+  {
+   "family": "Code Mono",
+   "slug": "code-mono",
+   "category": "mono",
+   "faces": [
+    "400",
+    "700i"
+   ],
+   "popularity": 2.5,
+   "subsets": [
+    "latin"
+   ]
+  },
+  {
+   "family": "Zeta Sans",
+   "slug": "zeta-sans",
+   "category": "sans",
+   "faces": [
+    "400",
+    "400i",
+    "700"
+   ],
+   "popularity": 3,
+   "subsets": [
+    "latin",
+    "greek"
+   ]
+  },
+  {
+   "family": "Mystery",
+   "slug": "mystery",
+   "category": "display",
+   "faces": [
+    "400"
+   ],
+   "popularity": 3,
+   "subsets": []
+  }
+ ],
+ "previews": [
+  {
+   "slug": "roboto",
+   "requests": [
+    {
+     "url": "https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400&text=Roboto",
+     "ua": "Mozilla/4.0 (compatible; Pinselo font fetch)"
+    },
+    {
+     "url": "https://fonts.gstatic.com/l/font?kit=abc&skey=1",
+     "ua": null
+    }
+   ],
+   "bytesHex": "4f54544f010203"
+  },
+  {
+   "slug": "noto-sans-jp",
+   "requests": [
+    {
+     "url": "https://fonts.googleapis.com/css2?family=Noto%20Sans%20JP:ital,wght@0,400&text=Noto%20Sans%20JP",
+     "ua": "Mozilla/4.0 (compatible; Pinselo font fetch)"
+    },
+    {
+     "url": "https://fonts.gstatic.com/l/font?kit=abc&skey=1",
+     "ua": null
+    }
+   ],
+   "bytesHex": "4f54544f010203"
+  },
+  {
+   "slug": "sunflower",
+   "requests": [
+    {
+     "url": "https://fonts.googleapis.com/css2?family=Sunflower:ital,wght@0,300&text=Sunflower",
+     "ua": "Mozilla/4.0 (compatible; Pinselo font fetch)"
+    },
+    {
+     "url": "https://fonts.gstatic.com/l/font?kit=abc&skey=1",
+     "ua": null
+    }
+   ],
+   "bytesHex": "4f54544f010203"
+  }
+ ],
+ "unknownFileError": "unknown Google font gf/roboto/450.ttf",
+ "manifest": {
+  "pinnedCount": 185,
+  "totalCount": 1950,
+  "sha256": "6110c47e2e0a2dc64013cafe89e75a5859b962258ac2019d6f93442201e49101",
+  "firstExtra": [
+   {
+    "family": "Google Sans",
+    "slug": "google-sans",
+    "category": "sans",
+    "license": "Google Fonts (OFL / Apache / UFL)",
+    "source": "google",
+    "faces": [
+     {
+      "weight": 400,
+      "italic": false,
+      "file": "gf/google-sans/400.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 400,
+      "italic": true,
+      "file": "gf/google-sans/400i.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 500,
+      "italic": false,
+      "file": "gf/google-sans/500.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 500,
+      "italic": true,
+      "file": "gf/google-sans/500i.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 600,
+      "italic": false,
+      "file": "gf/google-sans/600.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 600,
+      "italic": true,
+      "file": "gf/google-sans/600i.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 700,
+      "italic": false,
+      "file": "gf/google-sans/700.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 700,
+      "italic": true,
+      "file": "gf/google-sans/700i.ttf",
+      "sha256": "",
+      "bytes": 0
+     }
+    ]
+   },
+   {
+    "family": "Noto Sans JP",
+    "slug": "noto-sans-jp",
+    "category": "sans",
+    "license": "Google Fonts (OFL / Apache / UFL)",
+    "source": "google",
+    "faces": [
+     {
+      "weight": 100,
+      "italic": false,
+      "file": "gf/noto-sans-jp/100.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 200,
+      "italic": false,
+      "file": "gf/noto-sans-jp/200.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 300,
+      "italic": false,
+      "file": "gf/noto-sans-jp/300.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 400,
+      "italic": false,
+      "file": "gf/noto-sans-jp/400.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 500,
+      "italic": false,
+      "file": "gf/noto-sans-jp/500.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 600,
+      "italic": false,
+      "file": "gf/noto-sans-jp/600.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 700,
+      "italic": false,
+      "file": "gf/noto-sans-jp/700.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 800,
+      "italic": false,
+      "file": "gf/noto-sans-jp/800.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 900,
+      "italic": false,
+      "file": "gf/noto-sans-jp/900.ttf",
+      "sha256": "",
+      "bytes": 0
+     }
+    ]
+   },
+   {
+    "family": "Arimo",
+    "slug": "arimo",
+    "category": "sans",
+    "license": "Google Fonts (OFL / Apache / UFL)",
+    "source": "google",
+    "faces": [
+     {
+      "weight": 400,
+      "italic": false,
+      "file": "gf/arimo/400.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 400,
+      "italic": true,
+      "file": "gf/arimo/400i.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 500,
+      "italic": false,
+      "file": "gf/arimo/500.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 500,
+      "italic": true,
+      "file": "gf/arimo/500i.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 600,
+      "italic": false,
+      "file": "gf/arimo/600.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 600,
+      "italic": true,
+      "file": "gf/arimo/600i.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 700,
+      "italic": false,
+      "file": "gf/arimo/700.ttf",
+      "sha256": "",
+      "bytes": 0
+     },
+     {
+      "weight": 700,
+      "italic": true,
+      "file": "gf/arimo/700i.ttf",
+      "sha256": "",
+      "bytes": 0
+     }
+    ]
+   }
+  ]
+ }
+}

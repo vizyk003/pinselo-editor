@@ -1,0 +1,4378 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_RENDER_URL": "http://127.0.0.1:9"
+ },
+ "fake": {},
+ "objects": [
+  "89504e470d0a1a0a0000000d49484452000000020000000308060000009dd2f04c0000000d49444154789c63f8cfc0f01f000502027f5a3e7a4b0000000049454e44ae426082"
+ ],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'cy@example.test', 'Cy', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Cy''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('868e6ccfb81ed51de495925533c9cba5022e8326126a7e2a2aec434e24a4bc7e', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000004', 'dan@example.test', 'Dan', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001004', 'Dan''s workspace', true, '00000000-0000-4000-8000-000000000004', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001004', '00000000-0000-4000-8000-000000000004', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000004')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('9e5fe99ee660b960ebb7fdd6184e2eefcc6591ee0d3af6aa8443240785d78973', '00000000-0000-4000-8000-000000000004', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000005', 'eve@example.test', 'Eve', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001005', 'Eve''s workspace', true, '00000000-0000-4000-8000-000000000005', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001005', '00000000-0000-4000-8000-000000000005', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000005')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('bdbb83a9d3b95b35c07a35de33dfb188e45db72c033d0061e99d9adef148fcd4', '00000000-0000-4000-8000-000000000005', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000006', 'fay@example.test', 'Fay', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001006', 'Fay''s workspace', true, '00000000-0000-4000-8000-000000000006', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001006', '00000000-0000-4000-8000-000000000006', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000006')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('71fd0484ccc7c75868b21deadc0009ec15ad7bb339583c4a157e70693997d9a5', '00000000-0000-4000-8000-000000000006', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000005000', 'Studio', false, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000005001', 'Other Co', false, '00000000-0000-4000-8000-000000000005', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role, created_at) VALUES ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'owner', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'member', '2025-01-01T00:01:00Z'),\n       ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000003', 'designer', '2025-01-01T00:02:00Z'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000006', 'member', '2025-01-01T00:03:00Z'),\n       ('00000000-0000-4000-8000-000000005001', '00000000-0000-4000-8000-000000000005', 'owner', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000005001', '00000000-0000-4000-8000-000000000004', 'member', '2025-01-01T00:00:00Z')",
+  "INSERT INTO team_groups(id, workspace_id, name, created_by, created_at) VALUES ('00000000-0000-4000-8000-000000007001', '00000000-0000-4000-8000-000000005001', 'Others', '00000000-0000-4000-8000-000000000005', '2025-01-01T00:00:00Z')",
+  "INSERT INTO team_group_members(group_id, user_id) VALUES ('00000000-0000-4000-8000-000000007001', '00000000-0000-4000-8000-000000000004')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, public_view, thumb_sha256) VALUES ('Ssolo00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Solo 100%_done', 'graphic', 1200, 630, 'px', 1, '2025-01-01T01:00:00Z', '2025-01-01T01:00:00Z', true, 'cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Ssolo00000000000', decode('010c8eace7900a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db01201687db60904756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770e536f6c6f20313030255f646f6e652801046d6574610565706f6368017d002801046d6574610e74656d706c6174654f726967696e0176010a74656d706c617465496477105374656d706c61746530303030303030270105706167657310537061676531303030303030303030300128008eace7900a090269640177105370616765313030303030303030303028008eace7900a09056f72646572017702613000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Steamposter00000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'Team poster', 'graphic', 1200, 630, 'px', 1, '2025-01-01T02:00:00Z', '2025-01-01T02:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Steamposter00000', decode('010cd998ccde02002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db01201687db60904756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770b5465616d20706f737465722801046d6574610565706f6368017d002801046d6574610e74656d706c6174654f726967696e0176010a74656d706c617465496477105374656d706c6174653030303030303027010570616765731053706167653130303030303030303030012800d998ccde0209026964017710537061676531303030303030303030302800d998ccde0209056f72646572017702613000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, public_view) VALUES ('Sevesdesign00000', '00000000-0000-4000-8000-000000001005', '00000000-0000-4000-8000-000000000005', 'Eve design', 'graphic', 1200, 630, 'px', 1, '2025-01-01T03:00:00Z', '2025-01-01T03:00:00Z', true)",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sevesdesign00000', decode('010cb4fa93a607002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db01201687db60904756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770a4576652064657369676e2801046d6574610565706f6368017d002801046d6574610e74656d706c6174654f726967696e0176010a74656d706c617465496477105374656d706c6174653030303030303027010570616765731053706167653130303030303030303030012800b4fa93a60709026964017710537061676531303030303030303030302800b4fa93a60709056f72646572017702613000', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, public_view, public_password_hash) VALUES ('Spwlocked0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Locked', 'graphic', 1200, 630, 'px', 1, '2025-01-01T04:00:00Z', '2025-01-01T04:00:00Z', true, 'scrypt$15$8$1$AAAAAAAAAAAAAAAAAAAAAA==$AAAA')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Spwlocked0000000', decode('010ceed9e5f40a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db01201687db60904756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177064c6f636b65642801046d6574610565706f6368017d002801046d6574610e74656d706c6174654f726967696e0176010a74656d706c617465496477105374656d706c6174653030303030303027010570616765731053706167653130303030303030303030012800eed9e5f40a09026964017710537061676531303030303030303030302800eed9e5f40a09056f72646572017702613000', 'hex'))",
+  "INSERT INTO design_shares(design_id, user_id, role, created_at) VALUES ('Ssolo00000000000', '00000000-0000-4000-8000-000000000005', 'view', '2025-01-01T05:00:00Z'), ('Sevesdesign00000', '00000000-0000-4000-8000-000000000001', 'comment', '2025-01-01T06:00:00Z')",
+  "INSERT INTO insight_daily(design_id, scope, day, kind, key, n) VALUES ('Ssolo00000000000', 'view', '2025-01-01', 'visitor', '', 3), ('Ssolo00000000000', 'view', '2024-12-31', 'visitor', '', 4)"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "groups (member: empty)",
+   "response": {
+    "body": {
+     "groups": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "groups of a team I am not in",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "json": {
+    "name": "Mine"
+   },
+   "method": "POST",
+   "name": "create as a member",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only owners and admins can manage groups."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": {
+    "name": "   "
+   },
+   "method": "POST",
+   "name": "create: blank name",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "json": {
+    "memberIds": [
+     "nope"
+    ],
+    "name": "X"
+   },
+   "method": "POST",
+   "name": "create: bad member id",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "memberIds",
+        0
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:1>|<uuid:2>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "capture": {
+    "gDesign": "body.id"
+   },
+   "checks": [
+    {
+     "name": "groups",
+     "sql": "SELECT g.workspace_id, g.name, g.created_by, array(SELECT gm.user_id::text FROM team_group_members gm WHERE gm.group_id = g.id ORDER BY gm.user_id) AS members FROM team_groups g ORDER BY g.workspace_id, lower(g.name)"
+    }
+   ],
+   "db": [
+    {
+     "name": "groups",
+     "rows": [
+      {
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "members": [
+        "00000000-0000-4000-8000-000000000002",
+        "00000000-0000-4000-8000-000000000003"
+       ],
+       "name": "Designers",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_by": "00000000-0000-4000-8000-000000000005",
+       "members": [
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "name": "Others",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "memberIds": [
+     "00000000-0000-4000-8000-000000000002",
+     "00000000-0000-4000-8000-000000000003",
+     "00000000-0000-4000-8000-000000000004",
+     "00000000-0000-4000-8000-000000000002"
+    ],
+    "name": "  Designers "
+   },
+   "method": "POST",
+   "name": "create (non-members are left out)",
+   "response": {
+    "body": {
+     "id": "{{gDesign}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "json": {
+    "name": "designers"
+   },
+   "method": "POST",
+   "name": "create: same name, other case",
+   "response": {
+    "body": {
+     "error": "group_exists",
+     "message": "A group with that name already exists."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "name": "Solo"
+   },
+   "method": "POST",
+   "name": "create in a personal workspace",
+   "response": {
+    "body": {
+     "error": "personal",
+     "message": "Create a team to use groups."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000001001/groups"
+  },
+  {
+   "capture": {
+    "gWriters": "body.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "json": {
+    "name": "Writers"
+   },
+   "method": "POST",
+   "name": "create a second group",
+   "response": {
+    "body": {
+     "id": "{{gWriters}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "json": {
+    "name": "DESIGNERS"
+   },
+   "method": "PATCH",
+   "name": "rename to a taken name",
+   "response": {
+    "body": {
+     "error": "group_exists",
+     "message": "A group with that name already exists."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gWriters}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "name": "Copy"
+   },
+   "method": "PATCH",
+   "name": "rename: not a uuid",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "json": {
+    "name": "Mine now"
+   },
+   "method": "PATCH",
+   "name": "rename: another team’s group",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/00000000-0000-4000-8000-000000007001"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "json": {
+    "name": " Copywriters "
+   },
+   "method": "PATCH",
+   "name": "rename",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gWriters}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "json": {
+    "userIds": [
+     "00000000-0000-4000-8000-000000000006"
+    ]
+   },
+   "method": "POST",
+   "name": "add members as a member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "json": {
+    "userIds": [
+     "00000000-0000-4000-8000-000000000006",
+     "00000000-0000-4000-8000-000000000004"
+    ]
+   },
+   "method": "POST",
+   "name": "add a non-member",
+   "response": {
+    "body": {
+     "error": "not_member",
+     "message": "Only members of this team can join its groups."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "json": {
+    "userIds": []
+   },
+   "method": "POST",
+   "name": "add members: empty list",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "userIds"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": {
+    "userIds": [
+     "00000000-0000-4000-8000-000000000006"
+    ]
+   },
+   "method": "POST",
+   "name": "add members: unknown group",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/00000000-0000-4000-8000-000000007999/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "json": {
+    "userIds": [
+     "00000000-0000-4000-8000-000000000006",
+     "00000000-0000-4000-8000-000000000002",
+     "00000000-0000-4000-8000-000000000006"
+    ]
+   },
+   "method": "POST",
+   "name": "add members",
+   "response": {
+    "body": {
+     "added": 1,
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "name": "groups (member sees them)",
+   "response": {
+    "body": {
+     "groups": [
+      {
+       "created_at": "<ts>",
+       "id": "{{gWriters}}",
+       "memberIds": [],
+       "name": "Copywriters"
+      },
+      {
+       "created_at": "<ts>",
+       "id": "{{gDesign}}",
+       "memberIds": [
+        "00000000-0000-4000-8000-000000000002",
+        "00000000-0000-4000-8000-000000000003",
+        "00000000-0000-4000-8000-000000000006"
+       ],
+       "name": "Designers"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "name": "members with their groups",
+   "response": {
+    "body": {
+     "invites": [],
+     "members": [
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "email": "ada@example.test",
+       "groups": [],
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada",
+       "role": "owner"
+      },
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:02:00.000Z",
+       "email": "cy@example.test",
+       "groups": [
+        {
+         "id": "{{gDesign}}",
+         "name": "Designers"
+        }
+       ],
+       "id": "00000000-0000-4000-8000-000000000003",
+       "name": "Cy",
+       "role": "designer"
+      },
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:01:00.000Z",
+       "email": "bob@example.test",
+       "groups": [
+        {
+         "id": "{{gDesign}}",
+         "name": "Designers"
+        }
+       ],
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob",
+       "role": "member"
+      },
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:03:00.000Z",
+       "email": "fay@example.test",
+       "groups": [
+        {
+         "id": "{{gDesign}}",
+         "name": "Designers"
+        }
+       ],
+       "id": "00000000-0000-4000-8000-000000000006",
+       "name": "Fay",
+       "role": "member"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "method": "DELETE",
+   "name": "remove a member: not a uuid",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members/nope"
+  },
+  {
+   "checks": [
+    {
+     "name": "groups",
+     "sql": "SELECT g.workspace_id, g.name, g.created_by, array(SELECT gm.user_id::text FROM team_group_members gm WHERE gm.group_id = g.id ORDER BY gm.user_id) AS members FROM team_groups g ORDER BY g.workspace_id, lower(g.name)"
+    }
+   ],
+   "db": [
+    {
+     "name": "groups",
+     "rows": [
+      {
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "members": [],
+       "name": "Copywriters",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "members": [
+        "00000000-0000-4000-8000-000000000002",
+        "00000000-0000-4000-8000-000000000003"
+       ],
+       "name": "Designers",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_by": "00000000-0000-4000-8000-000000000005",
+       "members": [
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "name": "Others",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "method": "DELETE",
+   "name": "remove a group member",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members/00000000-0000-4000-8000-000000000006"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "method": "DELETE",
+   "name": "remove someone not in the group",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gDesign}}/members/00000000-0000-4000-8000-000000000004"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "method": "DELETE",
+   "name": "delete a group as a designer",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gWriters}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "method": "DELETE",
+   "name": "delete a group",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gWriters}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "method": "DELETE",
+   "name": "delete it again",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/groups/{{gWriters}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "json": {
+    "groupId": "{{gDesign}}",
+    "role": "view"
+   },
+   "method": "POST",
+   "name": "group share as a non-owner",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "json": {
+    "groupId": "{{gDesign}}",
+    "role": "owner"
+   },
+   "method": "POST",
+   "name": "group share: bad role",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"view\"|\"comment\"|\"edit\"",
+       "path": [
+        "role"
+       ],
+       "values": [
+        "view",
+        "comment",
+        "edit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "json": {
+    "groupId": "00000000-0000-4000-8000-000000007001",
+    "role": "view"
+   },
+   "method": "POST",
+   "name": "group share: another team’s group",
+   "response": {
+    "body": {
+     "error": "group_not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares"
+  },
+  {
+   "checks": [
+    {
+     "name": "shares",
+     "sql": "SELECT gs.design_id, g.name, gs.role, gs.created_by FROM design_group_shares gs JOIN team_groups g ON g.id = gs.group_id ORDER BY gs.design_id, g.name"
+    },
+    {
+     "name": "notifications",
+     "sql": "SELECT user_id, kind, design_id, actor_id, body FROM notifications ORDER BY user_id, body"
+    }
+   ],
+   "db": [
+    {
+     "name": "shares",
+     "rows": [
+      {
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "design_id": "Ssolo00000000000",
+       "name": "Designers",
+       "role": "view"
+      }
+     ]
+    },
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "body": "Ada shared “Solo 100%_done” with Designers (can view)",
+       "design_id": "Ssolo00000000000",
+       "kind": "share",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "body": "Ada shared “Solo 100%_done” with Designers (can view)",
+       "design_id": "Ssolo00000000000",
+       "kind": "share",
+       "user_id": "00000000-0000-4000-8000-000000000003"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "json": {
+    "groupId": "{{gDesign}}",
+    "role": "view"
+   },
+   "method": "POST",
+   "name": "group share",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares"
+  },
+  {
+   "checks": [
+    {
+     "name": "shares",
+     "sql": "SELECT gs.design_id, g.name, gs.role, gs.created_by FROM design_group_shares gs JOIN team_groups g ON g.id = gs.group_id ORDER BY gs.design_id, g.name"
+    },
+    {
+     "name": "notifications",
+     "sql": "SELECT count(*)::int AS n FROM notifications"
+    }
+   ],
+   "db": [
+    {
+     "name": "shares",
+     "rows": [
+      {
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "design_id": "Ssolo00000000000",
+       "name": "Designers",
+       "role": "edit"
+      }
+     ]
+    },
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "n": 2
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "json": {
+    "groupId": "{{gDesign}}",
+    "role": "edit"
+   },
+   "method": "POST",
+   "name": "group share: role change",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "name": "role through the group",
+   "response": {
+    "body": {
+     "design": {
+      "created_at": "2025-01-01T01:00:00.000Z",
+      "folder_id": null,
+      "height": 630,
+      "held": false,
+      "id": "Ssolo00000000000",
+      "link_access": "restricted",
+      "owner_id": "00000000-0000-4000-8000-000000000001",
+      "owner_name": "Ada",
+      "page_count": 1,
+      "public_view": true,
+      "role": "edit",
+      "starred": false,
+      "surface": "graphic",
+      "thumbnail": null,
+      "title": "Solo 100%_done",
+      "trashed_at": null,
+      "unit": "px",
+      "updated_at": "2025-01-01T01:00:00.000Z",
+      "width": 1200,
+      "workspace_id": "00000000-0000-4000-8000-000000001001"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-fay",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "name": "not in the group",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "name": "shared with me (through a group)",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "folder_id": null,
+       "height": 630,
+       "held": false,
+       "id": "Ssolo00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": true,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Solo 100%_done",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T01:00:00.000Z",
+       "width": 1200,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs?filter=shared"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "name": "recent includes it",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T02:00:00.000Z",
+       "folder_id": null,
+       "height": 630,
+       "held": false,
+       "id": "Steamposter00000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Team poster",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T02:00:00.000Z",
+       "width": 1200,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "folder_id": null,
+       "height": 630,
+       "held": false,
+       "id": "Ssolo00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": true,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Solo 100%_done",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T01:00:00.000Z",
+       "width": 1200,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "name": "search finds it",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "folder_id": null,
+       "height": 630,
+       "id": "Ssolo00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": true,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Solo 100%_done",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T01:00:00.000Z",
+       "width": 1200,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [],
+     "q": "solo",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=solo"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "name": "collaborators",
+   "response": {
+    "body": {
+     "people": [
+      {
+       "color": "#7c3aed",
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "bob@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "cy@example.test",
+       "id": "00000000-0000-4000-8000-000000000003",
+       "name": "Cy"
+      },
+      {
+       "color": "#7c3aed",
+       "email": "eve@example.test",
+       "id": "00000000-0000-4000-8000-000000000005",
+       "name": "Eve"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/collaborators"
+  },
+  {
+   "checks": [
+    {
+     "name": "notifications",
+     "sql": "SELECT user_id, kind, body FROM notifications WHERE kind = 'mention' ORDER BY user_id"
+    }
+   ],
+   "db": [
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "body": "Ada: Over to you @Cy",
+       "kind": "mention",
+       "user_id": "00000000-0000-4000-8000-000000000003"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "json": {
+    "body": "Over to you @Cy"
+   },
+   "method": "POST",
+   "name": "mention a group member",
+   "response": {
+    "body": {
+     "id": "<uuid:3>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/comments"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "name": "share panel (owner)",
+   "response": {
+    "body": {
+     "groups": [
+      {
+       "id": "{{gDesign}}",
+       "members": 2,
+       "name": "Designers",
+       "role": "edit",
+       "team": "Studio"
+      }
+     ],
+     "role": "owner",
+     "slug": null,
+     "team": null,
+     "templateLink": {
+      "token": null,
+      "uses": 0
+     },
+     "visitors": 7
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/sharing"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "name": "share panel (editor through the group)",
+   "response": {
+    "body": {
+     "groups": [
+      {
+       "id": "{{gDesign}}",
+       "members": 2,
+       "name": "Designers",
+       "role": "edit",
+       "team": "Studio"
+      }
+     ],
+     "role": "edit",
+     "slug": null,
+     "team": null,
+     "templateLink": null,
+     "visitors": 7
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/sharing"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "name": "share panel (viewer)",
+   "response": {
+    "body": {
+     "groups": [],
+     "role": "view",
+     "slug": null,
+     "team": null,
+     "templateLink": null,
+     "visitors": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/sharing"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "name": "share panel (no access)",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000/sharing"
+  },
+  {
+   "checks": [
+    {
+     "name": "groups",
+     "sql": "SELECT g.workspace_id, g.name, g.created_by, array(SELECT gm.user_id::text FROM team_group_members gm WHERE gm.group_id = g.id ORDER BY gm.user_id) AS members FROM team_groups g ORDER BY g.workspace_id, lower(g.name)"
+    }
+   ],
+   "db": [
+    {
+     "name": "groups",
+     "rows": [
+      {
+       "created_by": "00000000-0000-4000-8000-000000000001",
+       "members": [
+        "00000000-0000-4000-8000-000000000002"
+       ],
+       "name": "Designers",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_by": "00000000-0000-4000-8000-000000000005",
+       "members": [
+        "00000000-0000-4000-8000-000000000004"
+       ],
+       "name": "Others",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "method": "DELETE",
+   "name": "leave the team: group membership goes too",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000003"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "name": "no access after leaving",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "name": "people: suggestions",
+   "response": {
+    "body": {
+     "groups": [
+      {
+       "id": "{{gDesign}}",
+       "members": 1,
+       "name": "Designers",
+       "team": "Studio"
+      }
+     ],
+     "people": [
+      {
+       "color": "#7c3aed",
+       "email": "eve@example.test",
+       "id": "00000000-0000-4000-8000-000000000005",
+       "name": "Eve",
+       "shared_at": "2025-01-01T06:00:00.000Z",
+       "teammate": false
+      },
+      {
+       "color": "#7c3aed",
+       "email": "bob@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob",
+       "shared_at": null,
+       "teammate": true
+      },
+      {
+       "color": "#7c3aed",
+       "email": "fay@example.test",
+       "id": "00000000-0000-4000-8000-000000000006",
+       "name": "Fay",
+       "shared_at": null,
+       "teammate": true
+      }
+     ],
+     "suggested": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/sharing/people"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "name": "people: search",
+   "response": {
+    "body": {
+     "groups": [],
+     "people": [
+      {
+       "color": "#7c3aed",
+       "email": "bob@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob",
+       "shared_at": null,
+       "teammate": true
+      }
+     ],
+     "suggested": false
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/sharing/people?q=%20b%20"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "name": "people: % is literal",
+   "response": {
+    "body": {
+     "groups": [],
+     "people": [],
+     "suggested": false
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/sharing/people?q=%25"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "name": "people: for a design (already shared are left out)",
+   "response": {
+    "body": {
+     "groups": [],
+     "people": [
+      {
+       "color": "#7c3aed",
+       "email": "bob@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob",
+       "shared_at": null,
+       "teammate": true
+      },
+      {
+       "color": "#7c3aed",
+       "email": "fay@example.test",
+       "id": "00000000-0000-4000-8000-000000000006",
+       "name": "Fay",
+       "shared_at": null,
+       "teammate": true
+      }
+     ],
+     "suggested": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/sharing/people?design=Ssolo00000000000&limit=3"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "name": "people: group by team name",
+   "response": {
+    "body": {
+     "groups": [
+      {
+       "id": "{{gDesign}}",
+       "members": 1,
+       "name": "Designers",
+       "team": "Studio"
+      }
+     ],
+     "people": [],
+     "suggested": false
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/sharing/people?q=studio&design=Steamposter00000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "name": "people: a design I can’t see",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/sharing/people?design=Ssolo00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "name": "people: bad limit",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 20,
+       "message": "Too big: expected number to be <=20",
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/sharing/people?limit=50"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "method": "DELETE",
+   "name": "remove a group share: not a uuid",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.53"
+   },
+   "method": "DELETE",
+   "name": "remove a group share as a non-owner",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Ssolo00000000000/group-shares/{{gDesign}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "json": {
+    "access": "view"
+   },
+   "method": "PUT",
+   "name": "team access on a personal design",
+   "response": {
+    "body": {
+     "error": "not_team",
+     "message": "Only team designs have a team access level."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/team-access"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "json": {
+    "access": "edit"
+   },
+   "method": "PUT",
+   "name": "team access as a member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Steamposter00000/team-access"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "json": {
+    "access": "owner"
+   },
+   "method": "PUT",
+   "name": "team access: bad value",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"view\"|\"comment\"|\"edit\"",
+       "path": [
+        "access"
+       ],
+       "values": [
+        "view",
+        "comment",
+        "edit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Steamposter00000/team-access"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "name": "member default: comment",
+   "response": {
+    "body": {
+     "design": {
+      "created_at": "2025-01-01T02:00:00.000Z",
+      "folder_id": null,
+      "height": 630,
+      "held": false,
+      "id": "Steamposter00000",
+      "link_access": "restricted",
+      "owner_id": "00000000-0000-4000-8000-000000000001",
+      "owner_name": "Ada",
+      "page_count": 1,
+      "public_view": false,
+      "role": "comment",
+      "starred": false,
+      "surface": "graphic",
+      "thumbnail": null,
+      "title": "Team poster",
+      "trashed_at": null,
+      "unit": "px",
+      "updated_at": "2025-01-01T02:00:00.000Z",
+      "width": 1200,
+      "workspace_id": "00000000-0000-4000-8000-000000005000"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "json": {
+    "access": "view"
+   },
+   "method": "PUT",
+   "name": "team access: view",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000/team-access"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "name": "member now views",
+   "response": {
+    "body": {
+     "design": {
+      "created_at": "2025-01-01T02:00:00.000Z",
+      "folder_id": null,
+      "height": 630,
+      "held": false,
+      "id": "Steamposter00000",
+      "link_access": "restricted",
+      "owner_id": "00000000-0000-4000-8000-000000000001",
+      "owner_name": "Ada",
+      "page_count": 1,
+      "public_view": false,
+      "role": "view",
+      "starred": false,
+      "surface": "graphic",
+      "thumbnail": null,
+      "title": "Team poster",
+      "trashed_at": null,
+      "unit": "px",
+      "updated_at": "2025-01-01T02:00:00.000Z",
+      "width": 1200,
+      "workspace_id": "00000000-0000-4000-8000-000000005000"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.60"
+   },
+   "name": "share panel shows the team level",
+   "response": {
+    "body": {
+     "groups": [],
+     "role": "view",
+     "slug": null,
+     "team": {
+      "access": "view",
+      "id": "00000000-0000-4000-8000-000000005000",
+      "name": "Studio"
+     },
+     "templateLink": null,
+     "visitors": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000/sharing"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.61"
+   },
+   "json": {
+    "access": null
+   },
+   "method": "PUT",
+   "name": "team access: back to the default",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000/team-access"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.62"
+   },
+   "json": {
+    "slug": "bobs-link"
+   },
+   "method": "PUT",
+   "name": "slug as an editor",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.63"
+   },
+   "json": {
+    "slug": " a_ "
+   },
+   "method": "PUT",
+   "name": "slug: too short",
+   "response": {
+    "body": {
+     "error": "slug_length",
+     "message": "Use 3 to 60 characters."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.64"
+   },
+   "json": {
+    "slug": "my.link"
+   },
+   "method": "PUT",
+   "name": "slug: bad characters",
+   "response": {
+    "body": {
+     "error": "slug_chars",
+     "message": "Use only letters, numbers and hyphens."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.65"
+   },
+   "json": {
+    "slug": "Sign Up"
+   },
+   "method": "PUT",
+   "name": "slug: reserved",
+   "response": {
+    "body": {
+     "error": "slug_reserved",
+     "message": "That link is reserved. Try another one."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.66"
+   },
+   "json": {
+    "slug": "Abcdefgh12345678"
+   },
+   "method": "PUT",
+   "name": "slug: looks like a design id",
+   "response": {
+    "body": {
+     "error": "slug_id_like",
+     "message": "Add a hyphen or pick a different link."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.67"
+   },
+   "json": {},
+   "method": "PUT",
+   "name": "slug: missing",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received undefined",
+       "path": [
+        "slug"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "checks": [
+    {
+     "name": "claims",
+     "sql": "SELECT slug, owner_id, design_id FROM public_slug_claims ORDER BY slug"
+    }
+   ],
+   "db": [
+    {
+     "name": "claims",
+     "rows": [
+      {
+       "design_id": "Ssolo00000000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "slug": "my-cool-link"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.68"
+   },
+   "json": {
+    "slug": "  My  Cool__Link- "
+   },
+   "method": "PUT",
+   "name": "slug",
+   "response": {
+    "body": {
+     "slug": "my-cool-link"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.69"
+   },
+   "json": {
+    "slug": "my-cool-link"
+   },
+   "method": "PUT",
+   "name": "slug taken by another design",
+   "response": {
+    "body": {
+     "error": "slug_taken",
+     "message": "That link is already taken."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/designs/Steamposter00000/slug"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.70"
+   },
+   "name": "public view by slug",
+   "response": {
+    "body": {
+     "doc": {
+      "assets": {},
+      "elements": {},
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 630,
+        "unit": "px",
+        "w": 1200
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "templateOrigin": {
+        "templateId": "<id:1>"
+       },
+       "title": "Solo 100%_done"
+      },
+      "pages": {
+       "<id:2>": {
+        "id": "<id:2>",
+        "order": "a0"
+       }
+      }
+     },
+     "id": "Ssolo00000000000",
+     "owner": "Ada",
+     "title": "Solo 100%_done"
+    },
+    "headers": {
+     "cache-control": "public, max-age=30",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/designs/my-cool-link"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.71"
+   },
+   "name": "public view by slug (normalised)",
+   "response": {
+    "body": {
+     "doc": {
+      "assets": {},
+      "elements": {},
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 630,
+        "unit": "px",
+        "w": 1200
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "templateOrigin": {
+        "templateId": "<id:1>"
+       },
+       "title": "Solo 100%_done"
+      },
+      "pages": {
+       "<id:2>": {
+        "id": "<id:2>",
+        "order": "a0"
+       }
+      }
+     },
+     "id": "Ssolo00000000000",
+     "owner": "Ada",
+     "title": "Solo 100%_done"
+    },
+    "headers": {
+     "cache-control": "public, max-age=30",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/designs/MY_COOL_LINK"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.72"
+   },
+   "name": "public view: unknown slug",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/designs/nobody-here"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.73"
+   },
+   "json": {
+    "slug": null
+   },
+   "method": "PUT",
+   "name": "release the slug",
+   "response": {
+    "body": {
+     "slug": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.74"
+   },
+   "json": {
+    "slug": "my-cool-link"
+   },
+   "method": "PUT",
+   "name": "a released slug stays with its first owner",
+   "response": {
+    "body": {
+     "error": "slug_taken",
+     "message": "That link is already taken."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/designs/Sevesdesign00000/slug"
+  },
+  {
+   "checks": [
+    {
+     "name": "claims",
+     "sql": "SELECT slug, owner_id, design_id FROM public_slug_claims ORDER BY slug"
+    }
+   ],
+   "db": [
+    {
+     "name": "claims",
+     "rows": [
+      {
+       "design_id": "Ssolo00000000000",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "slug": "my-cool-link"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.75"
+   },
+   "json": {
+    "slug": "my-cool-link"
+   },
+   "method": "PUT",
+   "name": "the first owner may reuse it elsewhere",
+   "response": {
+    "body": {
+     "slug": "my-cool-link"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-eve",
+    "x-forwarded-for": "198.51.100.76"
+   },
+   "json": {
+    "slug": "eve-link"
+   },
+   "method": "PUT",
+   "name": "slug for Eve",
+   "response": {
+    "body": {
+     "slug": "eve-link"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Sevesdesign00000/slug"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.77"
+   },
+   "name": "share panel: slug of a private-link design (owner sees it)",
+   "response": {
+    "body": {
+     "groups": [],
+     "role": "owner",
+     "slug": "my-cool-link",
+     "team": {
+      "access": null,
+      "id": "00000000-0000-4000-8000-000000005000",
+      "name": "Studio"
+     },
+     "templateLink": {
+      "token": null,
+      "uses": 0
+     },
+     "visitors": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000/sharing"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.78"
+   },
+   "name": "share panel: slug hidden from others while the link is off",
+   "response": {
+    "body": {
+     "groups": [],
+     "role": "comment",
+     "slug": null,
+     "team": {
+      "access": null,
+      "id": "00000000-0000-4000-8000-000000005000",
+      "name": "Studio"
+     },
+     "templateLink": null,
+     "visitors": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Steamposter00000/sharing"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.79"
+   },
+   "name": "oEmbed",
+   "response": {
+    "body": {
+     "author_name": "Ada",
+     "cache_age": 300,
+     "height": 420,
+     "html": "<iframe src=\"https://app.example/view/Ssolo00000000000?embed=1\" width=\"800\" height=\"420\" title=\"Solo 100%_done\" style=\"border:0;max-width:100%\" loading=\"lazy\" allowfullscreen></iframe>",
+     "provider_name": "Pinselo",
+     "provider_url": "https://app.example",
+     "thumbnail_height": 3,
+     "thumbnail_url": "https://app.example/api/public/designs/Ssolo00000000000/thumbnail.png",
+     "thumbnail_width": 2,
+     "title": "Solo 100%_done",
+     "type": "rich",
+     "version": "1.0",
+     "width": 800
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "public, max-age=300",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fapp.example%2Fview%2FSsolo00000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.80"
+   },
+   "name": "oEmbed: by slug, size limits",
+   "response": {
+    "body": {
+     "author_name": "Eve",
+     "cache_age": 300,
+     "height": 150,
+     "html": "<iframe src=\"https://app.example/view/Sevesdesign00000?embed=1\" width=\"286\" height=\"150\" title=\"Eve design\" style=\"border:0;max-width:100%\" loading=\"lazy\" allowfullscreen></iframe>",
+     "provider_name": "Pinselo",
+     "provider_url": "https://app.example",
+     "title": "Eve design",
+     "type": "rich",
+     "version": "1.0",
+     "width": 286
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "public, max-age=300",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fapp.example%2Fview%2Feve-link%2F&maxwidth=400&maxheight=150&format=json"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.81"
+   },
+   "name": "oEmbed: xml",
+   "response": {
+    "body": {
+     "error": "format_not_supported"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 501
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fapp.example%2Fview%2FSsolo00000000000&format=xml"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.82"
+   },
+   "name": "oEmbed: another host",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fevil.example%2Fview%2FSsolo00000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.83"
+   },
+   "name": "oEmbed: not a view link",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fapp.example%2Fdesign%2FSsolo00000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.84"
+   },
+   "name": "oEmbed: link is off",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fapp.example%2Fview%2Fmy-cool-link"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.85"
+   },
+   "name": "oEmbed: password protected",
+   "response": {
+    "body": {
+     "error": "password_protected"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/public/oembed?url=https%3A%2F%2Fapp.example%2Fview%2FSpwlocked0000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.86"
+   },
+   "name": "oEmbed: bad maxwidth",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": false,
+       "message": "Too small: expected number to be >0",
+       "minimum": 0,
+       "origin": "number",
+       "path": [
+        "maxwidth"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/public/oembed?url=x&maxwidth=0"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.87"
+   },
+   "name": "oEmbed: no url",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received undefined",
+       "path": [
+        "url"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "120",
+     "x-ratelimit-remaining": "119",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/public/oembed"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.88"
+   },
+   "name": "public thumbnail",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       2,
+       3
+      ],
+      "sha256": "cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41",
+      "size": 70
+     }
+    },
+    "headers": {
+     "cache-control": "public, max-age=300",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/designs/Ssolo00000000000/thumbnail.png"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.89"
+   },
+   "name": "public thumbnail: no thumbnail",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/designs/Sevesdesign00000/thumbnail.png"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.90"
+   },
+   "name": "public thumbnail: not an id",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/designs/eve-link/thumbnail.png"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.91"
+   },
+   "name": "public thumbnail: private",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/designs/Steamposter00000/thumbnail.png"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.92"
+   },
+   "method": "POST",
+   "name": "template link as an editor",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.93"
+   },
+   "json": {
+    "regenerate": "yes"
+   },
+   "method": "POST",
+   "name": "template link: bad body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received string",
+       "path": [
+        "regenerate"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "capture": {
+    "tpl": "body.token"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.94"
+   },
+   "method": "POST",
+   "name": "template link",
+   "response": {
+    "body": {
+     "token": "{{tpl}}",
+     "uses": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.95"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "template link again (same token)",
+   "response": {
+    "body": {
+     "token": "{{tpl}}",
+     "uses": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "capture": {
+    "tpl2": "body.token"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.96"
+   },
+   "json": {
+    "regenerate": true
+   },
+   "method": "POST",
+   "name": "template link: regenerate",
+   "response": {
+    "body": {
+     "token": "{{tpl2}}",
+     "uses": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.97"
+   },
+   "name": "template landing: old token",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/template-links/{{tpl}}"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.98"
+   },
+   "name": "template landing",
+   "response": {
+    "body": {
+     "height": 630,
+     "owner": "Ada",
+     "pages": 1,
+     "surface": "graphic",
+     "thumb": true,
+     "title": "Solo 100%_done",
+     "unit": "px",
+     "width": 1200
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/template-links/{{tpl2}}"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.99"
+   },
+   "name": "template landing: bad token",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/template-links/short"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.100"
+   },
+   "name": "template thumbnail",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       2,
+       3
+      ],
+      "sha256": "cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41",
+      "size": 70
+     }
+    },
+    "headers": {
+     "cache-control": "private, max-age=60",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/template-links/{{tpl2}}/thumbnail.png"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.101"
+   },
+   "method": "POST",
+   "name": "use a template link: signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/template-links/{{tpl2}}/use"
+  },
+  {
+   "capture": {
+    "copy": "body.id"
+   },
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, title, owner_id, workspace_id, link_access, public_view, public_slug, team_access, template_token IS NOT NULL AS template_link, template_uses FROM designs ORDER BY title, owner_id"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "id": "Sevesdesign00000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000005",
+       "public_slug": "eve-link",
+       "public_view": true,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Eve design",
+       "workspace_id": "00000000-0000-4000-8000-000000001005"
+      },
+      {
+       "id": "Spwlocked0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "public_slug": null,
+       "public_view": true,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Locked",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "id": "Ssolo00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "public_slug": null,
+       "public_view": true,
+       "team_access": null,
+       "template_link": true,
+       "template_uses": 1,
+       "title": "Solo 100%_done",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "id": "{{copy}}",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000004",
+       "public_slug": null,
+       "public_view": false,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Solo 100%_done",
+       "workspace_id": "00000000-0000-4000-8000-000000001004"
+      },
+      {
+       "id": "Steamposter00000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "public_slug": "my-cool-link",
+       "public_view": false,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Team poster",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.102"
+   },
+   "method": "POST",
+   "name": "use a template link",
+   "response": {
+    "body": {
+     "id": "{{copy}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/template-links/{{tpl2}}/use"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.103"
+   },
+   "name": "the copy has no template origin",
+   "response": {
+    "body": {
+     "doc": {
+      "assets": {},
+      "elements": {},
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 630,
+        "unit": "px",
+        "w": 1200
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "title": "Solo 100%_done"
+      },
+      "pages": {
+       "<id:2>": {
+        "id": "<id:2>",
+        "order": "a0"
+       }
+      }
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/{{copy}}/doc"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.104"
+   },
+   "name": "the original stays out of reach",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-dan",
+    "x-forwarded-for": "198.51.100.105"
+   },
+   "method": "POST",
+   "name": "use: unknown token",
+   "response": {
+    "body": {
+     "error": "not_found",
+     "message": "This template link was turned off or doesn’t exist."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/template-links/AAAAAAAAAAAAAAAAAAAAAAAA/use"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.106"
+   },
+   "method": "DELETE",
+   "name": "turn off as an editor",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.107"
+   },
+   "method": "DELETE",
+   "name": "turn off the template link",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.108"
+   },
+   "name": "template landing after turning off",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/template-links/{{tpl2}}"
+  },
+  {
+   "capture": {
+    "tpl3": "body.token"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.109"
+   },
+   "method": "POST",
+   "name": "template link for make-private",
+   "response": {
+    "body": {
+     "token": "{{tpl3}}",
+     "uses": 1
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/template-link"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.110"
+   },
+   "method": "POST",
+   "name": "make private as an editor",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Ssolo00000000000/make-private"
+  },
+  {
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, title, owner_id, workspace_id, link_access, public_view, public_slug, team_access, template_token IS NOT NULL AS template_link, template_uses FROM designs ORDER BY title, owner_id"
+    },
+    {
+     "name": "shares",
+     "sql": "SELECT design_id, user_id, role FROM design_shares ORDER BY design_id, user_id"
+    },
+    {
+     "name": "group shares",
+     "sql": "SELECT gs.design_id, g.name, gs.role, gs.created_by FROM design_group_shares gs JOIN team_groups g ON g.id = gs.group_id ORDER BY gs.design_id, g.name"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "id": "Sevesdesign00000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000005",
+       "public_slug": "eve-link",
+       "public_view": true,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Eve design",
+       "workspace_id": "00000000-0000-4000-8000-000000001005"
+      },
+      {
+       "id": "Spwlocked0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "public_slug": null,
+       "public_view": true,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Locked",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "id": "Ssolo00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "public_slug": null,
+       "public_view": false,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 1,
+       "title": "Solo 100%_done",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "id": "{{copy}}",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000004",
+       "public_slug": null,
+       "public_view": false,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Solo 100%_done",
+       "workspace_id": "00000000-0000-4000-8000-000000001004"
+      },
+      {
+       "id": "Steamposter00000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "public_slug": "my-cool-link",
+       "public_view": false,
+       "team_access": null,
+       "template_link": false,
+       "template_uses": 0,
+       "title": "Team poster",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    },
+    {
+     "name": "shares",
+     "rows": [
+      {
+       "design_id": "Sevesdesign00000",
+       "role": "comment",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    },
+    {
+     "name": "group shares",
+     "rows": []
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.111"
+   },
+   "method": "POST",
+   "name": "make private",
+   "response": {
+    "body": {
+     "ok": true,
+     "removed": {
+      "groups": 1,
+      "people": 1
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Ssolo00000000000/make-private"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.112"
+   },
+   "name": "the group lost access",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Ssolo00000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.113"
+   },
+   "name": "public view is off",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/designs/Ssolo00000000000"
+  },
+  {
+   "name": "audit",
+   "rows": [
+    {
+     "action": "team.group_created",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "name": "Designers"
+     },
+     "target": "{{gDesign}}",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "team.group_created",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "name": "Writers"
+     },
+     "target": "{{gWriters}}",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "team.group_deleted",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": null,
+     "target": "{{gWriters}}",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "design.share_group",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "group": "{{gDesign}}",
+      "role": "view"
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "design.share_group",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "group": "{{gDesign}}",
+      "role": "edit"
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "design.team_access",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "access": "view"
+     },
+     "target": "Steamposter00000",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "design.team_access",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "access": null
+     },
+     "target": "Steamposter00000",
+     "workspace_id": "00000000-0000-4000-8000-000000005000"
+    },
+    {
+     "action": "design.public_slug",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "slug": "my-cool-link"
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.public_slug",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "slug": null
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.public_slug",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "slug": "my-cool-link"
+     },
+     "target": "Steamposter00000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.public_slug",
+     "actor_id": "00000000-0000-4000-8000-000000000005",
+     "meta": {
+      "slug": "eve-link"
+     },
+     "target": "Sevesdesign00000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.template_link",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "enabled": true,
+      "regenerated": false
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.template_link",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "enabled": true,
+      "regenerated": true
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.template_link",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "enabled": false
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.template_link",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "enabled": true,
+      "regenerated": false
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    },
+    {
+     "action": "design.make_private",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "groups": 1,
+      "people": 1
+     },
+     "target": "Ssolo00000000000",
+     "workspace_id": null
+    }
+   ],
+   "sql": "SELECT actor_id, workspace_id, action, target, meta FROM audit_events WHERE action LIKE 'design.%' OR action LIKE 'team.group%' ORDER BY id"
+  }
+ ],
+ "vars": {}
+}

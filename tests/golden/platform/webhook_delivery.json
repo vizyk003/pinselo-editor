@@ -1,0 +1,56 @@
+{
+ "user": {
+  "id": "33333333-3333-4333-8333-333333333333",
+  "email": "Ann@Example.COM",
+  "locale": "de"
+ },
+ "hook": {
+  "id": "44444444-4444-4444-8444-444444444444",
+  "secret": "whsec_golden",
+  "events": [
+   "design.created",
+   "ping"
+  ]
+ },
+ "event": "design.created",
+ "data": {
+  "zeta": 1,
+  "alpha": "é ✨ \"q\"",
+  "mid": [
+   0.1,
+   1e+21,
+   {
+    "b": 2,
+    "a": 1
+   }
+  ],
+  "long_key_name": null,
+  "n": 0
+ },
+ "emittedAt": 1760000100555,
+ "emitCount": 1,
+ "deliveryId": "55555555-5555-4555-8555-000000000001",
+ "payloadText": "{\"id\": \"55555555-5555-4555-8555-000000000001\", \"data\": {\"n\": 0, \"mid\": [0.1, 1000000000000000000000, {\"a\": 1, \"b\": 2}], \"zeta\": 1, \"alpha\": \"é ✨ \\\"q\\\"\", \"long_key_name\": null}, \"event\": \"design.created\", \"created\": \"2025-10-09T08:55:00.555Z\"}",
+ "job": {
+  "payloadKeys": [
+   "deliveryId"
+  ],
+  "deliveryIdMatches": true,
+  "max_attempts": 6
+ },
+ "deliveredAt": 1760000222999,
+ "request": {
+  "body": "{\"id\":\"55555555-5555-4555-8555-000000000001\",\"data\":{\"n\":0,\"mid\":[0.1,1e+21,{\"a\":1,\"b\":2}],\"zeta\":1,\"alpha\":\"é ✨ \\\"q\\\"\",\"long_key_name\":null},\"event\":\"design.created\",\"created\":\"2025-10-09T08:55:00.555Z\"}",
+  "contentType": "application/json",
+  "userAgent": "Pinselo-Webhooks/1",
+  "signature": "t=1760000222,v1=40546e4142c2b22878cf2a62756d04c327615e5564f31ce159b481e4b1ed970b",
+  "delivery": "55555555-5555-4555-8555-000000000001"
+ },
+ "after": {
+  "status": "delivered",
+  "attempts": 1,
+  "response_code": 204,
+  "error": null,
+  "delivered": true
+ }
+}

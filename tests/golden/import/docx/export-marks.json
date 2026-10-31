@@ -1,0 +1,7 @@
+{
+ "file": "export-marks.docx",
+ "html": "<p><strong><em><u><s>all</s></u></em></strong> plain code `tick` <strong>bold code</strong></p><p><strong>  lead and trail  </strong>x<em> </em><s>   </s></p><p>hl default hl rgb hl short hl bad</p><p><sub>sub</sub><sup>sup</sup><sub>both</sub></p><p>c1c2c3c4c5c6c7</p><p>f1f2f3f4</p><p><a href=\"https://a.example/x y(z)\"><u>one</u><strong><u> two</u></strong></a><a href=\"https://b.example\"><u>three</u></a><br /><a href=\"https://b.example\"><u>four</u></a></p><p><a href=\"mailto:hi@example.com\"><u>mail</u></a> rel js ftp<a href=\"HTTPS://UP.EXAMPLE\"><u> up</u></a> none</p><p>Escapes: \\ ` * _ [ ] &lt; &gt; | # + - 1. done</p><p># not a heading</p><p>- not a list</p><p>12. not a number</p><p>&gt; not a quote</p><p>  + indented plus</p><p>#hashtag stays</p><p>line one<br />line two<br /></p><p><a href=\"https://c.example\"><u>code</u></a> after</p><p>Unicode: Zürich ☕ 日本語 עברית 🎉👩‍👩‍👧</p>",
+ "warnings": 0,
+ "messages": [],
+ "images": []
+}

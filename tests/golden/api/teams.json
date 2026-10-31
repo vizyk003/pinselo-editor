@@ -1,0 +1,2000 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {},
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'cy@example.test', 'Cy', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Cy''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('868e6ccfb81ed51de495925533c9cba5022e8326126a7e2a2aec434e24a4bc7e', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000005000', 'Studio', false, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role, created_at) VALUES ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'owner', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'member', '2025-01-01T00:00:00Z')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, width, height, public_view) VALUES ('Spublic000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Public', 100, 100, true), ('Sprivate00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Private', 100, 100, false)",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Spublic000000000', decode('010b8eace7900a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777da40101687da40104756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177065075626c69632801046d6574610565706f6368017d00270105706167657310537061676531303030303030303030300128008eace7900a080269640177105370616765313030303030303030303028008eace7900a08056f72646572017702613000', 'hex'))",
+  "INSERT INTO notifications(id, user_id, kind, design_id, actor_id, body, created_at) VALUES ('00000000-0000-4000-8000-000000000900', '00000000-0000-4000-8000-000000000002', 'share', 'Spublic000000000', '00000000-0000-4000-8000-000000000001', 'Ada shared', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000000901', '00000000-0000-4000-8000-000000000002', 'comment', NULL, '00000000-0000-4000-8000-000000000001', 'Hi', '2025-01-01T01:00:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "workspaces",
+   "response": {
+    "body": {
+     "workspaces": [
+      {
+       "id": "00000000-0000-4000-8000-000000001001",
+       "members": 1,
+       "name": "Ada's workspace",
+       "personal": true,
+       "role": "owner"
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000005000",
+       "members": 2,
+       "name": "Studio",
+       "personal": false,
+       "role": "owner"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "json": {
+    "name": ""
+   },
+   "method": "POST",
+   "name": "create: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces"
+  },
+  {
+   "capture": {
+    "team2": "body.id"
+   },
+   "checks": [
+    {
+     "name": "members",
+     "sql": "SELECT workspace_id, user_id, role FROM memberships ORDER BY workspace_id, user_id"
+    }
+   ],
+   "db": [
+    {
+     "name": "members",
+     "rows": [
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000003",
+       "workspace_id": "00000000-0000-4000-8000-000000001003"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "role": "member",
+       "user_id": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "{{team2}}"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "json": {
+    "name": "  Agency  "
+   },
+   "method": "POST",
+   "name": "create",
+   "response": {
+    "body": {
+     "id": "{{team2}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": {
+    "name": "Mine"
+   },
+   "method": "PATCH",
+   "name": "rename as member",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "json": {
+    "name": "Studio X"
+   },
+   "method": "PATCH",
+   "name": "rename",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "name": "x"
+   },
+   "method": "PATCH",
+   "name": "rename: not a uuid",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/workspaces/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "name": "members of a stranger",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "emails": [],
+    "role": "owner"
+   },
+   "method": "POST",
+   "name": "invite: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "emails"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"admin\"|\"designer\"|\"member\"",
+       "path": [
+        "role"
+       ],
+       "values": [
+        "admin",
+        "designer",
+        "member"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/invites"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "json": {
+    "emails": [
+     "cy@example.test"
+    ],
+    "role": "designer"
+   },
+   "method": "POST",
+   "name": "invite as member",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Only owners and admins can invite."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/invites"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "json": {
+    "emails": [
+     "cy@example.test"
+    ],
+    "role": "member"
+   },
+   "method": "POST",
+   "name": "invite into a personal workspace",
+   "response": {
+    "body": {
+     "error": "personal",
+     "message": "Create a team to invite people."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000001001/invites"
+  },
+  {
+   "checks": [
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, text FROM email_outbox ORDER BY to_email"
+    },
+    {
+     "name": "tokens",
+     "sql": "SELECT kind, email, data FROM auth_tokens ORDER BY email"
+    }
+   ],
+   "db": [
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "subject": "Ada invited you to Studio X on Pinselo",
+       "text": "Join Studio X\n\nAda invited you to design together in Studio X. The invite expires in 7 days.\n\nAccept invite: https://app.example/invite?token=<token:1>\n",
+       "to_email": "cy@example.test"
+      },
+      {
+       "subject": "Ada invited you to Studio X on Pinselo",
+       "text": "Join Studio X\n\nAda invited you to design together in Studio X. The invite expires in 7 days.\n\nAccept invite: https://app.example/invite?token=<token:2>\n",
+       "to_email": "new@example.test"
+      }
+     ]
+    },
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "data": {
+        "by": "00000000-0000-4000-8000-000000000001",
+        "role": "designer",
+        "workspaceId": "00000000-0000-4000-8000-000000005000"
+       },
+       "email": "cy@example.test",
+       "kind": "invite"
+      },
+      {
+       "data": {
+        "by": "00000000-0000-4000-8000-000000000001",
+        "role": "designer",
+        "workspaceId": "00000000-0000-4000-8000-000000005000"
+       },
+       "email": "new@example.test",
+       "kind": "invite"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "emails": [
+     "Cy@example.test",
+     "new@example.test"
+    ],
+    "role": "designer"
+   },
+   "method": "POST",
+   "name": "invite",
+   "response": {
+    "body": {
+     "ok": true,
+     "sent": 2
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/invites"
+  },
+  {
+   "capture": {
+    "inv0": "body.invites.0.id",
+    "inv1": "body.invites.1.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "members",
+   "response": {
+    "body": {
+     "invites": [
+      {
+       "email": "new@example.test",
+       "expires_at": "<ts>",
+       "id": "{{inv0}}",
+       "role": "designer"
+      },
+      {
+       "email": "cy@example.test",
+       "expires_at": "<ts>",
+       "id": "{{inv1}}",
+       "role": "designer"
+      }
+     ],
+     "members": [
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "email": "ada@example.test",
+       "groups": [],
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada",
+       "role": "owner"
+      },
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "email": "bob@example.test",
+       "groups": [],
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob",
+       "role": "member"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "method": "DELETE",
+   "name": "cancel an invite",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/invites/{{inv0}}"
+  },
+  {
+   "capture": {
+    "token": {
+     "from": "rows.0.text",
+     "regex": "token=([A-Za-z0-9_-]+)"
+    }
+   },
+   "name": "invite token",
+   "rows": [
+    {
+     "text": "Join Studio X\n\nAda invited you to design together in Studio X. The invite expires in 7 days.\n\nAccept invite: https://app.example/invite?token={{token}}\n"
+    }
+   ],
+   "sql": "SELECT text FROM email_outbox WHERE to_email = 'cy@example.test'"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "json": {
+    "token": "{{token}}"
+   },
+   "method": "POST",
+   "name": "accept with the wrong account",
+   "response": {
+    "body": {
+     "error": "wrong_account",
+     "message": "This invite was sent to cy@example.test. Sign in with that email to accept it."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/invites/accept"
+  },
+  {
+   "checks": [
+    {
+     "name": "members",
+     "sql": "SELECT workspace_id, user_id, role FROM memberships ORDER BY workspace_id, user_id"
+    }
+   ],
+   "db": [
+    {
+     "name": "members",
+     "rows": [
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000003",
+       "workspace_id": "00000000-0000-4000-8000-000000001003"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "role": "member",
+       "user_id": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "{{team2}}"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "json": {
+    "token": "{{token}}"
+   },
+   "method": "POST",
+   "name": "accept",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This invite has expired or was already used."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/invites/accept"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": {
+    "token": "{{token}}"
+   },
+   "method": "POST",
+   "name": "accept: used",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This invite has expired or was already used."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/invites/accept"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "json": {
+    "token": "nope"
+   },
+   "method": "POST",
+   "name": "accept: bad token",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This invite has expired or was already used."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/invites/accept"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "name": "members after",
+   "response": {
+    "body": {
+     "invites": [],
+     "members": [
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "email": "ada@example.test",
+       "groups": [],
+       "id": "00000000-0000-4000-8000-000000000001",
+       "name": "Ada",
+       "role": "owner"
+      },
+      {
+       "color": "#7c3aed",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "email": "bob@example.test",
+       "groups": [],
+       "id": "00000000-0000-4000-8000-000000000002",
+       "name": "Bob",
+       "role": "member"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "json": {
+    "role": "admin"
+   },
+   "method": "PATCH",
+   "name": "promote",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000002"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "json": {
+    "role": "owner"
+   },
+   "method": "PATCH",
+   "name": "admin cannot make owners",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000002"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "json": {
+    "role": "admin"
+   },
+   "method": "PATCH",
+   "name": "last owner cannot step down",
+   "response": {
+    "body": {
+     "error": "last_owner",
+     "message": "A team needs at least one owner."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000001"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "method": "DELETE",
+   "name": "last owner cannot leave",
+   "response": {
+    "body": {
+     "error": "last_owner",
+     "message": "Transfer ownership before leaving."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000001"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "method": "DELETE",
+   "name": "admin cannot remove the owner",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000001"
+  },
+  {
+   "checks": [
+    {
+     "name": "members",
+     "sql": "SELECT workspace_id, user_id, role FROM memberships ORDER BY workspace_id, user_id"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, workspace_id, action, target, meta FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "members",
+     "rows": [
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000003",
+       "workspace_id": "00000000-0000-4000-8000-000000001003"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001",
+       "workspace_id": "{{team2}}"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "team.created",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "meta": null,
+       "target": null,
+       "workspace_id": "{{team2}}"
+      },
+      {
+       "action": "team.invited",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "meta": {
+        "count": 2,
+        "role": "designer"
+       },
+       "target": null,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "team.role_changed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "meta": {
+        "role": "admin"
+       },
+       "target": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "team.left",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "meta": null,
+       "target": "00000000-0000-4000-8000-000000000002",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "method": "DELETE",
+   "name": "leave",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/workspaces/00000000-0000-4000-8000-000000005000/members/00000000-0000-4000-8000-000000000002"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "name": "kit (none yet)",
+   "response": {
+    "body": {
+     "kit": {
+      "colors": [],
+      "fonts": {},
+      "logos": [],
+      "name": "Brand kit"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "json": {
+    "colors": [
+     {
+      "hex": "red",
+      "name": "x"
+     }
+    ],
+    "fonts": {},
+    "logos": [
+     "short"
+    ],
+    "name": "K"
+   },
+   "method": "PUT",
+   "name": "kit: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "regex",
+       "message": "Invalid string: must match pattern /^#[0-9a-fA-F]{6}$/",
+       "origin": "string",
+       "path": [
+        "colors",
+        0,
+        "hex"
+       ],
+       "pattern": "/^#[0-9a-fA-F]{6}$/"
+      },
+      {
+       "code": "invalid_format",
+       "format": "regex",
+       "message": "Invalid string: must match pattern /^[0-9A-Za-z]{16}$/",
+       "origin": "string",
+       "path": [
+        "logos",
+        0
+       ],
+       "pattern": "/^[0-9A-Za-z]{16}$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "json": {
+    "colors": [
+     {
+      "hex": "#0c7a80",
+      "name": "Teal"
+     }
+    ],
+    "fonts": {
+     "heading": "Inter"
+    },
+    "logos": [],
+    "name": "Ada brand"
+   },
+   "method": "PUT",
+   "name": "save kit",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "json": {
+    "colors": [],
+    "fonts": {
+     "body": "Lora"
+    },
+    "logos": [],
+    "name": "Ada brand 2"
+   },
+   "method": "PUT",
+   "name": "update kit",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand"
+  },
+  {
+   "checks": [
+    {
+     "name": "kits",
+     "sql": "SELECT workspace_id, name, is_default, colors, palettes, fonts, logos, voice FROM brand_kits"
+    }
+   ],
+   "db": [
+    {
+     "name": "kits",
+     "rows": [
+      {
+       "colors": [],
+       "fonts": {
+        "body": "Lora",
+        "heading": "Inter"
+       },
+       "is_default": true,
+       "logos": [],
+       "name": "Ada brand 2",
+       "palettes": [],
+       "voice": "",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "name": "kit",
+   "response": {
+    "body": {
+     "kit": {
+      "colors": [],
+      "fonts": {
+       "body": "Lora",
+       "heading": "Inter"
+      },
+      "graphics": [],
+      "id": "<uuid:1>",
+      "isDefault": true,
+      "logos": [],
+      "name": "Ada brand 2",
+      "palettes": [],
+      "photos": [],
+      "updatedAt": "<ts>",
+      "voice": "",
+      "workspaceId": "00000000-0000-4000-8000-000000001001"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "name": "notifications",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "actor": "Ada",
+       "actor_color": "#7c3aed",
+       "body": "Hi",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "design_id": null,
+       "design_title": null,
+       "id": "00000000-0000-4000-8000-000000000901",
+       "kind": "comment",
+       "read_at": null
+      },
+      {
+       "actor": "Ada",
+       "actor_color": "#7c3aed",
+       "body": "Ada shared",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "design_id": "Spublic000000000",
+       "design_title": "Public",
+       "id": "00000000-0000-4000-8000-000000000900",
+       "kind": "share",
+       "read_at": null
+      }
+     ],
+     "unread": 2
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/notifications"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "json": {
+    "ids": [
+     "x"
+    ]
+   },
+   "method": "POST",
+   "name": "read one: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "uuid",
+       "message": "Invalid UUID",
+       "origin": "string",
+       "path": [
+        "ids",
+        0
+       ],
+       "pattern": "/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|<uuid:2>|<uuid:3>)$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/notifications/read"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "json": {
+    "ids": [
+     "00000000-0000-4000-8000-000000000900"
+    ]
+   },
+   "method": "POST",
+   "name": "read one",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/notifications/read"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "name": "unread count",
+   "response": {
+    "body": {
+     "items": [
+      {
+       "actor": "Ada",
+       "actor_color": "#7c3aed",
+       "body": "Hi",
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "design_id": null,
+       "design_title": null,
+       "id": "00000000-0000-4000-8000-000000000901",
+       "kind": "comment",
+       "read_at": null
+      },
+      {
+       "actor": "Ada",
+       "actor_color": "#7c3aed",
+       "body": "Ada shared",
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "design_id": "Spublic000000000",
+       "design_title": "Public",
+       "id": "00000000-0000-4000-8000-000000000900",
+       "kind": "share",
+       "read_at": "<ts>"
+      }
+     ],
+     "unread": 1
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/notifications"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "method": "POST",
+   "name": "read all (no body)",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/notifications/read"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "name": "public view",
+   "response": {
+    "body": {
+     "doc": {
+      "assets": {},
+      "elements": {},
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 100,
+        "unit": "px",
+        "w": 100
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "title": "Public"
+      },
+      "pages": {
+       "<id:1>": {
+        "id": "<id:1>",
+        "order": "a0"
+       }
+      }
+     },
+     "id": "Spublic000000000",
+     "owner": "Ada",
+     "title": "Public"
+    },
+    "headers": {
+     "cache-control": "public, max-age=30",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/designs/Spublic000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "name": "public view of a private design",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/public/designs/Sprivate00000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "name": "link settings as non-owner",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "name": "link settings",
+   "response": {
+    "body": {
+     "enabled": true,
+     "expiresAt": null,
+     "hasPassword": false
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "json": {
+    "enabled": true,
+    "expiresAt": "tomorrow",
+    "password": "abc"
+   },
+   "method": "POST",
+   "name": "set: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "datetime",
+       "message": "Invalid ISO datetime",
+       "origin": "string",
+       "path": [
+        "expiresAt"
+       ],
+       "pattern": "/^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$/"
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=4 characters",
+       "minimum": 4,
+       "origin": "string",
+       "path": [
+        "password"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "json": {
+    "enabled": true,
+    "expiresAt": "2025-06-01T00:00:00Z",
+    "password": "open sesame"
+   },
+   "method": "POST",
+   "name": "set password + expiry",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "name": "link settings after",
+   "response": {
+    "body": {
+     "enabled": true,
+     "expiresAt": "2025-06-01T00:00:00.000Z",
+     "hasPassword": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "name": "public view needs the password",
+   "response": {
+    "body": {
+     "error": "password_required",
+     "title": "Public"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/public/designs/Spublic000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.44",
+    "x-view-password": "nope"
+   },
+   "name": "public view: wrong password",
+   "response": {
+    "body": {
+     "error": "password_required",
+     "title": "Public"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/public/designs/Spublic000000000"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.45",
+    "x-view-password": "open sesame"
+   },
+   "name": "public view with the password",
+   "response": {
+    "body": {
+     "doc": {
+      "assets": {},
+      "elements": {},
+      "meta": {
+       "dims": {
+        "dpi": 96,
+        "h": 100,
+        "unit": "px",
+        "w": 100
+       },
+       "epoch": 0,
+       "lang": "en",
+       "layoutVersion": 1,
+       "minClientSchema": 1,
+       "schemaVersion": 1,
+       "surface": "graphic",
+       "title": "Public"
+      },
+      "pages": {
+       "<id:1>": {
+        "id": "<id:1>",
+        "order": "a0"
+       }
+      }
+     },
+     "id": "Spublic000000000",
+     "owner": "Ada",
+     "title": "Public"
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/public/designs/Spublic000000000"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "json": {
+    "enabled": true,
+    "expiresAt": "2024-06-01T00:00:00Z",
+    "password": null
+   },
+   "method": "POST",
+   "name": "expire it",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "name": "expired",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This link has expired."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 410
+   },
+   "url": "/api/public/designs/Spublic000000000"
+  },
+  {
+   "checks": [
+    {
+     "name": "audit",
+     "sql": "SELECT action, target, meta FROM audit_events WHERE action = 'design.public' ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "design.public",
+       "meta": {
+        "enabled": true,
+        "expires": "2025-06-01T00:00:00Z",
+        "password": true
+       },
+       "target": "Spublic000000000"
+      },
+      {
+       "action": "design.public",
+       "meta": {
+        "enabled": true,
+        "expires": "<ts>",
+        "password": false
+       },
+       "target": "Spublic000000000"
+      },
+      {
+       "action": "design.public",
+       "meta": {
+        "enabled": false
+       },
+       "target": "Spublic000000000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "json": {
+    "enabled": false
+   },
+   "method": "POST",
+   "name": "disable",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Spublic000000000/public"
+  }
+ ],
+ "vars": {}
+}

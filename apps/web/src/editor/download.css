@@ -1,0 +1,115 @@
+/* Download panel (DownloadPanel.tsx): popover under the top-bar Download button, bottom sheet on phones. */
+.dl-panel {
+  position: fixed; z-index: 95; width: min(360px, calc(100vw - 16px)); display: flex; flex-direction: column;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-2);
+  outline: none; animation: dl-in .14s ease-out;
+}
+@keyframes dl-in { from { opacity: 0; } to { opacity: 1; } }
+.dl-panel.sheet {
+  left: 0; right: 0; bottom: 0; top: auto; width: 100%; max-height: 88vh; border-radius: 16px 16px 0 0; border-bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom); animation: dl-up .2s ease-out;
+}
+@keyframes dl-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.dl-scrim { position: fixed; inset: 0; z-index: 94; background: rgba(10, 10, 20, .4); }
+.dl-grab { width: 36px; height: 4px; border-radius: 2px; background: var(--border-strong); margin: 8px auto 0; }
+.dl-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 4px; }
+.dl-head h2 { font-size: 16px; margin: 0; }
+.dl-body { padding: 8px 16px 16px; overflow: auto; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+
+.dl-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.dl-label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.dl-label-row { display: flex; align-items: baseline; justify-content: space-between; }
+.dl-value { font-size: 12px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+.dl-hint { font-size: 12px; color: var(--text-3); font-weight: 400; }
+.dl-error { font-size: 12px; color: var(--danger); margin: 0; }
+.dl-body input[type=range] { width: 100%; accent-color: var(--accent); margin: 2px 0; }
+.dl-body input[type=checkbox], .dl-body input[type=radio] { accent-color: var(--accent); width: 16px; height: 16px; margin: 0; flex: none; }
+.dl-check { display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer; min-height: 24px; }
+.dl-check:has(input:disabled) { opacity: .5; cursor: default; }
+.dl-watermark { display: grid; gap: 6px; margin-top: 8px; padding-left: 4px; }
+
+/* Select-like trigger buttons (file type, pages). */
+.dl-select {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 6px 10px; text-align: start;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); cursor: pointer; font: inherit; font-size: 13px;
+}
+.dl-select:hover { border-color: var(--border-strong); }
+.dl-select[aria-expanded='true'] { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.dl-select.dl-format { min-height: 52px; }
+.dl-chevron { margin-inline-start: auto; color: var(--text-3); flex: none; }
+
+/* File type listbox + its options. */
+.dl-listbox {
+  position: fixed; z-index: 96; overflow: auto; padding: 6px; outline: none;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-2);
+}
+.dl-opt { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 8px; cursor: pointer; }
+.dl-opt.active { background: var(--surface-2); }
+.dl-listbox:focus-visible .dl-opt.active { box-shadow: inset 0 0 0 2px var(--accent); }
+.dl-opt.selected .dl-opt-name { color: var(--accent); }
+.dl-opt-icon {
+  width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; flex: none;
+  background: var(--accent-soft); color: var(--accent);
+}
+.dl-opt-text { display: flex; flex-direction: column; min-width: 0; gap: 1px; flex: 1; }
+.dl-opt-name { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
+.dl-opt-desc { font-size: 12px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dl-opt-check { color: var(--accent); flex: none; }
+.dl-badge { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--accent); color: var(--accent-text); letter-spacing: .01em; }
+.dl-group-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-3); padding: 10px 8px 4px; border-top: 1px solid var(--border); margin-top: 4px; }
+
+/* Pages. */
+.dl-pages { display: flex; flex-direction: column; gap: 10px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); }
+.dl-radios { display: flex; flex-direction: column; gap: 8px; }
+.dl-radios.compact { gap: 6px; }
+.dl-page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; max-height: 220px; overflow: auto; padding: 2px; }
+.dl-page {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 4px 4px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+}
+.dl-page.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.dl-page input { position: absolute; top: 5px; left: 5px; z-index: 1; }
+.dl-page canvas { border-radius: 3px; box-shadow: var(--shadow-1); max-width: 64px; }
+.dl-page-blank { width: 48px; border-radius: 3px; background: var(--surface-3); }
+.dl-page-n { font-size: 11px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+
+/* PDF Print. */
+.dl-print { display: flex; flex-direction: column; gap: 12px; }
+.dl-radio {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.dl-radio.on { border-color: var(--accent); background: var(--accent-soft); }
+.dl-radio:focus-within { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.dl-advanced > summary { font-size: 13px; font-weight: 600; color: var(--text-2); padding: 2px 0; width: fit-content; }
+.dl-adv-body { display: flex; flex-direction: column; gap: 12px; padding: 10px 0 2px; }
+.dl-adv-body .input { font-size: 13px; }
+.dl-link {
+  display: inline-flex; align-items: center; gap: 6px; padding: 2px 0; border: 0; background: none; cursor: pointer; width: fit-content;
+  color: var(--accent); font: inherit; font-size: 13px; font-weight: 600;
+}
+.dl-link:disabled { opacity: .6; cursor: default; }
+
+/* The one Download button, with inline progress. */
+.dl-go {
+  position: relative; overflow: hidden; width: 100%; height: 44px; border: 0; border-radius: var(--radius);
+  background: var(--accent); color: var(--accent-text); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
+  transition: filter .12s, background .2s;
+}
+.dl-go:hover:not(:disabled) { filter: brightness(1.07); }
+.dl-go:disabled { opacity: .5; cursor: default; }
+.dl-go.busy { background: color-mix(in srgb, var(--accent) 55%, var(--surface-3)); cursor: progress; }
+.dl-go.done { background: #16a34a; color: #fff; }
+.dl-go-label { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.dl-go-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); transition: width .3s ease; }
+.dl-go-fill.indeterminate { width: 40%; animation: dl-slide 1.1s ease-in-out infinite; }
+@keyframes dl-slide { from { left: -40%; } to { left: 100%; } }
+@media (prefers-reduced-motion: reduce) { .dl-go-fill.indeterminate { animation: none; width: 100%; opacity: .6; } .dl-panel, .dl-panel.sheet { animation: none; } }
+
+.dl-footer { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 1px solid var(--border); }
+.dl-print-link {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 0; border-radius: var(--radius-sm);
+  background: var(--surface-2); color: var(--text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; text-align: start;
+}
+.dl-print-link:hover { background: var(--surface-3); }
+.dl-print-link svg { color: var(--accent); flex: none; }

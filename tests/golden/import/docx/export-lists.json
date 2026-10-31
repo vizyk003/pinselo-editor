@@ -1,0 +1,11 @@
+{
+ "file": "export-lists.docx",
+ "html": "<ul><li>a</li></ul><p>a second paragraph</p><ul><li>b<ol><li>b3</li><li>b4<ul><li>deep</li></ul></li></ol></li></ul><ol><li>five</li><li>six</li><li>zero → one</li><li>nan → one</li><li>fractional</li><li>no start</li></ol><p>code in item</p><p><em>quote in item</em></p><h3>heading in item</h3><p><input type=\"checkbox\" checked=\"checked\" /> done</p><p><input type=\"checkbox\" /> nested todo</p><p><input type=\"checkbox\" checked=\"checked\" /> truthy string</p><p><input type=\"checkbox\" /> no attr</p><p><input type=\"checkbox\" /> zero</p><ul><li>L0<ul><li>L1<ul><li>L2<ul><li>L3<ul><li>L4</li></ul></li></ul></li></ul></li></ul></li></ul><p>L5</p><p>L6</p><p>L7</p><p>L8</p><p>L9</p><p>L10</p><ol><li>again one</li></ol><ul><li>centred item</li></ul>",
+ "warnings": 3,
+ "messages": [
+  "warning: A w:sym element with an unsupported character was ignored: char 2612 in font MS Gothic",
+  "warning: A w:sym element with an unsupported character was ignored: char 2610 in font MS Gothic",
+  "warning: Unrecognised paragraph style: 'List Paragraph' (Style ID: ListParagraph)"
+ ],
+ "images": []
+}

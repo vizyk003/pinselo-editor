@@ -1,0 +1,19 @@
+{
+ "file": "word-features.docx",
+ "html": "<p>Field notes</p><p>A sample Word file</p><h1>Introduction</h1><p>Plain, <strong>bold</strong>, <em>italic</em>, <u>underlined</u>, <s>struck</s>, <strong><em>both</em></strong> and small caps with H<sub>2</sub>O and x<sup>2</sup>.</p><p>A line<br />break and a\ttab. Visit <a href=\"https://example.com/?a=1&amp;b=2\">our site</a> or jump to <a href=\"#details\">details</a>.</p><h2><a id=\"details\"></a>Details</h2><ul><li>First bullet<ul><li>Nested bullet</li></ul></li><li>Second bullet</li></ul><ol><li>Step one</li><li>Step two</li></ol><blockquote><p>To be or not to be.</p><p>That is the question.</p></blockquote><p>A paragraph in a style the converter does not know.</p><p><strong>Emphasis</strong> with a footnote<sup><a href=\"#footnote-1\" id=\"footnote-ref-1\">[1]</a></sup>.</p><h3>A table</h3><table><thead><tr><th><p><strong>Name</strong></p></th><th colspan=\"2\"><p>Role</p></th></tr></thead><tbody><tr><td rowspan=\"2\"><p>Ada</p></td><td><p>Engineer</p></td><td><p>London</p></td></tr><tr><td><p>Writer</p><p>Poet</p></td><td></td></tr></tbody></table><p>An image: <img alt=\"A teal tile\" src=\"/api/assets/A000000000000001\" /></p><h6>Small heading</h6><p>Code sample</p><ol><li id=\"footnote-1\"><p> Source: the archive. <a href=\"#footnote-ref-1\">↑</a></p></li></ol>",
+ "warnings": 5,
+ "messages": [
+  "warning: Paragraph style with ID FootnoteText was referenced but not defined in the document",
+  "warning: Unrecognised paragraph style: 'Title' (Style ID: Title)",
+  "warning: Unrecognised paragraph style: 'Subtitle' (Style ID: Subtitle)",
+  "warning: Unrecognised paragraph style: 'Fancy Style' (Style ID: FancyStyle)",
+  "warning: Unrecognised paragraph style: 'null' (Style ID: FootnoteText)"
+ ],
+ "images": [
+  {
+   "contentType": "image/png",
+   "sha256": "3a47bd68a4aad1e6a37ab95de76858276ab48bd4fadf17d5a4f8d22a90ab54ac",
+   "bytes": 431
+  }
+ ]
+}

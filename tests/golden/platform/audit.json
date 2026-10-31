@@ -1,0 +1,230 @@
+{
+ "events": [
+  {
+   "action": "design.create",
+   "actorId": "11111111-1111-4111-8111-111111111111",
+   "workspaceId": "22222222-2222-4222-8222-222222222222",
+   "target": "design:abc",
+   "meta": {
+    "title": "Poster",
+    "n": 1
+   },
+   "ip": "203.0.113.7"
+  },
+  {
+   "action": "login"
+  },
+  {
+   "action": "meta.numbers",
+   "meta": {
+    "f": 0.30000000000000004,
+    "big": 1e+21,
+    "small": 1.5e-7,
+    "neg0": 0,
+    "whole": 100,
+    "int53": 9007199254740992,
+    "arr": [
+     1,
+     2.5,
+     -3e-10
+    ]
+   }
+  },
+  {
+   "action": "meta.strings",
+   "meta": {
+    "quote\"back\\slash": "line\nbreak\ttab\u0001ctl",
+    "unicode": "héllo ✨  ",
+    "😀": "emoji key",
+    "｡": "halfwidth",
+    "B": 1,
+    "a": 2,
+    "_": 3
+   }
+  },
+  {
+   "action": "meta.nested",
+   "meta": {
+    "z": {
+     "y": [
+      {
+       "b": null,
+       "a": true
+      },
+      [],
+      {}
+     ],
+     "x": false
+    },
+    "list": [
+     "b",
+     "a"
+    ]
+   },
+   "target": ""
+  },
+  {
+   "action": "meta.scalar",
+   "meta": "just a string",
+   "ip": "::1"
+  },
+  {
+   "action": "meta.null",
+   "meta": null
+  },
+  {
+   "action": "meta.array",
+   "meta": [
+    3,
+    "two",
+    {
+     "one": 1
+    }
+   ]
+  }
+ ],
+ "tsVerify": null,
+ "rows": [
+  {
+   "id": 1,
+   "prev_hash": null,
+   "hash": "47af6db2bd8e264cccfc0cb39dbee10b7832e2f0b03f10e81fd37d77bc5ea22e",
+   "action": "design.create",
+   "target": "design:abc",
+   "actor_id": "11111111-1111-4111-8111-111111111111",
+   "workspace_id": "22222222-2222-4222-8222-222222222222",
+   "meta": {
+    "n": 1,
+    "title": "Poster"
+   },
+   "ip": "203.0.113.7",
+   "created_at": "2025-10-09T08:53:20.007Z"
+  },
+  {
+   "id": 2,
+   "prev_hash": "47af6db2bd8e264cccfc0cb39dbee10b7832e2f0b03f10e81fd37d77bc5ea22e",
+   "hash": "c31f9300b733cc8f49d646c0bc4e69578c83c37ae2312476ffd1a9c1e934559a",
+   "action": "login",
+   "target": null,
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": null,
+   "ip": null,
+   "created_at": "2025-10-09T08:53:21.008Z"
+  },
+  {
+   "id": 3,
+   "prev_hash": "c31f9300b733cc8f49d646c0bc4e69578c83c37ae2312476ffd1a9c1e934559a",
+   "hash": "764c84f81945882342cc3872df562a0ef35faf2f9cc04a409d1354c96e4831ba",
+   "action": "meta.numbers",
+   "target": null,
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": {
+    "f": 0.30000000000000004,
+    "arr": [
+     1,
+     2.5,
+     -3e-10
+    ],
+    "big": 1e+21,
+    "neg0": 0,
+    "int53": 9007199254740992,
+    "small": 1.5e-7,
+    "whole": 100
+   },
+   "ip": null,
+   "created_at": "2025-10-09T08:53:22.009Z"
+  },
+  {
+   "id": 4,
+   "prev_hash": "764c84f81945882342cc3872df562a0ef35faf2f9cc04a409d1354c96e4831ba",
+   "hash": "81454058f28c25e90c4219edaca855e737ead18d985f994419892c530bc91275",
+   "action": "meta.strings",
+   "target": null,
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": {
+    "B": 1,
+    "_": 3,
+    "a": 2,
+    "｡": "halfwidth",
+    "😀": "emoji key",
+    "unicode": "héllo ✨  ",
+    "quote\"back\\slash": "line\nbreak\ttab\u0001ctl"
+   },
+   "ip": null,
+   "created_at": "2025-10-09T08:53:23.010Z"
+  },
+  {
+   "id": 5,
+   "prev_hash": "81454058f28c25e90c4219edaca855e737ead18d985f994419892c530bc91275",
+   "hash": "95db22b6ee49193f586f9ee9e6906e0cc84210df9b491f958b5e1be806d681d1",
+   "action": "meta.nested",
+   "target": "",
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": {
+    "z": {
+     "x": false,
+     "y": [
+      {
+       "a": true,
+       "b": null
+      },
+      [],
+      {}
+     ]
+    },
+    "list": [
+     "b",
+     "a"
+    ]
+   },
+   "ip": null,
+   "created_at": "2025-10-09T08:53:24.011Z"
+  },
+  {
+   "id": 6,
+   "prev_hash": "95db22b6ee49193f586f9ee9e6906e0cc84210df9b491f958b5e1be806d681d1",
+   "hash": "65c43837bd7b9d1d3ec1128203372fd84ac8af2693761f9bd0bb8e2af0de5818",
+   "action": "meta.scalar",
+   "target": null,
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": "just a string",
+   "ip": "::1",
+   "created_at": "2025-10-09T08:53:25.012Z"
+  },
+  {
+   "id": 7,
+   "prev_hash": "65c43837bd7b9d1d3ec1128203372fd84ac8af2693761f9bd0bb8e2af0de5818",
+   "hash": "853fb0c7e57da7c81109d99180cdca815a42782dff61ddb7431bb32ef0e92f86",
+   "action": "meta.null",
+   "target": null,
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": null,
+   "ip": null,
+   "created_at": "2025-10-09T08:53:26.013Z"
+  },
+  {
+   "id": 8,
+   "prev_hash": "853fb0c7e57da7c81109d99180cdca815a42782dff61ddb7431bb32ef0e92f86",
+   "hash": "a7b7bfd02813cfd57d4048156e218ed2ca5d8ff205610f7e3506d945ccb18cc4",
+   "action": "meta.array",
+   "target": null,
+   "actor_id": null,
+   "workspace_id": null,
+   "meta": [
+    3,
+    "two",
+    {
+     "one": 1
+    }
+   ],
+   "ip": null,
+   "created_at": "2025-10-09T08:53:27.014Z"
+  }
+ ]
+}

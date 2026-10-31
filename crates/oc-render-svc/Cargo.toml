@@ -1,0 +1,44 @@
+[package]
+name = "oc-render-svc"
+description = "Export + thumbnail service (Rust port of services/render): internal routes, export jobs, Docs → Markdown/Word, website/PowerPoint/email writers behind a Renderer trait."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+oc-geometry = { path = "../oc-geometry" }
+oc-crdt = { path = "../oc-crdt" }
+oc-render = { path = "../oc-render" }
+oc-color = { path = "../oc-color" }
+oc-text = { path = "../oc-text" }
+oc-sheet = { path = "../oc-sheet", default-features = false, features = ["native"] }
+oc-config = { workspace = true }
+oc-db = { workspace = true }
+oc-jobs = { workspace = true }
+oc-storage = { workspace = true }
+oc-auth = { path = "../oc-platform/oc-auth" }
+oc-webhooks = { path = "../oc-platform/oc-webhooks" }
+oc-gfonts = { path = "../oc-platform/oc-gfonts" }
+axum = { workspace = true, features = ["json"] }
+tokio = { workspace = true, features = ["signal", "process"] }
+sqlx = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
+indexmap = { version = "2", features = ["serde"] }
+futures = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+regex = { workspace = true }
+zip = { workspace = true }
+quick-xml = { workspace = true }
+sha1 = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+thiserror = { workspace = true }
+yrs = { workspace = true }
+
+[dev-dependencies]
+base64 = { workspace = true }
+tower = { workspace = true }
+http-body-util = { workspace = true }

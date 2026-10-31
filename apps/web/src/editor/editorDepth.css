@@ -1,0 +1,73 @@
+/* Plan 11 batch 3, editor interactions: page headers (g96), quick bar (g94), menus' dialogs (g95), image eraser (g55),
+   signatures (g56) and "Copy and resize" (g101). */
+
+/* ---------------------------------------------------------------- page header above each page */
+.page-head {
+  position: absolute; z-index: 3; height: 30px; display: flex; align-items: center; gap: 6px; min-width: 0;
+  font-size: 12px; color: var(--text-2);
+}
+.page-head-n { flex: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; white-space: nowrap; }
+.page-head.locked .page-head-n { color: var(--text); }
+.page-head-hidden { font-weight: 400; }
+.page-head-title {
+  flex: 1 1 auto; min-width: 24px; height: 26px; padding: 0 6px; border: 1px solid transparent; border-radius: 6px;
+  background: transparent; color: var(--text); font: inherit; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+span.page-head-title { line-height: 26px; }
+input.page-head-title::placeholder { color: var(--text-2); }
+input.page-head-title:hover { border-color: var(--border-strong); }
+input.page-head-title:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.page-head-actions { flex: none; display: inline-flex; gap: 0; margin-left: auto; }
+.page-head .btn.icon { width: 28px; height: 28px; min-width: 28px; padding: 0; color: var(--text-2); }
+.page-head .btn.icon:hover:not(:disabled), .page-head .btn.icon.active { color: var(--text); background: var(--surface); }
+.page-head .btn.icon.active { color: var(--accent); }
+
+.page-add-below {
+  position: absolute; z-index: 3; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px dashed var(--border-strong); border-radius: 10px; background: var(--surface); color: var(--text-2);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.page-add-below:hover { color: var(--accent); border-color: var(--accent); }
+.page-add-below:focus-visible, .page-head .btn:focus-visible, .quick-bar .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* ---------------------------------------------------------------- floating quick bar */
+.quick-bar {
+  position: absolute; z-index: 4; display: flex; align-items: center; gap: 2px; padding: 3px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-2);
+}
+.quick-bar .btn.icon { width: 34px; height: 32px; min-width: 34px; }
+.quick-bar .btn.icon.active { color: var(--accent); }
+
+/* ---------------------------------------------------------------- info dialog */
+.info-list { margin: 0; display: grid; gap: 8px; }
+.info-list > div { display: grid; grid-template-columns: minmax(90px, auto) 1fr; gap: 12px; }
+.info-list dt { color: var(--text-2); font-size: 13px; }
+.info-list dd { margin: 0; overflow-wrap: anywhere; }
+
+/* ---------------------------------------------------------------- image eraser */
+.eraser-stage {
+  display: grid; place-items: center; min-height: 200px; max-height: min(60vh, 520px); overflow: hidden; border-radius: 10px;
+  border: 1px solid var(--border);
+  background: repeating-conic-gradient(var(--surface-3) 0% 25%, var(--surface) 0% 50%) 50% / 20px 20px;
+}
+.eraser-stage > * { grid-area: 1 / 1; }
+.eraser-canvas { max-width: 100%; max-height: min(60vh, 520px); }
+
+/* ---------------------------------------------------------------- signatures */
+.sig-pad { width: 100%; height: auto; aspect-ratio: 480 / 180; background: var(--surface); border: 1px solid var(--border-strong); border-radius: 10px; touch-action: none; cursor: crosshair; }
+:root[data-theme="dark"] .sig-pad { background: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sig-pad { background: #fff; } }
+.sig-fonts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.sig-fonts .tile { aspect-ratio: auto; width: 100%; height: 64px; display: block; padding: 0 10px; font-size: 26px; line-height: 64px; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; background: #fff; }
+.sig-saved { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+.sig-item { position: relative; }
+.sig-item .tile { aspect-ratio: auto; width: 100%; height: 64px; padding: 4px; background: #fff; }
+.sig-item .tile img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+.sig-del { position: absolute; top: 2px; right: 2px; background: var(--surface); }
+
+/* ---------------------------------------------------------------- copy and resize */
+.resize-pick { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.resize-pick label { padding: 8px 10px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); cursor: pointer; font-size: 14px; }
+.resize-pick label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.chips .chip:has(button) { display: inline-flex; align-items: center; gap: 2px; padding-right: 2px; cursor: default; }
+.resize-made { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }

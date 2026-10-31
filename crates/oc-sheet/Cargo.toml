@@ -1,0 +1,33 @@
+[package]
+name = "oc-sheet"
+description = "Pinselo sheets (Rust port of @oc/sheet): Y.Doc sheet model, formula engine, CSV and XLSX"
+edition.workspace = true
+license = "AGPL-3.0-only"
+version.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+oc-crdt = { path = "../oc-crdt" }
+yrs = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
+thiserror = { workspace = true }
+indexmap = "2"
+rust_xlsxwriter = { workspace = true, optional = true }
+zip = { workspace = true, optional = true }
+quick-xml = { version = "0.41", optional = true }
+unicode-normalization = { workspace = true }
+getrandom = { version = "0.3", optional = true }
+
+[features]
+default = ["xlsx"]
+# XLSX export (rust_xlsxwriter) and import (zip + quick-xml).
+xlsx = ["dep:rust_xlsxwriter", "dep:zip", "dep:quick-xml"]
+# rust_xlsxwriter reads the clock through js-sys on wasm32-unknown-unknown.
+xlsx-wasm = ["xlsx", "rust_xlsxwriter/wasm"]
+# System clock / OS randomness host for native callers (the library itself never reads system time).
+native = ["dep:getrandom"]
+
+[dev-dependencies]
+base64 = { workspace = true }
+calamine = { workspace = true }

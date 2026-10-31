@@ -1,0 +1,17 @@
+/* Embed-mode public viewer (g135): /view/<id or slug>?embed=1 inside an iframe — no app chrome, one page at a time. */
+
+.embed-view { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--workspace); overflow: hidden; }
+.embed-stage { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; }
+.embed-stage canvas { display: block; box-shadow: var(--shadow-1); }
+.embed-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-1); opacity: .9; }
+.embed-nav:hover { opacity: 1; border-color: var(--accent); }
+.embed-nav:disabled { opacity: .35; cursor: default; }
+.embed-nav.prev { inset-inline-start: 8px; }
+.embed-nav.next { inset-inline-end: 8px; }
+[dir='rtl'] .embed-nav svg { transform: scaleX(-1); }
+.embed-bar { flex: none; height: 36px; display: flex; align-items: center; gap: 10px; padding: 0 10px; background: var(--surface); border-top: 1px solid var(--border); font-size: 12px; min-width: 0; }
+.embed-bar a { color: var(--text); text-decoration: none; }
+.embed-bar a:hover { text-decoration: underline; }
+.embed-bar .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.embed-bar .made { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; margin-inline-start: auto; }
+.embed-bar .count { color: var(--text-3); white-space: nowrap; font-variant-numeric: tabular-nums; }

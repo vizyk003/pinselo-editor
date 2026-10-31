@@ -1,0 +1,26 @@
+{
+  "name": "Pinselo",
+  "short_name": "Pinselo",
+  "description": "Design anything — graphics, presentations, video, docs, websites — together.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0c7a80",
+  "categories": ["design", "productivity", "graphics"],
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "New presentation", "url": "/?create=presentation", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "New Instagram post", "url": "/?create=ig-post", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "New whiteboard", "url": "/?create=whiteboard", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

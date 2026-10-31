@@ -1,0 +1,54 @@
+# The Oracle Cloud free server (docs/deploy-oracle.md): deploy/docker-compose.yml with prebuilt ARM64 images from
+# GitHub's container registry (.github/workflows/images.yml) and Supabase for the database and storage, so the server
+# never builds anything and runs no Postgres. Keep the services and environment in step with deploy/docker-compose.yml.
+#
+# On the server, next to this file: .env (from env.example), Caddyfile and supabase-ca.crt. Then: ./update.sh
+x-service: &service
+  image: ${OC_RUNTIME_IMAGE:-ghcr.io/vizyk003/pinselo-runtime:latest}
+  env_file: .env
+  environment:
+    OC_RENDER_URL: http://render:4200
+    # AI connector: the API joins documents as a live collaborator through the collab server.
+    OC_COLLAB_URL: ws://collab:4100
+    OC_WEB_ORIGIN: https://${OC_APP_HOST}
+    OC_API_URL: https://${OC_APP_HOST}
+    OC_DATA_DIR: /data
+    OC_RENDER_HOST: 0.0.0.0
+    OC_DATABASE_SSL_CA: /run/secrets/supabase-ca.crt
+  volumes:
+    - data:/data
+    - ./supabase-ca.crt:/run/secrets/supabase-ca.crt:ro
+  restart: unless-stopped
+
+services:
+  migrate:
+    <<: *service
+    command: ['oc-migrate']
+    restart: 'no'
+  api:
+    <<: *service
+    command: ['oc-api']
+    depends_on: { migrate: { condition: service_completed_successfully } }
+  collab:
+    <<: *service
+    command: ['oc-collab']
+    depends_on: { migrate: { condition: service_completed_successfully } }
+  render:
+    <<: *service
+    command: ['oc-render-svc']
+    depends_on: { migrate: { condition: service_completed_successfully } }
+  worker:
+    <<: *service
+    command: ['oc-worker']
+    depends_on: { migrate: { condition: service_completed_successfully } }
+  gateway:
+    image: ${OC_GATEWAY_IMAGE:-ghcr.io/vizyk003/pinselo-gateway:latest}
+    env_file: .env
+    ports: ['80:80', '443:443']
+    volumes:
+      - caddy:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on: [api, collab]
+    restart: unless-stopped
+
+volumes: { data: {}, caddy: {} }

@@ -1,0 +1,47 @@
+/* Share dialog (plan 11 batch 2): Add people combobox, quick-action tiles, sub-panes. */
+
+.share-head { display: flex; align-items: center; gap: 8px; margin-top: -4px; }
+.share-head .visitors { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-2); background: var(--surface-3); border-radius: 999px; padding: 3px 10px; }
+
+.share-add { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
+.share-combo { position: relative; flex: 1 1 240px; min-width: 0; }
+.share-combo .field-box {
+  display: flex; flex-wrap: wrap; gap: 4px; align-items: center; min-height: 36px; padding: 3px 6px; border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm); background: var(--surface); cursor: text;
+}
+.share-combo .field-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.share-combo .field-box input { flex: 1 1 120px; min-width: 80px; border: 0; outline: 0; background: none; color: var(--text); font: inherit; padding: 4px 2px; }
+.share-pick { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding-block: 0; padding-inline: 8px 4px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 600; max-width: 220px; }
+.share-pick span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-pick button { border: 0; background: none; color: inherit; cursor: pointer; display: grid; place-items: center; padding: 2px; border-radius: 50%; }
+.share-pick button:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+.share-list {
+  position: absolute; inset-inline: 0; top: calc(100% + 4px); z-index: 20; max-height: 280px; overflow: auto; margin: 0; padding: 4px; list-style: none;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-2);
+}
+.share-list .share-group { list-style: none; margin: 0; padding: 0; }
+.share-list .label { padding: 6px 8px 2px; font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+.share-list [role='option'] { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+.share-list [role='option'][aria-selected='true'] { background: var(--surface-2); }
+.share-list [role='option'] .main { flex: 1; min-width: 0; }
+.share-list [role='option'] .sub { font-size: 12px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.share-list .empty-hint { padding: 8px; font-size: 13px; color: var(--text-3); }
+
+.share-group-icon { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-3); color: var(--text-2); flex: none; }
+
+/* Tile layout is shared with the Create dialog's quick actions (styles.css). */
+.share-tiles button { background: var(--surface-2); }
+.share-tiles button:hover { background: var(--surface); }
+.share-tiles button .ic { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; background: var(--surface); color: var(--accent); }
+
+.share-pane-head { display: flex; align-items: center; gap: 8px; }
+.share-pane-head h3 { margin: 0; font-size: 15px; flex: 1; }
+.share-code { width: 100%; min-height: 96px; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }
+.share-qr { display: grid; justify-items: center; gap: 10px; }
+.share-qr img { width: 220px; height: 220px; border-radius: var(--radius); background: #fff; padding: 8px; border: 1px solid var(--border); image-rendering: pixelated; }
+.share-confirm { border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border)); background: color-mix(in srgb, var(--danger) 6%, var(--surface)); border-radius: var(--radius); padding: 12px; display: grid; gap: 10px; }
+.share-confirm p { margin: 0; font-size: 13px; }
+.share-slug { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.share-slug .prefix { font-size: 13px; color: var(--text-3); white-space: nowrap; }
+.share-slug-url { display: flex; align-items: center; gap: 6px; flex: 1 1 220px; min-width: 0; }
+.share-slug input { flex: 1 1 140px; min-width: 0; }

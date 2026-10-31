@@ -1,0 +1,4183 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_MAX_MEDIA_BYTES": "100000",
+  "OC_MAX_UPLOAD_BYTES": "16000",
+  "OC_UPLOAD_QUOTA": "40000"
+ },
+ "fake": {},
+ "objects": [
+  "66616b65206d7034206578706f7274206279746573"
+ ],
+ "requires": [
+  "ffmpeg",
+  "ffprobe"
+ ],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO hash_blocklist(hash, source, category) VALUES ('0000000000000000', 'internal', 'csam')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height) VALUES ('Svideo0000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Clip', 'video', 1920, 1080),\n      ('Sbobvideo0000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Bob clip', 'video', 1920, 1080)",
+  "INSERT INTO jobs(id, queue, payload, status, owner_id, label, progress, result, finished_at, created_at) VALUES\n      ('00000000-0000-4000-8000-000000000801', 'export', '{}', 'done', '00000000-0000-4000-8000-000000000001', 'Done', 1, '{\"sha\":\"7ab317f23e9d96a95abc0988c355da8b80da9a3bd54a967329aa54b1bb35b172\",\"type\":\"video/mp4\",\"size\":21,\"filename\":\"clip \\\"final\\\".mp4\"}', '2025-01-01T11:00:00Z', '2025-01-01T10:00:00Z'),\n      ('00000000-0000-4000-8000-000000000802', 'export', '{}', 'running', '00000000-0000-4000-8000-000000000001', 'Rendering frames', 0.25, NULL, NULL, '2025-01-01T11:30:00Z'),\n      ('00000000-0000-4000-8000-000000000803', 'export', '{}', 'failed', '00000000-0000-4000-8000-000000000002', NULL, 0.5, NULL, NULL, '2025-01-01T11:30:00Z')",
+  "UPDATE jobs SET error = 'ffmpeg exploded' WHERE id = '00000000-0000-4000-8000-000000000803'",
+  "INSERT INTO jobs(id, queue, payload, status, owner_id) VALUES ('00000000-0000-4000-8000-000000000811', 'export', '{}', 'queued', '00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO jobs(id, queue, payload, status, owner_id) VALUES ('00000000-0000-4000-8000-000000000812', 'export', '{}', 'queued', '00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO jobs(id, queue, payload, status, owner_id) VALUES ('00000000-0000-4000-8000-000000000813', 'export', '{}', 'queued', '00000000-0000-4000-8000-000000000002')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "list signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "list empty",
+   "response": {
+    "body": {
+     "assets": [],
+     "counts": {
+      "all": 0,
+      "audio": 0,
+      "files": 0,
+      "images": 0,
+      "videos": 0
+     },
+     "quotaBytes": 40000,
+     "total": 0,
+     "usedBytes": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "a.png",
+    "hex": "89504e470d0a1a0a0000000d4948445200000008000000060806000000fe05dffb000000994944415478da0dcaa10dc5201440d197100443d43461044c4d3d0b60fe04180c8b90e0d900cf0c58349a2deeefd14744042b175e1e9204aa648614b674944c44dc85750fde0592cb545718aeb3dd44b9f385f86063c0c74c8a851a3b234e763ca8a8bfd002b6657c2ba4d6a96d32da61378d6af71756c6ae825f9db426751dc6d2ec75a3d6fb0553b0a6e3cd249943359a616eb67951e6c71f15d769913a824e570000000049454e44ae426082"
+   },
+   "name": "upload signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": {
+    "file": "x"
+   },
+   "method": "POST",
+   "name": "upload: not multipart",
+   "response": {
+    "body": {
+     "error": "the request is not multipart"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 406
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "png": "body.asset.id"
+   },
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, owner_id, mime, kind, bytes, width, height, name, duration_ms, has_audio, proxy_mime, animated, source, attribution, moderation,\n  phash IS NOT NULL AS has_phash, sha256, proxy_sha256, poster_sha256, svg_sha256, waveform IS NOT NULL AS has_waveform, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY name, id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "210",
+       "duration_ms": null,
+       "has_audio": false,
+       "has_phash": true,
+       "has_waveform": false,
+       "height": 6,
+       "id": "{{png}}",
+       "kind": "image",
+       "mime": "image/png",
+       "moderation": "ok",
+       "name": "pixel art.png",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "poster_sha256": null,
+       "proxy_mime": null,
+       "proxy_sha256": null,
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "svg_sha256": null,
+       "trashed": false,
+       "width": 8
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "pixel art.png",
+    "hex": "89504e470d0a1a0a0000000d4948445200000008000000060806000000fe05dffb000000994944415478da0dcaa10dc5201440d197100443d43461044c4d3d0b60fe04180c8b90e0d900cf0c58349a2deeefd14744042b175e1e9204aa648614b674944c44dc85750fde0592cb545718aeb3dd44b9f385f86063c0c74c8a851a3b234e763ca8a8bfd002b6657c2ba4d6a96d32da61378d6af71756c6ae825f9db426751dc6d2ec75a3d6fb0553b0a6e3cd249943359a616eb67951e6c71f15d769913a824e570000000049454e44ae426082"
+   },
+   "name": "upload a PNG",
+   "response": {
+    "body": {
+     "asset": {
+      "h": 6,
+      "id": "{{png}}",
+      "kind": "image",
+      "mime": "image/png",
+      "name": "pixel art.png",
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "w": 8
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "jpg": "body.asset.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "application/octet-stream",
+    "field": "file",
+    "filename": "photo.bin",
+    "hex": "ffd8fffe00104c61766336322e32382e31303000ffdb0043000808080908090b0b0b0b0b0b0d0c0d0d0d0d0d0d0d0d0d0d0d0e0e0e1111110e0e0e0d0d0e0e10101111121312111111111313141414181817171c1c1d222229ffc4006d0001000000000000000000000000000000060101010000000000000000000000000000050410000103020701000000000000000000000311040002010613b26373342122110002010302020b010000000000000000030201110504002112220623b363b274724231413533ffc00011080006000803011200021200031200ffda000c03010002110311003f0026d0f8784c8a8174b504a97ca0f9f17df86c3d4ab84da229943b8da571944c0931de88f2cd2a38495e26a48f76e68e18a53ee7e2929f483fb5abd65f10754dac57825bb2ea5052314def26fd53775a6acff9b9be54dd93ebffd9"
+   },
+   "name": "upload a JPEG (client type ignored)",
+   "response": {
+    "body": {
+     "asset": {
+      "h": 6,
+      "id": "{{jpg}}",
+      "kind": "image",
+      "mime": "image/jpeg",
+      "name": "photo.bin",
+      "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+      "w": 8
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "gif": "body.asset.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/gif",
+    "field": "file",
+    "filename": "still.gif",
+    "hex": "47494638396108000600f71f000000002400004800006c0000900000b40000d80000fc00000024002424004824006c2400902400b42400d82400fc24000048002448004848006c4800904800b44800d84800fc4800006c00246c00486c006c6c00906c00b46c00d86c00fc6c000090002490004890006c9000909000b49000d89000fc900000b40024b40048b4006cb40090b400b4b400d8b400fcb40000d80024d80048d8006cd80090d800b4d800d8d800fcd80000fc0024fc0048fc006cfc0090fc00b4fc00d8fc00fcfc000000552400554800556c0055900055b40055d80055fc00550024552424554824556c2455902455b42455d82455fc24550048552448554848556c4855904855b44855d84855fc4855006c55246c55486c556c6c55906c55b46c55d86c55fc6c550090552490554890556c9055909055b49055d89055fc905500b45524b45548b4556cb45590b455b4b455d8b455fcb45500d85524d85548d8556cd85590d855b4d855d8d855fcd85500fc5524fc5548fc556cfc5590fc55b4fc55d8fc55fcfc550000aa2400aa4800aa6c00aa9000aab400aad800aafc00aa0024aa2424aa4824aa6c24aa9024aab424aad824aafc24aa0048aa2448aa4848aa6c48aa9048aab448aad848aafc48aa006caa246caa486caa6c6caa906caab46caad86caafc6caa0090aa2490aa4890aa6c90aa9090aab490aad890aafc90aa00b4aa24b4aa48b4aa6cb4aa90b4aab4b4aad8b4aafcb4aa00d8aa24d8aa48d8aa6cd8aa90d8aab4d8aad8d8aafcd8aa00fcaa24fcaa48fcaa6cfcaa90fcaab4fcaad8fcaafcfcaa0000ff2400ff4800ff6c00ff9000ffb400ffd800fffc00ff0024ff2424ff4824ff6c24ff9024ffb424ffd824fffc24ff0048ff2448ff4848ff6c48ff9048ffb448ffd848fffc48ff006cff246cff486cff6c6cff906cffb46cffd86cfffc6cff0090ff2490ff4890ff6c90ff9090ffb490ffd890fffc90ff00b4ff24b4ff48b4ff6cb4ff90b4ffb4b4ffd8b4fffcb4ff00d8ff24d8ff48d8ff6cd8ff90d8ffb4d8ffd8d8fffcd8ff00fcff24fcff48fcff6cfcff90fcffb4fcffd8fcfffcfcff21ff0b4e45545343415045322e30030100000021f9040404001f002c000000000800060000083900010410328448a143c01024513285512347d0b064d1b28953b76f18d08451358a5d2b1328e0c492358f960d1b700005123688400123400202003b"
+   },
+   "name": "upload a GIF",
+   "response": {
+    "body": {
+     "asset": {
+      "h": 6,
+      "id": "{{gif}}",
+      "kind": "image",
+      "mime": "image/gif",
+      "name": "still.gif",
+      "sha256": "44112b63aae32c23f3a53f36e74a0c8a6260352eda76e5ddb701c3d36ea229d9",
+      "w": 8
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "webp": "body.asset.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/webp",
+    "field": "file",
+    "filename": "header.webp",
+    "hex": "524946461a000000574542505650384c0e0000002f07400100000000000000000000"
+   },
+   "name": "upload a WebP",
+   "response": {
+    "body": {
+     "asset": {
+      "h": 6,
+      "id": "{{webp}}",
+      "kind": "image",
+      "mime": "image/webp",
+      "name": "header.webp",
+      "sha256": "39dacd1f0b8fe6d121de7081ec9bf09205d266aa7c052a13ed5e31848c14dde5",
+      "w": 8
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "svg": "body.asset.id"
+   },
+   "checks": [
+    {
+     "name": "svg asset",
+     "sql": "SELECT kind, mime, width, height, svg_sha256 IS NOT NULL AS has_source FROM assets WHERE name = 'logo.svg'"
+    }
+   ],
+   "db": [
+    {
+     "name": "svg asset",
+     "rows": [
+      {
+       "has_source": true,
+       "height": 160,
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "width": 320
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/svg+xml",
+    "field": "file",
+    "filename": "logo.svg",
+    "hex": "3c3f786d6c2076657273696f6e3d22312e30223f3e0a3c73766720786d6c6e733d22687474703a2f2f7777772e77332e6f72672f323030302f737667222077696474683d22343022206865696768743d223230222076696577426f783d22302030203430203230223e3c7363726970743e616c6572742831293c2f7363726970743e3c726563742077696474683d22343022206865696768743d223230222066696c6c3d2223666630303030222f3e3c636972636c652063783d223130222063793d2231302220723d2235222066696c6c3d222330306666303022206f6e636c69636b3d22782829222f3e3c2f7376673e"
+   },
+   "name": "upload an SVG",
+   "response": {
+    "body": {
+     "asset": {
+      "h": 160,
+      "id": "{{svg}}",
+      "kind": "svg",
+      "mime": "image/svg+xml",
+      "name": "logo.svg",
+      "sha256": "<volatile>",
+      "w": 320
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets",
+   "volatile": [
+    "response.body.asset.sha256"
+   ]
+  },
+  {
+   "capture": {
+    "anim": "body.asset.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/gif",
+    "field": "file",
+    "filename": "anim.gif",
+    "hex": "47494638396110001000f71f310000002400004800006c0000900000b40000d80000fc00000024002424004824006c2400902400b42400d82400fc24000048002448004848006c4800904800b44800d84800fc4800006c00246c00486c006c6c00906c00b46c00d86c00fc6c000090002490004890006c9000909000b49000d89000fc900000b40024b40048b4006cb40090b400b4b400d8b400fcb40000d80024d80048d8006cd80090d800b4d800d8d800fcd80000fc0024fc0048fc006cfc0090fc00b4fc00d8fc00fcfc000000552400554800556c0055900055b40055d80055fc00550024552424554824556c2455902455b42455d82455fc24550048552448554848556c4855904855b44855d84855fc4855006c55246c55486c556c6c55906c55b46c55d86c55fc6c550090552490554890556c9055909055b49055d89055fc905500b45524b45548b4556cb45590b455b4b455d8b455fcb45500d85524d85548d8556cd85590d855b4d855d8d855fcd85500fc5524fc5548fc556cfc5590fc55b4fc55d8fc55fcfc550000aa2400aa4800aa6c00aa9000aab400aad800aafc00aa0024aa2424aa4824aa6c24aa9024aab424aad824aafc24aa0048aa2448aa4848aa6c48aa9048aab448aad848aafc48aa006caa246caa486caa6c6caa906caab46caad86caafc6caa0090aa2490aa4890aa6c90aa9090aab490aad890aafc90aa00b4aa24b4aa48b4aa6cb4aa90b4aab4b4aad8b4aafcb4aa00d8aa24d8aa48d8aa6cd8aa90d8aab4d8aad8d8aafcd8aa00fcaa24fcaa48fcaa6cfcaa90fcaab4fcaad8fcaafcfcaa0000ff2400ff4800ff6c00ff9000ffb400ffd800fffc00ff0024ff2424ff4824ff6c24ff9024ffb424ffd824fffc24ff0048ff2448ff4848ff6c48ff9048ffb448ffd848fffc48ff006cff246cff486cff6c6cff906cffb46cffd86cfffc6cff0090ff2490ff4890ff6c90ff9090ffb490ffd890fffc90ff00b4ff24b4ff48b4ff6cb4ff90b4ffb4b4ffd8b4fffcb4ff00d8ff24d8ff48d8ff6cd8ff90d8ffb4d8ffd8d8fffcd8ff00fcff24fcff48fcff6cfcff90fcffb4fcffd8fcfffcfcff21ff0b4e45545343415045322e30030100000021f9040419001f002c0000000010001000000891000100387000078e1f3f80013b760c1fbe7fff0412c4714c2142830e214ac4c7d0e20f8304350270d811d8451c0401441cc9b1a2c98f280fa85449d2e5c99402ffd5f4085266ce9d2f7b0aa4d99267cca13a8b063dfa53e94d9f444b3e95f8e1c68f1d39f0e0c2870e5a3062c70e1d3970e1860f1e06b7a243f6d5d8b1b11f5e5ccdaad6ebb0b0472416b40933e3bf80000021f90405190000002c00000c001000030000082f002fbcf8d123070e5cf8e0610336cc188023071e0ceca103009e84d0181a3b06f1c2891f3c741cc4c8b0d843000101003b"
+   },
+   "name": "upload an animated GIF",
+   "response": {
+    "body": {
+     "asset": {
+      "animated": true,
+      "durationMs": 500,
+      "h": 16,
+      "hasAudio": false,
+      "id": "{{anim}}",
+      "kind": "video",
+      "mime": "image/gif",
+      "name": "anim.gif",
+      "sha256": "042124319476753004927e9cac02d7951fcaa704399b78a85c8a795476b29621",
+      "w": 16
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "video": "body.asset.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "video/mp4",
+    "field": "file",
+    "filename": "clip.mp4",
+    "hex": "000000206674797069736f6d0000020069736f6d69736f32617663316d7034310000000866726565000005ea6d646174000002ae0605ffffaadc45e9bde6d948b7962cd820d923eeef78323634202d20636f7265203136352072333232322062333536303561202d20482e3236342f4d5045472d342041564320636f646563202d20436f70796c65667420323030332d32303235202d20687474703a2f2f7777772e766964656f6c616e2e6f72672f783236342e68746d6c202d206f7074696f6e733a2063616261633d31207265663d33206465626c6f636b3d313a303a3020616e616c7973653d3078333a3078313133206d653d686578207375626d653d37207073793d31207073795f72643d312e30303a302e3030206d697865645f7265663d31206d655f72616e67653d3136206368726f6d615f6d653d31207472656c6c69733d31203878386463743d312063716d3d3020646561647a6f6e653d32312c313120666173745f70736b69703d31206368726f6d615f71705f6f66667365743d2d3220746872656164733d31206c6f6f6b61686561645f746872656164733d3120736c696365645f746872656164733d30206e723d3020646563696d6174653d3120696e7465726c616365643d3020626c757261795f636f6d7061743d3020636f6e73747261696e65645f696e7472613d3020626672616d65733d3320625f707972616d69643d3220625f61646170743d3120625f626961733d30206469726563743d3120776569676874623d31206f70656e5f676f703d3020776569676874703d32206b6579696e743d323530206b6579696e745f6d696e3d3130207363656e656375743d343020696e7472615f726566726573683d302072635f6c6f6f6b61686561643d34302072633d637266206d62747265653d31206372663d32332e302071636f6d703d302e36302071706d696e3d302071706d61783d3639207170737465703d342069705f726174696f3d312e34302061713d313a312e303000800000026f6588840047e4712833d26fff846c0359af7146cd5a4ae383a201d643d979139d7cbca09f1bca8a737243b8817350e52410b22fdea921c4ddf627e47e13c5d32dde49ec7dde53692241b29567d9b2d8a37c3ff762940231e420fe2684a5a0484d0a4bf0165ca843749f8831bee65fd5101b7603c7ece0a7561e40705a87515231cbb7bf569ecb7d7f020b415a030c9a7d3f6b10bde6f92dc3b9f4d2df1c6eae20f38eef56c05de828149e69d58d56e9a0caef7fd295a3acd8f3761152222e0616e62c4a5b5f5278148ce6aec1d08dba0a2d9a8f489f521bb0095323724dd425516bc174c75c29b9d3a86cebff7ade9ff615f465be225f3700432f0c2969cba829210dfe5cf5bba29f9cbae12829f77427b44b7fed981154de49dd83677d32a186b06cc313c056bfa6c44382cbd58061febe1219b3f1330e967c5d908ca6ca9f4bc93dd14ab9be07a9824b944299f36dd5a72ff573ea21aa92fb8a6dadf3cfca1d4b2738f728b27702631ab3fc36e89327cfbb37fc3a14a3fd898e60d1da259b15e05666ab9edd34bdbbe3aa0d1de82fd58d4f64b7ee39f2a3404d67905127f520a4d61106e86c578864c727ffb171f3cf21f033f19722ca0380a79d8c7f5f629b5d3cb77bb614f34421e60acbf251985d38214f17dbef19caac6e3d622a822558a54ddb150cb7c31647cd7212fb61555eedde2f56f5909b1c609d796566d1f42802578bd35ea148433a960b2e2ddf3ed28f24e76fc1491210c5ce0052868a526fb7816bc4de2267ebd03f0037d99f0f616f7522c807e95f780fb9fa31141bd7977527d33ec74d04b817e1b5a3985a61941ae7607e9bcb2803be594a5f8740afe75d39ad45abde0c99039bb6c9dbadff00000080419a246c425f27ba0917ff98af1054305808dccfc1e524bef3609cece70149afb9121682c383a1819f8a52bee1079eee4e74abe9d60b1952eb505d65d8ec29915a0e153e317ab115dbe8a576f6da279da02076c03e582d32ea94ab5cade01a50b1133c91f63aa57306ffa04e343c3f5d886c821944dac1b150f8f8165b247a400000001d419e42788eff80fe0ced9640c8ba93990fd7c1fb2ff7d4bbd50598cfc100000008019e6174425f734000000008019e636a425f7341000003516d6f6f760000006c6d766864000000000000000000000000000003e8000001f40001000001000000000000000000000000010000000000000000000000000000000100000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002000002a07472616b0000005c746b68640000000300000000000000000000000100000000000001f400000000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000040000000004000000030000000000024656474730000001c656c73740000000000000001000001f40000080000010000000002186d646961000000206d646864000000000000000000000000000028000000140055c400000000002d68646c72000000000000000076696465000000000000000000000000566964656f48616e646c657200000001c36d696e6600000014766d68640000000100000000000000000000002464696e660000001c6472656600000000000000010000000c75726c2000000001000001837374626c000000bf737473640000000000000001000000af617663310000000000000001000000000000000000000000000000000040003000480000004800000000000000010c4c617663206c696278323634000000000000000000000000000000000000000018ffff00000035617663430164000affe100186764000aacd9447b011000000300100000030140f122596001000668ebe3cb22c0fdf8f8000000001070617370000000010000000100000014627472740000000000005e2000000000000000187374747300000000000000010000000500000400000000147374737300000000000000010000000100000038637474730000000000000005000000010000080000000001000014000000000100000800000000010000000000000001000004000000001c737473630000000000000001000000010000000500000001000000287374737a0000000000000000000000050000052500000084000000210000000c0000000c000000147374636f0000000000000001000000300000003d75647461000000356d657461000000000000002168646c7200000000000000006d6469726170706c00000000000000000000000008696c7374"
+   },
+   "name": "upload a video",
+   "response": {
+    "body": {
+     "asset": {
+      "durationMs": 500,
+      "h": 48,
+      "hasAudio": false,
+      "id": "{{video}}",
+      "kind": "video",
+      "mime": "video/mp4",
+      "name": "clip.mp4",
+      "sha256": "909e8802c47c3a0a4716cf40aca38560d50e95eab7214bfb12ddac627ab2e2ae",
+      "w": 64
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "capture": {
+    "audio": "body.asset.id"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "audio/wav",
+    "field": "file",
+    "filename": "tone.wav",
+    "hex": "524946462464000057415645666d74201000000001000100401f0000803e00000200100064617461006400000000e9381e51033c780766d3e5be23d6820bda3fd154883e440a65d676c010d45004bf33b445082f61fc87ca70b508c81cf6c823fe35362260f492c715b617cafbf76a25de386c2844ffd2d6b3c761dbe30680314f431333590bfbe301d44ae49a0ae92fff3d5f2cfd0427de59cdd4da16fdbd1e372bb71a85f64cd3e6c4ddd24ef467152423501676f78cd9bdced4dd89fe971e8c2cd52147063beb39e164ee250be026cc310f26e50a19f0a9e420eea5054f1c0324a317cefdbae4cfd9f3e1f9f6920b3f13840948f416e0a8d824e2f9f6610b6614280ecefd36ee6ce9e1f2a5058d17401f8719e50aa1fc35f773fd250bd217d01ba914470667f8f5f129f589fe41075409fa0276f7e3ec8de8faeb4ef44cfc7effbbfc85f649f1a0f04ff516fd4204f0079407fd04f00267037a069a0ab80d980e680d590ba509b7081108e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd0000e9381e51033c780766d3e5be23d6820bda3fd154883e440a65d676c010d45004bf33b445082f61fc87ca70b508c81cf6c823fe35362260f492c715b617cafbf76a25de386c2844ffd2d6b3c761dbe30680314f431333590bfbe301d44ae49a0ae92fff3d5f2cfd0427de59cdd4da16fdbd1e372bb71a85f64cd3e6c4ddd24ef467152423501676f78cd9bdced4dd89fe971e8c2cd52147063beb39e164ee250be026cc310f26e50a19f0a9e420eea5054f1c0324a317cefdbae4cfd9f3e1f9f6920b3f13840949f416e0a8d824e2f9f6610b6614280ecefd36ee6ce9e1f2a5058d17401f8719e50aa1fc35f773fd250bd217d01ba914470667f8f5f129f589fe41075409fa0276f7e3ec8de8faeb4ef44cfc7effbbfc85f649f1a0f04ff516fd4204f0079407fd04f00267037a069a0ab80d980e680d590ba509b7081108e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd0000e9381e51033c780766d3e5be23d6820bda3fd154883e440a65d676c010d45004bf33b445082f61fc87ca70b508c81cf6c823fe35362260f492c715b617cafbf76a25de386c2844ffd2d6b3c761dbe30680314f431333590bfbe301d44ae49a0ae92fff3d5f2cfd0427de59cdd4da16fdbd1e372bb71a85f64cd3e6c4ddd24ef467152423501676f78cd9bdced4dd89fe971e8c2cd52147063beb39e164ee250be026cc310f26e50a19f0a9e420eea5054f1c0324a317cefdbae4cfd9f3e1f9f6920b3f13840949f416e0a8d824e2f9f6610b6614280ecefd36ee6ce9e1f2a5058d17401f8719e50aa1fc35f773fd250bd217d01ba914470667f8f5f129f589fe41075409fa0276f7e3ec8de8faeb4ef44cfc7effbbfc85f649f1a0f04ff516fd4204f0079407fd04f00267037a069a0ab80d980e680d590ba509b7081108e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd0000e9381e51033c780766d3e5be23d6820bda3fd154883e440a65d676c010d45004bf33b445082f61fc87ca70b508c81cf6c823fe35362260f492c715b617cafbf76a25de386c2844ffd2d6b3c761dbe30680314f431333590bfbe301d44ae49a0ae92fff3d5f2cfd0427de59cdd4da16fdbd1e372bb71a85f64cd3e6c4ddd24ef467152423501676f78cd9bdced4dd89fe971e8c2cd52147063beb39e164ee250be026cc310f26e50a19f0a9e420eea5054f1c0324a317cefdbae4cfd9f3e1f9f6920b3f13840949f416e0a8d824e2f9f6610b6614280ecefd36ee6ce9e1f2a5058d17401f8719e50aa1fc35f773fd250bd217d01ba914470667f8f5f129f589fe41075409fa0276f7e3ec8de8faeb4ef44cfc7effbbfc85f649f1a0f04ff516fd4204f0079407fd04f00267037a069a0ab80d980e680d590ba509b7081108e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd00000302f803ce057807e908160af60a820bb70b930b160b440a2509bf071f06500460025e005afe61fc85fad2f856f71cf62df591f44cf460f4cdf48ff5a1f6fbf791f959fb44fd44ff490144032705e3066a08b109ae0a590bae0baa0b4d0b9a0a96094908bd06fd0417031a0115ff16fd2efb6af9d9f785f67af5c0f45bf44ef49bf43ff535f676f7f7f8affa8efc89fe8d008e027c044706e30742095b0a250b9a0bb60b790be50afd09ca085307a505cb03d501d1ffcefddcfb09fa64f8f9f6d3f5faf475f448f475f4faf4d3f5f9f664f809fadcfbcefdd1ffd501cb03a5055307ca08fd09e50a790bb60b9a0b250b5b0a4209e30747067c048e028d0089fe8efcaffaf7f876f735f63ff59bf44ef45bf4c0f47af585f6d9f76af92efb16fd15ff1a011703fd04bd06490896099a0a4d0baa0bae0b590bae0ab1096a08e30627054403490144ff44fd59fb91f9fbf7a1f68ff5cdf460f44cf491f42df51cf656f7d2f885fa61fc5afe5e00600250041f06bf072509440a160b930bb70b820bf60a160ae9087807ce05f80303020000fdfd08fc32fa88f817f7eaf50af57ef449f46df4eaf4bcf5dbf641f8e1f9b0fba0fda2ffa6019f037b052e07aa08e409d30a6f0bb40ba00b330b710a5f0905086f06a704bc02bc00b7febcfcd9fa1df996f74ff652f5a7f452f456f4b3f466f56af6b7f743f903fbe9fce6feeb00ea02d204960627087b09860a400ba50bb20b650bc10acb098a08090751057203770173ff72fd84fbb9f91df8bef6a5f5dbf466f44af487f41bf503f636f7adf85bfa35fc2bfe2f0032022404f7059c0707092d0a060b8b0bb80b8b0b060b2d0a07099c07f705240432022f002bfe35fc5bfaadf836f703f61bf587f44af466f4dbf4a5f5bef61df8b9f984fb72fd73ff77017203510509078a08cb09c10a650bb20ba50b400b860a7b0927089606d204ea02eb00e6fee9fc03fb43f9b7f76af666f5b3f456f452f4a7f452f54ff696f71df9d9fabcfcb7febc00bc02a7046f0605085f09710a330ba00bb40b6f0bd30ae409aa082e077b059f03a601a2ffa0fdb0fbe1f941f8dbf6bcf5eaf46df449f47ef40af5eaf517f788f832fa08fcfdfd"
+   },
+   "name": "upload audio",
+   "response": {
+    "body": {
+     "asset": {
+      "durationMs": 1600,
+      "h": 0,
+      "hasAudio": true,
+      "id": "{{audio}}",
+      "kind": "audio",
+      "mime": "audio/wav",
+      "name": "tone.wav",
+      "sha256": "10b859c3e7b9d7e9714a4e81a2b3c75fec222ae3fe6dab02a88b007d1b984e0e",
+      "w": 0
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "text/plain",
+    "field": "file",
+    "filename": "notes.txt",
+    "hex": "6a75737420736f6d6520746578742068657265"
+   },
+   "name": "upload text",
+   "response": {
+    "body": {
+     "error": "unsupported_type",
+     "message": "Upload images (PNG, JPEG, WebP, GIF, SVG), video (MP4, MOV, WebM) or audio (MP3, M4A, WAV, OGG)."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 415
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "broken.png",
+    "hex": "89504e470d0a1a0a0000000000000000000000000000"
+   },
+   "name": "upload a corrupt PNG",
+   "response": {
+    "body": {
+     "error": "corrupt_image"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 415
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "huge.png",
+    "hex": "89504e470d0a1a0a0000000d4948445200000008000000060806000000fe05dffb000000994944415478da0dcaa10dc5201440d197100443d43461044c4d3d0b60fe04180c8b90e0d900cf0c58349a2deeefd14744042b175e1e9204aa648614b674944c44dc85750fde0592cb545718aeb3dd44b9f385f86063c0c74c8a851a3b234e763ca8a8bfd002b6657c2ba4d6a96d32da61378d6af71756c6ae825f9db426751dc6d2ec75a3d6fb0553b0a6e3cd249943359a616eb67951e6c71f15d769913a824e570000000049454e44ae426082",
+    "padTo": 17000
+   },
+   "name": "upload an image over the limit",
+   "response": {
+    "body": {
+     "error": "too_large",
+     "message": "Images are limited to 0.0152587890625 MB"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 413
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "video/mp4",
+    "field": "file",
+    "filename": "huge.mp4",
+    "hex": "000000206674797069736f6d0000020069736f6d69736f32617663316d7034310000000866726565000005ea6d646174000002ae0605ffffaadc45e9bde6d948b7962cd820d923eeef78323634202d20636f7265203136352072333232322062333536303561202d20482e3236342f4d5045472d342041564320636f646563202d20436f70796c65667420323030332d32303235202d20687474703a2f2f7777772e766964656f6c616e2e6f72672f783236342e68746d6c202d206f7074696f6e733a2063616261633d31207265663d33206465626c6f636b3d313a303a3020616e616c7973653d3078333a3078313133206d653d686578207375626d653d37207073793d31207073795f72643d312e30303a302e3030206d697865645f7265663d31206d655f72616e67653d3136206368726f6d615f6d653d31207472656c6c69733d31203878386463743d312063716d3d3020646561647a6f6e653d32312c313120666173745f70736b69703d31206368726f6d615f71705f6f66667365743d2d3220746872656164733d31206c6f6f6b61686561645f746872656164733d3120736c696365645f746872656164733d30206e723d3020646563696d6174653d3120696e7465726c616365643d3020626c757261795f636f6d7061743d3020636f6e73747261696e65645f696e7472613d3020626672616d65733d3320625f707972616d69643d3220625f61646170743d3120625f626961733d30206469726563743d3120776569676874623d31206f70656e5f676f703d3020776569676874703d32206b6579696e743d323530206b6579696e745f6d696e3d3130207363656e656375743d343020696e7472615f726566726573683d302072635f6c6f6f6b61686561643d34302072633d637266206d62747265653d31206372663d32332e302071636f6d703d302e36302071706d696e3d302071706d61783d3639207170737465703d342069705f726174696f3d312e34302061713d313a312e303000800000026f6588840047e4712833d26fff846c0359af7146cd5a4ae383a201d643d979139d7cbca09f1bca8a737243b8817350e52410b22fdea921c4ddf627e47e13c5d32dde49ec7dde53692241b29567d9b2d8a37c3ff762940231e420fe2684a5a0484d0a4bf0165ca843749f8831bee65fd5101b7603c7ece0a7561e40705a87515231cbb7bf569ecb7d7f020b415a030c9a7d3f6b10bde6f92dc3b9f4d2df1c6eae20f38eef56c05de828149e69d58d56e9a0caef7fd295a3acd8f3761152222e0616e62c4a5b5f5278148ce6aec1d08dba0a2d9a8f489f521bb0095323724dd425516bc174c75c29b9d3a86cebff7ade9ff615f465be225f3700432f0c2969cba829210dfe5cf5bba29f9cbae12829f77427b44b7fed981154de49dd83677d32a186b06cc313c056bfa6c44382cbd58061febe1219b3f1330e967c5d908ca6ca9f4bc93dd14ab9be07a9824b944299f36dd5a72ff573ea21aa92fb8a6dadf3cfca1d4b2738f728b27702631ab3fc36e89327cfbb37fc3a14a3fd898e60d1da259b15e05666ab9edd34bdbbe3aa0d1de82fd58d4f64b7ee39f2a3404d67905127f520a4d61106e86c578864c727ffb171f3cf21f033f19722ca0380a79d8c7f5f629b5d3cb77bb614f34421e60acbf251985d38214f17dbef19caac6e3d622a822558a54ddb150cb7c31647cd7212fb61555eedde2f56f5909b1c609d796566d1f42802578bd35ea148433a960b2e2ddf3ed28f24e76fc1491210c5ce0052868a526fb7816bc4de2267ebd03f0037d99f0f616f7522c807e95f780fb9fa31141bd7977527d33ec74d04b817e1b5a3985a61941ae7607e9bcb2803be594a5f8740afe75d39ad45abde0c99039bb6c9dbadff00000080419a246c425f27ba0917ff98af1054305808dccfc1e524bef3609cece70149afb9121682c383a1819f8a52bee1079eee4e74abe9d60b1952eb505d65d8ec29915a0e153e317ab115dbe8a576f6da279da02076c03e582d32ea94ab5cade01a50b1133c91f63aa57306ffa04e343c3f5d886c821944dac1b150f8f8165b247a400000001d419e42788eff80fe0ced9640c8ba93990fd7c1fb2ff7d4bbd50598cfc100000008019e6174425f734000000008019e636a425f7341000003516d6f6f760000006c6d766864000000000000000000000000000003e8000001f40001000001000000000000000000000000010000000000000000000000000000000100000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002000002a07472616b0000005c746b68640000000300000000000000000000000100000000000001f400000000000000000000000000000000000100000000000000000000000000000001000000000000000000000000000040000000004000000030000000000024656474730000001c656c73740000000000000001000001f40000080000010000000002186d646961000000206d646864000000000000000000000000000028000000140055c400000000002d68646c72000000000000000076696465000000000000000000000000566964656f48616e646c657200000001c36d696e6600000014766d68640000000100000000000000000000002464696e660000001c6472656600000000000000010000000c75726c2000000001000001837374626c000000bf737473640000000000000001000000af617663310000000000000001000000000000000000000000000000000040003000480000004800000000000000010c4c617663206c696278323634000000000000000000000000000000000000000018ffff00000035617663430164000affe100186764000aacd9447b011000000300100000030140f122596001000668ebe3cb22c0fdf8f8000000001070617370000000010000000100000014627472740000000000005e2000000000000000187374747300000000000000010000000500000400000000147374737300000000000000010000000100000038637474730000000000000005000000010000080000000001000014000000000100000800000000010000000000000001000004000000001c737473630000000000000001000000010000000500000001000000287374737a0000000000000000000000050000052500000084000000210000000c0000000c000000147374636f0000000000000001000000300000003d75647461000000356d657461000000000000002168646c7200000000000000006d6469726170706c00000000000000000000000008696c7374",
+    "padTo": 120000
+   },
+   "name": "upload over the media limit",
+   "response": {
+    "body": {
+     "error": "too_large",
+     "message": "Max 0.095367431640625 MB"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 413
+   },
+   "url": "/api/assets"
+  },
+  {
+   "checks": [
+    {
+     "name": "reports",
+     "sql": "SELECT target_type, target_id, reason, details, legal, priority, status FROM reports"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "reports",
+     "rows": [
+      {
+       "details": "Upload matched internal hash 0000000000000000 (file \"flat.png\")",
+       "legal": {
+        "phash": "0000000000000000"
+       },
+       "priority": 100,
+       "reason": "csam",
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000000001",
+       "target_type": "user"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "ts.upload_blocked",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "meta": {
+        "category": "csam",
+        "source": "internal"
+       },
+       "target": "0000000000000000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "flat.png",
+    "hex": "89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000000194944415478da63686868f84f0966183560d4805103868b0100898f7f1f87d7e6c90000000049454e44ae426082"
+   },
+   "name": "upload a blocklisted image",
+   "response": {
+    "body": {
+     "error": "blocked",
+     "message": "This file can’t be uploaded because it violates our content policy."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 422
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "list",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": 1600,
+       "h": 0,
+       "hasAudio": true,
+       "id": "{{audio}}",
+       "kind": "audio",
+       "mime": "audio/wav",
+       "name": "tone.wav",
+       "sha256": "10b859c3e7b9d7e9714a4e81a2b3c75fec222ae3fe6dab02a88b007d1b984e0e",
+       "source": "upload",
+       "w": 0
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": 500,
+       "h": 48,
+       "hasAudio": false,
+       "id": "{{video}}",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "clip.mp4",
+       "sha256": "909e8802c47c3a0a4716cf40aca38560d50e95eab7214bfb12ddac627ab2e2ae",
+       "source": "upload",
+       "w": 64
+      },
+      {
+       "animated": true,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": 500,
+       "h": 16,
+       "hasAudio": false,
+       "id": "{{anim}}",
+       "kind": "video",
+       "mime": "image/gif",
+       "name": "anim.gif",
+       "sha256": "042124319476753004927e9cac02d7951fcaa704399b78a85c8a795476b29621",
+       "source": "gif",
+       "w": 16
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 160,
+       "hasAudio": false,
+       "id": "{{svg}}",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "logo.svg",
+       "sha256": "<sha:1>",
+       "source": "upload",
+       "w": 320
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{webp}}",
+       "kind": "image",
+       "mime": "image/webp",
+       "name": "header.webp",
+       "sha256": "39dacd1f0b8fe6d121de7081ec9bf09205d266aa7c052a13ed5e31848c14dde5",
+       "source": "upload",
+       "w": 8
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{gif}}",
+       "kind": "image",
+       "mime": "image/gif",
+       "name": "still.gif",
+       "sha256": "44112b63aae32c23f3a53f36e74a0c8a6260352eda76e5ddb701c3d36ea229d9",
+       "source": "upload",
+       "w": 8
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{jpg}}",
+       "kind": "image",
+       "mime": "image/jpeg",
+       "name": "photo.bin",
+       "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+       "source": "upload",
+       "w": 8
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{png}}",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "pixel art.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 8
+      }
+     ],
+     "counts": {
+      "all": 8,
+      "audio": 1,
+      "files": 0,
+      "images": 6,
+      "videos": 1
+     },
+     "quotaBytes": 40000,
+     "total": 8,
+     "usedBytes": "<volatile>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets",
+   "volatile": [
+    "response.body.usedBytes",
+    "response.body.assets.*.bytes"
+   ]
+  },
+  {
+   "name": "all assets",
+   "rows": [
+    {
+     "animated": true,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": 500,
+     "has_audio": false,
+     "has_phash": true,
+     "has_waveform": true,
+     "height": 16,
+     "id": "{{anim}}",
+     "kind": "video",
+     "mime": "image/gif",
+     "moderation": "ok",
+     "name": "anim.gif",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": "<sha:2>",
+     "proxy_mime": "video/mp4",
+     "proxy_sha256": "<sha:3>",
+     "sha256": "042124319476753004927e9cac02d7951fcaa704399b78a85c8a795476b29621",
+     "source": "gif",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 16
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": 500,
+     "has_audio": false,
+     "has_phash": true,
+     "has_waveform": true,
+     "height": 48,
+     "id": "{{video}}",
+     "kind": "video",
+     "mime": "video/mp4",
+     "moderation": "ok",
+     "name": "clip.mp4",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": "<sha:4>",
+     "proxy_mime": "video/mp4",
+     "proxy_sha256": "<sha:5>",
+     "sha256": "909e8802c47c3a0a4716cf40aca38560d50e95eab7214bfb12ddac627ab2e2ae",
+     "source": "upload",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 64
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": null,
+     "has_audio": false,
+     "has_phash": false,
+     "has_waveform": false,
+     "height": 6,
+     "id": "{{webp}}",
+     "kind": "image",
+     "mime": "image/webp",
+     "moderation": "ok",
+     "name": "header.webp",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": null,
+     "proxy_mime": null,
+     "proxy_sha256": null,
+     "sha256": "39dacd1f0b8fe6d121de7081ec9bf09205d266aa7c052a13ed5e31848c14dde5",
+     "source": "upload",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 8
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": null,
+     "has_audio": false,
+     "has_phash": false,
+     "has_waveform": false,
+     "height": 160,
+     "id": "{{svg}}",
+     "kind": "svg",
+     "mime": "image/svg+xml",
+     "moderation": "ok",
+     "name": "logo.svg",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": null,
+     "proxy_mime": null,
+     "proxy_sha256": null,
+     "sha256": "<sha:1>",
+     "source": "upload",
+     "svg_sha256": "<sha:6>",
+     "trashed": false,
+     "width": 320
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": null,
+     "has_audio": false,
+     "has_phash": true,
+     "has_waveform": false,
+     "height": 6,
+     "id": "{{jpg}}",
+     "kind": "image",
+     "mime": "image/jpeg",
+     "moderation": "ok",
+     "name": "photo.bin",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": null,
+     "proxy_mime": null,
+     "proxy_sha256": null,
+     "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+     "source": "upload",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 8
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": null,
+     "has_audio": false,
+     "has_phash": true,
+     "has_waveform": false,
+     "height": 6,
+     "id": "{{png}}",
+     "kind": "image",
+     "mime": "image/png",
+     "moderation": "ok",
+     "name": "pixel art.png",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": null,
+     "proxy_mime": null,
+     "proxy_sha256": null,
+     "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+     "source": "upload",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 8
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": null,
+     "has_audio": false,
+     "has_phash": true,
+     "has_waveform": false,
+     "height": 6,
+     "id": "{{gif}}",
+     "kind": "image",
+     "mime": "image/gif",
+     "moderation": "ok",
+     "name": "still.gif",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": null,
+     "proxy_mime": null,
+     "proxy_sha256": null,
+     "sha256": "44112b63aae32c23f3a53f36e74a0c8a6260352eda76e5ddb701c3d36ea229d9",
+     "source": "upload",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 8
+    },
+    {
+     "animated": false,
+     "attribution": null,
+     "bytes": "<volatile>",
+     "duration_ms": 1600,
+     "has_audio": true,
+     "has_phash": false,
+     "has_waveform": true,
+     "height": 0,
+     "id": "{{audio}}",
+     "kind": "audio",
+     "mime": "audio/wav",
+     "moderation": "ok",
+     "name": "tone.wav",
+     "owner_id": "00000000-0000-4000-8000-000000000001",
+     "poster_sha256": null,
+     "proxy_mime": "audio/mp4",
+     "proxy_sha256": "<sha:7>",
+     "sha256": "10b859c3e7b9d7e9714a4e81a2b3c75fec222ae3fe6dab02a88b007d1b984e0e",
+     "source": "upload",
+     "svg_sha256": null,
+     "trashed": false,
+     "width": 0
+    }
+   ],
+   "sql": "SELECT id, owner_id, mime, kind, bytes, width, height, name, duration_ms, has_audio, proxy_mime, animated, source, attribution, moderation,\n  phash IS NOT NULL AS has_phash, sha256, proxy_sha256, poster_sha256, svg_sha256, waveform IS NOT NULL AS has_waveform, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY name, id",
+   "volatile": [
+    "rows.*.bytes"
+   ]
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "method": "POST",
+   "multipart": {
+    "contentType": "image/png",
+    "field": "file",
+    "filename": "big.png",
+    "hex": "89504e470d0a1a0a0000000d4948445200000008000000060806000000fe05dffb000000994944415478da0dcaa10dc5201440d197100443d43461044c4d3d0b60fe04180c8b90e0d900cf0c58349a2deeefd14744042b175e1e9204aa648614b674944c44dc85750fde0592cb545718aeb3dd44b9f385f86063c0c74c8a851a3b234e763ca8a8bfd002b6657c2ba4d6a96d32da61378d6af71756c6ae825f9db426751dc6d2ec75a3d6fb0553b0a6e3cd249943359a616eb67951e6c71f15d769913a824e570000000049454e44ae426082",
+    "padTo": 15000
+   },
+   "name": "upload over the quota",
+   "response": {
+    "body": {
+     "error": "upgrade_required",
+     "message": "You’ve used all 0 GB of your storage. Delete uploads to make room."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 402
+   },
+   "url": "/api/assets"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "name": "serve a PNG",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{png}}"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "serve a JPEG",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+      "size": 323
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+     "content-type": "image/jpeg",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{jpg}}?v=1"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "name": "serve the SVG raster",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       320,
+       160
+      ],
+      "sha256": "<volatile>",
+      "size": "<volatile>"
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{svg}}",
+   "volatile": [
+    "response.body.$binary.sha256",
+    "response.body.$binary.size"
+   ]
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "name": "svg source (sanitised)",
+   "response": {
+    "body": {
+     "$text": "<?xml version=\"1.0\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"40\" height=\"20\" viewBox=\"0 0 40 20\"><rect width=\"40\" height=\"20\" fill=\"#ff0000\"/><circle cx=\"10\" cy=\"10\" r=\"5\" fill=\"#00ff00\"/></svg>"
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+     "content-type": "image/svg+xml",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{svg}}/svg"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "name": "svg source of a PNG",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{png}}/svg"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "name": "recolour",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       320,
+       160
+      ],
+      "sha256": "<volatile>",
+      "size": "<volatile>"
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{svg}}/recolor/ff0000-0000ff",
+   "volatile": [
+    "response.body.$binary.sha256",
+    "response.body.$binary.size"
+   ]
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "name": "recolour: bad key",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{svg}}/recolor/nonsense"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "name": "recolour a PNG (original bytes)",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{png}}/recolor/ff0000-0000ff"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "name": "recolour unknown",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/nope/recolor/ff0000-0000ff"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "name": "poster of the video",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       64,
+       48
+      ],
+      "sha256": "<sha:4>",
+      "size": "<volatile>"
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-type": "image/jpeg",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{video}}/poster",
+   "volatile": [
+    "response.body.$binary.size"
+   ]
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "name": "poster of an image",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{png}}/poster"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "name": "waveform",
+   "response": {
+    "body": {
+     "durationMs": 1600,
+     "peaks": [
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>",
+      "<volatile>"
+     ]
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{audio}}/waveform",
+   "volatile": [
+    "response.body.peaks.*"
+   ]
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "name": "waveform of an image",
+   "response": {
+    "body": {
+     "durationMs": null,
+     "peaks": []
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{png}}/waveform"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "name": "waveform unknown",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/nope/waveform"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "name": "stream the video",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "<sha:5>",
+      "size": "<volatile>"
+     }
+    },
+    "headers": {
+     "accept-ranges": "bytes",
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-type": "video/mp4",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{video}}",
+   "volatile": [
+    "response.body.$binary.size",
+    "response.headers.content-length"
+   ]
+  },
+  {
+   "headers": {
+    "range": "bytes=0-9",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "name": "range request",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "<volatile>",
+      "size": 10
+     }
+    },
+    "headers": {
+     "accept-ranges": "bytes",
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-range": "<volatile>",
+     "content-type": "video/mp4",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 206
+   },
+   "url": "/api/assets/{{video}}",
+   "volatile": [
+    "response.headers.content-range",
+    "response.body.$binary.sha256"
+   ]
+  },
+  {
+   "headers": {
+    "range": "bytes=-4",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "name": "suffix range",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "<volatile>",
+      "size": 4
+     }
+    },
+    "headers": {
+     "accept-ranges": "bytes",
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-range": "<volatile>",
+     "content-type": "audio/mp4",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 206
+   },
+   "url": "/api/assets/{{audio}}",
+   "volatile": [
+    "response.headers.content-range",
+    "response.body.$binary.sha256"
+   ]
+  },
+  {
+   "headers": {
+    "range": "bytes=99999999-",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "name": "range past the end",
+   "response": {
+    "body": null,
+    "headers": {
+     "accept-ranges": "bytes",
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-range": "<volatile>",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 416
+   },
+   "url": "/api/assets/{{audio}}",
+   "volatile": [
+    "response.headers.content-range"
+   ]
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "name": "serve unknown",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "method": "DELETE",
+   "name": "trash someone else’s",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{png}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "method": "DELETE",
+   "name": "trash",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{gif}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "name": "list after trash",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": 1600,
+       "h": 0,
+       "hasAudio": true,
+       "id": "{{audio}}",
+       "kind": "audio",
+       "mime": "audio/wav",
+       "name": "tone.wav",
+       "sha256": "10b859c3e7b9d7e9714a4e81a2b3c75fec222ae3fe6dab02a88b007d1b984e0e",
+       "source": "upload",
+       "w": 0
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": 500,
+       "h": 48,
+       "hasAudio": false,
+       "id": "{{video}}",
+       "kind": "video",
+       "mime": "video/mp4",
+       "name": "clip.mp4",
+       "sha256": "909e8802c47c3a0a4716cf40aca38560d50e95eab7214bfb12ddac627ab2e2ae",
+       "source": "upload",
+       "w": 64
+      },
+      {
+       "animated": true,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": 500,
+       "h": 16,
+       "hasAudio": false,
+       "id": "{{anim}}",
+       "kind": "video",
+       "mime": "image/gif",
+       "name": "anim.gif",
+       "sha256": "042124319476753004927e9cac02d7951fcaa704399b78a85c8a795476b29621",
+       "source": "gif",
+       "w": 16
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 160,
+       "hasAudio": false,
+       "id": "{{svg}}",
+       "kind": "svg",
+       "mime": "image/svg+xml",
+       "name": "logo.svg",
+       "sha256": "<sha:1>",
+       "source": "upload",
+       "w": 320
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{webp}}",
+       "kind": "image",
+       "mime": "image/webp",
+       "name": "header.webp",
+       "sha256": "39dacd1f0b8fe6d121de7081ec9bf09205d266aa7c052a13ed5e31848c14dde5",
+       "source": "upload",
+       "w": 8
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{jpg}}",
+       "kind": "image",
+       "mime": "image/jpeg",
+       "name": "photo.bin",
+       "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+       "source": "upload",
+       "w": 8
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{png}}",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "pixel art.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 8
+      }
+     ],
+     "counts": {
+      "all": 7,
+      "audio": 1,
+      "files": 0,
+      "images": 5,
+      "videos": 1
+     },
+     "quotaBytes": 40000,
+     "total": 7,
+     "usedBytes": "<volatile>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets",
+   "volatile": [
+    "response.body.usedBytes",
+    "response.body.assets.*.bytes"
+   ]
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "name": "trashed bytes still serve",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "44112b63aae32c23f3a53f36e74a0c8a6260352eda76e5ddb701c3d36ea229d9",
+      "size": 879
+     }
+    },
+    "headers": {
+     "access-control-allow-origin": "https://app.example",
+     "cache-control": "public, max-age=31536000, immutable",
+     "content-security-policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+     "content-type": "image/gif",
+     "cross-origin-opener-policy": "same-origin",
+     "cross-origin-resource-policy": "cross-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "vary": "origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{gif}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "name": "uploads: search, filter, sort",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{png}}",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "pixel art.png",
+       "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+       "source": "upload",
+       "w": 8
+      }
+     ],
+     "counts": {
+      "all": 1,
+      "audio": 0,
+      "files": 0,
+      "images": 1,
+      "videos": 0
+     },
+     "quotaBytes": 40000,
+     "total": 1,
+     "usedBytes": "<volatile>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?q=pixel&type=images&sort=name",
+   "volatile": [
+    "response.body.usedBytes",
+    "response.body.assets.*.bytes"
+   ]
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "name": "uploads: a page",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{jpg}}",
+       "kind": "image",
+       "mime": "image/jpeg",
+       "name": "photo.bin",
+       "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+       "source": "upload",
+       "w": 8
+      },
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{webp}}",
+       "kind": "image",
+       "mime": "image/webp",
+       "name": "header.webp",
+       "sha256": "39dacd1f0b8fe6d121de7081ec9bf09205d266aa7c052a13ed5e31848c14dde5",
+       "source": "upload",
+       "w": 8
+      }
+     ],
+     "counts": {
+      "all": 7,
+      "audio": 1,
+      "files": 0,
+      "images": 5,
+      "videos": 1
+     },
+     "quotaBytes": 40000,
+     "total": 7,
+     "usedBytes": "<volatile>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?limit=2&offset=1&sort=oldest",
+   "volatile": [
+    "response.body.usedBytes",
+    "response.body.assets.*.bytes"
+   ]
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "name": "uploads: one by id",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "id": "{{jpg}}",
+       "kind": "image",
+       "mime": "image/jpeg",
+       "name": "photo.bin",
+       "sha256": "f5fe8ce07277d096e69f942be1df1c9e03dbca2129bd30ccb4d1b7c4e829eba0",
+       "source": "upload",
+       "w": 8
+      }
+     ],
+     "counts": {
+      "all": 7,
+      "audio": 1,
+      "files": 0,
+      "images": 5,
+      "videos": 1
+     },
+     "quotaBytes": 40000,
+     "total": 7,
+     "usedBytes": "<volatile>"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets?id={{jpg}}",
+   "volatile": [
+    "response.body.usedBytes",
+    "response.body.assets.*.bytes"
+   ]
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "name": "uploads: bad query",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"all\"|\"images\"|\"videos\"|\"audio\"|\"files\"",
+       "path": [
+        "type"
+       ],
+       "values": [
+        "all",
+        "images",
+        "videos",
+        "audio",
+        "files"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected number to be >=1",
+       "minimum": 1,
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets?limit=0&type=x"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "json": {
+    "name": "  Pixel art v2 "
+   },
+   "method": "PATCH",
+   "name": "rename",
+   "response": {
+    "body": {
+     "name": "Pixel art v2",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{png}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "json": {
+    "name": "mine now"
+   },
+   "method": "PATCH",
+   "name": "rename someone else’s",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{png}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "json": {
+    "name": "   "
+   },
+   "method": "PATCH",
+   "name": "rename: empty",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/{{png}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "json": {
+    "name": "gone"
+   },
+   "method": "PATCH",
+   "name": "rename a trashed upload",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{gif}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "name": "download",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": [
+       8,
+       6
+      ],
+      "sha256": "523dad8c0aa7e48de0ebd47cc7cf2693323819473f3833ae10be2799488c846a",
+      "size": 210
+     }
+    },
+    "headers": {
+     "cache-control": "private, no-store",
+     "content-disposition": "attachment; filename=\"Pixel art v2.png\"; filename*=UTF-8''Pixel%20art%20v2.png",
+     "content-security-policy": "default-src 'none'; sandbox",
+     "content-type": "image/png",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{png}}/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.53"
+   },
+   "name": "download someone else’s",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{png}}/download"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "name": "trash list",
+   "response": {
+    "body": {
+     "assets": [
+      {
+       "animated": false,
+       "attribution": null,
+       "bytes": "<volatile>",
+       "created_at": "<ts>",
+       "durationMs": null,
+       "h": 6,
+       "hasAudio": false,
+       "held": false,
+       "id": "{{gif}}",
+       "kind": "image",
+       "mime": "image/gif",
+       "name": "still.gif",
+       "purge_at": "<ts>",
+       "sha256": "44112b63aae32c23f3a53f36e74a0c8a6260352eda76e5ddb701c3d36ea229d9",
+       "source": "upload",
+       "trashed_at": "<ts>",
+       "w": 8
+      }
+     ],
+     "counts": {
+      "all": 1,
+      "audio": 0,
+      "files": 0,
+      "images": 1,
+      "videos": 0
+     },
+     "total": 1
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash",
+   "volatile": [
+    "response.body.assets.*.bytes"
+   ]
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "method": "DELETE",
+   "name": "trash again (no-op)",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{gif}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "method": "POST",
+   "name": "restore",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{gif}}/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "method": "POST",
+   "name": "restore: not in the trash",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{gif}}/restore"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "json": {
+    "action": "trash",
+    "ids": [
+     "{{gif}}",
+     "{{webp}}",
+     "{{webp}}",
+     "nope"
+    ]
+   },
+   "method": "POST",
+   "name": "batch: trash (duplicates and unknown ids skipped)",
+   "response": {
+    "body": {
+     "ids": [
+      "{{webp}}",
+      "{{gif}}"
+     ],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "json": {
+    "action": "restore",
+    "ids": [
+     "{{gif}}"
+    ]
+   },
+   "method": "POST",
+   "name": "batch: someone else restores",
+   "response": {
+    "body": {
+     "ids": [],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, name, trashed_at IS NOT NULL AS trashed FROM assets WHERE source IN ('upload','gif') ORDER BY created_at, id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "{{png}}",
+       "name": "Pixel art v2",
+       "trashed": false
+      },
+      {
+       "id": "{{jpg}}",
+       "name": "photo.bin",
+       "trashed": false
+      },
+      {
+       "id": "{{gif}}",
+       "name": "still.gif",
+       "trashed": true
+      },
+      {
+       "id": "{{svg}}",
+       "name": "logo.svg",
+       "trashed": false
+      },
+      {
+       "id": "{{anim}}",
+       "name": "anim.gif",
+       "trashed": false
+      },
+      {
+       "id": "{{video}}",
+       "name": "clip.mp4",
+       "trashed": false
+      },
+      {
+       "id": "{{audio}}",
+       "name": "tone.wav",
+       "trashed": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.60"
+   },
+   "json": {
+    "action": "delete",
+    "ids": [
+     "{{webp}}"
+    ]
+   },
+   "method": "POST",
+   "name": "batch: delete forever",
+   "response": {
+    "body": {
+     "ids": [
+      "{{webp}}"
+     ],
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.61"
+   },
+   "method": "DELETE",
+   "name": "delete from the trash forever",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{gif}}?permanent=1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.62"
+   },
+   "json": {
+    "action": "zap",
+    "ids": []
+   },
+   "method": "POST",
+   "name": "batch: bad action",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"trash\"|\"restore\"|\"delete\"",
+       "path": [
+        "action"
+       ],
+       "values": [
+        "trash",
+        "restore",
+        "delete"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected array to have >=1 items",
+       "minimum": 1,
+       "origin": "array",
+       "path": [
+        "ids"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/batch"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.63"
+   },
+   "name": "trash list after",
+   "response": {
+    "body": {
+     "assets": [],
+     "counts": {
+      "all": 0,
+      "audio": 0,
+      "files": 0,
+      "images": 0,
+      "videos": 0
+     },
+     "total": 0
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/trash"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.64"
+   },
+   "name": "capabilities signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/capabilities"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.65"
+   },
+   "name": "capabilities",
+   "response": {
+    "body": {
+     "stt": false,
+     "video": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/capabilities"
+  },
+  {
+   "env": {
+    "OC_WHISPER_CMD": "/nonexistent/whisper",
+    "OC_WHISPER_MODEL": "/nonexistent/model"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.66"
+   },
+   "name": "capabilities with speech-to-text",
+   "response": {
+    "body": {
+     "stt": true,
+     "video": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/capabilities"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.67"
+   },
+   "json": {
+    "format": "webm",
+    "quality": "8k"
+   },
+   "method": "POST",
+   "name": "export job: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"mp4\"|\"gif\"|\"m4a\"|\"pdf\"|\"pdf-print\"|\"pdf-flat\"|\"pptx\"|\"docx\"",
+       "path": [
+        "format"
+       ],
+       "values": [
+        "mp4",
+        "gif",
+        "m4a",
+        "pdf",
+        "pdf-print",
+        "pdf-flat",
+        "pptx",
+        "docx"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"720p\"|\"1080p\"|\"4k\"",
+       "path": [
+        "quality"
+       ],
+       "values": [
+        "720p",
+        "1080p",
+        "4k"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/designs/Svideo0000000000/export-jobs"
+  },
+  {
+   "capture": {
+    "job": "body.id"
+   },
+   "checks": [
+    {
+     "name": "jobs",
+     "sql": "SELECT queue, payload, owner_id, max_attempts, label, status FROM jobs WHERE queue = 'export' AND payload <> '{}' ORDER BY created_at"
+    }
+   ],
+   "db": [
+    {
+     "name": "jobs",
+     "rows": [
+      {
+       "label": "Queued",
+       "max_attempts": 2,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {
+        "designId": "Svideo0000000000",
+        "embeds": [],
+        "format": "mp4",
+        "quality": "4k",
+        "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "export",
+       "status": "queued"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.68"
+   },
+   "json": {
+    "format": "mp4",
+    "quality": "4k"
+   },
+   "method": "POST",
+   "name": "export job",
+   "response": {
+    "body": {
+     "id": "{{job}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/designs/Svideo0000000000/export-jobs"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.69"
+   },
+   "json": {
+    "format": "gif"
+   },
+   "method": "POST",
+   "name": "export job for someone else’s design",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/designs/Svideo0000000000/export-jobs"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.70"
+   },
+   "name": "export job status",
+   "response": {
+    "body": {
+     "id": "{{job}}",
+     "label": "Queued",
+     "progress": 0,
+     "status": "queued"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/export-jobs/{{job}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.71"
+   },
+   "name": "running job",
+   "response": {
+    "body": {
+     "id": "00000000-0000-4000-8000-000000000802",
+     "label": "Rendering frames",
+     "progress": 0.25,
+     "status": "running"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/export-jobs/00000000-0000-4000-8000-000000000802"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.72"
+   },
+   "name": "finished job",
+   "response": {
+    "body": {
+     "filename": "clip \"final\".mp4",
+     "id": "00000000-0000-4000-8000-000000000801",
+     "label": "Done",
+     "progress": 1,
+     "size": 21,
+     "status": "done"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/export-jobs/00000000-0000-4000-8000-000000000801"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.73"
+   },
+   "name": "failed job",
+   "response": {
+    "body": {
+     "error": "ffmpeg exploded",
+     "id": "00000000-0000-4000-8000-000000000803",
+     "label": "",
+     "progress": 0.5,
+     "status": "error"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/export-jobs/00000000-0000-4000-8000-000000000803"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.74"
+   },
+   "name": "someone else’s job",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/export-jobs/00000000-0000-4000-8000-000000000803"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.75"
+   },
+   "name": "job id not a uuid",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/export-jobs/nope"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.76"
+   },
+   "name": "download",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "7ab317f23e9d96a95abc0988c355da8b80da9a3bd54a967329aa54b1bb35b172",
+      "size": 21
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-disposition": "attachment; filename=\"clip final.mp4\"",
+     "content-type": "video/mp4",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/export-jobs/00000000-0000-4000-8000-000000000801/file"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.77"
+   },
+   "name": "download: not ready",
+   "response": {
+    "body": {
+     "error": "not_ready"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/export-jobs/00000000-0000-4000-8000-000000000802/file"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.78"
+   },
+   "json": {
+    "format": "mp4"
+   },
+   "method": "POST",
+   "name": "too many exports",
+   "response": {
+    "body": {
+     "error": "too_many_exports",
+     "message": "Wait for your other exports to finish."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 429
+   },
+   "url": "/api/designs/Sbobvideo0000000/export-jobs"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.79"
+   },
+   "name": "beats",
+   "response": {
+    "body": {
+     "beats": [
+      493,
+      993,
+      1492
+     ],
+     "bpm": 120.2
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{audio}}/beats"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.80"
+   },
+   "name": "beats (cached)",
+   "response": {
+    "body": {
+     "beats": [
+      493,
+      993,
+      1492
+     ],
+     "bpm": 120.2
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/assets/{{audio}}/beats"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.81"
+   },
+   "name": "beats of an image",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/assets/{{png}}/beats"
+  },
+  {
+   "env": {
+    "OC_WHISPER_CMD": null,
+    "OC_WHISPER_MODEL": null
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.82"
+   },
+   "method": "POST",
+   "name": "transcribe without speech-to-text",
+   "response": {
+    "body": {
+     "error": "capability_unavailable",
+     "message": "Auto captions need a local speech-to-text model. Install whisper.cpp and set OC_WHISPER_CMD and OC_WHISPER_MODEL for the API service."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 501
+   },
+   "url": "/api/assets/{{audio}}/transcribe"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.83"
+   },
+   "json": {
+    "language": "a-very-long-language"
+   },
+   "method": "POST",
+   "name": "transcribe: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 10,
+       "message": "Too big: expected string to have <=10 characters",
+       "origin": "string",
+       "path": [
+        "language"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/{{audio}}/transcribe"
+  },
+  {
+   "env": {
+    "OC_WHISPER_CMD": "/nonexistent/whisper",
+    "OC_WHISPER_MODEL": "/nonexistent/model"
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.84"
+   },
+   "method": "POST",
+   "name": "transcribe a silent clip",
+   "response": {
+    "body": {
+     "error": "no_audio",
+     "message": "That clip has no sound to transcribe."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/assets/{{video}}/transcribe"
+  }
+ ],
+ "vars": {}
+}

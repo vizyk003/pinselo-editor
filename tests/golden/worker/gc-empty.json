@@ -1,0 +1,137 @@
+{
+ "seed": [],
+ "objects": [
+  {
+   "name": "asset",
+   "hex": "67632d6f626a6563742d6173736574",
+   "ageHours": 72
+  },
+  {
+   "name": "proxy",
+   "hex": "67632d6f626a6563742d70726f7879",
+   "ageHours": 72
+  },
+  {
+   "name": "poster",
+   "hex": "67632d6f626a6563742d706f73746572",
+   "ageHours": 72
+  },
+  {
+   "name": "thumb",
+   "hex": "67632d6f626a6563742d7468756d62",
+   "ageHours": 72
+  },
+  {
+   "name": "template",
+   "hex": "67632d6f626a6563742d74656d706c617465",
+   "ageHours": 72
+  },
+  {
+   "name": "font",
+   "hex": "67632d6f626a6563742d666f6e74",
+   "ageHours": 72
+  },
+  {
+   "name": "emailimg",
+   "hex": "67632d6f626a6563742d656d61696c696d67",
+   "ageHours": 72
+  },
+  {
+   "name": "site",
+   "hex": "67632d6f626a6563742d73697465",
+   "ageHours": 72
+  },
+  {
+   "name": "gfont",
+   "hex": "67632d6f626a6563742d67666f6e74",
+   "ageHours": 72
+  },
+  {
+   "name": "print",
+   "hex": "67632d6f626a6563742d7072696e74",
+   "ageHours": 72
+  },
+  {
+   "name": "jobpayload",
+   "hex": "67632d6f626a6563742d6a6f627061796c6f6164",
+   "ageHours": 72
+  },
+  {
+   "name": "jobresult",
+   "hex": "67632d6f626a6563742d6a6f62726573756c74",
+   "ageHours": 72
+  },
+  {
+   "name": "brand",
+   "hex": "67632d6f626a6563742d6272616e64",
+   "ageHours": 72
+  },
+  {
+   "name": "social",
+   "hex": "67632d6f626a6563742d736f6369616c",
+   "ageHours": 72
+  },
+  {
+   "name": "state",
+   "hex": "67632d6f626a6563742d7374617465",
+   "ageHours": 72
+  },
+  {
+   "name": "update",
+   "hex": "67632d6f626a6563742d757064617465",
+   "ageHours": 72
+  },
+  {
+   "name": "version",
+   "hex": "67632d6f626a6563742d76657273696f6e",
+   "ageHours": 72
+  },
+  {
+   "name": "garbage1",
+   "hex": "67632d6f626a6563742d6761726261676531",
+   "ageHours": 72
+  },
+  {
+   "name": "garbage2",
+   "hex": "67632d6f626a6563742d6761726261676532",
+   "ageHours": 72
+  },
+  {
+   "name": "fresh",
+   "hex": "67632d6f626a6563742d6672657368",
+   "ageHours": 1
+  }
+ ],
+ "result": {
+  "run": {
+   "scanned": 20,
+   "deleted": 0,
+   "bytes": 0,
+   "skipped": "no references found; refusing to sweep"
+  },
+  "present": [
+   "asset",
+   "proxy",
+   "poster",
+   "thumb",
+   "template",
+   "font",
+   "emailimg",
+   "site",
+   "gfont",
+   "print",
+   "jobpayload",
+   "jobresult",
+   "brand",
+   "social",
+   "state",
+   "update",
+   "version",
+   "garbage1",
+   "garbage2",
+   "fresh"
+  ]
+ },
+ "checks": [],
+ "fake": []
+}

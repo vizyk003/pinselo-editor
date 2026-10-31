@@ -1,0 +1,5504 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_OAUTH_FAKE_BASE": "{{FAKE}}"
+ },
+ "fake": {
+  "/cimd.example/client.json": {
+   "json": {
+    "client_id": "https://cimd.example/client.json",
+    "client_name": "Codex\u0007 CLI",
+    "client_uri": "https://codex.example/",
+    "logo_uri": "http://codex.example/logo.png",
+    "redirect_uris": [
+     "http://127.0.0.1/cb",
+     "https://codex.example/cb"
+    ]
+   }
+  },
+  "/cimd.example/mismatch.json": {
+   "json": {
+    "client_id": "https://cimd.example/other.json",
+    "client_name": "X",
+    "redirect_uris": [
+     "https://claude.example/cb"
+    ]
+   }
+  },
+  "/cimd.example/moved.json": {
+   "headers": {
+    "location": "http://169.254.169.254/latest/meta-data/"
+   },
+   "status": 302,
+   "text": ""
+  },
+  "/cimd.example/noredirect.json": {
+   "json": {
+    "client_id": "https://cimd.example/noredirect.json",
+    "client_name": "N",
+    "redirect_uris": [
+     "ftp://x.example/cb"
+    ]
+   }
+  },
+  "/cimd.example/secret.json": {
+   "json": {
+    "client_id": "https://cimd.example/secret.json",
+    "client_name": "S",
+    "redirect_uris": [
+     "https://claude.example/cb"
+    ],
+    "token_endpoint_auth_method": "client_secret_post"
+   }
+  }
+ },
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'dis@example.test', 'Dis', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Dis''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('b71dc2cccdc97ec1869c7aa79d9f5d9169ad49d170c7f6ebe3746bb6b879f8a3', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sadadoc000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Ada poster', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sadadoc000000000', decode('010c8eace7900a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770a41646120706f737465722801046d6574610565706f6368017d00270105706167657310537061676531303030303030303030300128008eace7900a080269640177105370616765313030303030303030303028008eace7900a08056f72646572017702613028008eace7900a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "authorization server metadata",
+   "response": {
+    "body": {
+     "authorization_endpoint": "https://app.example/oauth/authorize",
+     "authorization_response_iss_parameter_supported": true,
+     "client_id_metadata_document_supported": true,
+     "code_challenge_methods_supported": [
+      "S256"
+     ],
+     "grant_types_supported": [
+      "authorization_code",
+      "refresh_token"
+     ],
+     "issuer": "https://app.example",
+     "registration_endpoint": "https://app.example/api/oauth/register",
+     "response_modes_supported": [
+      "query"
+     ],
+     "response_types_supported": [
+      "code"
+     ],
+     "revocation_endpoint": "https://app.example/api/oauth/revoke",
+     "revocation_endpoint_auth_methods_supported": [
+      "none",
+      "client_secret_post",
+      "client_secret_basic"
+     ],
+     "scopes_supported": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ],
+     "token_endpoint": "https://app.example/api/oauth/token",
+     "token_endpoint_auth_methods_supported": [
+      "none",
+      "client_secret_post",
+      "client_secret_basic"
+     ]
+    },
+    "headers": {
+     "access-control-allow-headers": "authorization, content-type, mcp-protocol-version",
+     "access-control-allow-methods": "GET, POST, OPTIONS",
+     "access-control-allow-origin": "*",
+     "access-control-max-age": "86400",
+     "cache-control": "public, max-age=300",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/.well-known/oauth-authorization-server"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "protected resource metadata",
+   "response": {
+    "body": {
+     "authorization_servers": [
+      "https://app.example"
+     ],
+     "bearer_methods_supported": [
+      "header"
+     ],
+     "resource": "https://app.example/mcp",
+     "resource_name": "Pinselo",
+     "scopes_supported": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ]
+    },
+    "headers": {
+     "access-control-allow-headers": "authorization, content-type, mcp-protocol-version",
+     "access-control-allow-methods": "GET, POST, OPTIONS",
+     "access-control-allow-origin": "*",
+     "access-control-max-age": "86400",
+     "cache-control": "public, max-age=300",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/.well-known/oauth-protected-resource"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "protected resource metadata (/mcp)",
+   "response": {
+    "body": {
+     "authorization_servers": [
+      "https://app.example"
+     ],
+     "bearer_methods_supported": [
+      "header"
+     ],
+     "resource": "https://app.example/mcp",
+     "resource_name": "Pinselo",
+     "scopes_supported": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ]
+    },
+    "headers": {
+     "access-control-allow-headers": "authorization, content-type, mcp-protocol-version",
+     "access-control-allow-methods": "GET, POST, OPTIONS",
+     "access-control-allow-origin": "*",
+     "access-control-max-age": "86400",
+     "cache-control": "public, max-age=300",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/.well-known/oauth-protected-resource/mcp"
+  },
+  {
+   "headers": {
+    "access-control-request-method": "POST",
+    "origin": "https://claude.example",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "method": "OPTIONS",
+   "name": "preflight: token",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-headers": "authorization, content-type, mcp-protocol-version",
+     "access-control-allow-methods": "GET, POST, OPTIONS",
+     "access-control-allow-origin": "*",
+     "access-control-max-age": "86400",
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 204
+   },
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "method": "OPTIONS",
+   "name": "preflight: metadata",
+   "response": {
+    "body": null,
+    "headers": {
+     "access-control-allow-headers": "authorization, content-type, mcp-protocol-version",
+     "access-control-allow-methods": "GET, POST, OPTIONS",
+     "access-control-allow-origin": "*",
+     "access-control-max-age": "86400",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 204
+   },
+   "url": "/.well-known/oauth-authorization-server"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "client_name": "X"
+   },
+   "method": "POST",
+   "name": "register: no redirect URIs",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "redirect_uris must be a list of 1 to 20 URLs."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "json": {
+    "redirect_uris": [
+     "http://evil.example/cb"
+    ]
+   },
+   "method": "POST",
+   "name": "register: http redirect",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "Redirect URI http://evil.example/cb must use https (http only on localhost, 127.0.0.1 or [::1])."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "redirect_uris": [
+     "https://x.example/cb#frag"
+    ]
+   },
+   "method": "POST",
+   "name": "register: fragment",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "Redirect URI https://x.example/cb#frag must not contain a fragment."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "json": {
+    "redirect_uris": [
+     "https://u:p@x.example/cb"
+    ]
+   },
+   "method": "POST",
+   "name": "register: credentials in URI",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "Redirect URI https://u:p@x.example/cb must not contain credentials."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "json": {
+    "redirect_uris": [
+     "cb"
+    ]
+   },
+   "method": "POST",
+   "name": "register: not a URL",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "Redirect URI cb is not a URL."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "redirect_uris": [
+     "https://x.example/0",
+     "https://x.example/1",
+     "https://x.example/2",
+     "https://x.example/3",
+     "https://x.example/4",
+     "https://x.example/5",
+     "https://x.example/6",
+     "https://x.example/7",
+     "https://x.example/8",
+     "https://x.example/9",
+     "https://x.example/10",
+     "https://x.example/11",
+     "https://x.example/12",
+     "https://x.example/13",
+     "https://x.example/14",
+     "https://x.example/15",
+     "https://x.example/16",
+     "https://x.example/17",
+     "https://x.example/18",
+     "https://x.example/19",
+     "https://x.example/20"
+    ]
+   },
+   "method": "POST",
+   "name": "register: too many",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "redirect_uris must be a list of 1 to 20 URLs."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "json": {
+    "redirect_uris": [
+     "https://claude.example/cb"
+    ],
+    "token_endpoint_auth_method": "private_key_jwt"
+   },
+   "method": "POST",
+   "name": "register: auth method",
+   "response": {
+    "body": {
+     "error": "invalid_client_metadata",
+     "error_description": "token_endpoint_auth_method must be none, client_secret_post or client_secret_basic."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "json": {
+    "grant_types": [
+     "client_credentials"
+    ],
+    "redirect_uris": [
+     "https://claude.example/cb"
+    ]
+   },
+   "method": "POST",
+   "name": "register: grant types",
+   "response": {
+    "body": {
+     "error": "invalid_client_metadata",
+     "error_description": "Only the authorization_code and refresh_token grants are supported."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "json": {
+    "redirect_uris": [
+     "https://claude.example/cb"
+    ],
+    "response_types": [
+     "token"
+    ]
+   },
+   "method": "POST",
+   "name": "register: response types",
+   "response": {
+    "body": {
+     "error": "invalid_client_metadata",
+     "error_description": "Only response_type code is supported."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "json": {
+    "client_name": 5,
+    "redirect_uris": [
+     "https://claude.example/cb"
+    ]
+   },
+   "method": "POST",
+   "name": "register: client_name type",
+   "response": {
+    "body": {
+     "error": "invalid_client_metadata",
+     "error_description": "client_name must be a string."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "method": "POST",
+   "name": "register: form body",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "redirect_uris must be a list of 1 to 20 URLs."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "client_name=Form&redirect_uris=https%3A%2F%2Fclaude.example%2Fcb",
+   "url": "/api/oauth/register"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": [
+    "https://claude.example/cb"
+   ],
+   "method": "POST",
+   "name": "register: array body",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "error_description": "redirect_uris must be a list of 1 to 20 URLs."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/register"
+  },
+  {
+   "capture": {
+    "pub": "body.client_id"
+   },
+   "headers": {
+    "origin": "https://claude.example",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "json": {
+    "client_name": "  Claude\n",
+    "client_uri": "https://claude.example/",
+    "grant_types": [
+     "authorization_code",
+     "refresh_token"
+    ],
+    "logo_uri": "http://claude.example/logo.png",
+    "redirect_uris": [
+     "https://claude.example/cb",
+     "http://127.0.0.1/callback",
+     "https://claude.example/cb"
+    ],
+    "response_types": [
+     "code"
+    ],
+    "scope": "ignored"
+   },
+   "method": "POST",
+   "name": "register a public client",
+   "response": {
+    "body": {
+     "client_id": "{{pub}}",
+     "client_id_issued_at": "<volatile>",
+     "client_name": "Claude",
+     "client_uri": "https://claude.example/",
+     "grant_types": [
+      "authorization_code",
+      "refresh_token"
+     ],
+     "redirect_uris": [
+      "https://claude.example/cb",
+      "http://127.0.0.1/callback"
+     ],
+     "response_types": [
+      "code"
+     ],
+     "scope": "designs:read designs:write assets:write exports",
+     "token_endpoint_auth_method": "none"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/api/oauth/register",
+   "volatile": [
+    "response.body.client_id_issued_at"
+   ]
+  },
+  {
+   "capture": {
+    "conf": "body.client_id",
+    "confSecret": "body.client_secret"
+   },
+   "checks": [
+    {
+     "name": "clients",
+     "sql": "SELECT id, kind, name, redirect_uris, client_uri, logo_uri, client_secret_sha256 IS NOT NULL AS confidential, fetched_at IS NOT NULL AS fetched, last_used_at IS NOT NULL AS used FROM oauth_clients ORDER BY kind, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "clients",
+     "rows": [
+      {
+       "client_uri": null,
+       "confidential": true,
+       "fetched": false,
+       "id": "{{conf}}",
+       "kind": "dcr",
+       "logo_uri": "https://chat.example/l.png",
+       "name": "AI assistant",
+       "redirect_uris": [
+        "https://chat.example/cb"
+       ],
+       "used": false
+      },
+      {
+       "client_uri": "https://claude.example/",
+       "confidential": false,
+       "fetched": false,
+       "id": "{{pub}}",
+       "kind": "dcr",
+       "logo_uri": null,
+       "name": "Claude",
+       "redirect_uris": [
+        "https://claude.example/cb",
+        "http://127.0.0.1/callback"
+       ],
+       "used": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "json": {
+    "logo_uri": "https://chat.example/l.png",
+    "redirect_uris": [
+     "https://chat.example/cb"
+    ],
+    "token_endpoint_auth_method": "client_secret_post"
+   },
+   "method": "POST",
+   "name": "register a confidential client",
+   "response": {
+    "body": {
+     "client_id": "{{conf}}",
+     "client_id_issued_at": "<volatile>",
+     "client_name": "AI assistant",
+     "client_secret": "{{confSecret}}",
+     "client_secret_expires_at": 0,
+     "grant_types": [
+      "authorization_code",
+      "refresh_token"
+     ],
+     "logo_uri": "https://chat.example/l.png",
+     "redirect_uris": [
+      "https://chat.example/cb"
+     ],
+     "response_types": [
+      "code"
+     ],
+     "scope": "designs:read designs:write assets:write exports",
+     "token_endpoint_auth_method": "client_secret_post"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 201
+   },
+   "url": "/api/oauth/register",
+   "volatile": [
+    "response.body.client_id_issued_at"
+   ]
+  },
+  {
+   "capture": {
+    "badBasic": "rows.0.bad",
+    "basic": "rows.0.ok"
+   },
+   "name": "basic credentials",
+   "rows": [
+    {
+     "bad": "{{badBasic}}",
+     "ok": "{{basic}}"
+    }
+   ],
+   "sql": "SELECT replace(encode(convert_to('{{conf}}:{{confSecret}}', 'UTF8'), 'base64'), E'\\n', '') AS ok, replace(encode(convert_to('{{conf}}:wrong', 'UTF8'), 'base64'), E'\\n', '') AS bad"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "name": "info: signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "info: no client",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Missing or unknown client_id."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "name": "info: unknown client",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "This app isn’t registered (unknown client_id)."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=nope&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "name": "info: unregistered redirect",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "message": "The redirect_uri isn’t registered for this app."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fother&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "name": "info: redirect with a query",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "message": "The redirect_uri isn’t registered for this app."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb%3Fx%3D1&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "name": "info: response type",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "message": "Only response_type=code is supported."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=token&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "name": "info: no PKCE",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "message": "A PKCE code_challenge with method S256 is required."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "name": "info: plain PKCE",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "message": "A PKCE code_challenge with method S256 is required."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=plain&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "name": "info: short challenge",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "message": "A PKCE code_challenge with method S256 is required."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=abc&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "name": "info: unknown scope",
+   "response": {
+    "body": {
+     "error": "invalid_scope",
+     "message": "Unsupported scope. Available: designs:read, designs:write, assets:write, exports."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1&scope=designs%3Aread+webhooks"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "name": "info: resource elsewhere",
+   "response": {
+    "body": {
+     "error": "invalid_target",
+     "message": "Tokens are only issued for https://app.example/mcp."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1&resource=https%3A%2F%2Fother.example%2Fmcp"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "name": "info: too long",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 2000,
+       "message": "Too big: expected string to have <=2000 characters",
+       "origin": "string",
+       "path": [
+        "state"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "name": "info: scopes (OIDC ones ignored), resource",
+   "response": {
+    "body": {
+     "client": {
+      "domain": null,
+      "id": "{{pub}}",
+      "logo": null,
+      "name": "Claude",
+      "redirectHost": "claude.example",
+      "uri": "https://claude.example/",
+      "verified": false
+     },
+     "scopes": [
+      "designs:read",
+      "exports"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1&scope=openid+designs%3Aread+offline_access+exports&resource=https%3A%2F%2Fapp.example%2Fmcp%2F"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "name": "info: default scopes, origin as resource",
+   "response": {
+    "body": {
+     "client": {
+      "domain": null,
+      "id": "{{pub}}",
+      "logo": null,
+      "name": "Claude",
+      "redirectHost": "claude.example",
+      "uri": "https://claude.example/",
+      "verified": false
+     },
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1&resource=https%3A%2F%2Fapp.example"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "name": "info: loopback redirect on another port",
+   "response": {
+    "body": {
+     "client": {
+      "domain": null,
+      "id": "{{pub}}",
+      "logo": null,
+      "name": "Claude",
+      "redirectHost": "127.0.0.1:53111",
+      "uri": "https://claude.example/",
+      "verified": false
+     },
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=http%3A%2F%2F127.0.0.1%3A53111%2Fcallback&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "name": "info: loopback redirect, another host",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "message": "The redirect_uri isn’t registered for this app."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=http%3A%2F%2Flocalhost%3A53111%2Fcallback&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "name": "info: loopback redirect, another path",
+   "response": {
+    "body": {
+     "error": "invalid_redirect_uri",
+     "message": "The redirect_uri isn’t registered for this app."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{pub}}&redirect_uri=http%3A%2F%2F127.0.0.1%3A53111%2Fother&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "name": "info: confidential client, single redirect implied",
+   "response": {
+    "body": {
+     "client": {
+      "domain": null,
+      "id": "{{conf}}",
+      "logo": "https://chat.example/l.png",
+      "name": "AI assistant",
+      "redirectHost": "chat.example",
+      "uri": null,
+      "verified": false
+     },
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id={{conf}}&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://evil.example",
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}"
+   },
+   "method": "POST",
+   "name": "approve: cross-origin",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Cross-origin request refused."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example/",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}"
+   },
+   "method": "POST",
+   "name": "approve: Origin with a trailing slash",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Cross-origin request refused."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "null",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}"
+   },
+   "method": "POST",
+   "name": "approve: null Origin",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Cross-origin request refused."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "sec-fetch-site": "cross-site",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}"
+   },
+   "method": "POST",
+   "name": "approve: cross-site fetch without Origin",
+   "response": {
+    "body": {
+     "error": "forbidden",
+     "message": "Cross-origin request refused."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "json": {
+    "client_id": "{{pub}}"
+   },
+   "method": "POST",
+   "name": "approve: invalid body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received undefined",
+       "path": [
+        "approve"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code"
+   },
+   "method": "POST",
+   "name": "approve: bad request",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "message": "A PKCE code_challenge with method S256 is required."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "json": {
+    "approve": false,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "deny",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?error=access_denied&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "capture": {
+    "code1": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.46"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve (no Origin header)",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code1}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "method": "POST",
+   "name": "token: unknown client",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "error_description": "Unknown client_id."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "text": "grant_type=authorization_code&client_id=nope&code={{code1}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "method": "POST",
+   "name": "token: no client",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "error_description": "Unknown client_id."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "text": "grant_type=authorization_code&code={{code1}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "method": "POST",
+   "name": "token: grant type",
+   "response": {
+    "body": {
+     "error": "unsupported_grant_type",
+     "error_description": "grant_type must be authorization_code or refresh_token."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=password&client_id={{pub}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "method": "POST",
+   "name": "token: missing verifier",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "error_description": "code and code_verifier are required."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code1}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "checks": [
+    {
+     "name": "codes",
+     "sql": "SELECT client_id, user_id, redirect_uri, code_challenge, scopes, resource, used_at IS NOT NULL AS used, family IS NOT NULL AS exchanged, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min FROM oauth_codes ORDER BY created_at, used_at NULLS LAST, redirect_uri"
+    }
+   ],
+   "db": [
+    {
+     "name": "codes",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": false,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "method": "POST",
+   "name": "token: wrong verifier (the code is not spent)",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "PKCE verification failed."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code1}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyzx",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "method": "POST",
+   "name": "token: wrong redirect (the code is not spent)",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "redirect_uri doesn’t match the authorization request."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code1}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz&redirect_uri=https%3A%2F%2Fclaude.example%2Fother",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "at1": "body.access_token",
+    "rt1": "body.refresh_token"
+   },
+   "checks": [
+    {
+     "name": "codes",
+     "sql": "SELECT client_id, user_id, redirect_uri, code_challenge, scopes, resource, used_at IS NOT NULL AS used, family IS NOT NULL AS exchanged, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min FROM oauth_codes ORDER BY created_at, used_at NULLS LAST, redirect_uri"
+    },
+    {
+     "name": "tokens (resource recorded without an indicator)",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    }
+   ],
+   "db": [
+    {
+     "name": "codes",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    },
+    {
+     "name": "tokens (resource recorded without an indicator)",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.53"
+   },
+   "method": "POST",
+   "name": "token: right verifier after wrong attempts",
+   "response": {
+    "body": {
+     "access_token": "{{at1}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt1}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code1}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "method": "POST",
+   "name": "token: code replay",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The authorization code is invalid or was already used."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code1}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at1}}",
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp with the token of a replayed code",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "Connect Pinselo in your AI app (it opens a sign-in page), or send Authorization: Bearer <token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Bearer resource_metadata=\"https://app.example/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "240",
+     "x-ratelimit-remaining": "239",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "code2": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "resource": "https://app.example/mcp",
+    "response_type": "code",
+    "scope": "designs:read designs:write exports",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code2}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "capture": {
+    "at2": "body.access_token",
+    "rt2": "body.refresh_token"
+   },
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    },
+    {
+     "name": "codes",
+     "sql": "SELECT client_id, user_id, redirect_uri, code_challenge, scopes, resource, used_at IS NOT NULL AS used, family IS NOT NULL AS exchanged, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min FROM oauth_codes ORDER BY created_at, used_at NULLS LAST, redirect_uri"
+    },
+    {
+     "name": "clients",
+     "sql": "SELECT id, kind, name, redirect_uris, client_uri, logo_uri, client_secret_sha256 IS NOT NULL AS confidential, fetched_at IS NOT NULL AS fetched, last_used_at IS NOT NULL AS used FROM oauth_clients ORDER BY kind, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    },
+    {
+     "name": "codes",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": "https://app.example/mcp",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    },
+    {
+     "name": "clients",
+     "rows": [
+      {
+       "client_uri": null,
+       "confidential": true,
+       "fetched": false,
+       "id": "{{conf}}",
+       "kind": "dcr",
+       "logo_uri": "https://chat.example/l.png",
+       "name": "AI assistant",
+       "redirect_uris": [
+        "https://chat.example/cb"
+       ],
+       "used": false
+      },
+      {
+       "client_uri": "https://claude.example/",
+       "confidential": false,
+       "fetched": false,
+       "id": "{{pub}}",
+       "kind": "dcr",
+       "logo_uri": null,
+       "name": "Claude",
+       "redirect_uris": [
+        "https://claude.example/cb",
+        "http://127.0.0.1/callback"
+       ],
+       "used": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "method": "POST",
+   "name": "token: exchange",
+   "response": {
+    "body": {
+     "access_token": "{{at2}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt2}}",
+     "scope": "designs:read designs:write exports",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code2}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at2}}",
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp with an OAuth access token",
+   "response": {
+    "body": {
+     "id": 1,
+     "jsonrpc": "2.0",
+     "result": {}
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "authorization": "Bearer {{at2}}",
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "name": "v1 refuses an OAuth access token (audience)",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "OAuth access tokens of connected AI apps only work on the MCP endpoint (/mcp). Use a personal access token."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY"
+    },
+    "status": 401
+   },
+   "url": "/v1/me"
+  },
+  {
+   "name": "token for another resource",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "UPDATE api_tokens SET resource = 'https://other.example/api' WHERE revoked_at IS NULL AND kind = 'oauth' RETURNING 1 AS n"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at2}}",
+    "x-forwarded-for": "198.51.100.61"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp refuses a token for another resource",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "Connect Pinselo in your AI app (it opens a sign-in page), or send Authorization: Bearer <token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Bearer resource_metadata=\"https://app.example/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "240",
+     "x-ratelimit-remaining": "239",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/mcp"
+  },
+  {
+   "name": "token back on the MCP resource",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "UPDATE api_tokens SET resource = 'https://app.example/mcp' WHERE resource = 'https://other.example/api' RETURNING 1 AS n"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.63"
+   },
+   "name": "developer page lists personal tokens only",
+   "response": {
+    "body": {
+     "events": [
+      "design.created",
+      "design.deleted",
+      "export.completed",
+      "form.response",
+      "comment.created",
+      "site.published",
+      "ping"
+     ],
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports",
+      "webhooks"
+     ],
+     "tokens": [],
+     "webhooks": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/developer"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.64"
+   },
+   "name": "connections",
+   "response": {
+    "body": {
+     "connections": [
+      {
+       "clientId": "{{pub}}",
+       "connectedAt": "<ts>",
+       "domain": null,
+       "lastUsedAt": "<ts>",
+       "logo": null,
+       "name": "Claude",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "uri": "https://claude.example/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections"
+  },
+  {
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.65"
+   },
+   "method": "POST",
+   "name": "token: code replay revokes its tokens",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The authorization code is invalid or was already used."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code2}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at2}}",
+    "x-forwarded-for": "198.51.100.66"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp with the revoked token",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "Connect Pinselo in your AI app (it opens a sign-in page), or send Authorization: Bearer <token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Bearer resource_metadata=\"https://app.example/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "240",
+     "x-ratelimit-remaining": "239",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "code3": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.67"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 3",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code3}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "capture": {
+    "at3": "body.access_token",
+    "rt3": "body.refresh_token"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.68"
+   },
+   "json": {
+    "client_id": "{{pub}}",
+    "code": "{{code3}}",
+    "code_verifier": "golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+    "grant_type": "authorization_code"
+   },
+   "method": "POST",
+   "name": "token: JSON body",
+   "response": {
+    "body": {
+     "access_token": "{{at3}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt3}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "code4": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.69"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 4",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code4}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "name": "expire code 4",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "UPDATE oauth_codes SET expires_at = now() - interval '1 second' WHERE used_at IS NULL RETURNING 1 AS n"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.71"
+   },
+   "method": "POST",
+   "name": "token: expired code",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The authorization code has expired."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code4}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "code5": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.72"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 5",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code5}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.73"
+   },
+   "method": "POST",
+   "name": "token: redirect mismatch",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "redirect_uri doesn’t match the authorization request."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code5}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz&redirect_uri=http%3A%2F%2F127.0.0.1%2Fcallback",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "code6": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.74"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 6",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code6}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.75"
+   },
+   "method": "POST",
+   "name": "token: wrong resource",
+   "response": {
+    "body": {
+     "error": "invalid_target",
+     "error_description": "Tokens are only issued for https://app.example/mcp."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code6}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz&resource=https%3A%2F%2Fother.example",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "code7": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.76"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 7",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code7}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.77"
+   },
+   "method": "POST",
+   "name": "token: code of another client",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The authorization code was issued to another client."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{conf}}&client_secret={{confSecret}}&code={{code7}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "name": "a code for a disabled account",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "INSERT INTO oauth_codes(code_sha256, client_id, user_id, redirect_uri, code_challenge, scopes, expires_at) VALUES ('41abaff449dc40651dce7df507704ff7ef5f4d171efa759b94903b0b0120dad4', '{{pub}}', '00000000-0000-4000-8000-000000000003', 'https://claude.example/cb', '1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE', '{designs:read}', now() + interval '5 minutes') RETURNING 1 AS n"
+  },
+  {
+   "name": "disable the account",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "UPDATE users SET disabled_at = now() WHERE id = '00000000-0000-4000-8000-000000000003' RETURNING 1 AS n"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.80"
+   },
+   "method": "POST",
+   "name": "token: disabled account",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The account is no longer active."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code=golden-code-for-a-disabled-account-0123456789&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "ccode": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.81"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{conf}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://chat.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve (confidential)",
+   "response": {
+    "body": {
+     "redirect": "https://chat.example/cb?code={{ccode}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.82"
+   },
+   "method": "POST",
+   "name": "token: confidential without secret",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "error_description": "Client authentication failed."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "text": "grant_type=authorization_code&client_id={{conf}}&code={{ccode}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "authorization": "Basic {{badBasic}}",
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.83"
+   },
+   "method": "POST",
+   "name": "token: basic with a wrong secret",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "error_description": "Client authentication failed."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Basic realm=\"Pinselo\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "text": "grant_type=authorization_code&code={{ccode}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "authorization": "Basic {{basic}}",
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.84"
+   },
+   "method": "POST",
+   "name": "token: basic and body secret",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "error_description": "Use one client authentication method."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_secret=x&code={{ccode}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "authorization": "Basic {{basic}}",
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.85"
+   },
+   "method": "POST",
+   "name": "token: basic id mismatch",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "error_description": "client_id doesn’t match the Authorization header."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Basic realm=\"Pinselo\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{ccode}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "cat": "body.access_token",
+    "crt": "body.refresh_token"
+   },
+   "headers": {
+    "authorization": "Basic {{basic}}",
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.86"
+   },
+   "method": "POST",
+   "name": "token: basic",
+   "response": {
+    "body": {
+     "access_token": "{{cat}}",
+     "expires_in": 3600,
+     "refresh_token": "{{crt}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=authorization_code&code={{ccode}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.87"
+   },
+   "method": "POST",
+   "name": "refresh: missing token",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "error_description": "refresh_token is required."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.88"
+   },
+   "method": "POST",
+   "name": "refresh: unknown token",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "Unknown refresh token."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token=oc_ort_unknown",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.89"
+   },
+   "method": "POST",
+   "name": "refresh: another client’s token",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "Unknown refresh token."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{crt}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.90"
+   },
+   "method": "POST",
+   "name": "refresh: widen scopes",
+   "response": {
+    "body": {
+     "error": "invalid_scope",
+     "error_description": "A refresh can only keep or narrow the granted scopes."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{rt3}}&scope=designs%3Aread+exports",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.91"
+   },
+   "method": "POST",
+   "name": "refresh: unknown scope",
+   "response": {
+    "body": {
+     "error": "invalid_scope",
+     "error_description": "A refresh can only keep or narrow the granted scopes."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{rt3}}&scope=nope",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "at4": "body.access_token",
+    "rt4": "body.refresh_token"
+   },
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{conf}}",
+       "kind": "oauth",
+       "name": "AI assistant",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.92"
+   },
+   "method": "POST",
+   "name": "refresh",
+   "response": {
+    "body": {
+     "access_token": "{{at4}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt4}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{rt3}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "at5": "body.access_token",
+    "rt5": "body.refresh_token"
+   },
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.93"
+   },
+   "method": "POST",
+   "name": "refresh: narrow scopes",
+   "response": {
+    "body": {
+     "access_token": "{{at5}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt5}}",
+     "scope": "designs:read",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{rt4}}&scope=openid+designs%3Aread",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at5}}",
+    "x-forwarded-for": "198.51.100.94"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp with the narrowed token",
+   "response": {
+    "body": {
+     "id": 1,
+     "jsonrpc": "2.0",
+     "result": {}
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at3}}",
+    "x-forwarded-for": "198.51.100.95"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp with the rotated token",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "Connect Pinselo in your AI app (it opens a sign-in page), or send Authorization: Bearer <token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Bearer resource_metadata=\"https://app.example/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "240",
+     "x-ratelimit-remaining": "239",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/mcp"
+  },
+  {
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{conf}}",
+       "kind": "oauth",
+       "name": "AI assistant",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.96"
+   },
+   "method": "POST",
+   "name": "refresh: replay of a rotated token signs the family out",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "This refresh token was already used; the connection was signed out for safety."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{rt3}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.97"
+   },
+   "method": "POST",
+   "name": "refresh: the newest token is gone too",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "This refresh token was already used; the connection was signed out for safety."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{pub}}&refresh_token={{rt5}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "name": "expire the confidential grant",
+   "rows": [
+    {
+     "n": 1
+    }
+   ],
+   "sql": "UPDATE api_tokens SET refresh_expires_at = now() - interval '1 second', expires_at = now() - interval '1 second' WHERE client_id IS NOT NULL AND revoked_at IS NULL RETURNING 1 AS n"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.99"
+   },
+   "method": "POST",
+   "name": "refresh: expired",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The refresh token has expired."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=refresh_token&client_id={{conf}}&client_secret={{confSecret}}&refresh_token={{crt}}",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{cat}}",
+    "x-forwarded-for": "198.51.100.100"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp with an expired access token",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "Connect Pinselo in your AI app (it opens a sign-in page), or send Authorization: Bearer <token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Bearer resource_metadata=\"https://app.example/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "240",
+     "x-ratelimit-remaining": "239",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "code8": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.101"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 8",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code8}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "capture": {
+    "at8": "body.access_token",
+    "rt8": "body.refresh_token"
+   },
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.102"
+   },
+   "method": "POST",
+   "name": "token 8",
+   "response": {
+    "body": {
+     "access_token": "{{at8}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt8}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code8}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.103"
+   },
+   "method": "POST",
+   "name": "revoke: unknown token",
+   "response": {
+    "body": {},
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "token=oc_oat_nope",
+   "url": "/api/oauth/revoke"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.104"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "revoke: no token",
+   "response": {
+    "body": {},
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/revoke"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.105"
+   },
+   "method": "POST",
+   "name": "revoke: confidential client, wrong secret",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "error_description": "Client authentication failed."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "text": "token={{at8}}&client_id={{conf}}&client_secret=wrong",
+   "url": "/api/oauth/revoke"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.106"
+   },
+   "method": "POST",
+   "name": "revoke: another client’s token is ignored",
+   "response": {
+    "body": {},
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "token={{at8}}&client_id={{conf}}&client_secret={{confSecret}}",
+   "url": "/api/oauth/revoke"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at8}}",
+    "x-forwarded-for": "198.51.100.107"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp still works",
+   "response": {
+    "body": {
+     "id": 1,
+     "jsonrpc": "2.0",
+     "result": {}
+    },
+    "headers": {
+     "content-type": "application/json"
+    },
+    "status": 200
+   },
+   "url": "/mcp"
+  },
+  {
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{conf}}",
+       "kind": "oauth",
+       "name": "AI assistant",
+       "refresh_ttl_min": 0,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 0
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.108"
+   },
+   "method": "POST",
+   "name": "revoke (refresh token, anonymous)",
+   "response": {
+    "body": {},
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "token={{rt8}}",
+   "url": "/api/oauth/revoke"
+  },
+  {
+   "headers": {
+    "accept": "application/json, text/event-stream",
+    "authorization": "Bearer {{at8}}",
+    "x-forwarded-for": "198.51.100.109"
+   },
+   "json": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "ping"
+   },
+   "method": "POST",
+   "name": "mcp after revocation",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "Connect Pinselo in your AI app (it opens a sign-in page), or send Authorization: Bearer <token>."
+    },
+    "headers": {
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "www-authenticate": "Bearer resource_metadata=\"https://app.example/.well-known/oauth-protected-resource/mcp\", error=\"invalid_token\"",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "240",
+     "x-ratelimit-remaining": "239",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/mcp"
+  },
+  {
+   "capture": {
+    "code9": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.110"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 9",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code9}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "capture": {
+    "at9": "body.access_token",
+    "rt9": "body.refresh_token"
+   },
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.111"
+   },
+   "method": "POST",
+   "name": "token 9",
+   "response": {
+    "body": {
+     "access_token": "{{at9}}",
+     "expires_in": 3600,
+     "refresh_token": "{{rt9}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code9}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "capture": {
+    "code10": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.112"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "{{pub}}",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://claude.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "approve 10 (pending code)",
+   "response": {
+    "body": {
+     "redirect": "https://claude.example/cb?code={{code10}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.113"
+   },
+   "name": "connections signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/oauth/connections"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.114"
+   },
+   "name": "connections",
+   "response": {
+    "body": {
+     "connections": [
+      {
+       "clientId": "{{pub}}",
+       "connectedAt": "<ts>",
+       "domain": null,
+       "lastUsedAt": "<ts>",
+       "logo": null,
+       "name": "Claude",
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "uri": "https://claude.example/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.115"
+   },
+   "name": "connections of another user",
+   "response": {
+    "body": {
+     "connections": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.116"
+   },
+   "method": "DELETE",
+   "name": "disconnect as another user",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections/{{pub}}"
+  },
+  {
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT name, scopes, kind, client_id, resource, revoked_at IS NOT NULL AS revoked, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min, round(extract(epoch FROM refresh_expires_at - created_at) / 60)::int AS refresh_ttl_min FROM api_tokens WHERE kind = 'oauth' ORDER BY created_at, revoked_at NULLS LAST, scopes"
+    },
+    {
+     "name": "codes",
+     "sql": "SELECT client_id, user_id, redirect_uri, code_challenge, scopes, resource, used_at IS NOT NULL AS used, family IS NOT NULL AS exchanged, round(extract(epoch FROM expires_at - created_at) / 60)::int AS ttl_min FROM oauth_codes ORDER BY created_at, used_at NULLS LAST, redirect_uri"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{conf}}",
+       "kind": "oauth",
+       "name": "AI assistant",
+       "refresh_ttl_min": 0,
+       "resource": "https://app.example/mcp",
+       "revoked": false,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 0
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      },
+      {
+       "client_id": "{{pub}}",
+       "kind": "oauth",
+       "name": "Claude",
+       "refresh_ttl_min": 86400,
+       "resource": "https://app.example/mcp",
+       "revoked": true,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 60
+      }
+     ]
+    },
+    {
+     "name": "codes",
+     "rows": [
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": "https://app.example/mcp",
+       "scopes": [
+        "designs:read",
+        "designs:write",
+        "exports"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 0,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read"
+       ],
+       "ttl_min": 5,
+       "used": false,
+       "user_id": "00000000-0000-4000-8000-000000000003"
+      },
+      {
+       "client_id": "{{conf}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://chat.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": true,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "client_id": "{{pub}}",
+       "code_challenge": "<token:1>",
+       "exchanged": false,
+       "redirect_uri": "https://claude.example/cb",
+       "resource": null,
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "ttl_min": 5,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.117"
+   },
+   "method": "DELETE",
+   "name": "disconnect",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections/{{pub}}"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.118"
+   },
+   "name": "connections after disconnect",
+   "response": {
+    "body": {
+     "connections": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections"
+  },
+  {
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.119"
+   },
+   "method": "POST",
+   "name": "pending code after disconnect",
+   "response": {
+    "body": {
+     "error": "invalid_grant",
+     "error_description": "The authorization code is invalid or was already used."
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "text": "grant_type=authorization_code&client_id={{pub}}&code={{code10}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.120"
+   },
+   "name": "cimd: not a metadata URL (root path)",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "This app isn’t registered (unknown client_id)."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2F&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.121"
+   },
+   "name": "cimd: dot segment",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "This app isn’t registered (unknown client_id)."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fa%2F..%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/cimd.example/missing.json"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.122"
+   },
+   "name": "cimd: unreachable",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://cimd.example/missing.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fmissing.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.123"
+   },
+   "name": "cimd: private host",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://127.0.0.1/client.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2F127.0.0.1%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.124"
+   },
+   "name": "cimd: IPv4-mapped loopback",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://[::ffff:127.0.0.1]/client.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2F%5B%3A%3Affff%3A127.0.0.1%5D%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.125"
+   },
+   "name": "cimd: metadata service",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://169.254.169.254/latest/client.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2F169.254.169.254%2Flatest%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.126"
+   },
+   "name": "cimd: unique local IPv6 (AWS metadata)",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://[fd00:ec2::254]/client.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2F%5Bfd00%3Aec2%3A%3A254%5D%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.127"
+   },
+   "name": "cimd: hex loopback",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://0x7f.1/client.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2F0x7f.1%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.128"
+   },
+   "name": "cimd: carrier-grade NAT",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://100.64.0.1/client.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2F100.64.0.1%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/cimd.example/moved.json"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.129"
+   },
+   "name": "cimd: redirect is not followed",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Couldn’t load the app’s client metadata document from https://cimd.example/moved.json."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fmoved.json&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/cimd.example/mismatch.json"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.130"
+   },
+   "name": "cimd: client_id mismatch",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "The client metadata document’s client_id doesn’t match its URL."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fmismatch.json&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/cimd.example/secret.json"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.131"
+   },
+   "name": "cimd: secret auth method",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "Client metadata documents must use token_endpoint_auth_method \"none\"."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fsecret.json&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/cimd.example/noredirect.json"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.132"
+   },
+   "name": "cimd: bad redirect URIs",
+   "response": {
+    "body": {
+     "error": "invalid_client",
+     "message": "The client metadata document is invalid: Redirect URI ftp://x.example/cb must use https (http only on localhost, 127.0.0.1 or [::1])."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fnoredirect.json&redirect_uri=https%3A%2F%2Fclaude.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "checks": [
+    {
+     "name": "clients",
+     "sql": "SELECT id, kind, name, redirect_uris, client_uri, logo_uri, client_secret_sha256 IS NOT NULL AS confidential, fetched_at IS NOT NULL AS fetched, last_used_at IS NOT NULL AS used FROM oauth_clients ORDER BY kind, name"
+    }
+   ],
+   "db": [
+    {
+     "name": "clients",
+     "rows": [
+      {
+       "client_uri": "https://codex.example/",
+       "confidential": false,
+       "fetched": true,
+       "id": "https://cimd.example/client.json",
+       "kind": "cimd",
+       "logo_uri": null,
+       "name": "Codex CLI",
+       "redirect_uris": [
+        "http://127.0.0.1/cb",
+        "https://codex.example/cb"
+       ],
+       "used": false
+      },
+      {
+       "client_uri": null,
+       "confidential": true,
+       "fetched": false,
+       "id": "{{conf}}",
+       "kind": "dcr",
+       "logo_uri": "https://chat.example/l.png",
+       "name": "AI assistant",
+       "redirect_uris": [
+        "https://chat.example/cb"
+       ],
+       "used": true
+      },
+      {
+       "client_uri": "https://claude.example/",
+       "confidential": false,
+       "fetched": false,
+       "id": "{{pub}}",
+       "kind": "dcr",
+       "logo_uri": null,
+       "name": "Claude",
+       "redirect_uris": [
+        "https://claude.example/cb",
+        "http://127.0.0.1/callback"
+       ],
+       "used": true
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/cimd.example/client.json"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.133"
+   },
+   "name": "cimd",
+   "response": {
+    "body": {
+     "client": {
+      "domain": "cimd.example",
+      "id": "https://cimd.example/client.json",
+      "logo": null,
+      "name": "Codex CLI",
+      "redirectHost": "127.0.0.1:4567",
+      "uri": "https://codex.example/",
+      "verified": true
+     },
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fclient.json&redirect_uri=http%3A%2F%2F127.0.0.1%3A4567%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.134"
+   },
+   "name": "cimd: cached",
+   "response": {
+    "body": {
+     "client": {
+      "domain": "cimd.example",
+      "id": "https://cimd.example/client.json",
+      "logo": null,
+      "name": "Codex CLI",
+      "redirectHost": "codex.example",
+      "uri": "https://codex.example/",
+      "verified": true
+     },
+     "scopes": [
+      "designs:read",
+      "designs:write",
+      "assets:write",
+      "exports"
+     ],
+     "user": {
+      "email": "ada@example.test",
+      "name": "Ada"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize/info?response_type=code&client_id=https%3A%2F%2Fcimd.example%2Fclient.json&redirect_uri=https%3A%2F%2Fcodex.example%2Fcb&code_challenge=1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE&code_challenge_method=S256&state=st-1"
+  },
+  {
+   "capture": {
+    "cimdCode": {
+     "from": "body.redirect",
+     "regex": "code=([^&]+)"
+    }
+   },
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "origin": "https://app.example",
+    "x-forwarded-for": "198.51.100.135"
+   },
+   "json": {
+    "approve": true,
+    "client_id": "https://cimd.example/client.json",
+    "code_challenge": "1CH1T-ewT39JJcKp95_FFanFTdYnHFiIfHqUcrzw6DE",
+    "code_challenge_method": "S256",
+    "redirect_uri": "https://codex.example/cb",
+    "response_type": "code",
+    "scope": "designs:read designs:write",
+    "state": "st-1"
+   },
+   "method": "POST",
+   "name": "cimd: approve",
+   "response": {
+    "body": {
+     "redirect": "https://codex.example/cb?code={{cimdCode}}&state=st-1&iss=https%3A%2F%2Fapp.example"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/authorize"
+  },
+  {
+   "capture": {
+    "cimdAt": "body.access_token",
+    "cimdRt": "body.refresh_token"
+   },
+   "headers": {
+    "content-type": "application/x-www-form-urlencoded",
+    "x-forwarded-for": "198.51.100.136"
+   },
+   "method": "POST",
+   "name": "cimd: token",
+   "response": {
+    "body": {
+     "access_token": "{{cimdAt}}",
+     "expires_in": 3600,
+     "refresh_token": "{{cimdRt}}",
+     "scope": "designs:read designs:write",
+     "token_type": "Bearer"
+    },
+    "headers": {
+     "access-control-allow-origin": "*",
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "pragma": "no-cache",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "60",
+     "x-ratelimit-remaining": "59",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "text": "grant_type=authorization_code&client_id=https%3A%2F%2Fcimd.example%2Fclient.json&code={{cimdCode}}&code_verifier=golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz",
+   "url": "/api/oauth/token"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.137"
+   },
+   "name": "cimd: connections",
+   "response": {
+    "body": {
+     "connections": [
+      {
+       "clientId": "https://cimd.example/client.json",
+       "connectedAt": "<ts>",
+       "domain": "cimd.example",
+       "lastUsedAt": null,
+       "logo": null,
+       "name": "Codex CLI",
+       "scopes": [
+        "designs:read",
+        "designs:write"
+       ],
+       "uri": "https://codex.example/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/oauth/connections"
+  }
+ ],
+ "vars": {
+  "verifier": "golden-verifier-0123456789-abcdefghijklmnopqrstuvwxyz"
+ }
+}

@@ -1,0 +1,1363 @@
+{
+ "clock": 1735732800000,
+ "env": {
+  "OC_SUPABASE_JWT_ISSUER": "https://sb.example/auth/v1",
+  "OC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_legacy",
+  "OC_SUPABASE_URL": "{{FAKE}}/"
+ },
+ "fake": {
+  "/auth/v1/settings": {
+   "json": {
+    "disable_signup": true,
+    "external": {
+     "apple": true,
+     "email": false,
+     "fly": true,
+     "linkedin_oidc": true,
+     "phone": false
+    },
+    "mailer_autoconfirm": true
+   }
+  },
+  "/auth/v1/user": {
+   "json": {
+    "code": "bad_jwt"
+   },
+   "status": 401
+  }
+ },
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'sam@example.test', 'Sam', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Sam''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('57e312beae564d5e2c2c6073a3ba3448e2953a5491f3367b2e886b022ce752cd', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000008', 'bea@example.test', 'Bea', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001008', 'Bea''s workspace', true, '00000000-0000-4000-8000-000000000008', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001008', '00000000-0000-4000-8000-000000000008', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000008')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('c06d6a00c795e6f57ff3b27dfcaff4c502a7aaa7ed0059e4de2d3a3e42bc9b03', '00000000-0000-4000-8000-000000000008', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "UPDATE users SET supabase_id = '5b000000-0000-4000-8000-000000000002' WHERE id = '00000000-0000-4000-8000-000000000002'"
+ ],
+ "steps": [
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/auth/v1/settings"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "providers",
+   "response": {
+    "body": {
+     "devLogin": true,
+     "passkeys": false,
+     "providers": [],
+     "signup": "open",
+     "supabase": {
+      "autoconfirm": true,
+      "email": false,
+      "providers": [
+       {
+        "id": "apple",
+        "label": "Apple"
+       },
+       {
+        "id": "fly",
+        "label": "Fly.io"
+       },
+       {
+        "id": "linkedin_oidc",
+        "label": "LinkedIn"
+       }
+      ],
+      "publishableKey": "sb_publishable_legacy",
+      "signup": false,
+      "url": "{{FAKE}}"
+     },
+     "termsVersion": "2026-10-01"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/providers"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_samHs}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "json": {
+    "accessToken": "{{tok_samHs}}"
+   },
+   "method": "POST",
+   "name": "HS256 without the legacy secret: decoded, checked online",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "sam@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000002",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "next": "/",
+     "user": {
+      "color": "#7c3aed",
+      "email": "sam@example.test",
+      "id": "00000000-0000-4000-8000-000000000002",
+      "locale": "en",
+      "mfa": false,
+      "name": "Sam",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:1>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_samHsAgain}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "json": {
+    "accessToken": "{{tok_samHsAgain}}"
+   },
+   "method": "POST",
+   "name": "the same claims with another signature are the same token",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "sam@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000002",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "token_used",
+     "message": "That sign-in was already used. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": {
+    "accessToken": "{{tok_expired}}"
+   },
+   "method": "POST",
+   "name": "expired",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in has expired. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "json": {
+    "accessToken": "{{tok_noExp}}"
+   },
+   "method": "POST",
+   "name": "no exp",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in has expired. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "accessToken": "{{tok_wrongIss}}"
+   },
+   "method": "POST",
+   "name": "wrong issuer",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "json": {
+    "accessToken": "{{tok_audObject}}"
+   },
+   "method": "POST",
+   "name": "audience is not a string or array",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "accessToken": "{{tok_nbf}}"
+   },
+   "method": "POST",
+   "name": "not yet valid",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_ada}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "json": {
+    "accessToken": "{{tok_ada}}"
+   },
+   "method": "POST",
+   "name": "rejected online (bad signature at Supabase)",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_ada}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "json": {
+    "accessToken": "{{tok_ada}}"
+   },
+   "method": "POST",
+   "name": "auto-confirmed address: no link to the verified account",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "ada@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000010",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "link_conflict",
+     "message": "An account with this email already exists here, but this server can’t confirm the address is yours, so they can’t be linked automatically. Contact support.",
+     "reason": "email_unverifiable"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT id, email, supabase_id, email_verified_at IS NOT NULL AS verified, disabled_at IS NOT NULL AS disabled FROM users ORDER BY email"
+    }
+   ],
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "disabled": false,
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "supabase_id": null,
+       "verified": true
+      },
+      {
+       "disabled": false,
+       "email": "bea@example.test",
+       "id": "00000000-0000-4000-8000-000000000008",
+       "supabase_id": null,
+       "verified": true
+      },
+      {
+       "disabled": false,
+       "email": "new@example.test",
+       "id": "<uuid:1>",
+       "supabase_id": "<uuid:2>",
+       "verified": false
+      },
+      {
+       "disabled": false,
+       "email": "sam@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "supabase_id": "<uuid:3>",
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_newUser}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "accessToken": "{{tok_newUser}}"
+   },
+   "method": "POST",
+   "name": "new account stays unverified",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "new@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000011",
+       "role": "authenticated",
+       "user_metadata": {
+        "name": "New",
+        "oc_birth_year": 1999,
+        "oc_terms": "2026-10-01"
+       }
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "next": "/",
+     "user": {
+      "color": "#0891b2",
+      "email": "new@example.test",
+      "id": "<uuid:1>",
+      "locale": "en",
+      "mfa": false,
+      "name": "New",
+      "staff": false,
+      "verified": false
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:2>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/auth/v1/.well-known/jwks.json"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "json": {
+    "accessToken": "{{tok_rs}}"
+   },
+   "method": "POST",
+   "name": "JWKS unreachable",
+   "replies": {
+    "/auth/v1/.well-known/jwks.json": [
+     {
+      "status": 500,
+      "text": "oops"
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "supabase_unavailable",
+     "message": "The sign-in service is not reachable right now. Try again in a moment."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 503
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/auth/v1/.well-known/jwks.json"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "json": {
+    "accessToken": "{{tok_rs}}"
+   },
+   "method": "POST",
+   "name": "JWKS not a key set",
+   "replies": {
+    "/auth/v1/.well-known/jwks.json": [
+     {
+      "json": {
+       "keys": "none"
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/auth/v1/.well-known/jwks.json"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "json": {
+    "accessToken": "{{tok_rs}}"
+   },
+   "method": "POST",
+   "name": "JWKS redirect is not followed",
+   "replies": {
+    "/auth/v1/.well-known/jwks.json": [
+     {
+      "headers": {
+       "location": "/elsewhere"
+      },
+      "status": 302
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "supabase_unavailable",
+     "message": "The sign-in service is not reachable right now. Try again in a moment."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 503
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {},
+     "method": "GET",
+     "path": "/auth/v1/.well-known/jwks.json"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "json": {
+    "accessToken": "{{tok_rs}}"
+   },
+   "method": "POST",
+   "name": "two keys match the kid",
+   "replies": {
+    "/auth/v1/.well-known/jwks.json": [
+     {
+      "json": {
+       "keys": [
+        {
+         "alg": "RS256",
+         "e": "AQAB",
+         "kid": "rs1",
+         "kty": "RSA",
+         "n": "4um9nsHbMGMWHVfZtkrbgcsEtrjtmaMXAlEIqTWTv6RR7uvz5_13uiV7067Rae0NHQ6SSlU1UpF-wX_TvhfTrxHBfQM4qZYcvGg4mWcUVq6U2YPjvkkbIzxndm5qeA7h_boAuQl8MxijtAoCmu2mUjGNVNl7wZDlHru_8LCsNbrN9iKaNoCkva-1OoNaoVGuqLFZeei4dUC_n8uzNrHhVSGY1YXVix3_m59TD7bWHwCs8EvQsKPRH8iKWT5uyN9mJOJGSMPVfaLumvTa26bhpHYGDlYH2VDiXYEI580a1V9Kvwx4ddoYqYeEuoa6FvVQB2WCz09OD_kju2wkSsdJow",
+         "use": "sig"
+        },
+        {
+         "alg": "RS256",
+         "e": "AQAB",
+         "kid": "rs1",
+         "kty": "RSA",
+         "n": "4um9nsHbMGMWHVfZtkrbgcsEtrjtmaMXAlEIqTWTv6RR7uvz5_13uiV7067Rae0NHQ6SSlU1UpF-wX_TvhfTrxHBfQM4qZYcvGg4mWcUVq6U2YPjvkkbIzxndm5qeA7h_boAuQl8MxijtAoCmu2mUjGNVNl7wZDlHru_8LCsNbrN9iKaNoCkva-1OoNaoVGuqLFZeei4dUC_n8uzNrHhVSGY1YXVix3_m59TD7bWHwCs8EvQsKPRH8iKWT5uyN9mJOJGSMPVfaLumvTa26bhpHYGDlYH2VDiXYEI580a1V9Kvwx4ddoYqYeEuoa6FvVQB2WCz09OD_kju2wkSsdJow",
+         "use": "sig"
+        },
+        {
+         "alg": "ES256",
+         "crv": "P-256",
+         "kid": "ec1",
+         "kty": "EC",
+         "use": "sig",
+         "x": "VUEaqGV-KZvhZgHtWh9ufzw7Y6Bd2koeIM03L6XtLHM",
+         "y": "ZsjlPIa1oG75vA3Bp5FUPtCGYztB-nRlZyydukJ6O0o"
+        },
+        {
+         "alg": "EdDSA",
+         "crv": "Ed25519",
+         "kid": "ed1",
+         "kty": "OKP",
+         "use": "sig",
+         "x": "GbGNMdJaUV-PP0x8Yn1wKlu0BBc4m-eqVztXAMHlW_Y"
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_ed}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "json": {
+    "accessToken": "{{tok_ed}}"
+   },
+   "method": "POST",
+   "name": "the cached key set verifies EdDSA",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "sam@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000002",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "next": "/",
+     "user": {
+      "color": "#7c3aed",
+      "email": "sam@example.test",
+      "id": "00000000-0000-4000-8000-000000000002",
+      "locale": "en",
+      "mfa": false,
+      "name": "Sam",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:3>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": {
+    "accessToken": "{{tok_edUnknown}}"
+   },
+   "method": "POST",
+   "name": "unknown kid",
+   "response": {
+    "body": {
+     "error": "invalid_token",
+     "message": "That sign-in is not valid. Sign in again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/supabase/session"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-sam",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "account (no secret key: no admin lookup)",
+   "response": {
+    "body": {
+     "auth": {
+      "mode": "supabase",
+      "supabaseEmail": null,
+      "supabaseId": "<uuid:3>",
+      "supabaseLinked": true
+     },
+     "hasPassword": false,
+     "oauth": [],
+     "passkeys": [],
+     "prefs": {
+      "comments": true,
+      "mentions": true,
+      "product": false,
+      "shares": true
+     },
+     "recoveryCodesLeft": 0,
+     "user": {
+      "color": "#7c3aed",
+      "email": "sam@example.test",
+      "id": "00000000-0000-4000-8000-000000000002",
+      "locale": "en",
+      "mfa": false,
+      "name": "Sam",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "checks": [
+    {
+     "name": "bea",
+     "sql": "SELECT supabase_id FROM users WHERE id = '00000000-0000-4000-8000-000000000008'"
+    }
+   ],
+   "db": [
+    {
+     "name": "bea",
+     "rows": [
+      {
+       "supabase_id": null
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_beaSync}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-bea",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "json": {
+    "accessToken": "{{tok_beaSync}}"
+   },
+   "method": "POST",
+   "name": "sync: auto-confirmed address does not link",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "bea@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000014",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "error": "link_conflict",
+     "message": "An account with this email already exists here, but this server can’t confirm the address is yours, so they can’t be linked automatically. Contact support.",
+     "reason": "email_unverifiable"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/account/supabase/sync"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT id, email, supabase_id, email_verified_at IS NOT NULL AS verified, disabled_at IS NOT NULL AS disabled FROM users ORDER BY email"
+    }
+   ],
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "disabled": false,
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "supabase_id": null,
+       "verified": true
+      },
+      {
+       "disabled": false,
+       "email": "bea@example.test",
+       "id": "00000000-0000-4000-8000-000000000008",
+       "supabase_id": null,
+       "verified": true
+      },
+      {
+       "disabled": false,
+       "email": "new@example.test",
+       "id": "<uuid:1>",
+       "supabase_id": "<uuid:2>",
+       "verified": false
+      },
+      {
+       "disabled": false,
+       "email": "sam@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "supabase_id": "<uuid:3>",
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_samSync}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-sam",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "json": {
+    "accessToken": "{{tok_samSync}}"
+   },
+   "method": "POST",
+   "name": "sync: auto-confirmed new address is not adopted",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "sam.new@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000002",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "sam@example.test",
+      "id": "00000000-0000-4000-8000-000000000002",
+      "locale": "en",
+      "mfa": false,
+      "name": "Sam",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/supabase/sync"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT id, email, supabase_id, email_verified_at IS NOT NULL AS verified, disabled_at IS NOT NULL AS disabled FROM users ORDER BY email"
+    }
+   ],
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "disabled": false,
+       "email": "ada@example.test",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "supabase_id": null,
+       "verified": true
+      },
+      {
+       "disabled": false,
+       "email": "bea@example.test",
+       "id": "00000000-0000-4000-8000-000000000008",
+       "supabase_id": null,
+       "verified": true
+      },
+      {
+       "disabled": false,
+       "email": "new@example.test",
+       "id": "<uuid:1>",
+       "supabase_id": "<uuid:2>",
+       "verified": false
+      },
+      {
+       "disabled": true,
+       "email": "sam@example.test",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "supabase_id": null,
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "fake": [
+    {
+     "body": null,
+     "headers": {
+      "authorization": "Bearer {{tok_samDelete}}"
+     },
+     "method": "GET",
+     "path": "/auth/v1/user"
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-sam",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "json": {
+    "accessToken": "{{tok_samDelete}}",
+    "confirm": "DELETE"
+   },
+   "method": "DELETE",
+   "name": "delete without a secret key",
+   "replies": {
+    "/auth/v1/user": [
+     {
+      "json": {
+       "app_metadata": {
+        "provider": "email",
+        "providers": [
+         "email"
+        ]
+       },
+       "aud": "authenticated",
+       "email": "sam@example.test",
+       "email_confirmed_at": "2025-01-01T00:00:00Z",
+       "factors": [],
+       "id": "5b000000-0000-4000-8000-000000000002",
+       "role": "authenticated",
+       "user_metadata": {}
+      }
+     }
+    ]
+   },
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=; Max-Age=0; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "name": "audit",
+   "rows": [
+    {
+     "action": "auth.supabase_link_refused",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "meta": {
+      "reason": "email_unverifiable",
+      "supabaseId": "<uuid:4>"
+     },
+     "target": null
+    },
+    {
+     "action": "auth.signup",
+     "actor_id": "<uuid:1>",
+     "meta": {
+      "method": "supabase",
+      "provider": "email",
+      "source": "signup_metadata",
+      "terms": "2026-10-01"
+     },
+     "target": null
+    },
+    {
+     "action": "consent.terms",
+     "actor_id": "<uuid:1>",
+     "meta": {
+      "accepted": true,
+      "ip": "198.51.100.11"
+     },
+     "target": "2026-10-01"
+    },
+    {
+     "action": "auth.supabase_link_refused",
+     "actor_id": "00000000-0000-4000-8000-000000000008",
+     "meta": {
+      "reason": "email_unverifiable",
+      "supabaseId": "<uuid:5>",
+      "via": "sync"
+     },
+     "target": null
+    },
+    {
+     "action": "auth.supabase_email_refused",
+     "actor_id": "00000000-0000-4000-8000-000000000002",
+     "meta": {
+      "reason": "email_unverifiable",
+      "supabaseId": "<uuid:3>"
+     },
+     "target": null
+    },
+    {
+     "action": "privacy.account_deleted",
+     "actor_id": "00000000-0000-4000-8000-000000000002",
+     "meta": {
+      "supabase": "skipped"
+     },
+     "target": null
+    }
+   ],
+   "sql": "SELECT actor_id, action, target, meta FROM audit_events WHERE action <> 'auth.login' ORDER BY id"
+  }
+ ],
+ "vars": {
+  "tok_ada": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAxMCIsImVtYWlsIjoiYWRhQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTEwIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3MzU3MzI3NDB9XSwiaWF0IjoxNzM1NzMyNzQwLCJleHAiOjE3MzU3MzY0MDB9.MlIr1NpLiM8_6ngkDuujDxQVAqxQP-Syr6ExLmt_tiA",
+  "tok_audObject": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6eyJ4IjoiYXV0aGVudGljYXRlZCJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MTczNTczNjQwMH0.wKNKNYAtNWRE0Sp4K06ayiiW-8Us7298vSJHIEtOCjY",
+  "tok_beaSync": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAxNCIsImVtYWlsIjoiYmVhQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTE0IiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3MzU3MzI3NDB9XSwiaWF0IjoxNzM1NzMyNzQwLCJleHAiOjE3MzU3MzY0MDB9.ER4bLB6qVPfW6SEISsRg5kWldP0fp9Ssx3R5hRW10HQ",
+  "tok_ed": "eyJhbGciOiJFZERTQSIsImtpZCI6ImVkMSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzM1NzMyNzQwfV0sImlhdCI6MTczNTczMjc0MCwiZXhwIjoxNzM1NzM2NDAwfQ.8XV0COaKJh3crHx1mPSs92kC1Av9_64ZpzXNofh_siYi93G9HLdI6KNjuFAfN03ZORfGvciqVx3VZ-n17tYBCQ",
+  "tok_edUnknown": "eyJhbGciOiJFZERTQSIsImtpZCI6ImVkOSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJlZDIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MTczNTczNjQwMH0.gCY63IZ7Qf5WuwCXSl2cVAa4LcZhcBv9eKpn0NHcYj6SGDpacxcOKTDLtEg8CqP5HG8d2rlhRMNpCGKKp556CQ",
+  "tok_expired": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MTczNTczMjc2OX0.PHojLWmQdZrfurMYYeZQlhJ08YmCCqLvJCuPUc91Jl4",
+  "tok_nbf": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MTczNTczNjQwMCwibmJmIjoxNzM1NzMyODMxfQ.bJ1xRT70gSmv2iH5zriJWZ_VU-t49Li9RejnLk60PBo",
+  "tok_newUser": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAxMSIsImVtYWlsIjoibmV3QGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTExIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3MzU3MzI3NDB9XSwiaWF0IjoxNzM1NzMyNzQwLCJleHAiOjIwNTEyMjI0MDB9.1XLz5JmmtS-XUqBf6kbT0MCMjwK_KKcAavRYy2QVyQo",
+  "tok_noExp": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDB9.73-IjKoB1p6HLyzvgTqgyVjML06ucHiAUtj9WhojXIc",
+  "tok_rs": "eyJhbGciOiJSUzI1NiIsImtpZCI6InJzMSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJycyIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNzM1NzMyNzQwfV0sImlhdCI6MTczNTczMjc0MCwiZXhwIjoxNzM1NzM2NDAwfQ.vgURmFaWnPlY5xnKdcvtOvgM0yN2r6-5y1gH1OYMmM6o73MjnpkYEFu8EstHZPtEEy6gDvbwG645h_XFAvubtePYvLKyBPdA7EgKD00iDJoj0bbZuCAXjDA-yQnGite1zC2nZATp0NLZUprRpXfU2K7j29IOqbBYWf14xYosvjNBjt7KSzniEfvQPNpUjVxoVMtbjBta6kN5glRtwM32AR5IoMYZ8vVTYy9x1kaNK8uGFprtq14cxB0y6fk7nnGWgvS_zwpsbIMot0_abi3HB8kYXz-ivO82Ss9_eKex-fVbfXmN-eXXoV8hyzbkA5G7mxyaNfRGuJ7MWWfSmRa4HQ",
+  "tok_samDelete": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJkZWwiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc5MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MTczNTczNjQwMH0.26htiVUQolW1e2rF0dc33Q8EM14bYnHuwDwCh_PqSDY",
+  "tok_samHs": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MjA1MTIyMjQwMH0.dDQ7OWvkvODU6VxuekRnCYtt2Iv1vrZjn5KJmezcxSQ",
+  "tok_samHsAgain": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MjA1MTIyMjQwMH0.i4xBU-3JiiStPMHS2ZQ0VR06IDxKEq403LYX9wvxBeg",
+  "tok_samSync": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NiLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzeW5jIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3MzU3MzI3NDB9XSwiaWF0IjoxNzM1NzMyNzQwLCJleHAiOjE3MzU3MzY0MDB9.dkOPtKaQm5S-1LeUulYYf1f_8Xe2Lxb5noV5053MjSg",
+  "tok_wrongIss": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL290aGVyLmV4YW1wbGUvYXV0aC92MSIsImF1ZCI6ImF1dGhlbnRpY2F0ZWQiLCJyb2xlIjoiYXV0aGVudGljYXRlZCIsInN1YiI6IjViMDAwMDAwLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImVtYWlsIjoic2FtQGV4YW1wbGUudGVzdCIsInNlc3Npb25faWQiOiJzZXNzLTIiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTczNTczMjc0MH1dLCJpYXQiOjE3MzU3MzI3NDAsImV4cCI6MTczNTczNjQwMH0.4RnNepYc8BQv7e22Jh2up8hmSlQ2zDt5i4p4UoBwTuM"
+ }
+}

@@ -1,0 +1,4906 @@
+{
+ "file": "export-company.pptx",
+ "doc": {
+  "meta": {
+   "schemaVersion": 1,
+   "minClientSchema": 1,
+   "layoutVersion": 1,
+   "surface": "graphic",
+   "dims": {
+    "w": 1920,
+    "h": 1080,
+    "unit": "px",
+    "dpi": 96
+   },
+   "lang": "en",
+   "title": "export-company",
+   "epoch": 0
+  },
+  "pages": {
+   "V7EQslO12KCIhnPH": {
+    "id": "V7EQslO12KCIhnPH",
+    "order": "a0",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.12156862745098039,
+       "g": 0.23921568627450981,
+       "b": 0.16862745098039217,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "KI9c3OZYEqOzuBQa": {
+    "id": "KI9c3OZYEqOzuBQa",
+    "order": "a1",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9568627450980393,
+       "g": 0.9372549019607843,
+       "b": 0.9019607843137255,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "IVHIo0WuxtZzIezP": {
+    "id": "IVHIo0WuxtZzIezP",
+    "order": "a2",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9568627450980393,
+       "g": 0.9372549019607843,
+       "b": 0.9019607843137255,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "h0MKy82BwNWaOQPE": {
+    "id": "h0MKy82BwNWaOQPE",
+    "order": "a3",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "U7VG1rA7IWVpuhhu": {
+    "id": "U7VG1rA7IWVpuhhu",
+    "order": "a4",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9568627450980393,
+       "g": 0.9372549019607843,
+       "b": 0.9019607843137255,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "5Bd6XMsAqJ4G6AwU": {
+    "id": "5Bd6XMsAqJ4G6AwU",
+    "order": "a5",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "02wYjoST45IPNxyA": {
+    "id": "02wYjoST45IPNxyA",
+    "order": "a6",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.5607843137254902,
+       "g": 0.6627450980392157,
+       "b": 0.5411764705882353,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "SFBApPsUwa7muT8P": {
+    "id": "SFBApPsUwa7muT8P",
+    "order": "a7",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.12156862745098039,
+       "g": 0.23921568627450981,
+       "b": 0.16862745098039217,
+       "a": 1
+      }
+     }
+    ]
+   }
+  },
+  "elements": {
+   "BhcBwmcKLL1eeh5H": {
+    "id": "BhcBwmcKLL1eeh5H",
+    "type": "image",
+    "parentId": "V7EQslO12KCIhnPH",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 1060,
+     "y": 0,
+     "w": 860,
+     "h": 1080,
+     "rot": 0
+    },
+    "asset": "A000000000000001",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    },
+    "altText": "Photo by Paul Jarvis"
+   },
+   "yG6GkwpPeKptZd61": {
+    "id": "yG6GkwpPeKptZd61",
+    "type": "text",
+    "parentId": "V7EQslO12KCIhnPH",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 140,
+     "w": 800,
+     "h": 36.399888,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "FERNHILL STUDIO",
+         "style": {
+          "family": "Inter",
+          "size": 28,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.5607843137254902,
+            "g": 0.6627450980392157,
+            "b": 0.5411764705882353,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 28,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.5607843137254902,
+        "g": 0.6627450980392157,
+        "b": 0.5411764705882353,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "gXjNoDyBrwWtikIL": {
+    "id": "gXjNoDyBrwWtikIL",
+    "type": "text",
+    "parentId": "V7EQslO12KCIhnPH",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 340,
+     "w": 860,
+     "h": 367.20000000000005,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Landscapes",
+         "style": {
+          "family": "Fraunces",
+          "size": 120,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.9568627450980393,
+            "g": 0.9372549019607843,
+            "b": 0.9019607843137255,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.02,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "that grow",
+         "style": {
+          "family": "Fraunces",
+          "size": 120,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.9568627450980393,
+            "g": 0.9372549019607843,
+            "b": 0.9019607843137255,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.02,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "with you.",
+         "style": {
+          "family": "Fraunces",
+          "size": 120,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.9568627450980393,
+            "g": 0.9372549019607843,
+            "b": 0.9019607843137255,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.02,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 120,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.9568627450980393,
+        "g": 0.9372549019607843,
+        "b": 0.9019607843137255,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "dbc48z0oS9h1YqFN": {
+    "id": "dbc48z0oS9h1YqFN",
+    "type": "text",
+    "parentId": "V7EQslO12KCIhnPH",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 820,
+     "w": 800,
+     "h": 51.99984,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Company profile 2027",
+         "style": {
+          "family": "Fraunces",
+          "size": 40,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.8392156862745098,
+            "g": 0.8862745098039215,
+            "b": 0.8274509803921568,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 40,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.8392156862745098,
+        "g": 0.8862745098039215,
+        "b": 0.8274509803921568,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "CtPZpuMDPMyL3WRo": {
+    "id": "CtPZpuMDPMyL3WRo",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 120,
+     "w": 800,
+     "h": 33.799896,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "CONTENTS",
+         "style": {
+          "family": "Inter",
+          "size": 26,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 26,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "5gdVFwhAuVIG9vBY": {
+    "id": "5gdVFwhAuVIG9vBY",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 170,
+     "w": 1300,
+     "h": 88.00032,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Inside this profile",
+         "style": {
+          "family": "Fraunces",
+          "size": 80,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.100004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 80,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "4xNno2pFA0xBbqNh": {
+    "id": "4xNno2pFA0xBbqNh",
+    "type": "line",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 990,
+     "w": 1640,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      1640,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "jSSBGUYEUC9I40H2": {
+    "id": "jSSBGUYEUC9I40H2",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 1010,
+     "w": 600,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "FERNHILL STUDIO",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "ZFgLEKo0nJ8fUtgP": {
+    "id": "ZFgLEKo0nJ8fUtgP",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a4",
+    "opacity": 1,
+    "xf": {
+     "x": 1580,
+     "y": 1010,
+     "w": 200,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "2 / 08",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "end",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "1UEEkWNhyGR8K7tz": {
+    "id": "1UEEkWNhyGR8K7tz",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a5",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 380,
+     "w": 120,
+     "h": 57.199824,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "01",
+         "style": {
+          "family": "Fraunces",
+          "size": 44,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 44,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "7DGtOLdt0m234AU7": {
+    "id": "7DGtOLdt0m234AU7",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a6",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 380,
+     "w": 900,
+     "h": 67.599792,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Who we are",
+         "style": {
+          "family": "Fraunces",
+          "size": 52,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 52,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "YmrfZC0jYnZG9jPj": {
+    "id": "YmrfZC0jYnZG9jPj",
+    "type": "line",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a7",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 468,
+     "w": 900,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      900,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "7eFOzvbUX3JTD2t4": {
+    "id": "7eFOzvbUX3JTD2t4",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a8",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 490,
+     "w": 120,
+     "h": 57.199824,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "02",
+         "style": {
+          "family": "Fraunces",
+          "size": 44,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 44,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "zYjfPhlsWQ9KQFgk": {
+    "id": "zYjfPhlsWQ9KQFgk",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "a9",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 490,
+     "w": 900,
+     "h": 67.599792,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "What we do",
+         "style": {
+          "family": "Fraunces",
+          "size": 52,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 52,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "ZOgu2YCv7S4Z1D1Q": {
+    "id": "ZOgu2YCv7S4Z1D1Q",
+    "type": "line",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aA",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 578,
+     "w": 900,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      900,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "gToL5bynqwgucqP1": {
+    "id": "gToL5bynqwgucqP1",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aB",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 600,
+     "w": 120,
+     "h": 57.199824,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "03",
+         "style": {
+          "family": "Fraunces",
+          "size": 44,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 44,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "DKcnMmiiVGwGMOkq": {
+    "id": "DKcnMmiiVGwGMOkq",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aC",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 600,
+     "w": 900,
+     "h": 67.599792,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Selected projects",
+         "style": {
+          "family": "Fraunces",
+          "size": 52,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 52,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "tHm234u4RSAAVszr": {
+    "id": "tHm234u4RSAAVszr",
+    "type": "line",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aD",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 688,
+     "w": 900,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      900,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "2TH1VMdqXQGpurX8": {
+    "id": "2TH1VMdqXQGpurX8",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aE",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 710,
+     "w": 120,
+     "h": 57.199824,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "04",
+         "style": {
+          "family": "Fraunces",
+          "size": 44,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 44,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "3j20GHpwsPnkCjtY": {
+    "id": "3j20GHpwsPnkCjtY",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aF",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 710,
+     "w": 900,
+     "h": 67.599792,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Studio in numbers",
+         "style": {
+          "family": "Fraunces",
+          "size": 52,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 52,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "cSkYHd13fE7IFPKf": {
+    "id": "cSkYHd13fE7IFPKf",
+    "type": "line",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aG",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 798,
+     "w": 900,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      900,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "kuVyv7g6d7xSGC0A": {
+    "id": "kuVyv7g6d7xSGC0A",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aH",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 820,
+     "w": 120,
+     "h": 57.199824,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "05",
+         "style": {
+          "family": "Fraunces",
+          "size": 44,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 44,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "QITsL3iUhzL4mK3p": {
+    "id": "QITsL3iUhzL4mK3p",
+    "type": "text",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aI",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 820,
+     "w": 900,
+     "h": 67.599792,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Working with us",
+         "style": {
+          "family": "Fraunces",
+          "size": 52,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 52,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "zpfXCYNaTP972Z9l": {
+    "id": "zpfXCYNaTP972Z9l",
+    "type": "line",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aJ",
+    "opacity": 1,
+    "xf": {
+     "x": 280,
+     "y": 908,
+     "w": 900,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      900,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "4RhaUS1u8FtplQ47": {
+    "id": "4RhaUS1u8FtplQ47",
+    "type": "image",
+    "parentId": "KI9c3OZYEqOzuBQa",
+    "z": "aK",
+    "opacity": 1,
+    "xf": {
+     "x": 1300,
+     "y": 380,
+     "w": 480,
+     "h": 540,
+     "rot": 0
+    },
+    "asset": "A000000000000002",
+    "crop": {
+     "x": 0.20356,
+     "y": 0,
+     "w": 0.5928800000000001,
+     "h": 1
+    }
+   },
+   "kYErIy8BIM16zKQx": {
+    "id": "kYErIy8BIM16zKQx",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 120,
+     "w": 800,
+     "h": 33.799896,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "01 — WHO WE ARE",
+         "style": {
+          "family": "Inter",
+          "size": 26,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 26,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "VDPJpdi2NxBE1uxx": {
+    "id": "VDPJpdi2NxBE1uxx",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 170,
+     "w": 1300,
+     "h": 176.00064,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Small studio,",
+         "style": {
+          "family": "Fraunces",
+          "size": 80,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.100004,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "long view.",
+         "style": {
+          "family": "Fraunces",
+          "size": 80,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.100004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 80,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "1n7McnzbsRbzs6hh": {
+    "id": "1n7McnzbsRbzs6hh",
+    "type": "line",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 990,
+     "w": 1640,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      1640,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "ip4mju5tbZ0CN13i": {
+    "id": "ip4mju5tbZ0CN13i",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 1010,
+     "w": 600,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "FERNHILL STUDIO",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "yobj3yfIrGJRhyNw": {
+    "id": "yobj3yfIrGJRhyNw",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a4",
+    "opacity": 1,
+    "xf": {
+     "x": 1580,
+     "y": 1010,
+     "w": 200,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "3 / 08",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "end",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "v0ZSF2x6IDfEwXZ7": {
+    "id": "v0ZSF2x6IDfEwXZ7",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a5",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 470,
+     "w": 820,
+     "h": 49.600128000000005,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Since 2011 we have designed parks, schoolyards and private gardens across the South West. We plant for the next fifty years, not the next photo shoot — favouring native species, rainwater-led design and materials sourced within 80 miles.",
+         "style": {
+          "family": "Inter",
+          "size": 32,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5500040000000002,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 32,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "3h5CqpYjxMQNOrRE": {
+    "id": "3h5CqpYjxMQNOrRE",
+    "type": "image",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a6",
+    "opacity": 1,
+    "xf": {
+     "x": 1060,
+     "y": 170,
+     "w": 720,
+     "h": 760,
+     "rot": 0
+    },
+    "asset": "A000000000000003",
+    "crop": {
+     "x": 0.13405,
+     "y": 0,
+     "w": 0.6319,
+     "h": 1
+    }
+   },
+   "RSFu4Bop1lJgI9EM": {
+    "id": "RSFu4Bop1lJgI9EM",
+    "type": "shape",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a7",
+    "opacity": 1,
+    "xf": {
+     "x": 1000,
+     "y": 760,
+     "w": 380,
+     "h": 200,
+     "rot": 0
+    },
+    "name": "shape 8",
+    "kind": "rect",
+    "params": {
+     "cornerRadius": 8
+    },
+    "fills": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.12156862745098039,
+       "g": 0.23921568627450981,
+       "b": 0.16862745098039217,
+       "a": 1
+      }
+     }
+    ],
+    "strokes": []
+   },
+   "HjgeP1G5CqsxkVza": {
+    "id": "HjgeP1G5CqsxkVza",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a8",
+    "opacity": 1,
+    "xf": {
+     "x": 1040,
+     "y": 775,
+     "w": 140,
+     "h": 124.79961599999999,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "15",
+         "style": {
+          "family": "Fraunces",
+          "size": 96,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.9568627450980393,
+            "g": 0.9372549019607843,
+            "b": 0.9019607843137255,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 96,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.9568627450980393,
+        "g": 0.9372549019607843,
+        "b": 0.9019607843137255,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "uo7diKueXTJznZf7": {
+    "id": "uo7diKueXTJznZf7",
+    "type": "text",
+    "parentId": "IVHIo0WuxtZzIezP",
+    "z": "a9",
+    "opacity": 1,
+    "xf": {
+     "x": 1170,
+     "y": 805,
+     "w": 200,
+     "h": 64.8,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "years designing",
+         "style": {
+          "family": "Inter",
+          "size": 24,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.8392156862745098,
+            "g": 0.8862745098039215,
+            "b": 0.8274509803921568,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.3499999999999999,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "living spaces",
+         "style": {
+          "family": "Inter",
+          "size": 24,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.8392156862745098,
+            "g": 0.8862745098039215,
+            "b": 0.8274509803921568,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.3499999999999999,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 24,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.8392156862745098,
+        "g": 0.8862745098039215,
+        "b": 0.8274509803921568,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "u1gnSM1VU5FBwL3I": {
+    "id": "u1gnSM1VU5FBwL3I",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 120,
+     "w": 800,
+     "h": 33.799896,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "02 — WHAT WE DO",
+         "style": {
+          "family": "Inter",
+          "size": 26,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 26,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "YL1SIYrmnXun7RAF": {
+    "id": "YL1SIYrmnXun7RAF",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 170,
+     "w": 1300,
+     "h": 88.00032,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Three ways we work",
+         "style": {
+          "family": "Fraunces",
+          "size": 80,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.100004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 80,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Vzxzz1ciVB45umZF": {
+    "id": "Vzxzz1ciVB45umZF",
+    "type": "line",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 990,
+     "w": 1640,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      1640,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "MMkF280DUFUY355P": {
+    "id": "MMkF280DUFUY355P",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 1010,
+     "w": 600,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "FERNHILL STUDIO",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "VPMRmOzySLjQNz6C": {
+    "id": "VPMRmOzySLjQNz6C",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a4",
+    "opacity": 1,
+    "xf": {
+     "x": 1580,
+     "y": 1010,
+     "w": 200,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "4 / 08",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "end",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Exz0WUU6Ly0Ai5ID": {
+    "id": "Exz0WUU6Ly0Ai5ID",
+    "type": "shape",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a5",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 400,
+     "w": 520,
+     "h": 500,
+     "rot": 0
+    },
+    "name": "shape 6",
+    "kind": "rect",
+    "params": {
+     "cornerRadius": 6
+    },
+    "fills": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9568627450980393,
+       "g": 0.9372549019607843,
+       "b": 0.9019607843137255,
+       "a": 1
+      }
+     }
+    ],
+    "strokes": []
+   },
+   "iE0wrjLXE0UaOqlC": {
+    "id": "iE0wrjLXE0UaOqlC",
+    "type": "image",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a6",
+    "opacity": 1,
+    "xf": {
+     "x": 190,
+     "y": 450,
+     "w": 120,
+     "h": 120,
+     "rot": 0
+    },
+    "asset": "A000000000000004",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    }
+   },
+   "y2y423YSxj4Gp388": {
+    "id": "y2y423YSxj4Gp388",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a7",
+    "opacity": 1,
+    "xf": {
+     "x": 190,
+     "y": 610,
+     "w": 420,
+     "h": 64.9998,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Public parks",
+         "style": {
+          "family": "Fraunces",
+          "size": 50,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 50,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "2YAgUZRQqhBe5IzQ": {
+    "id": "2YAgUZRQqhBe5IzQ",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a8",
+    "opacity": 1,
+    "xf": {
+     "x": 190,
+     "y": 690,
+     "w": 420,
+     "h": 42,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Masterplans and detailed design for councils and community trusts.",
+         "style": {
+          "family": "Inter",
+          "size": 28,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 28,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "bvun9oqUtbsXj6Js": {
+    "id": "bvun9oqUtbsXj6Js",
+    "type": "shape",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "a9",
+    "opacity": 1,
+    "xf": {
+     "x": 700,
+     "y": 400,
+     "w": 520,
+     "h": 500,
+     "rot": 0
+    },
+    "name": "shape 10",
+    "kind": "rect",
+    "params": {
+     "cornerRadius": 6
+    },
+    "fills": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9568627450980393,
+       "g": 0.9372549019607843,
+       "b": 0.9019607843137255,
+       "a": 1
+      }
+     }
+    ],
+    "strokes": []
+   },
+   "lUwN2hbKbR7goGfE": {
+    "id": "lUwN2hbKbR7goGfE",
+    "type": "image",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aA",
+    "opacity": 1,
+    "xf": {
+     "x": 750,
+     "y": 450,
+     "w": 120,
+     "h": 120,
+     "rot": 0
+    },
+    "asset": "A000000000000005",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    }
+   },
+   "MEY2i1vdtuEoQS9D": {
+    "id": "MEY2i1vdtuEoQS9D",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aB",
+    "opacity": 1,
+    "xf": {
+     "x": 750,
+     "y": 610,
+     "w": 420,
+     "h": 64.9998,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Private gardens",
+         "style": {
+          "family": "Fraunces",
+          "size": 50,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 50,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Mi82yg1y9QsGlujq": {
+    "id": "Mi82yg1y9QsGlujq",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aC",
+    "opacity": 1,
+    "xf": {
+     "x": 750,
+     "y": 690,
+     "w": 420,
+     "h": 42,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Bespoke gardens for homes, from courtyards to country estates.",
+         "style": {
+          "family": "Inter",
+          "size": 28,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 28,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "6x0U3GfXjxmRmW1d": {
+    "id": "6x0U3GfXjxmRmW1d",
+    "type": "shape",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aD",
+    "opacity": 1,
+    "xf": {
+     "x": 1260,
+     "y": 400,
+     "w": 520,
+     "h": 500,
+     "rot": 0
+    },
+    "name": "shape 14",
+    "kind": "rect",
+    "params": {
+     "cornerRadius": 6
+    },
+    "fills": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9568627450980393,
+       "g": 0.9372549019607843,
+       "b": 0.9019607843137255,
+       "a": 1
+      }
+     }
+    ],
+    "strokes": []
+   },
+   "Yxs8DpEakhj1zyCN": {
+    "id": "Yxs8DpEakhj1zyCN",
+    "type": "image",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aE",
+    "opacity": 1,
+    "xf": {
+     "x": 1310,
+     "y": 450,
+     "w": 120,
+     "h": 120,
+     "rot": 0
+    },
+    "asset": "A000000000000006",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    }
+   },
+   "ERDeWXCTlVUAAHcC": {
+    "id": "ERDeWXCTlVUAAHcC",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aF",
+    "opacity": 1,
+    "xf": {
+     "x": 1310,
+     "y": 610,
+     "w": 420,
+     "h": 64.9998,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Rewilding",
+         "style": {
+          "family": "Fraunces",
+          "size": 50,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 50,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "ePvklSD04QwS8Dbd": {
+    "id": "ePvklSD04QwS8Dbd",
+    "type": "text",
+    "parentId": "h0MKy82BwNWaOQPE",
+    "z": "aG",
+    "opacity": 1,
+    "xf": {
+     "x": 1310,
+     "y": 690,
+     "w": 420,
+     "h": 42,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Ecological surveys and planting plans that restore biodiversity.",
+         "style": {
+          "family": "Inter",
+          "size": 28,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 28,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "ZpOdZGAKyQWx9UJj": {
+    "id": "ZpOdZGAKyQWx9UJj",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 120,
+     "w": 800,
+     "h": 33.799896,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "03 — SELECTED PROJECTS",
+         "style": {
+          "family": "Inter",
+          "size": 26,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 26,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "f47DMY67WohBUtjk": {
+    "id": "f47DMY67WohBUtjk",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 170,
+     "w": 1300,
+     "h": 88.00032,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Recent work",
+         "style": {
+          "family": "Fraunces",
+          "size": 80,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.100004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 80,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "0EzwQxhsI1SVNhoM": {
+    "id": "0EzwQxhsI1SVNhoM",
+    "type": "line",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 990,
+     "w": 1640,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      1640,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "mcWCvkzYy55qkWBj": {
+    "id": "mcWCvkzYy55qkWBj",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 1010,
+     "w": 600,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "FERNHILL STUDIO",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "VyNFZjQ1Lt9ZPIPZ": {
+    "id": "VyNFZjQ1Lt9ZPIPZ",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a4",
+    "opacity": 1,
+    "xf": {
+     "x": 1580,
+     "y": 1010,
+     "w": 200,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "5 / 08",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "end",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "KKNkzF0APjbzh2w0": {
+    "id": "KKNkzF0APjbzh2w0",
+    "type": "image",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a5",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 350,
+     "w": 1640,
+     "h": 520,
+     "rot": 0
+    },
+    "asset": "A000000000000007",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    }
+   },
+   "4AYsYxSQJwzshApW": {
+    "id": "4AYsYxSQJwzshApW",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a6",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 890,
+     "w": 520,
+     "h": 44.199864,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Harbourside Park",
+         "style": {
+          "family": "Fraunces",
+          "size": 34,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 34,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Z08q6C6rF8PIy0X8": {
+    "id": "Z08q6C6rF8PIy0X8",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a7",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 940,
+     "w": 520,
+     "h": 28.599912,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Bristol · 2026",
+         "style": {
+          "family": "Inter",
+          "size": 22,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 22,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Pnv4TERrwykQILEQ": {
+    "id": "Pnv4TERrwykQILEQ",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a8",
+    "opacity": 1,
+    "xf": {
+     "x": 693,
+     "y": 890,
+     "w": 520,
+     "h": 44.199864,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Millbrook Primary",
+         "style": {
+          "family": "Fraunces",
+          "size": 34,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 34,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "o6RDHqH3qSoS6hQ8": {
+    "id": "o6RDHqH3qSoS6hQ8",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "a9",
+    "opacity": 1,
+    "xf": {
+     "x": 693,
+     "y": 940,
+     "w": 520,
+     "h": 28.599912,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Bath · 2025",
+         "style": {
+          "family": "Inter",
+          "size": 22,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 22,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "22ioo03dhMsrc8P3": {
+    "id": "22ioo03dhMsrc8P3",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "aA",
+    "opacity": 1,
+    "xf": {
+     "x": 1246,
+     "y": 890,
+     "w": 520,
+     "h": 44.199864,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "The Walled Garden",
+         "style": {
+          "family": "Fraunces",
+          "size": 34,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 34,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Cdb9HAi4jpyq9xyC": {
+    "id": "Cdb9HAi4jpyq9xyC",
+    "type": "text",
+    "parentId": "U7VG1rA7IWVpuhhu",
+    "z": "aB",
+    "opacity": 1,
+    "xf": {
+     "x": 1246,
+     "y": 940,
+     "w": 520,
+     "h": 28.599912,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Somerset · 2025",
+         "style": {
+          "family": "Inter",
+          "size": 22,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 22,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "ft7aGoqkzmGEkAtO": {
+    "id": "ft7aGoqkzmGEkAtO",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 120,
+     "w": 800,
+     "h": 33.799896,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "04 — STUDIO IN NUMBERS",
+         "style": {
+          "family": "Inter",
+          "size": 26,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 26,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "KK8Rk9dEd42vxNKA": {
+    "id": "KK8Rk9dEd42vxNKA",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 170,
+     "w": 1300,
+     "h": 88.00032,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Measured impact",
+         "style": {
+          "family": "Fraunces",
+          "size": 80,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.100004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 80,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "9l9C1EsIh0lgo0pi": {
+    "id": "9l9C1EsIh0lgo0pi",
+    "type": "line",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 990,
+     "w": 1640,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      1640,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.8470588235294118,
+       "g": 0.8117647058823529,
+       "b": 0.7490196078431373,
+       "a": 1
+      }
+     },
+     "width": 2,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "mEGvc21Kv7kufogI": {
+    "id": "mEGvc21Kv7kufogI",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 1010,
+     "w": 600,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "FERNHILL STUDIO",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "E81LyJMRxoROcrQv": {
+    "id": "E81LyJMRxoROcrQv",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a4",
+    "opacity": 1,
+    "xf": {
+     "x": 1580,
+     "y": 1010,
+     "w": 200,
+     "h": 23.399928,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "6 / 08",
+         "style": {
+          "family": "Inter",
+          "size": 18,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "end",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 18,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "NzoQ5kBKGIJj4tN5": {
+    "id": "NzoQ5kBKGIJj4tN5",
+    "type": "table",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a5",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 380,
+     "w": 900,
+     "h": 480,
+     "rot": 0
+    },
+    "rows": [
+     0.2,
+     0.2,
+     0.2,
+     0.2,
+     0.2
+    ],
+    "cols": [
+     0.25,
+     0.25,
+     0.25,
+     0.25
+    ],
+    "cells": {
+     "0:0": {
+      "text": "Year",
+      "bold": true
+     },
+     "0:1": {
+      "text": "Projects",
+      "bold": true
+     },
+     "0:2": {
+      "text": "Trees planted",
+      "bold": true
+     },
+     "0:3": {
+      "text": "Area (ha)",
+      "bold": true
+     },
+     "1:0": {
+      "text": "2023"
+     },
+     "1:1": {
+      "text": "18"
+     },
+     "1:2": {
+      "text": "1,240"
+     },
+     "1:3": {
+      "text": "12.5"
+     },
+     "2:0": {
+      "text": "2024"
+     },
+     "2:1": {
+      "text": "22"
+     },
+     "2:2": {
+      "text": "2,060"
+     },
+     "2:3": {
+      "text": "19.8"
+     },
+     "3:0": {
+      "text": "2025"
+     },
+     "3:1": {
+      "text": "27"
+     },
+     "3:2": {
+      "text": "3,410"
+     },
+     "3:3": {
+      "text": "26.1"
+     },
+     "4:0": {
+      "text": "2026"
+     },
+     "4:1": {
+      "text": "31"
+     },
+     "4:2": {
+      "text": "4,780"
+     },
+     "4:3": {
+      "text": "34.0"
+     }
+    },
+    "style": {
+     "family": "Inter",
+     "size": 28,
+     "color": {
+      "space": "srgb",
+      "r": 0.12156862745098039,
+      "g": 0.13725490196078433,
+      "b": 0.1568627450980392,
+      "a": 1
+     },
+     "borderColor": {
+      "space": "srgb",
+      "r": 0.8156862745098039,
+      "g": 0.8431372549019608,
+      "b": 0.8705882352941177,
+      "a": 1
+     },
+     "borderWidth": 1.5,
+     "headerFill": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.9294117647058824,
+       "g": 0.9137254901960784,
+       "b": 0.996078431372549,
+       "a": 1
+      }
+     },
+     "headerColor": {
+      "space": "srgb",
+      "r": 0.2980392156862745,
+      "g": 0.11372549019607843,
+      "b": 0.5843137254901961,
+      "a": 1
+     },
+     "padding": 10
+    }
+   },
+   "gci69wAjbMsNY4dt": {
+    "id": "gci69wAjbMsNY4dt",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a6",
+    "opacity": 1,
+    "xf": {
+     "x": 1180,
+     "y": 390,
+     "w": 600,
+     "h": 142.99956,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "92%",
+         "style": {
+          "family": "Fraunces",
+          "size": 110,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.12156862745098039,
+            "g": 0.23921568627450981,
+            "b": 0.16862745098039217,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 110,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.12156862745098039,
+        "g": 0.23921568627450981,
+        "b": 0.16862745098039217,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "ddR15fyXzEK0wJsX": {
+    "id": "ddR15fyXzEK0wJsX",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a7",
+    "opacity": 1,
+    "xf": {
+     "x": 1186,
+     "y": 530,
+     "w": 520,
+     "h": 39.200112000000004,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "of clients return for a second project",
+         "style": {
+          "family": "Inter",
+          "size": 28,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.400004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 28,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "2SePQUffhnbFsnHD": {
+    "id": "2SePQUffhnbFsnHD",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a8",
+    "opacity": 1,
+    "xf": {
+     "x": 1180,
+     "y": 640,
+     "w": 600,
+     "h": 142.99956,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "40%",
+         "style": {
+          "family": "Fraunces",
+          "size": 110,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.7058823529411765,
+            "g": 0.33725490196078434,
+            "b": 0.16470588235294117,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 110,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.7058823529411765,
+        "g": 0.33725490196078434,
+        "b": 0.16470588235294117,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "LbIC4N63R18w5MEx": {
+    "id": "LbIC4N63R18w5MEx",
+    "type": "text",
+    "parentId": "5Bd6XMsAqJ4G6AwU",
+    "z": "a9",
+    "opacity": 1,
+    "xf": {
+     "x": 1186,
+     "y": 780,
+     "w": 520,
+     "h": 39.200112000000004,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "average reduction in irrigation needs",
+         "style": {
+          "family": "Inter",
+          "size": 28,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.24705882352941178,
+            "g": 0.2901960784313726,
+            "b": 0.25882352941176473,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.400004,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 28,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.24705882352941178,
+        "g": 0.2901960784313726,
+        "b": 0.25882352941176473,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "vLFDkjM7lcPBoUuO": {
+    "id": "vLFDkjM7lcPBoUuO",
+    "type": "text",
+    "parentId": "02wYjoST45IPNxyA",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 240,
+     "y": 280,
+     "w": 1440,
+     "h": 85.00027200000001,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "“Fernhill listened before they drew a single line. Three years on, the park is busier than ever — and it looks better every spring.”",
+         "style": {
+          "family": "Fraunces",
+          "size": 68,
+          "weight": 400,
+          "italic": true,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.07450980392156863,
+            "g": 0.14901960784313725,
+            "b": 0.10588235294117647,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "center",
+       "lineHeight": 1.2500040000000001,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": true,
+      "size": 68,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.07450980392156863,
+        "g": 0.14901960784313725,
+        "b": 0.10588235294117647,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "1g3evb9ze127wJVh": {
+    "id": "1g3evb9ze127wJVh",
+    "type": "line",
+    "parentId": "02wYjoST45IPNxyA",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 900,
+     "y": 760,
+     "w": 120,
+     "h": 1,
+     "rot": 0
+    },
+    "points": [
+     [
+      0,
+      0
+     ],
+     [
+      120,
+      1
+     ]
+    ],
+    "stroke": {
+     "paint": {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 0.07450980392156863,
+       "g": 0.14901960784313725,
+       "b": 0.10588235294117647,
+       "a": 1
+      }
+     },
+     "width": 3,
+     "align": "center",
+     "cap": "round",
+     "join": "round"
+    },
+    "startMarker": "none",
+    "endMarker": "none"
+   },
+   "7tnmOP1YkpdSXY45": {
+    "id": "7tnmOP1YkpdSXY45",
+    "type": "text",
+    "parentId": "02wYjoST45IPNxyA",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 240,
+     "y": 800,
+     "w": 1440,
+     "h": 38.99988,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Dana Whitfield · Parks Officer, Bristol City Council",
+         "style": {
+          "family": "Inter",
+          "size": 30,
+          "weight": 700,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.07450980392156863,
+            "g": 0.14901960784313725,
+            "b": 0.10588235294117647,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "center",
+       "lineHeight": 1.299996,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 700,
+      "italic": false,
+      "size": 30,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.07450980392156863,
+        "g": 0.14901960784313725,
+        "b": 0.10588235294117647,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "8B8Sz8SrnzhclD9c": {
+    "id": "8B8Sz8SrnzhclD9c",
+    "type": "text",
+    "parentId": "SFBApPsUwa7muT8P",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 300,
+     "w": 1200,
+     "h": 231,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Let’s grow",
+         "style": {
+          "family": "Fraunces",
+          "size": 110,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.9568627450980393,
+            "g": 0.9372549019607843,
+            "b": 0.9019607843137255,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.05,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "something together.",
+         "style": {
+          "family": "Fraunces",
+          "size": 110,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.9568627450980393,
+            "g": 0.9372549019607843,
+            "b": 0.9019607843137255,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.05,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Fraunces",
+      "weight": 400,
+      "italic": false,
+      "size": 110,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.9568627450980393,
+        "g": 0.9372549019607843,
+        "b": 0.9019607843137255,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "0NP8U2GBe2z7Jtwk": {
+    "id": "0NP8U2GBe2z7Jtwk",
+    "type": "text",
+    "parentId": "SFBApPsUwa7muT8P",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 140,
+     "y": 650,
+     "w": 900,
+     "h": 163.199592,
+     "rot": 0
+    },
+    "body": {
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "hello@fernhill.example",
+         "style": {
+          "family": "Inter",
+          "size": 34,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.8392156862745098,
+            "g": 0.8862745098039215,
+            "b": 0.8274509803921568,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5999959999999998,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "+44 117 555 0142",
+         "style": {
+          "family": "Inter",
+          "size": 34,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.8392156862745098,
+            "g": 0.8862745098039215,
+            "b": 0.8274509803921568,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5999959999999998,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "12 Quay Street, Bristol",
+         "style": {
+          "family": "Inter",
+          "size": 34,
+          "weight": 400,
+          "italic": false,
+          "fill": {
+           "k": "solid",
+           "color": {
+            "space": "srgb",
+            "r": 0.8392156862745098,
+            "g": 0.8862745098039215,
+            "b": 0.8274509803921568,
+            "a": 1
+           }
+          }
+         }
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.5999959999999998,
+       "spaceAfter": 0
+      }
+     ],
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 34,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.8392156862745098,
+        "g": 0.8862745098039215,
+        "b": 0.8274509803921568,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     }
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "4IhvvgMjL6zaqleK": {
+    "id": "4IhvvgMjL6zaqleK",
+    "type": "image",
+    "parentId": "SFBApPsUwa7muT8P",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 1420,
+     "y": 560,
+     "w": 320,
+     "h": 320,
+     "rot": 14
+    },
+    "asset": "A000000000000008",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    }
+   }
+  },
+  "assets": {}
+ },
+ "media": [
+  {
+   "name": "image1.png",
+   "sha256": "3a47bd68a4aad1e6a37ab95de76858276ab48bd4fadf17d5a4f8d22a90ab54ac",
+   "bytes": 431
+  },
+  {
+   "name": "image2.jpeg",
+   "sha256": "28d176a8fe6533f2ae2e7b2e6b066e32aebda2ddfe27367290787afb92bf9cb6",
+   "bytes": 13013
+  },
+  {
+   "name": "image3.jpeg",
+   "sha256": "28d176a8fe6533f2ae2e7b2e6b066e32aebda2ddfe27367290787afb92bf9cb6",
+   "bytes": 13013
+  },
+  {
+   "name": "image4.jpeg",
+   "sha256": "28d176a8fe6533f2ae2e7b2e6b066e32aebda2ddfe27367290787afb92bf9cb6",
+   "bytes": 13013
+  },
+  {
+   "name": "image5.jpeg",
+   "sha256": "28d176a8fe6533f2ae2e7b2e6b066e32aebda2ddfe27367290787afb92bf9cb6",
+   "bytes": 13013
+  },
+  {
+   "name": "image6.jpeg",
+   "sha256": "28d176a8fe6533f2ae2e7b2e6b066e32aebda2ddfe27367290787afb92bf9cb6",
+   "bytes": 13013
+  },
+  {
+   "name": "image7.png",
+   "sha256": "3a47bd68a4aad1e6a37ab95de76858276ab48bd4fadf17d5a4f8d22a90ab54ac",
+   "bytes": 431
+  },
+  {
+   "name": "image8.jpeg",
+   "sha256": "28d176a8fe6533f2ae2e7b2e6b066e32aebda2ddfe27367290787afb92bf9cb6",
+   "bytes": 13013
+  }
+ ]
+}

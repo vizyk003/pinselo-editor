@@ -1,0 +1,27 @@
+[package]
+name = "oc-gfonts"
+description = "Google Fonts on demand (port of @oc/gfonts): catalogue, manifest merge, fetch-and-pin faces, previews."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+# Font inspection and manifest types. Without default features: no line-breaking dictionaries.
+oc-text = { path = "../../oc-text", default-features = false }
+oc-js = { workspace = true }
+oc-storage = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+regex = { workspace = true }
+reqwest = { workspace = true }
+futures = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+oc-config = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+oc-db = { workspace = true }
+tokio = { workspace = true }

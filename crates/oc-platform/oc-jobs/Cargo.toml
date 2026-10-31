@@ -1,0 +1,21 @@
+[package]
+name = "oc-jobs"
+description = "Durable Postgres job queue (port of @oc/jobs): SKIP LOCKED claims, LISTEN/NOTIFY wake-ups, exponential retries, heartbeats."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-db = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+futures = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+oc-js = { workspace = true }
+tokio = { workspace = true }

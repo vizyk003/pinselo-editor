@@ -1,0 +1,22 @@
+[package]
+name = "oc-editor-core"
+description = "Pinselo editor engine (Rust port of @oc/editor-core): selection, gestures, commands over an oc-crdt DocStore"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+oc-geometry = { path = "../oc-geometry" }
+oc-crdt = { path = "../oc-crdt" }
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
+yrs = { workspace = true }
+regex = { workspace = true }
+# Grapheme clusters for caret steps (already in the wasm build through oc-text).
+icu_segmenter = { workspace = true }
+thiserror = { workspace = true }
+indexmap = { version = "2", features = ["serde"] }
+
+[dev-dependencies]
+base64 = { workspace = true }

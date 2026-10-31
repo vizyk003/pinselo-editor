@@ -1,0 +1,20 @@
+node_modules
+dist
+.turbo
+.vite
+*.log
+.env
+.data/
+fixtures/fonts/files/
+coverage
+.DS_Store
+fixtures/emoji/
+fixtures/graphics/
+fixtures/icc/
+fixtures/template-photos/
+
+# Rust
+/target
+
+# Supabase CLI link state
+supabase/.temp/

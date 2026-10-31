@@ -1,0 +1,145 @@
+{
+ "seed": [
+  "INSERT INTO users(id, email, name, color) VALUES ('00000000-0000-4000-8000-000000000401', 'sweep@example.test', 'Sweeper', '#336699')",
+  "INSERT INTO workspaces(id, name, personal, owner_id) VALUES ('00000000-0000-4000-8000-000000000402', 'Sweep', true, '00000000-0000-4000-8000-000000000401')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, width, height) VALUES ('gsweep0000000000', '00000000-0000-4000-8000-000000000402', '00000000-0000-4000-8000-000000000401', 'Sweep', 100, 100)",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000411', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'scheduled', now() - interval '2 minutes', now())",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000412', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'scheduled', now() - interval '3 minutes', now())",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000413', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'scheduled', now() + interval '1 hour', now())",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000414', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'draft', now() - interval '1 hour', now())",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000415', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'publishing', now() - interval '1 hour', now() - interval '31 minutes')",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000416', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'publishing', now() - interval '1 hour', now() - interval '31 minutes')",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, caption, status, scheduled_at, updated_at) VALUES ('00000000-0000-4000-8000-000000000417', '00000000-0000-4000-8000-000000000401', 'gsweep0000000000', 'png', 'c', 'publishing', now() - interval '1 hour', now() - interval '5 minutes')",
+  "INSERT INTO jobs(id, queue, payload, status, run_at, max_attempts, label, owner_id) VALUES\n      ('00000000-0000-4000-8000-000000000421', 'publish', '{\"postId\":\"00000000-0000-4000-8000-000000000412\"}'::jsonb, 'queued', now() + interval '1 hour', 5, 'Scheduled', '00000000-0000-4000-8000-000000000401'),\n      ('00000000-0000-4000-8000-000000000422', 'publish', '{\"postId\":\"00000000-0000-4000-8000-000000000416\"}'::jsonb, 'running', now(), 5, 'Running', '00000000-0000-4000-8000-000000000401')",
+  "INSERT INTO social_oauth_states(state, user_id, provider, code_verifier, created_at) VALUES ('old-state', '00000000-0000-4000-8000-000000000401', 'x', 'v', now() - interval '2 hours'), ('new-state', '00000000-0000-4000-8000-000000000401', 'x', 'v', now() - interval '10 minutes')"
+ ],
+ "objects": [],
+ "result": {
+  "due": [
+   "00000000-0000-4000-8000-000000000411"
+  ],
+  "dueLimited": [
+   "00000000-0000-4000-8000-000000000411"
+  ],
+  "swept": 1,
+  "after": []
+ },
+ "checks": [
+  {
+   "name": "publish jobs",
+   "sql": "SELECT queue, payload, status, priority, max_attempts, label, owner_id, attempts, run_at <= now() AS due FROM jobs ORDER BY payload->>'postId', label",
+   "rows": [
+    {
+     "queue": "publish",
+     "payload": {
+      "postId": "00000000-0000-4000-8000-000000000411"
+     },
+     "status": "queued",
+     "priority": 0,
+     "max_attempts": 5,
+     "label": "Scheduled",
+     "owner_id": "00000000-0000-4000-8000-000000000401",
+     "attempts": 0,
+     "due": true
+    },
+    {
+     "queue": "publish",
+     "payload": {
+      "postId": "00000000-0000-4000-8000-000000000412"
+     },
+     "status": "queued",
+     "priority": 0,
+     "max_attempts": 5,
+     "label": "Scheduled",
+     "owner_id": "00000000-0000-4000-8000-000000000401",
+     "attempts": 0,
+     "due": false
+    },
+    {
+     "queue": "publish",
+     "payload": {
+      "postId": "00000000-0000-4000-8000-000000000416"
+     },
+     "status": "running",
+     "priority": 0,
+     "max_attempts": 5,
+     "label": "Running",
+     "owner_id": "00000000-0000-4000-8000-000000000401",
+     "attempts": 0,
+     "due": true
+    }
+   ]
+  },
+  {
+   "name": "posts",
+   "sql": "SELECT id, status, error FROM social_posts ORDER BY id",
+   "rows": [
+    {
+     "id": "00000000-0000-4000-8000-000000000411",
+     "status": "scheduled",
+     "error": null
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000412",
+     "status": "scheduled",
+     "error": null
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000413",
+     "status": "scheduled",
+     "error": null
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000414",
+     "status": "draft",
+     "error": null
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000415",
+     "status": "failed",
+     "error": "Publishing was interrupted. Try again."
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000416",
+     "status": "publishing",
+     "error": null
+    },
+    {
+     "id": "00000000-0000-4000-8000-000000000417",
+     "status": "publishing",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "events",
+   "sql": "SELECT post_id, account_id, kind, message, data FROM social_post_events ORDER BY post_id, id",
+   "rows": [
+    {
+     "post_id": "00000000-0000-4000-8000-000000000411",
+     "account_id": null,
+     "kind": "swept",
+     "message": "Queued by the scheduler sweep",
+     "data": null
+    },
+    {
+     "post_id": "00000000-0000-4000-8000-000000000415",
+     "account_id": null,
+     "kind": "failed",
+     "message": "Publishing was interrupted",
+     "data": null
+    }
+   ]
+  },
+  {
+   "name": "oauth states",
+   "sql": "SELECT state FROM social_oauth_states ORDER BY state",
+   "rows": [
+    {
+     "state": "new-state"
+    }
+   ]
+  }
+ ],
+ "fake": []
+}

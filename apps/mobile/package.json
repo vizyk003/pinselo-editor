@@ -1,0 +1,27 @@
+{
+  "name": "@oc/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "description": "Native iOS/Android shell (Capacitor) around the Pinselo web app.",
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "add:ios": "cap add ios",
+    "add:android": "cap add android",
+    "sync": "pnpm --filter @oc/web build && cap sync",
+    "ios": "cap open ios",
+    "android": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.2",
+    "@capacitor/app": "8.1.1",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/ios": "8.5.2",
+    "@capacitor/share": "8.0.2",
+    "@capacitor/status-bar": "8.0.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2"
+  }
+}

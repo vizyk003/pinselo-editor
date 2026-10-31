@@ -1,0 +1,2608 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {},
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000005000', 'Studio', false, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z'), ('00000000-0000-4000-8000-000000005001', 'Outside', false, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000001', 'owner'), ('00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'member'), ('00000000-0000-4000-8000-000000005001', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbrand0000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Brand', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T08:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbrand0000000000', decode('010c8eace7900a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177054272616e642801046d6574610565706f6368017d00270105706167657310537061676531303030303030303030300128008eace7900a080269640177105370616765313030303030303030303028008eace7900a08056f72646572017702613028008eace7900a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbrandkit0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Brand kit 2025', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T10:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbrandkit0000000', decode('010cd998ccde02002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770e4272616e64206b697420323032352801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800d998ccde0208026964017710537061676531303030303030303030302800d998ccde0208056f7264657201770261302800d998ccde02080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Srebrand00000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Our rebrand plan', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T11:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Srebrand00000000', decode('010cb4fa93a607002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177104f75722072656272616e6420706c616e2801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800b4fa93a60708026964017710537061676531303030303030303030302800b4fa93a60708056f7264657201770261302800b4fa93a607080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Soldbrand0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Old brand', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2024-06-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Soldbrand0000000', decode('010ceed9e5f40a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177094f6c64206272616e642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800eed9e5f40a08026964017710537061676531303030303030303030302800eed9e5f40a08056f7264657201770261302800eed9e5f40a080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sdeck00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Brand deck', 'presentation', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T09:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sdeck00000000000', decode('010ccdef9ff60f002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770a4272616e64206465636b2801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800cdef9ff60f08026964017710537061676531303030303030303030302800cdef9ff60f08056f7264657201770261302800cdef9ff60f080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Ssale00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', '50% off sale', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T07:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Ssale00000000000', decode('010c83c191ae01002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770c353025206f66662073616c652801046d6574610565706f6368017d002701057061676573105370616765313030303030303030303001280083c191ae010802696401771053706167653130303030303030303030280083c191ae0108056f726465720177026130280083c191ae01080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sfiftyx000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', '50x off', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T07:30:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sfiftyx000000000', decode('010ce3d5eade0d002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c65017707353078206f66662801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800e3d5eade0d08026964017710537061676531303030303030303030302800e3d5eade0d08056f7264657201770261302800e3d5eade0d080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at, trashed_at) VALUES ('Strashbrand00000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Trashed brand', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Strashbrand00000', decode('010ccbdbbbf907002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770d54726173686564206272616e642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800cbdbbbf90708026964017710537061676531303030303030303030302800cbdbbbf90708056f7264657201770261302800cbdbbbf907080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbobshared000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Bob brand shared', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T06:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbobshared000000', decode('010ccd8bf1f809002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c65017710426f62206272616e64207368617265642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800cd8bf1f80908026964017710537061676531303030303030303030302800cd8bf1f80908056f7264657201770261302800cd8bf1f809080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Sbobprivate00000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Bob brand private', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Sbobprivate00000', decode('010cb0ddf4b206002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c65017711426f62206272616e6420707269766174652801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800b0ddf4b20608026964017710537061676531303030303030303030302800b0ddf4b20608056f7264657201770261302800b0ddf4b206080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Steambrand000000', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'Team brand board', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T05:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Steambrand000000', decode('010cf8d3930d002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177105465616d206272616e6420626f6172642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800f8d3930d08026964017710537061676531303030303030303030302800f8d3930d08056f7264657201770261302800f8d3930d080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, page_count, created_at, updated_at) VALUES ('Soutsidebrand000', '00000000-0000-4000-8000-000000005001', '00000000-0000-4000-8000-000000000002', 'Outside brand', 'graphic', 1080, 1080, 'px', 1, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO doc_state(design_id, state) VALUES ('Soutsidebrand000', decode('010cf9b1e3fa02002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687db81004756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770d4f757473696465206272616e642801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800f9b1e3fa0208026964017710537061676531303030303030303030302800f9b1e3fa0208056f7264657201770261302800f9b1e3fa02080a6261636b67726f756e640175017602016b7705736f6c696405636f6c6f72760505737061636577047372676201727d0101677d0101627d0101617d0100', 'hex'))",
+  "INSERT INTO design_shares(design_id, user_id, role) VALUES ('Sbobshared000000', '00000000-0000-4000-8000-000000000001', 'view')",
+  "INSERT INTO stars(user_id, design_id) VALUES ('00000000-0000-4000-8000-000000000001', 'Sbrandkit0000000')",
+  "INSERT INTO folders(id, workspace_id, owner_id, name, created_at) VALUES\n      ('00000000-0000-4000-8000-000000006000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'Brand assets', '2025-01-01T09:00:00Z'),\n      ('00000000-0000-4000-8000-000000006001', '00000000-0000-4000-8000-000000005000', '00000000-0000-4000-8000-000000000002', 'Brand team folder', '2024-01-01T00:00:00Z'),\n      ('00000000-0000-4000-8000-000000006002', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Brand secret', '2025-01-01T09:00:00Z'),\n      ('00000000-0000-4000-8000-000000006003', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'brand', '2025-01-01T08:00:00Z')",
+  "UPDATE designs SET folder_id = '00000000-0000-4000-8000-000000006000' WHERE id = 'Sbrandkit0000000'",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name, source, created_at)\n   VALUES ('Slogo00000000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'image/png', 'image', 1234, 20, 10, 'brand-logo.png', 'upload', '2025-01-01T09:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name, source, created_at)\n   VALUES ('Sstockbrand00000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'image/png', 'image', 1234, 20, 10, 'brand stock photo', 'stock', '2025-01-01T09:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name, source, created_at)\n   VALUES ('Sgifbrand0000000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'image/png', 'image', 1234, 20, 10, 'brand.gif', 'gif', '2025-01-01T09:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name, source, created_at, trashed_at)\n   VALUES ('Strashedlogo0000', '00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'image/png', 'image', 1234, 20, 10, 'brand old logo', 'upload', '2025-01-01T09:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name, source, created_at)\n   VALUES ('Sboblogo00000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'image/png', 'image', 1234, 20, 10, 'brand bob logo', 'upload', '2025-01-01T09:00:00Z')",
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, brand, uses, updated_at, created_at, description, created_by, thumbnail) VALUES ('Stplflyer0000000', 'Brand flyer', 'brand', 'ig-post', '{\"brand\",\"sale\"}'::text[], 'Brand flyer brand brand sale ', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1080,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Brand flyer\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"space\":\"srgb\",\"r\":1,\"g\":1,\"b\":1,\"a\":1}}]}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, NULL, false, 5, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', NULL, NULL, NULL)",
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, brand, uses, updated_at, created_at, description, created_by, thumbnail) VALUES ('Stplsale00000000', 'Summer sale', 'sale', 'ig-post', '{\"summer\",\"Brand\"}'::text[], 'Summer sale sale summer Brand ', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1080,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Summer sale\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"space\":\"srgb\",\"r\":1,\"g\":1,\"b\":1,\"a\":1}}]}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, NULL, false, 9, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', NULL, NULL, NULL)",
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, brand, uses, updated_at, created_at, description, created_by, thumbnail) VALUES ('Stplstudio000000', 'Studio brand post', 'brand', 'ig-post', '{\"team\"}'::text[], 'Studio brand post brand team ', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1080,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Studio brand post\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"space\":\"srgb\",\"r\":1,\"g\":1,\"b\":1,\"a\":1}}]}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, '00000000-0000-4000-8000-000000005000', true, 0, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', NULL, NULL, NULL)",
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, brand, uses, updated_at, created_at, description, created_by, thumbnail) VALUES ('Stploutside00000', 'Outside brand post', 'brand', 'ig-post', '{}'::text[], 'Outside brand post brand ', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1080,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Outside brand post\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"space\":\"srgb\",\"r\":1,\"g\":1,\"b\":1,\"a\":1}}]}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, '00000000-0000-4000-8000-000000005001', false, 0, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', NULL, NULL, NULL)",
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, brand, uses, updated_at, created_at, description, created_by, thumbnail) VALUES ('Stpldraft0000000', 'Brand draft', 'flyers', 'ig-post', '{}'::text[], 'Brand draft flyers ', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1080,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Brand draft\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"space\":\"srgb\",\"r\":1,\"g\":1,\"b\":1,\"a\":1}}]}},\"elements\":{},\"assets\":{}}'::jsonb, false, false, NULL, false, 0, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', NULL, NULL, NULL)",
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, brand, uses, updated_at, created_at, description, created_by, thumbnail) VALUES ('Stplold000000000', 'Brandable poster', 'posters', 'ig-post', '{\"bran\"}'::text[], 'Brandable poster posters bran ', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1080,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Brandable poster\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\",\"background\":[{\"k\":\"solid\",\"color\":{\"space\":\"srgb\",\"r\":1,\"g\":1,\"b\":1,\"a\":1}}]}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, NULL, false, 0, '2024-01-01T00:00:00Z', '2025-01-01T00:00:00Z', NULL, NULL, NULL)"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/search?q=brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "invalid filters",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"all\"|\"designs\"|\"folders\"|\"uploads\"|\"templates\"",
+       "path": [
+        "type"
+       ],
+       "values": [
+        "all",
+        "designs",
+        "folders",
+        "uploads",
+        "templates"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"anyone\"|\"me\"|\"shared\"",
+       "path": [
+        "owner"
+       ],
+       "values": [
+        "anyone",
+        "me",
+        "shared"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"any\"|\"1d\"|\"7d\"|\"30d\"|\"365d\"",
+       "path": [
+        "modified"
+       ],
+       "values": [
+        "any",
+        "1d",
+        "7d",
+        "30d",
+        "365d"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected number to be >=1",
+       "minimum": 1,
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/search?type=people&owner=all&modified=2d&limit=0"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "name": "limit not a number",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "number",
+       "message": "Invalid input: expected number, received NaN",
+       "path": [
+        "limit"
+       ],
+       "received": "NaN"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/search?limit=abc"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "name": "limit too big",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 100,
+       "message": "Too big: expected number to be <=100",
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/search?limit=101"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "name": "limit not an integer",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "int",
+       "format": "safeint",
+       "message": "Invalid input: expected int, received number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/search?limit=2.5"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "name": "q too long",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 200,
+       "message": "Too big: expected string to have <=200 characters",
+       "origin": "string",
+       "path": [
+        "q"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/search?q=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "name": "browse everything (no text)",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Srebrand00000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Our rebrand plan",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T11:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sdeck00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "presentation",
+       "thumbnail": null,
+       "title": "Brand deck",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T09:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbrand0000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T08:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sfiftyx000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "50x off",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T07:30:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Ssale00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "50% off sale",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T07:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Bob brand shared",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T06:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Steambrand000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Team brand board",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T05:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "<ts>",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006001",
+       "name": "Brand team folder",
+       "parent_id": null,
+       "team": "Studio",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "q": "",
+     "templates": [
+      {
+       "brand": true,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplstudio000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "team"
+       ],
+       "team": true,
+       "title": "Studio brand post",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "brand": false,
+       "category": "sale",
+       "height": 1080,
+       "id": "Stplsale00000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "summer",
+        "Brand"
+       ],
+       "team": false,
+       "title": "Summer sale",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplflyer0000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "brand",
+        "sale"
+       ],
+       "team": false,
+       "title": "Brand flyer",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "posters",
+       "height": 1080,
+       "id": "Stplold000000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "bran"
+       ],
+       "team": false,
+       "title": "Brandable poster",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      }
+     ],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Slogo00000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand-logo.png",
+       "sha256": "<sha:1>",
+       "w": 20
+      },
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Sgifbrand0000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand.gif",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "name": "brand (ranked)",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbrand0000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T08:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sdeck00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "presentation",
+       "thumbnail": null,
+       "title": "Brand deck",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T09:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Srebrand00000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Our rebrand plan",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T11:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Bob brand shared",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T06:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Steambrand000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Team brand board",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T05:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Soldbrand0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Old brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "<ts>",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "<ts>",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006001",
+       "name": "Brand team folder",
+       "parent_id": null,
+       "team": "Studio",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "q": "brand",
+     "templates": [
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplflyer0000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "brand",
+        "sale"
+       ],
+       "team": false,
+       "title": "Brand flyer",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "posters",
+       "height": 1080,
+       "id": "Stplold000000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "bran"
+       ],
+       "team": false,
+       "title": "Brandable poster",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": true,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplstudio000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "team"
+       ],
+       "team": true,
+       "title": "Studio brand post",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "brand": false,
+       "category": "sale",
+       "height": 1080,
+       "id": "Stplsale00000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "summer",
+        "Brand"
+       ],
+       "team": false,
+       "title": "Summer sale",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      }
+     ],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Sgifbrand0000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand.gif",
+       "sha256": "<sha:1>",
+       "w": 20
+      },
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Slogo00000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand-logo.png",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "name": "whitespace collapsed",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [],
+     "q": "brand kit",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=%20%20brand%20%20%20kit%20"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "name": "designs only",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbrand0000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T08:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sdeck00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "presentation",
+       "thumbnail": null,
+       "title": "Brand deck",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T09:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [],
+     "q": "brand",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&type=designs&limit=3"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "name": "folders only",
+   "response": {
+    "body": {
+     "designs": [],
+     "folders": [
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "<ts>",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006001",
+       "name": "Brand team folder",
+       "parent_id": null,
+       "team": "Studio",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "q": "BRAND",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=BRAND&type=folders"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "uploads only",
+   "response": {
+    "body": {
+     "designs": [],
+     "folders": [],
+     "q": "logo",
+     "templates": [],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Slogo00000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand-logo.png",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=logo&type=uploads"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "name": "templates only",
+   "response": {
+    "body": {
+     "designs": [],
+     "folders": [],
+     "q": "brand",
+     "templates": [
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplflyer0000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "brand",
+        "sale"
+       ],
+       "team": false,
+       "title": "Brand flyer",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "posters",
+       "height": 1080,
+       "id": "Stplold000000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "bran"
+       ],
+       "team": false,
+       "title": "Brandable poster",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": true,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplstudio000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "team"
+       ],
+       "team": true,
+       "title": "Studio brand post",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "brand": false,
+       "category": "sale",
+       "height": 1080,
+       "id": "Stplsale00000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "summer",
+        "Brand"
+       ],
+       "team": false,
+       "title": "Summer sale",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      }
+     ],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&type=templates"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "name": "mine",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbrand0000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T08:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sdeck00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "presentation",
+       "thumbnail": null,
+       "title": "Brand deck",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T09:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Srebrand00000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Our rebrand plan",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T11:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Soldbrand0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Old brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "<ts>",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "q": "brand",
+     "templates": [],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Sgifbrand0000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand.gif",
+       "sha256": "<sha:1>",
+       "w": 20
+      },
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Slogo00000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand-logo.png",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&owner=me"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "name": "shared with me",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Bob brand shared",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T06:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Steambrand000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Team brand board",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T05:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "<ts>",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006001",
+       "name": "Brand team folder",
+       "parent_id": null,
+       "team": "Studio",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "q": "brand",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&owner=shared"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "name": "modified today",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbrand0000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T08:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sdeck00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "presentation",
+       "thumbnail": null,
+       "title": "Brand deck",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T09:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Srebrand00000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Our rebrand plan",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T11:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Bob brand shared",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T06:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Steambrand000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Team brand board",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T05:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "q": "brand",
+     "templates": [
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplflyer0000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "brand",
+        "sale"
+       ],
+       "team": false,
+       "title": "Brand flyer",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": true,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplstudio000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "team"
+       ],
+       "team": true,
+       "title": "Studio brand post",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "brand": false,
+       "category": "sale",
+       "height": 1080,
+       "id": "Stplsale00000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "summer",
+        "Brand"
+       ],
+       "team": false,
+       "title": "Summer sale",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      }
+     ],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Sgifbrand0000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand.gif",
+       "sha256": "<sha:1>",
+       "w": 20
+      },
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Slogo00000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand-logo.png",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&modified=1d"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "name": "modified this year",
+   "response": {
+    "body": {
+     "designs": [],
+     "folders": [
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "q": "",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?modified=365d&type=folders"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "surface narrows to designs",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sdeck00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "presentation",
+       "thumbnail": null,
+       "title": "Brand deck",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T09:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [],
+     "q": "brand",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&surface=presentation"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "name": "like wildcards are literal",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Ssale00000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "50% off sale",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T07:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [],
+     "q": "50%",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=50%25"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "name": "underscore literal",
+   "response": {
+    "body": {
+     "designs": [],
+     "folders": [],
+     "q": "_",
+     "templates": [],
+     "uploads": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=_"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "name": "limit coerced from a string",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbrand0000000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T08:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": "00000000-0000-4000-8000-000000006000",
+       "height": 1080,
+       "id": "Sbrandkit0000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "owner_name": "Ada",
+       "page_count": 1,
+       "public_view": false,
+       "starred": true,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Brand kit 2025",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T10:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "2025-01-01T08:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006003",
+       "name": "brand",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 1,
+       "id": "00000000-0000-4000-8000-000000006000",
+       "name": "Brand assets",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      }
+     ],
+     "q": "brand",
+     "templates": [
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplflyer0000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "brand",
+        "sale"
+       ],
+       "team": false,
+       "title": "Brand flyer",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "posters",
+       "height": 1080,
+       "id": "Stplold000000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "bran"
+       ],
+       "team": false,
+       "title": "Brandable poster",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      }
+     ],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Sgifbrand0000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand.gif",
+       "sha256": "<sha:1>",
+       "w": 20
+      },
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Slogo00000000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand-logo.png",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand&limit=%202%20"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "name": "as a team member",
+   "response": {
+    "body": {
+     "designs": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbobshared000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Bob brand shared",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T06:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Steambrand000000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Team brand board",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T05:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Sbobprivate00000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Bob brand private",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T00:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "folder_id": null,
+       "height": 1080,
+       "id": "Soutsidebrand000",
+       "link_access": "restricted",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "owner_name": "Bob",
+       "page_count": 1,
+       "public_view": false,
+       "starred": false,
+       "surface": "graphic",
+       "thumbnail": null,
+       "title": "Outside brand",
+       "trashed_at": null,
+       "unit": "px",
+       "updated_at": "2025-01-01T00:00:00.000Z",
+       "width": 1080,
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      }
+     ],
+     "folders": [
+      {
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006002",
+       "name": "Brand secret",
+       "parent_id": null,
+       "team": null,
+       "workspace_id": "00000000-0000-4000-8000-000000001002"
+      },
+      {
+       "created_at": "<ts>",
+       "designs": 0,
+       "id": "00000000-0000-4000-8000-000000006001",
+       "name": "Brand team folder",
+       "parent_id": null,
+       "team": "Studio",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      }
+     ],
+     "q": "brand",
+     "templates": [
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplflyer0000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "brand",
+        "sale"
+       ],
+       "team": false,
+       "title": "Brand flyer",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "posters",
+       "height": 1080,
+       "id": "Stplold000000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "bran"
+       ],
+       "team": false,
+       "title": "Brandable poster",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      },
+      {
+       "brand": false,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stploutside00000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [],
+       "team": true,
+       "title": "Outside brand post",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": "00000000-0000-4000-8000-000000005001"
+      },
+      {
+       "brand": true,
+       "category": "brand",
+       "height": 1080,
+       "id": "Stplstudio000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "team"
+       ],
+       "team": true,
+       "title": "Studio brand post",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "brand": false,
+       "category": "sale",
+       "height": 1080,
+       "id": "Stplsale00000000",
+       "premium": false,
+       "preset": "ig-post",
+       "tags": [
+        "summer",
+        "Brand"
+       ],
+       "team": false,
+       "title": "Summer sale",
+       "version": 1,
+       "width": 1080,
+       "workspaceId": null
+      }
+     ],
+     "uploads": [
+      {
+       "animated": false,
+       "bytes": "1234",
+       "created_at": "2025-01-01T09:00:00.000Z",
+       "durationMs": null,
+       "h": 10,
+       "id": "Sboblogo00000000",
+       "kind": "image",
+       "mime": "image/png",
+       "name": "brand bob logo",
+       "sha256": "<sha:1>",
+       "w": 20
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search?q=brand"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "name": "suggest signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/search/suggest?q=bra"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "name": "suggest: empty",
+   "response": {
+    "body": {
+     "suggestions": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search/suggest?q=%20"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "name": "suggest: bra",
+   "response": {
+    "body": {
+     "suggestions": [
+      {
+       "kind": "tag",
+       "text": "bran"
+      },
+      {
+       "kind": "category",
+       "text": "brand"
+      },
+      {
+       "id": "Stplflyer0000000",
+       "kind": "template",
+       "text": "Brand flyer"
+      },
+      {
+       "id": "Stplold000000000",
+       "kind": "template",
+       "text": "Brandable poster"
+      },
+      {
+       "id": "Stplstudio000000",
+       "kind": "template",
+       "text": "Studio brand post"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search/suggest?q=bra"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "name": "suggest: limit 2",
+   "response": {
+    "body": {
+     "suggestions": [
+      {
+       "kind": "tag",
+       "text": "bran"
+      },
+      {
+       "kind": "category",
+       "text": "brand"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search/suggest?q=bra&limit=2"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "name": "suggest: limit too big",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 20,
+       "message": "Too big: expected number to be <=20",
+       "origin": "number",
+       "path": [
+        "limit"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/search/suggest?q=bra&limit=21"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "name": "suggest: sale",
+   "response": {
+    "body": {
+     "suggestions": [
+      {
+       "kind": "category",
+       "text": "sale"
+      },
+      {
+       "id": "Stplsale00000000",
+       "kind": "template",
+       "text": "Summer sale"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search/suggest?q=sale"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "name": "suggest: team member sees team templates",
+   "response": {
+    "body": {
+     "suggestions": [
+      {
+       "kind": "category",
+       "text": "posters"
+      },
+      {
+       "id": "Stplold000000000",
+       "kind": "template",
+       "text": "Brandable poster"
+      },
+      {
+       "id": "Stplstudio000000",
+       "kind": "template",
+       "text": "Studio brand post"
+      },
+      {
+       "id": "Stploutside00000",
+       "kind": "template",
+       "text": "Outside brand post"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search/suggest?q=post"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "name": "suggest: nothing",
+   "response": {
+    "body": {
+     "suggestions": []
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/search/suggest?q=zzz"
+  }
+ ],
+ "vars": {}
+}

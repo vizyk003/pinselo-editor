@@ -1,0 +1,26 @@
+{
+ "file": "export-everything.docx",
+ "html": "<h1><a id=\"oc_h1\"></a>Quarterly report</h1><p><strong>Contents</strong></p><p><a href=\"#oc_h1\">Quarterly report</a></p><p><a href=\"#oc_h2\">Lists</a></p><p><strong>Bold</strong><em> italic</em><u> under</u><s> struck</s> marked red<a href=\"https://example.com/a\"><u> link</u></a></p><h2><a id=\"oc_h2\"></a>Lists</h2><ul><li>Top<ul><li>Nested</li></ul></li></ul><ol><li>First</li><li>Second</li></ol><p><input type=\"checkbox\" checked=\"checked\" /> Done</p><p><input type=\"checkbox\" /> Todo</p><p>const a = 1;<br />const b = 2;</p><p>Mind the gap</p><table><tr><td><p><strong>Region</strong></p></td><td><p><strong>Units</strong></p></td></tr><tr><td><p>North</p></td><td><p>3</p></td></tr></table><p><img alt=\"Chart: Sales, Cost | net\" src=\"/api/assets/A000000000000001\" /></p><p><img alt=\"Poster\" src=\"/api/assets/A000000000000002\" /></p><p>Embedded design</p><p>▶ <a href=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\"><u>Launch video</u></a></p><p>An image:</p><p><img alt=\"A tile\" src=\"/api/assets/A000000000000003\" /></p>",
+ "warnings": 2,
+ "messages": [
+  "warning: A w:sym element with an unsupported character was ignored: char 2612 in font MS Gothic",
+  "warning: A w:sym element with an unsupported character was ignored: char 2610 in font MS Gothic"
+ ],
+ "images": [
+  {
+   "contentType": "image/png",
+   "sha256": "3a47bd68a4aad1e6a37ab95de76858276ab48bd4fadf17d5a4f8d22a90ab54ac",
+   "bytes": 431
+  },
+  {
+   "contentType": "image/png",
+   "sha256": "78b9c289b172025f4a90c77776ea2526d12492f7c4cad6c93f544681808a29fe",
+   "bytes": 418
+  },
+  {
+   "contentType": "image/png",
+   "sha256": "3a47bd68a4aad1e6a37ab95de76858276ab48bd4fadf17d5a4f8d22a90ab54ac",
+   "bytes": 431
+  }
+ ]
+}

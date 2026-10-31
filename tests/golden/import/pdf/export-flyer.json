@@ -1,0 +1,235 @@
+{
+ "file": "export-flyer.pdf",
+ "doc": {
+  "meta": {
+   "schemaVersion": 1,
+   "minClientSchema": 1,
+   "layoutVersion": 1,
+   "surface": "graphic",
+   "dims": {
+    "w": 559,
+    "h": 794,
+    "unit": "px",
+    "dpi": 96
+   },
+   "lang": "en",
+   "title": "export-flyer",
+   "epoch": 0
+  },
+  "pages": {
+   "KtdR46mNx3SvV53b": {
+    "id": "KtdR46mNx3SvV53b",
+    "order": "a0",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "a": 1
+      }
+     }
+    ]
+   }
+  },
+  "elements": {
+   "JP9XHtpG3PhfEYdD": {
+    "id": "JP9XHtpG3PhfEYdD",
+    "type": "image",
+    "parentId": "KtdR46mNx3SvV53b",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 0,
+     "y": 0.41249977653421865,
+     "w": 559,
+     "h": 793.1750004469316,
+     "rot": 0
+    },
+    "asset": "A000000000000001",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    },
+    "name": "Page 1 graphics",
+    "lock": {
+     "move": true,
+     "by": "user"
+    }
+   },
+   "UPN4wWRMdAno8QRc": {
+    "id": "UPN4wWRMdAno8QRc",
+    "type": "text",
+    "parentId": "KtdR46mNx3SvV53b",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 93.3460146235944,
+     "y": 421.67366859145125,
+     "w": 399.313807276043,
+     "h": 81.54602499240218,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Great Vibes",
+      "weight": 400,
+      "italic": false,
+      "size": 67.95502082700182,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.5298559835846389,
+        "g": 0.10607117325081995,
+        "b": 0.5648466790000164,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "MԖning Flow",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.2,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "Uf1ti77tEupQnsZE": {
+    "id": "Uf1ti77tEupQnsZE",
+    "type": "text",
+    "parentId": "KtdR46mNx3SvV53b",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 99.18185190482151,
+     "y": 543.4630566530204,
+     "w": 382.2809172819422,
+     "h": 26.382537497541882,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Montserrat",
+      "weight": 700,
+      "italic": false,
+      "size": 21.985447914618234,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.44202195584116,
+        "g": 0.10623352282089306,
+        "b": 0.4615196078431373,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Y O G A F O R E V E R Y B O D Y",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.2,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "umyDhtm8cQPE6W7Z": {
+    "id": "umyDhtm8cQPE6W7Z",
+    "type": "text",
+    "parentId": "KtdR46mNx3SvV53b",
+    "z": "a3",
+    "opacity": 1,
+    "xf": {
+     "x": 143.52400200225253,
+     "y": 613.1269463861131,
+     "w": 292.9363681034019,
+     "h": 71.95237499329605,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Lato",
+      "weight": 400,
+      "italic": false,
+      "size": 23.98412499776535,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.2972236823242701,
+        "g": 0.025110569545987903,
+        "b": 0.3127496110819091,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Tues & Thurs · 7:00am",
+         "style": {}
+        }
+       ],
+       "align": "center",
+       "lineHeight": 1.5,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "Studio 4, Riverside Centre",
+         "style": {}
+        }
+       ],
+       "align": "center",
+       "lineHeight": 1.5,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   }
+  },
+  "assets": {}
+ },
+ "media": [
+  {
+   "name": "page-1.png",
+   "w": 840,
+   "h": 1191
+  }
+ ]
+}

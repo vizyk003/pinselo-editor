@@ -1,0 +1,132 @@
+{
+ "internalToken": [
+  {
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "token": "vQdGA-4HIhGruFcoG1w2ehiK1QhqTw9BiluKc3eTQVQ"
+  },
+  {
+   "secret": "short",
+   "token": "uNfh3d-48I35G26L3pvWgOrC_9CSZs5kSL1sxKqx9yw"
+  },
+  {
+   "secret": "pässwörd-✓",
+   "token": "461zABPO56Wu8oZjHlGX0Cbg62Mt6OmH6SUKRdrwXls"
+  }
+ ],
+ "sigs": [
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 0,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "sig": "vVRZ4866TClvwg-MUwnkFbK-4sSWI36F"
+  },
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 1,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "sig": "87PKZ8XZdaRI-O5AGY-J9nXCEUIOWeuw"
+  },
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 1767225600,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "sig": "jljSrd49rH0S1hKaK6IqVlJ9vfMvQ8ps"
+  },
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 4102444800,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "sig": "91IUj8KOkAnwbONFUIrGedJlz4NseDQL"
+  },
+  {
+   "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exp": 0,
+   "secret": "short",
+   "sig": "RbUp5oOcQsB665CA9vXWLfYjKB_V5Aqo"
+  },
+  {
+   "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exp": 1,
+   "secret": "short",
+   "sig": "xiFzC5JMQ16dn2iBzUc7BaqiNW-gZics"
+  },
+  {
+   "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exp": 1767225600,
+   "secret": "short",
+   "sig": "HTPlOtNgsGZRBjotPBI3UPRnWdhxts6d"
+  },
+  {
+   "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exp": 4102444800,
+   "secret": "short",
+   "sig": "Eye1weCH5yc0HfDVd4pMAK_2AwWH2JXA"
+  },
+  {
+   "sha": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+   "exp": 0,
+   "secret": "pässwörd-✓",
+   "sig": "9hwyAwAz7iZ2rggVP9BTDmOr1-WWso6D"
+  },
+  {
+   "sha": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+   "exp": 1,
+   "secret": "pässwörd-✓",
+   "sig": "wtKxLLVNhl25RJU_YWWPlH-UcJDQJDVw"
+  },
+  {
+   "sha": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+   "exp": 1767225600,
+   "secret": "pässwörd-✓",
+   "sig": "7UY-E51nodGP_789RIqIdE_kfypVHC9Y"
+  },
+  {
+   "sha": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+   "exp": 4102444800,
+   "secret": "pässwörd-✓",
+   "sig": "N2NdbU60gNNI7P_wDL1sRVY7el9XBTe3"
+  }
+ ],
+ "verify": [
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 1767225600,
+   "sig": "jljSrd49rH0S1hKaK6IqVlJ9vfMvQ8ps",
+   "now": 1767225600000,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "valid": true
+  },
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 1767225600,
+   "sig": "jljSrd49rH0S1hKaK6IqVlJ9vfMvQ8ps",
+   "now": 1767225600001,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "valid": false
+  },
+  {
+   "sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exp": 1767225600,
+   "sig": "jljSrd49rH0S1hKaK6IqVlJ9vfMvQ8ps",
+   "now": 0,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "valid": false
+  },
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 1767225600,
+   "sig": "8H1R8OqaJ71EUUTQ69Ae-y3M8Rvl0_3v",
+   "now": 0,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "valid": false
+  },
+  {
+   "sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "exp": 1767225600,
+   "sig": "jljSrd49rH0S1hKaK6IqVlJ9vfMvQ8p",
+   "now": 0,
+   "secret": "golden-secret-0123456789abcdef-0123456789",
+   "valid": false
+  }
+ ]
+}

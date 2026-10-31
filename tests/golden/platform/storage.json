@@ -1,0 +1,67 @@
+{
+ "kind": "local",
+ "objects": [
+  {
+   "bytesHex": "",
+   "fill": null,
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "sha256Fn": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "file": "a/e3/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "objectPath": "a/e3/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0,
+   "checksumSha256": "47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU="
+  },
+  {
+   "bytesHex": "68656c6c6f20776f726c64",
+   "fill": null,
+   "sha256": "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
+   "sha256Fn": "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
+   "file": "a/b9/b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
+   "objectPath": "a/b9/b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
+   "size": 11,
+   "checksumSha256": "uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek="
+  },
+  {
+   "bytesHex": "4f70656e43616e76617320e29ca8206f626a656374",
+   "fill": null,
+   "sha256": "740bfed9756086fbd35221bb9d86a10977da45114ef8491ef645a97f64423a84",
+   "sha256Fn": "740bfed9756086fbd35221bb9d86a10977da45114ef8491ef645a97f64423a84",
+   "file": "a/74/740bfed9756086fbd35221bb9d86a10977da45114ef8491ef645a97f64423a84",
+   "objectPath": "a/74/740bfed9756086fbd35221bb9d86a10977da45114ef8491ef645a97f64423a84",
+   "size": 21,
+   "checksumSha256": "dAv+2XVghvvTUiG7nYahCXfaRRFO+Eke9kWpf2RCOoQ="
+  },
+  {
+   "bytesHex": null,
+   "fill": {
+    "byte": 7,
+    "len": 4096
+   },
+   "sha256": "c9ac7b0624824f844f6c7f3d50fab9741a8914e878467e8daaedca143a34d90b",
+   "sha256Fn": "c9ac7b0624824f844f6c7f3d50fab9741a8914e878467e8daaedca143a34d90b",
+   "file": "a/c9/c9ac7b0624824f844f6c7f3d50fab9741a8914e878467e8daaedca143a34d90b",
+   "objectPath": "a/c9/c9ac7b0624824f844f6c7f3d50fab9741a8914e878467e8daaedca143a34d90b",
+   "size": 4096,
+   "checksumSha256": "yax7BiSCT4RPbH89UPq5dBqJFOh4Rn6Nqu3KFDo02Qs="
+  }
+ ],
+ "listed": [
+  {
+   "sha": "740bfed9756086fbd35221bb9d86a10977da45114ef8491ef645a97f64423a84",
+   "size": 21
+  },
+  {
+   "sha": "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9",
+   "size": 11
+  },
+  {
+   "sha": "c9ac7b0624824f844f6c7f3d50fab9741a8914e878467e8daaedca143a34d90b",
+   "size": 4096
+  },
+  {
+   "sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "size": 0
+  }
+ ],
+ "badKeyError": "bad object key"
+}

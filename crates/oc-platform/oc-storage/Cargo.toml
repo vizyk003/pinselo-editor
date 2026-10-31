@@ -1,0 +1,19 @@
+[package]
+name = "oc-storage"
+description = "Content-addressed object store (port of @oc/storage): local filesystem by default, S3-compatible when OC_S3_BUCKET is set."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-config = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+base64 = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+aws-config = { workspace = true }
+aws-sdk-s3 = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

@@ -1,0 +1,1519 @@
+{
+ "env": {
+  "OC_TIKTOK_CLIENT_KEY": "tt-key",
+  "OC_TIKTOK_CLIENT_SECRET": "tt-secret",
+  "OC_FACEBOOK_CLIENT_ID": "facebook-id",
+  "OC_FACEBOOK_CLIENT_SECRET": "facebook-secret",
+  "OC_LINKEDIN_CLIENT_ID": "linkedin-id",
+  "OC_LINKEDIN_CLIENT_SECRET": "linkedin-secret",
+  "OC_PINTEREST_CLIENT_ID": "pinterest-id",
+  "OC_PINTEREST_CLIENT_SECRET": "pinterest-secret",
+  "OC_X_CLIENT_ID": "x-id",
+  "OC_X_CLIENT_SECRET": "x-secret",
+  "OC_YOUTUBE_CLIENT_ID": "youtube-id",
+  "OC_YOUTUBE_CLIENT_SECRET": "youtube-secret",
+  "OC_THREADS_CLIENT_ID": "threads-id",
+  "OC_THREADS_CLIENT_SECRET": "threads-secret"
+ },
+ "pkce": [
+  {
+   "verifier": "verifier-123",
+   "challenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+  },
+  {
+   "verifier": "",
+   "challenge": "47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU"
+  },
+  {
+   "verifier": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "challenge": "fOEAlx9k5wAej-WlGXPs3-HO1Cvv5-6NX9YhlQa1OTw"
+  }
+ ],
+ "authorize": [
+  {
+   "adapter": "local",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": null
+  },
+  {
+   "adapter": "local",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": null
+  },
+  {
+   "adapter": "instagram",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://www.facebook.com/v23.0/dialog/oauth?client_id=facebook-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&state=st&response_type=code&scope=pages_show_list%2Cbusiness_management%2Cinstagram_basic%2Cinstagram_content_publish"
+  },
+  {
+   "adapter": "instagram",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://www.facebook.com/v23.0/dialog/oauth?client_id=facebook-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&state=a+b%26c&response_type=code&scope=pages_show_list%2Cbusiness_management%2Cinstagram_basic%2Cinstagram_content_publish"
+  },
+  {
+   "adapter": "facebook",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://www.facebook.com/v23.0/dialog/oauth?client_id=facebook-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&state=st&response_type=code&scope=pages_show_list%2Cpages_read_engagement%2Cpages_manage_posts%2Cbusiness_management"
+  },
+  {
+   "adapter": "facebook",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://www.facebook.com/v23.0/dialog/oauth?client_id=facebook-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&state=a+b%26c&response_type=code&scope=pages_show_list%2Cpages_read_engagement%2Cpages_manage_posts%2Cbusiness_management"
+  },
+  {
+   "adapter": "linkedin",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=linkedin-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&state=st&scope=openid+profile+w_member_social"
+  },
+  {
+   "adapter": "linkedin",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=linkedin-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&state=a+b%26c&scope=openid+profile+w_member_social"
+  },
+  {
+   "adapter": "x",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://x.com/i/oauth2/authorize?response_type=code&client_id=x-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&state=st&scope=tweet.read+tweet.write+users.read+media.write+offline.access&code_challenge=Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg&code_challenge_method=S256"
+  },
+  {
+   "adapter": "x",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://x.com/i/oauth2/authorize?response_type=code&client_id=x-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&state=a+b%26c&scope=tweet.read+tweet.write+users.read+media.write+offline.access&code_challenge=c&code_challenge_method=S256"
+  },
+  {
+   "adapter": "tiktok",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://www.tiktok.com/v2/auth/authorize/?client_key=tt-key&response_type=code&scope=user.info.basic%2Cvideo.publish%2Cvideo.upload&redirect_uri=https%3A%2F%2Fapp%2Fcb&state=st"
+  },
+  {
+   "adapter": "tiktok",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://www.tiktok.com/v2/auth/authorize/?client_key=tt-key&response_type=code&scope=user.info.basic%2Cvideo.publish%2Cvideo.upload&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&state=a+b%26c"
+  },
+  {
+   "adapter": "youtube",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=youtube-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&response_type=code&state=st&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.upload+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&prompt=consent&include_granted_scopes=true&code_challenge=Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg&code_challenge_method=S256"
+  },
+  {
+   "adapter": "youtube",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://accounts.google.com/o/oauth2/v2/auth?client_id=youtube-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&response_type=code&state=a+b%26c&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.upload+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fyoutube.readonly&access_type=offline&prompt=consent&include_granted_scopes=true&code_challenge=c&code_challenge_method=S256"
+  },
+  {
+   "adapter": "pinterest",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://www.pinterest.com/oauth/?client_id=pinterest-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&response_type=code&scope=boards%3Aread%2Cpins%3Aread%2Cpins%3Awrite%2Cuser_accounts%3Aread&state=st"
+  },
+  {
+   "adapter": "pinterest",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://www.pinterest.com/oauth/?client_id=pinterest-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&response_type=code&scope=boards%3Aread%2Cpins%3Aread%2Cpins%3Awrite%2Cuser_accounts%3Aread&state=a+b%26c"
+  },
+  {
+   "adapter": "threads",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": "https://threads.net/oauth/authorize?client_id=threads-id&redirect_uri=https%3A%2F%2Fapp%2Fcb&scope=threads_basic%2Cthreads_content_publish&response_type=code&state=st"
+  },
+  {
+   "adapter": "threads",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": "https://threads.net/oauth/authorize?client_id=threads-id&redirect_uri=https%3A%2F%2Fapp.example%2Fapi%2Fsocial%2Fcallback%3Fx%3D1&scope=threads_basic%2Cthreads_content_publish&response_type=code&state=a+b%26c"
+  },
+  {
+   "adapter": "bluesky",
+   "params": {
+    "state": "st",
+    "redirectUri": "https://app/cb",
+    "codeChallenge": "Ds3NpaREu9I2EYq6l0l3ZkFyv_Gt5O4EpGD6cZlY0Kg"
+   },
+   "url": null
+  },
+  {
+   "adapter": "bluesky",
+   "params": {
+    "state": "a b&c",
+    "redirectUri": "https://app.example/api/social/callback?x=1",
+    "codeChallenge": "c"
+   },
+   "url": null
+  }
+ ],
+ "providers": [
+  {
+   "id": "local",
+   "label": "Download & remind",
+   "auth": "none",
+   "configured": true,
+   "env": [],
+   "limits": {
+    "maxChars": 100000,
+    "images": 100,
+    "video": true,
+    "imageTypes": [
+     "image/png",
+     "image/jpeg"
+    ]
+   }
+  },
+  {
+   "id": "instagram",
+   "label": "Instagram",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_FACEBOOK_CLIENT_ID",
+    "OC_FACEBOOK_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 2200,
+    "images": 10,
+    "video": true,
+    "imageTypes": [
+     "image/jpeg"
+    ],
+    "maxImageBytes": 8388608
+   }
+  },
+  {
+   "id": "facebook",
+   "label": "Facebook Page",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_FACEBOOK_CLIENT_ID",
+    "OC_FACEBOOK_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 63206,
+    "images": 10,
+    "video": true,
+    "imageTypes": [
+     "image/png",
+     "image/jpeg"
+    ]
+   }
+  },
+  {
+   "id": "linkedin",
+   "label": "LinkedIn",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_LINKEDIN_CLIENT_ID",
+    "OC_LINKEDIN_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 3000,
+    "images": 20,
+    "video": true,
+    "imageTypes": [
+     "image/png",
+     "image/jpeg"
+    ]
+   }
+  },
+  {
+   "id": "x",
+   "label": "X (Twitter)",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_X_CLIENT_ID",
+    "OC_X_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 280,
+    "images": 4,
+    "video": true,
+    "imageTypes": [
+     "image/png",
+     "image/jpeg"
+    ],
+    "maxImageBytes": 5242880
+   }
+  },
+  {
+   "id": "tiktok",
+   "label": "TikTok",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_TIKTOK_CLIENT_KEY",
+    "OC_TIKTOK_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 2200,
+    "images": 35,
+    "video": true,
+    "imageTypes": [
+     "image/jpeg"
+    ]
+   }
+  },
+  {
+   "id": "youtube",
+   "label": "YouTube",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_YOUTUBE_CLIENT_ID",
+    "OC_YOUTUBE_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 5000,
+    "images": 0,
+    "video": true,
+    "imageTypes": []
+   }
+  },
+  {
+   "id": "pinterest",
+   "label": "Pinterest",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_PINTEREST_CLIENT_ID",
+    "OC_PINTEREST_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 500,
+    "images": 5,
+    "video": true,
+    "imageTypes": [
+     "image/png",
+     "image/jpeg"
+    ],
+    "maxImageBytes": 20971520
+   }
+  },
+  {
+   "id": "threads",
+   "label": "Threads",
+   "auth": "oauth",
+   "configured": true,
+   "env": [
+    "OC_THREADS_CLIENT_ID",
+    "OC_THREADS_CLIENT_SECRET"
+   ],
+   "limits": {
+    "maxChars": 500,
+    "images": 20,
+    "video": true,
+    "imageTypes": [
+     "image/png",
+     "image/jpeg"
+    ],
+    "maxImageBytes": 8388608
+   }
+  },
+  {
+   "id": "bluesky",
+   "label": "Bluesky",
+   "auth": "app-password",
+   "configured": true,
+   "env": [],
+   "limits": {
+    "maxChars": 300,
+    "images": 4,
+    "video": false,
+    "imageTypes": [
+     "image/jpeg",
+     "image/png"
+    ],
+    "maxImageBytes": 1000000
+   }
+  }
+ ],
+ "exchange": [
+  {
+   "name": "x",
+   "adapter": "x",
+   "password": null,
+   "routes": [
+    [
+     "^https://api\\.x\\.com/2/oauth2/token",
+     {
+      "json": {
+       "access_token": "AT",
+       "refresh_token": "RT",
+       "expires_in": 7200
+      }
+     }
+    ],
+    [
+     "^https://api\\.x\\.com/2/users/me",
+     {
+      "json": {
+       "data": {
+        "id": "42",
+        "name": "Acme",
+        "username": "acme",
+        "profile_image_url": "https://pbs/x.jpg"
+       }
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://api.x.com/2/oauth2/token",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Basic eC1pZDp4LXNlY3JldA==",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "code_verifier": "V",
+      "client_id": "x-id"
+     }
+    },
+    {
+     "url": "https://api.x.com/2/users/me?user.fields=profile_image_url",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer AT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "42",
+      "displayName": "Acme",
+      "handle": "acme",
+      "avatarUrl": "https://pbs/x.jpg",
+      "tokens": {
+       "accessToken": "AT",
+       "refreshToken": "RT",
+       "expiresAt": 7200000
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "facebook",
+   "adapter": "facebook",
+   "password": null,
+   "routes": [
+    [
+     "fb_exchange_token",
+     {
+      "json": {
+       "access_token": "LONG"
+      }
+     }
+    ],
+    [
+     "oauth/access_token",
+     {
+      "json": {
+       "access_token": "SHORT"
+      }
+     }
+    ],
+    [
+     "/me/accounts",
+     {
+      "json": {
+       "data": [
+        {
+         "id": "P1",
+         "name": "Page One",
+         "access_token": "PT1",
+         "picture": {
+          "data": {
+           "url": "https://pic/1"
+          }
+         },
+         "instagram_business_account": {
+          "id": "IG1",
+          "username": "pageone"
+         }
+        },
+        {
+         "id": "P2",
+         "name": "Page Two",
+         "access_token": "PT2"
+        }
+       ]
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?client_id=facebook-id&client_secret=facebook-secret&redirect_uri=https%3A%2F%2Fapp%2Fcb&code=C",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?grant_type=fb_exchange_token&client_id=facebook-id&client_secret=facebook-secret&fb_exchange_token=SHORT",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/me/accounts?fields=id%2Cname%2Caccess_token%2Cpicture%7Burl%7D%2Cinstagram_business_account%7Bid%2Cusername%2Cname%2Cprofile_picture_url%7D&limit=100",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer LONG",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "P1",
+      "displayName": "Page One",
+      "avatarUrl": "https://pic/1",
+      "tokens": {
+       "accessToken": "PT1"
+      }
+     },
+     {
+      "externalId": "P2",
+      "displayName": "Page Two",
+      "tokens": {
+       "accessToken": "PT2"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "instagram",
+   "adapter": "instagram",
+   "password": null,
+   "routes": [
+    [
+     "fb_exchange_token",
+     {
+      "json": {
+       "access_token": "LONG"
+      }
+     }
+    ],
+    [
+     "oauth/access_token",
+     {
+      "json": {
+       "access_token": "SHORT"
+      }
+     }
+    ],
+    [
+     "/me/accounts",
+     {
+      "json": {
+       "data": [
+        {
+         "id": "P1",
+         "name": "Page One",
+         "access_token": "PT1",
+         "picture": {
+          "data": {
+           "url": "https://pic/1"
+          }
+         },
+         "instagram_business_account": {
+          "id": "IG1",
+          "username": "pageone"
+         }
+        },
+        {
+         "id": "P2",
+         "name": "Page Two",
+         "access_token": "PT2"
+        }
+       ]
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?client_id=facebook-id&client_secret=facebook-secret&redirect_uri=https%3A%2F%2Fapp%2Fcb&code=C",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?grant_type=fb_exchange_token&client_id=facebook-id&client_secret=facebook-secret&fb_exchange_token=SHORT",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/me/accounts?fields=id%2Cname%2Caccess_token%2Cpicture%7Burl%7D%2Cinstagram_business_account%7Bid%2Cusername%2Cname%2Cprofile_picture_url%7D&limit=100",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer LONG",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "IG1",
+      "displayName": "pageone",
+      "handle": "pageone",
+      "tokens": {
+       "accessToken": "PT1"
+      },
+      "meta": {
+       "pageId": "P1"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "facebook-no-pages",
+   "adapter": "facebook",
+   "password": null,
+   "routes": [
+    [
+     "oauth/access_token",
+     {
+      "json": {
+       "access_token": "T"
+      }
+     }
+    ],
+    [
+     "/me/accounts",
+     {
+      "json": {}
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?client_id=facebook-id&client_secret=facebook-secret&redirect_uri=https%3A%2F%2Fapp%2Fcb&code=C",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?grant_type=fb_exchange_token&client_id=facebook-id&client_secret=facebook-secret&fb_exchange_token=T",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/me/accounts?fields=id%2Cname%2Caccess_token%2Cpicture%7Burl%7D%2Cinstagram_business_account%7Bid%2Cusername%2Cname%2Cprofile_picture_url%7D&limit=100",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer T",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "error": {
+     "message": "No Facebook Pages found. Make sure you manage a Page and granted access to it.",
+     "transient": false,
+     "status": null,
+     "reauth": false
+    }
+   }
+  },
+  {
+   "name": "instagram-no-ig",
+   "adapter": "instagram",
+   "password": null,
+   "routes": [
+    [
+     "oauth/access_token",
+     {
+      "json": {
+       "access_token": "T"
+      }
+     }
+    ],
+    [
+     "/me/accounts",
+     {
+      "json": {
+       "data": [
+        {
+         "id": "P2",
+         "name": "Page Two",
+         "access_token": "PT2"
+        }
+       ]
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?client_id=facebook-id&client_secret=facebook-secret&redirect_uri=https%3A%2F%2Fapp%2Fcb&code=C",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/oauth/access_token?grant_type=fb_exchange_token&client_id=facebook-id&client_secret=facebook-secret&fb_exchange_token=T",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.facebook.com/v23.0/me/accounts?fields=id%2Cname%2Caccess_token%2Cpicture%7Burl%7D%2Cinstagram_business_account%7Bid%2Cusername%2Cname%2Cprofile_picture_url%7D&limit=100",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer T",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "error": {
+     "message": "No Instagram professional account is linked to your Facebook Pages.",
+     "transient": false,
+     "status": null,
+     "reauth": false
+    }
+   }
+  },
+  {
+   "name": "linkedin",
+   "adapter": "linkedin",
+   "password": null,
+   "routes": [
+    [
+     "linkedin\\.com/oauth/v2/accessToken",
+     {
+      "json": {
+       "access_token": "LAT",
+       "expires_in": 5184000
+      }
+     }
+    ],
+    [
+     "/v2/userinfo",
+     {
+      "json": {
+       "sub": "li-1",
+       "picture": "https://li/p.jpg"
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://www.linkedin.com/oauth/v2/accessToken",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "client_id": "linkedin-id",
+      "client_secret": "linkedin-secret"
+     }
+    },
+    {
+     "url": "https://api.linkedin.com/v2/userinfo",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer LAT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "li-1",
+      "displayName": "LinkedIn member",
+      "avatarUrl": "https://li/p.jpg",
+      "tokens": {
+       "accessToken": "LAT",
+       "expiresAt": 5184000000
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "pinterest",
+   "adapter": "pinterest",
+   "password": null,
+   "routes": [
+    [
+     "/v5/oauth/token",
+     {
+      "json": {
+       "access_token": "PAT",
+       "refresh_token": "PRT",
+       "expires_in": 2592000
+      }
+     }
+    ],
+    [
+     "/v5/user_account",
+     {
+      "json": {
+       "username": "acme",
+       "business_name": "",
+       "profile_image": "https://pin/p.jpg"
+      }
+     }
+    ],
+    [
+     "/v5/boards",
+     {
+      "json": {
+       "items": [
+        {
+         "id": "B1",
+         "name": "Ideas",
+         "privacy": "PUBLIC"
+        },
+        {
+         "id": "B2",
+         "name": "Shop"
+        }
+       ]
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://api.pinterest.com/v5/oauth/token",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Basic cGludGVyZXN0LWlkOnBpbnRlcmVzdC1zZWNyZXQ=",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "continuous_refresh": "true"
+     }
+    },
+    {
+     "url": "https://api.pinterest.com/v5/user_account",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer PAT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://api.pinterest.com/v5/boards?page_size=100",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer PAT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "acme",
+      "displayName": "acme",
+      "handle": "acme",
+      "avatarUrl": "https://pin/p.jpg",
+      "tokens": {
+       "accessToken": "PAT",
+       "refreshToken": "PRT",
+       "expiresAt": 2592000000
+      },
+      "meta": {
+       "boards": [
+        {
+         "id": "B1",
+         "name": "Ideas"
+        },
+        {
+         "id": "B2",
+         "name": "Shop"
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "threads",
+   "adapter": "threads",
+   "password": null,
+   "routes": [
+    [
+     "graph\\.threads\\.net/oauth/access_token",
+     {
+      "json": {
+       "access_token": "TSHORT",
+       "user_id": 777
+      }
+     }
+    ],
+    [
+     "graph\\.threads\\.net/access_token",
+     {
+      "json": {
+       "access_token": "TLONG",
+       "expires_in": 5183944
+      }
+     }
+    ],
+    [
+     "/v1\\.0/me",
+     {
+      "json": {
+       "username": "acme.threads"
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://graph.threads.net/oauth/access_token",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "client_id": "threads-id",
+      "client_secret": "threads-secret",
+      "grant_type": "authorization_code",
+      "redirect_uri": "https://app/cb",
+      "code": "C"
+     }
+    },
+    {
+     "url": "https://graph.threads.net/access_token?grant_type=th_exchange_token&client_secret=threads-secret&access_token=TSHORT",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    },
+    {
+     "url": "https://graph.threads.net/v1.0/me?fields=id%2Cusername%2Cname%2Cthreads_profile_picture_url",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer TLONG",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "777",
+      "displayName": "acme.threads",
+      "handle": "acme.threads",
+      "tokens": {
+       "accessToken": "TLONG",
+       "expiresAt": 5183944000
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "tiktok",
+   "adapter": "tiktok",
+   "password": null,
+   "routes": [
+    [
+     "/v2/oauth/token/",
+     {
+      "json": {
+       "access_token": "TTAT",
+       "refresh_token": "TTRT",
+       "expires_in": 86400,
+       "open_id": "oid-1"
+      }
+     }
+    ],
+    [
+     "/v2/user/info/",
+     {
+      "json": {
+       "data": {
+        "user": {
+         "open_id": "oid-1",
+         "display_name": "",
+         "username": "acme_tt"
+        }
+       }
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://open.tiktokapis.com/v2/oauth/token/",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "client_key": "tt-key",
+      "client_secret": "tt-secret"
+     }
+    },
+    {
+     "url": "https://open.tiktokapis.com/v2/user/info/?fields=open_id%2Cavatar_url%2Cdisplay_name%2Cusername",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer TTAT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "oid-1",
+      "displayName": "acme_tt",
+      "handle": "acme_tt",
+      "tokens": {
+       "accessToken": "TTAT",
+       "refreshToken": "TTRT",
+       "expiresAt": 86400000,
+       "extra": {
+        "openId": "oid-1"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "tiktok-error",
+   "adapter": "tiktok",
+   "password": null,
+   "routes": [
+    [
+     "/v2/oauth/token/",
+     {
+      "json": {
+       "error": "invalid_grant",
+       "error_description": "Authorization code is expired."
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://open.tiktokapis.com/v2/oauth/token/",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "client_key": "tt-key",
+      "client_secret": "tt-secret"
+     }
+    }
+   ],
+   "result": {
+    "error": {
+     "message": "Authorization code is expired.",
+     "transient": false,
+     "status": null,
+     "reauth": false
+    }
+   }
+  },
+  {
+   "name": "youtube",
+   "adapter": "youtube",
+   "password": null,
+   "routes": [
+    [
+     "oauth2\\.googleapis\\.com/token",
+     {
+      "json": {
+       "access_token": "YAT",
+       "refresh_token": "YRT",
+       "expires_in": 3599
+      }
+     }
+    ],
+    [
+     "youtube/v3/channels",
+     {
+      "json": {
+       "items": [
+        {
+         "id": "UC1",
+         "snippet": {
+          "title": "Acme TV",
+          "customUrl": "@acmetv",
+          "thumbnails": {
+           "default": {
+            "url": "https://yt/t.jpg"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://oauth2.googleapis.com/token",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "code_verifier": "V",
+      "client_id": "youtube-id",
+      "client_secret": "youtube-secret"
+     }
+    },
+    {
+     "url": "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer YAT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "UC1",
+      "displayName": "Acme TV",
+      "handle": "@acmetv",
+      "avatarUrl": "https://yt/t.jpg",
+      "tokens": {
+       "accessToken": "YAT",
+       "refreshToken": "YRT",
+       "expiresAt": 3599000
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "youtube-no-channel",
+   "adapter": "youtube",
+   "password": null,
+   "routes": [
+    [
+     "oauth2\\.googleapis\\.com/token",
+     {
+      "json": {
+       "access_token": "YAT"
+      }
+     }
+    ],
+    [
+     "youtube/v3/channels",
+     {
+      "json": {
+       "items": []
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://oauth2.googleapis.com/token",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "grant_type": "authorization_code",
+      "code": "C",
+      "redirect_uri": "https://app/cb",
+      "code_verifier": "V",
+      "client_id": "youtube-id",
+      "client_secret": "youtube-secret"
+     }
+    },
+    {
+     "url": "https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer YAT",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "error": {
+     "message": "This Google account has no YouTube channel yet.",
+     "transient": false,
+     "status": null,
+     "reauth": false
+    }
+   }
+  },
+  {
+   "name": "bluesky",
+   "adapter": "bluesky",
+   "password": [
+    "@acme.bsky.social",
+    "abcd-efgh-ijkl-mnop"
+   ],
+   "routes": [
+    [
+     "createSession",
+     {
+      "json": {
+       "did": "did:plc:abc",
+       "handle": "acme.bsky.social",
+       "accessJwt": "A",
+       "refreshJwt": "R",
+       "didDoc": {
+        "service": [
+         {
+          "id": "#atproto_pds",
+          "type": "AtprotoPersonalDataServer",
+          "serviceEndpoint": "https://pds.example/"
+         }
+        ]
+       }
+      }
+     }
+    ],
+    [
+     "getProfile",
+     {
+      "json": {
+       "displayName": "Acme",
+       "avatar": "https://cdn/a.jpg"
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://bsky.social/xrpc/com.atproto.server.createSession",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "identifier": "acme.bsky.social",
+      "password": "abcd-efgh-ijkl-mnop"
+     }
+    },
+    {
+     "url": "https://pds.example/xrpc/app.bsky.actor.getProfile?actor=did%3Aplc%3Aabc",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer A",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "did:plc:abc",
+      "displayName": "Acme",
+      "handle": "acme.bsky.social",
+      "avatarUrl": "https://cdn/a.jpg",
+      "tokens": {
+       "accessToken": "A",
+       "refreshToken": "R",
+       "expiresAt": 5400000,
+       "extra": {
+        "identifier": "@acme.bsky.social",
+        "appPassword": "abcd-efgh-ijkl-mnop",
+        "pds": "https://pds.example",
+        "did": "did:plc:abc"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "bluesky-no-profile",
+   "adapter": "bluesky",
+   "password": [
+    "h.bsky.social",
+    "pw"
+   ],
+   "routes": [
+    [
+     "createSession",
+     {
+      "json": {
+       "did": "did:plc:x",
+       "handle": "h.bsky.social",
+       "accessJwt": "A",
+       "refreshJwt": "R"
+      }
+     }
+    ],
+    [
+     "getProfile",
+     {
+      "status": 500,
+      "json": {}
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://bsky.social/xrpc/com.atproto.server.createSession",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "identifier": "h.bsky.social",
+      "password": "pw"
+     }
+    },
+    {
+     "url": "https://bsky.social/xrpc/app.bsky.actor.getProfile?actor=did%3Aplc%3Ax",
+     "method": "GET",
+     "headers": {
+      "accept": "application/json",
+      "authorization": "Bearer A",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": null
+    }
+   ],
+   "result": {
+    "accounts": [
+     {
+      "externalId": "did:plc:x",
+      "displayName": "h.bsky.social",
+      "handle": "h.bsky.social",
+      "tokens": {
+       "accessToken": "A",
+       "refreshToken": "R",
+       "expiresAt": 5400000,
+       "extra": {
+        "identifier": "h.bsky.social",
+        "appPassword": "pw",
+        "pds": "https://bsky.social",
+        "did": "did:plc:x"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "bluesky-bad-password",
+   "adapter": "bluesky",
+   "password": [
+    "h",
+    "bad"
+   ],
+   "routes": [
+    [
+     "createSession",
+     {
+      "status": 401,
+      "json": {
+       "error": "AuthenticationRequired",
+       "message": "Invalid identifier or password"
+      }
+     }
+    ]
+   ],
+   "calls": [
+    {
+     "url": "https://bsky.social/xrpc/com.atproto.server.createSession",
+     "method": "POST",
+     "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "user-agent": "Pinselo/1.0 (+self-hosted)"
+     },
+     "body": {
+      "identifier": "h",
+      "password": "bad"
+     }
+    }
+   ],
+   "result": {
+    "error": {
+     "message": "Invalid identifier or password",
+     "transient": false,
+     "status": 401,
+     "reauth": true
+    }
+   }
+  }
+ ]
+}

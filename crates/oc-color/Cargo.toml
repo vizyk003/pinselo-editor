@@ -1,0 +1,13 @@
+[package]
+name = "oc-color"
+description = "Pinselo colour management: ICC output profiles (moxcms), RGB/P3/Lab → CMYK with black-point compensation, gamut checks, print profile registry"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+moxcms = { workspace = true, features = ["lut", "any_to_any"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

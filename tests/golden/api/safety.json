@@ -1,0 +1,4401 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {},
+ "objects": [],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', true, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('6bae0362848af71bf9dde2924116bee5375e8a4da437494e3588dfee8b35d0cc', '00000000-0000-4000-8000-000000000002', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'cy@example.test', 'Cy', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Cy''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('868e6ccfb81ed51de495925533c9cba5022e8326126a7e2a2aec434e24a4bc7e', '00000000-0000-4000-8000-000000000003', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000004', 'dan@example.test', 'Dan', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001004', 'Dan''s workspace', true, '00000000-0000-4000-8000-000000000004', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001004', '00000000-0000-4000-8000-000000000004', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000004')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('9e5fe99ee660b960ebb7fdd6184e2eefcc6591ee0d3af6aa8443240785d78973', '00000000-0000-4000-8000-000000000004', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, created_at, updated_at, public_view) VALUES ('Spubdesign000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Public poster', 'graphic', 1080, 1080, 'px', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', true)",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, created_at, updated_at) VALUES ('Sotherdesign0000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'Other design', 'graphic', 1080, 1080, 'px', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height, unit, created_at, updated_at, public_view) VALUES ('Sviewlink0000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'View link', 'graphic', 1080, 1080, 'px', '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z', true)",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, phash, created_at) VALUES ('Sflagasset000000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'abababababababababababababababababababababababababababababababab', 'image/png', 'image', 10, 2, 2, '0f0f0f0f0f0f0f0f', '2025-01-01T00:00:00Z')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, phash, moderation, created_at) VALUES ('Scleanasset00000', '00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'abababababababababababababababababababababababababababababababab', 'image/png', 'image', 10, 2, 2, NULL, 'removed', '2025-01-01T00:00:00Z')",
+  "INSERT INTO comments(id, design_id, author_id, body, created_at) VALUES ('00000000-0000-4000-8000-000000008000', 'Sotherdesign0000', '00000000-0000-4000-8000-000000000002', 'rude', '2025-01-01T00:00:00Z')",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, priority, reporter_email, reporter_id) VALUES ('00000000-0000-4000-8000-000000009001', 'design', 'Sotherdesign0000', 'hate', '2025-01-01T00:00:00Z', 50, 'cy@example.test', '00000000-0000-4000-8000-000000000003')",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, priority) VALUES ('00000000-0000-4000-8000-000000009002', 'asset', 'Sflagasset000000', 'copyright', '2025-01-01T00:00:00Z', 30)",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, priority, reporter_email) VALUES ('00000000-0000-4000-8000-000000009003', 'comment', '00000000-0000-4000-8000-000000008000', 'harassment', '2025-01-01T00:00:00Z', 50, 'anon@example.test')",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, priority) VALUES ('00000000-0000-4000-8000-000000009004', 'user', '00000000-0000-4000-8000-000000000004', 'impersonation', '2025-01-01T00:00:00Z', 30)",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, priority) VALUES ('00000000-0000-4000-8000-000000009005', 'asset', 'Scleanasset00000', 'spam', '2025-01-01T00:00:00Z', 10)",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, reporter_email) VALUES ('00000000-0000-4000-8000-000000009006', 'design', 'Sviewlink0000000', 'other', '2025-01-01T00:00:00Z', 'anon@example.test')",
+  "INSERT INTO reports(id, target_type, target_id, reason, created_at, status, decision) VALUES ('00000000-0000-4000-8000-000000009007', 'design', 'Spubdesign000000', 'spam', '2025-01-01T01:00:00Z', 'dismissed', 'dismiss: fine')",
+  "INSERT INTO hash_blocklist(hash, source, category, created_at) VALUES ('ffffffffffffffff', 'ncmec', 'csam', '2025-01-01T00:00:00Z')",
+  "INSERT INTO jobs(id, queue, status, attempts, label, error, created_at, finished_at) VALUES\n      ('00000000-0000-4000-8000-000000007001', 'export', 'failed', 3, 'Export', 'render failed', now(), now()),\n      ('00000000-0000-4000-8000-000000007002', 'thumbnail', 'done', 1, NULL, NULL, '2025-01-01T00:00:00Z', '2025-01-01T00:00:05Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "method": "POST",
+   "name": "report: no body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "json": {
+    "details": 5,
+    "email": "nope",
+    "legal": {
+     "goodFaith": "yes"
+    },
+    "reason": "meh",
+    "targetId": "",
+    "targetType": "page"
+   },
+   "method": "POST",
+   "name": "report: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"design\"|\"asset\"|\"comment\"|\"user\"|\"public_link\"",
+       "path": [
+        "targetType"
+       ],
+       "values": [
+        "design",
+        "asset",
+        "comment",
+        "user",
+        "public_link"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "targetId"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"csam\"|\"ncii\"|\"violence\"|\"hate\"|\"harassment\"|\"self_harm\"|\"spam\"|\"phishing\"|\"copyright\"|\"trademark\"|\"impersonation\"|\"privacy\"|\"other\"",
+       "path": [
+        "reason"
+       ],
+       "values": [
+        "csam",
+        "ncii",
+        "violence",
+        "hate",
+        "harassment",
+        "self_harm",
+        "spam",
+        "phishing",
+        "copyright",
+        "trademark",
+        "impersonation",
+        "privacy",
+        "other"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "details"
+       ]
+      },
+      {
+       "code": "invalid_format",
+       "format": "email",
+       "message": "Invalid email address",
+       "origin": "string",
+       "path": [
+        "email"
+       ],
+       "pattern": "/^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/"
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received string",
+       "path": [
+        "legal",
+        "goodFaith"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "capture": {
+    "spamReport": "body.id"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "json": {
+    "details": "Buy now",
+    "email": "anon@example.test",
+    "reason": "spam",
+    "targetId": "Sotherdesign0000",
+    "targetType": "design"
+   },
+   "method": "POST",
+   "name": "report signed out (spam)",
+   "response": {
+    "body": {
+     "id": "{{spamReport}}",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 200
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": {
+    "legal": {
+     "goodFaith": true,
+     "name": "Cy"
+    },
+    "reason": "copyright",
+    "targetId": "Sflagasset000000",
+    "targetType": "asset"
+   },
+   "method": "POST",
+   "name": "copyright notice incomplete",
+   "response": {
+    "body": {
+     "error": "incomplete_notice",
+     "message": "A copyright notice needs your name, the work, a good-faith statement, an accuracy statement and your signature.",
+     "ok": false
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 200
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-cy",
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "json": {
+    "details": "My photo",
+    "email": "ignored@example.test",
+    "legal": {
+     "accurate": true,
+     "address": "1 Road",
+     "extra": "dropped",
+     "goodFaith": true,
+     "location": "https://x.test",
+     "name": "Cy",
+     "signature": "Cy",
+     "work": "Photo of a cat"
+    },
+    "reason": "copyright",
+    "targetId": "Sflagasset000000",
+    "targetType": "asset"
+   },
+   "method": "POST",
+   "name": "copyright notice complete",
+   "response": {
+    "body": {
+     "id": "<uuid:1>",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 200
+   },
+   "url": "/api/reports"
+  },
+  {
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, public_view, trashed_at IS NOT NULL AS trashed FROM designs ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "id": "Sotherdesign0000",
+       "public_view": false,
+       "trashed": false
+      },
+      {
+       "id": "Spubdesign000000",
+       "public_view": false,
+       "trashed": false
+      },
+      {
+       "id": "Sviewlink0000000",
+       "public_view": true,
+       "trashed": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "reason": "ncii",
+    "targetId": "Spubdesign000000",
+    "targetType": "public_link"
+   },
+   "method": "POST",
+   "name": "ncii report hides the design",
+   "response": {
+    "body": {
+     "id": "<uuid:2>",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 200
+   },
+   "url": "/api/reports"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Scleanasset00000",
+       "moderation": "removed",
+       "trashed": false
+      },
+      {
+       "id": "Sflagasset000000",
+       "moderation": "pending",
+       "trashed": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "json": {
+    "reason": "csam",
+    "targetId": "Sflagasset000000",
+    "targetType": "asset"
+   },
+   "method": "POST",
+   "name": "csam report quarantines the asset",
+   "response": {
+    "body": {
+     "id": "<uuid:3>",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 200
+   },
+   "url": "/api/reports"
+  },
+  {
+   "checks": [
+    {
+     "name": "reports",
+     "sql": "SELECT id, target_type, target_id, reason, details, reporter_id, reporter_email, legal, status, priority, decision, decided_by, decided_at IS NOT NULL AS decided FROM reports ORDER BY priority DESC, target_id, id"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "reports",
+     "rows": [
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:3>",
+       "legal": null,
+       "priority": 100,
+       "reason": "csam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:2>",
+       "legal": null,
+       "priority": 90,
+       "reason": "ncii",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Spubdesign000000",
+       "target_type": "public_link"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009003",
+       "legal": null,
+       "priority": 50,
+       "reason": "harassment",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000008000",
+       "target_type": "comment"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "legal": null,
+       "priority": 50,
+       "reason": "hate",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "status": "open",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009004",
+       "legal": null,
+       "priority": 30,
+       "reason": "impersonation",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000000004",
+       "target_type": "user"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "legal": null,
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": "My photo",
+       "id": "<uuid:1>",
+       "legal": {
+        "accurate": true,
+        "address": "1 Road",
+        "goodFaith": true,
+        "location": "https://x.test",
+        "name": "Cy",
+        "signature": "Cy",
+        "work": "Photo of a cat"
+       },
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009005",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Scleanasset00000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": "Buy now",
+       "id": "{{spamReport}}",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": "dismiss: fine",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009007",
+       "legal": null,
+       "priority": 0,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "dismissed",
+       "target_id": "Spubdesign000000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009006",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sviewlink0000000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:4>",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "ghost",
+       "target_type": "user"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.3",
+       "meta": {
+        "reason": "spam",
+        "report": "{{spamReport}}"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.5",
+       "meta": {
+        "reason": "copyright",
+        "report": "<uuid:1>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.6",
+       "meta": {
+        "reason": "ncii",
+        "report": "<uuid:2>"
+       },
+       "target": "public_link:Spubdesign000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.7",
+       "meta": {
+        "reason": "csam",
+        "report": "<uuid:3>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.8",
+       "meta": {
+        "reason": "other",
+        "report": "<uuid:4>"
+       },
+       "target": "user:ghost"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "reason": "other",
+    "targetId": "ghost",
+    "targetType": "user"
+   },
+   "method": "POST",
+   "name": "report an unknown target",
+   "response": {
+    "body": {
+     "id": "<uuid:4>",
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 200
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "name": "overview signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/admin/overview"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "name": "overview as non-staff",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/admin/overview"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-bob",
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "action": "dismiss",
+    "note": "nope"
+   },
+   "method": "POST",
+   "name": "decide as non-staff",
+   "response": {
+    "body": {
+     "error": "forbidden"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009001/decide"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.12"
+   },
+   "name": "overview",
+   "response": {
+    "body": {
+     "designs": 3,
+     "failedJobs24h": 1,
+     "flaggedAssets": 2,
+     "openReports": 11,
+     "users": 4
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/overview"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "name": "open reports",
+   "response": {
+    "body": {
+     "reports": [
+      {
+       "created_at": "<ts>",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:3>",
+       "legal": null,
+       "priority": 100,
+       "reason": "csam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "created_at": "<ts>",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:2>",
+       "legal": null,
+       "priority": 90,
+       "reason": "ncii",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "Spubdesign000000",
+       "target_type": "public_link"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "legal": null,
+       "priority": 50,
+       "reason": "hate",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "reporter_name": "Cy",
+       "status": "open",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009003",
+       "legal": null,
+       "priority": 50,
+       "reason": "harassment",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000008000",
+       "target_type": "comment"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "legal": null,
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009004",
+       "legal": null,
+       "priority": 30,
+       "reason": "impersonation",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000000004",
+       "target_type": "user"
+      },
+      {
+       "created_at": "<ts>",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": "My photo",
+       "id": "<uuid:1>",
+       "legal": {
+        "accurate": true,
+        "address": "1 Road",
+        "goodFaith": true,
+        "location": "https://x.test",
+        "name": "Cy",
+        "signature": "Cy",
+        "work": "Photo of a cat"
+       },
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "reporter_name": "Cy",
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009005",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "Scleanasset00000",
+       "target_type": "asset"
+      },
+      {
+       "created_at": "<ts>",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": "Buy now",
+       "id": "{{spamReport}}",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009006",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "Sviewlink0000000",
+       "target_type": "design"
+      },
+      {
+       "created_at": "<ts>",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:4>",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "open",
+       "target_id": "ghost",
+       "target_type": "user"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "name": "dismissed reports",
+   "response": {
+    "body": {
+     "reports": [
+      {
+       "created_at": "2025-01-01T01:00:00.000Z",
+       "decided_at": null,
+       "decided_by": null,
+       "decision": "dismiss: fine",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009007",
+       "legal": null,
+       "priority": 0,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "dismissed",
+       "target_id": "Spubdesign000000",
+       "target_type": "design"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports?status=dismissed"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "json": {
+    "action": "ban",
+    "blockHash": "yes",
+    "note": "x"
+   },
+   "method": "POST",
+   "name": "decide: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid option: expected one of \"dismiss\"|\"takedown\"|\"remove_asset\"|\"remove_comment\"|\"disable_user\"|\"restore\"",
+       "path": [
+        "action"
+       ],
+       "values": [
+        "dismiss",
+        "takedown",
+        "remove_asset",
+        "remove_comment",
+        "disable_user",
+        "restore"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=3 characters",
+       "minimum": 3,
+       "origin": "string",
+       "path": [
+        "note"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received string",
+       "path": [
+        "blockHash"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009001/decide"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "method": "POST",
+   "name": "decide: no body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009001/decide"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": {
+    "action": "dismiss",
+    "note": "nothing"
+   },
+   "method": "POST",
+   "name": "decide: unknown report",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009999/decide"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "json": {
+    "action": "dismiss",
+    "note": "nothing"
+   },
+   "method": "POST",
+   "name": "decide: report id not a uuid",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/admin/reports/nope/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, public_view, trashed_at IS NOT NULL AS trashed FROM designs ORDER BY id"
+    },
+    {
+     "name": "notifications",
+     "sql": "SELECT user_id, kind, design_id, actor_id, body FROM notifications ORDER BY created_at, body"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email, subject"
+    },
+    {
+     "name": "reports",
+     "sql": "SELECT id, target_type, target_id, reason, details, reporter_id, reporter_email, legal, status, priority, decision, decided_by, decided_at IS NOT NULL AS decided FROM reports ORDER BY priority DESC, target_id, id"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "id": "Sotherdesign0000",
+       "public_view": false,
+       "trashed": true
+      },
+      {
+       "id": "Spubdesign000000",
+       "public_view": false,
+       "trashed": false
+      },
+      {
+       "id": "Sviewlink0000000",
+       "public_view": true,
+       "trashed": false
+      }
+     ]
+    },
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "body": "Content moderation: takedown — Hateful imagery",
+       "design_id": "Sotherdesign0000",
+       "kind": "comment",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (design) under our hate policy.\n\nWhat happened: takedown.\n\nWhy: Hateful imagery\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: we took action.\n",
+       "to_email": "cy@example.test"
+      }
+     ]
+    },
+    {
+     "name": "reports",
+     "rows": [
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:3>",
+       "legal": null,
+       "priority": 100,
+       "reason": "csam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:2>",
+       "legal": null,
+       "priority": 90,
+       "reason": "ncii",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Spubdesign000000",
+       "target_type": "public_link"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009003",
+       "legal": null,
+       "priority": 50,
+       "reason": "harassment",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000008000",
+       "target_type": "comment"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "takedown: Hateful imagery",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "legal": null,
+       "priority": 50,
+       "reason": "hate",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "status": "actioned",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009004",
+       "legal": null,
+       "priority": 30,
+       "reason": "impersonation",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "00000000-0000-4000-8000-000000000004",
+       "target_type": "user"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "legal": null,
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": "My photo",
+       "id": "<uuid:1>",
+       "legal": {
+        "accurate": true,
+        "address": "1 Road",
+        "goodFaith": true,
+        "location": "https://x.test",
+        "name": "Cy",
+        "signature": "Cy",
+        "work": "Photo of a cat"
+       },
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009005",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Scleanasset00000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": "Buy now",
+       "id": "{{spamReport}}",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": "dismiss: fine",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009007",
+       "legal": null,
+       "priority": 0,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "dismissed",
+       "target_id": "Spubdesign000000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009006",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sviewlink0000000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:4>",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "ghost",
+       "target_type": "user"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "json": {
+    "action": "takedown",
+    "note": "Hateful imagery"
+   },
+   "method": "POST",
+   "name": "takedown",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009001/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    },
+    {
+     "name": "blocklist",
+     "sql": "SELECT hash, source, category FROM hash_blocklist ORDER BY hash"
+    },
+    {
+     "name": "notifications",
+     "sql": "SELECT user_id, kind, design_id, actor_id, body FROM notifications ORDER BY created_at, body"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Scleanasset00000",
+       "moderation": "removed",
+       "trashed": false
+      },
+      {
+       "id": "Sflagasset000000",
+       "moderation": "removed",
+       "trashed": true
+      }
+     ]
+    },
+    {
+     "name": "blocklist",
+     "rows": [
+      {
+       "category": "copyright",
+       "hash": "0f0f0f0f0f0f0f0f",
+       "source": "internal"
+      },
+      {
+       "category": "csam",
+       "hash": "ffffffffffffffff",
+       "source": "ncmec"
+      }
+     ]
+    },
+    {
+     "name": "notifications",
+     "rows": [
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "body": "Content moderation: takedown — Hateful imagery",
+       "design_id": "Sotherdesign0000",
+       "kind": "comment",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "body": "Content moderation: remove asset — Infringing copy",
+       "design_id": null,
+       "kind": "comment",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "json": {
+    "action": "remove_asset",
+    "blockHash": true,
+    "note": "Infringing copy"
+   },
+   "method": "POST",
+   "name": "remove asset + block hash",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009002/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "comments",
+     "sql": "SELECT id FROM comments"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email, subject"
+    }
+   ],
+   "db": [
+    {
+     "name": "comments",
+     "rows": []
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (design) under our hate policy.\n\nWhat happened: takedown.\n\nWhy: Hateful imagery\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: we took action.\n",
+       "to_email": "cy@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (asset) under our copyright policy.\n\nWhat happened: remove asset.\n\nWhy: Infringing copy\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (comment) under our harassment policy.\n\nWhat happened: remove comment.\n\nWhy: Harassment\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: we took action.\n",
+       "to_email": "anon@example.test"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "json": {
+    "action": "remove_comment",
+    "note": "Harassment"
+   },
+   "method": "POST",
+   "name": "remove comment",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009003/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT id, disabled_at IS NOT NULL AS disabled, disabled_reason, is_staff FROM users ORDER BY id"
+    },
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id FROM sessions ORDER BY user_id"
+    }
+   ],
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000001",
+       "is_staff": true
+      },
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000002",
+       "is_staff": false
+      },
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000003",
+       "is_staff": false
+      },
+      {
+       "disabled": true,
+       "disabled_reason": "Impersonating staff",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "is_staff": false
+      }
+     ]
+    },
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "user_id": "00000000-0000-4000-8000-000000000003"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "json": {
+    "action": "disable_user",
+    "note": "Impersonating staff"
+   },
+   "method": "POST",
+   "name": "disable user",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009004/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "assets",
+     "sql": "SELECT id, moderation, trashed_at IS NOT NULL AS trashed FROM assets ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "assets",
+     "rows": [
+      {
+       "id": "Scleanasset00000",
+       "moderation": "ok",
+       "trashed": false
+      },
+      {
+       "id": "Sflagasset000000",
+       "moderation": "removed",
+       "trashed": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "json": {
+    "action": "restore",
+    "note": "Mistake"
+   },
+   "method": "POST",
+   "name": "restore",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009005/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "designs",
+     "sql": "SELECT id, public_view, trashed_at IS NOT NULL AS trashed FROM designs ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "designs",
+     "rows": [
+      {
+       "id": "Sotherdesign0000",
+       "public_view": false,
+       "trashed": false
+      },
+      {
+       "id": "Spubdesign000000",
+       "public_view": false,
+       "trashed": false
+      },
+      {
+       "id": "Sviewlink0000000",
+       "public_view": true,
+       "trashed": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "json": {
+    "action": "restore",
+    "note": "On appeal"
+   },
+   "method": "POST",
+   "name": "restore a design",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009001/decide"
+  },
+  {
+   "checks": [
+    {
+     "name": "reports",
+     "sql": "SELECT id, target_type, target_id, reason, details, reporter_id, reporter_email, legal, status, priority, decision, decided_by, decided_at IS NOT NULL AS decided FROM reports ORDER BY priority DESC, target_id, id"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email, subject"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "reports",
+     "rows": [
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:3>",
+       "legal": null,
+       "priority": 100,
+       "reason": "csam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:2>",
+       "legal": null,
+       "priority": 90,
+       "reason": "ncii",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Spubdesign000000",
+       "target_type": "public_link"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "remove_comment: Harassment",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009003",
+       "legal": null,
+       "priority": 50,
+       "reason": "harassment",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "actioned",
+       "target_id": "00000000-0000-4000-8000-000000008000",
+       "target_type": "comment"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "restore: On appeal",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "legal": null,
+       "priority": 50,
+       "reason": "hate",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "status": "actioned",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "disable_user: Impersonating staff",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009004",
+       "legal": null,
+       "priority": 30,
+       "reason": "impersonation",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "actioned",
+       "target_id": "00000000-0000-4000-8000-000000000004",
+       "target_type": "user"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "remove_asset: Infringing copy",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "legal": null,
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "actioned",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": "My photo",
+       "id": "<uuid:1>",
+       "legal": {
+        "accurate": true,
+        "address": "1 Road",
+        "goodFaith": true,
+        "location": "https://x.test",
+        "name": "Cy",
+        "signature": "Cy",
+        "work": "Photo of a cat"
+       },
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "status": "open",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "restore: Mistake",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009005",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "actioned",
+       "target_id": "Scleanasset00000",
+       "target_type": "asset"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": "Buy now",
+       "id": "{{spamReport}}",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": "dismiss: fine",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009007",
+       "legal": null,
+       "priority": 0,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "dismissed",
+       "target_id": "Spubdesign000000",
+       "target_type": "design"
+      },
+      {
+       "decided": true,
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "dismiss: No violation",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009006",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "status": "dismissed",
+       "target_id": "Sviewlink0000000",
+       "target_type": "design"
+      },
+      {
+       "decided": false,
+       "decided_by": null,
+       "decision": null,
+       "details": null,
+       "id": "<uuid:4>",
+       "legal": null,
+       "priority": 0,
+       "reason": "other",
+       "reporter_email": null,
+       "reporter_id": null,
+       "status": "open",
+       "target_id": "ghost",
+       "target_type": "user"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (design) under our hate policy.\n\nWhat happened: takedown.\n\nWhy: Hateful imagery\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: we took action.\n",
+       "to_email": "cy@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (asset) under our copyright policy.\n\nWhat happened: remove asset.\n\nWhy: Infringing copy\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (comment) under our harassment policy.\n\nWhat happened: remove comment.\n\nWhy: Harassment\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: we took action.\n",
+       "to_email": "anon@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (user) under our impersonation policy.\n\nWhat happened: disable user.\n\nWhy: Impersonating staff\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "dan@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (asset) under our spam policy.\n\nWhat happened: restore.\n\nWhy: Mistake\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "A decision about your content",
+       "text": "A decision about your content\n\nWe took action on your content (design) under our hate policy.\n\nWhat happened: restore.\n\nWhy: On appeal\n\nYou can appeal by replying to this email within 6 months.\n",
+       "to_email": "bob@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: we took action.\n",
+       "to_email": "cy@example.test"
+      },
+      {
+       "category": "service",
+       "subject": "Update on your report",
+       "text": "Update on your report\n\nThanks for your report. Outcome: no violation found.\n",
+       "to_email": "anon@example.test"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.3",
+       "meta": {
+        "reason": "spam",
+        "report": "{{spamReport}}"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": "00000000-0000-4000-8000-000000000003",
+       "ip": "198.51.100.5",
+       "meta": {
+        "reason": "copyright",
+        "report": "<uuid:1>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.6",
+       "meta": {
+        "reason": "ncii",
+        "report": "<uuid:2>"
+       },
+       "target": "public_link:Spubdesign000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.7",
+       "meta": {
+        "reason": "csam",
+        "report": "<uuid:3>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor_id": null,
+       "ip": "198.51.100.8",
+       "meta": {
+        "reason": "other",
+        "report": "<uuid:4>"
+       },
+       "target": "user:ghost"
+      },
+      {
+       "action": "ts.decision.takedown",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.19",
+       "meta": {
+        "note": "Hateful imagery",
+        "report": "00000000-0000-4000-8000-000000009001"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.decision.remove_asset",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.20",
+       "meta": {
+        "note": "Infringing copy",
+        "report": "00000000-0000-4000-8000-000000009002"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.decision.remove_comment",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.21",
+       "meta": {
+        "note": "Harassment",
+        "report": "00000000-0000-4000-8000-000000009003"
+       },
+       "target": "comment:00000000-0000-4000-8000-000000008000"
+      },
+      {
+       "action": "ts.decision.disable_user",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.22",
+       "meta": {
+        "note": "Impersonating staff",
+        "report": "00000000-0000-4000-8000-000000009004"
+       },
+       "target": "user:00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "action": "ts.decision.restore",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.23",
+       "meta": {
+        "note": "Mistake",
+        "report": "00000000-0000-4000-8000-000000009005"
+       },
+       "target": "asset:Scleanasset00000"
+      },
+      {
+       "action": "ts.decision.restore",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.24",
+       "meta": {
+        "note": "On appeal",
+        "report": "00000000-0000-4000-8000-000000009001"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.decision.dismiss",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.25",
+       "meta": {
+        "note": "No violation",
+        "report": "00000000-0000-4000-8000-000000009006"
+       },
+       "target": "design:Sviewlink0000000"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.25"
+   },
+   "json": {
+    "action": "dismiss",
+    "note": "No violation"
+   },
+   "method": "POST",
+   "name": "dismiss",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/00000000-0000-4000-8000-000000009006/decide"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "json": {
+    "action": "takedown",
+    "note": "Spam"
+   },
+   "method": "POST",
+   "name": "decide the filed spam report",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports/{{spamReport}}/decide"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "name": "actioned reports",
+   "response": {
+    "body": {
+     "reports": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": "<ts>",
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "restore: On appeal",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009001",
+       "legal": null,
+       "priority": 50,
+       "reason": "hate",
+       "reporter_email": "cy@example.test",
+       "reporter_id": "00000000-0000-4000-8000-000000000003",
+       "reporter_name": "Cy",
+       "status": "actioned",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": "<ts>",
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "remove_comment: Harassment",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009003",
+       "legal": null,
+       "priority": 50,
+       "reason": "harassment",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "actioned",
+       "target_id": "00000000-0000-4000-8000-000000008000",
+       "target_type": "comment"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": "<ts>",
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "remove_asset: Infringing copy",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009002",
+       "legal": null,
+       "priority": 30,
+       "reason": "copyright",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "actioned",
+       "target_id": "Sflagasset000000",
+       "target_type": "asset"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": "<ts>",
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "disable_user: Impersonating staff",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009004",
+       "legal": null,
+       "priority": 30,
+       "reason": "impersonation",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "actioned",
+       "target_id": "00000000-0000-4000-8000-000000000004",
+       "target_type": "user"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "decided_at": "<ts>",
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "restore: Mistake",
+       "details": null,
+       "id": "00000000-0000-4000-8000-000000009005",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": null,
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "actioned",
+       "target_id": "Scleanasset00000",
+       "target_type": "asset"
+      },
+      {
+       "created_at": "<ts>",
+       "decided_at": "<ts>",
+       "decided_by": "00000000-0000-4000-8000-000000000001",
+       "decision": "takedown: Spam",
+       "details": "Buy now",
+       "id": "{{spamReport}}",
+       "legal": null,
+       "priority": 10,
+       "reason": "spam",
+       "reporter_email": "anon@example.test",
+       "reporter_id": null,
+       "reporter_name": null,
+       "status": "actioned",
+       "target_id": "Sotherdesign0000",
+       "target_type": "design"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/reports?status=actioned"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "name": "users",
+   "response": {
+    "body": {
+     "users": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "designs": 0,
+       "disabled_at": null,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "email_verified_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000000001",
+       "is_staff": true,
+       "name": "Ada"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "designs": 3,
+       "disabled_at": null,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "email_verified_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "is_staff": false,
+       "name": "Bob"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "designs": 0,
+       "disabled_at": null,
+       "disabled_reason": null,
+       "email": "cy@example.test",
+       "email_verified_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000000003",
+       "is_staff": false,
+       "name": "Cy"
+      },
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "designs": 0,
+       "disabled_at": "<ts>",
+       "disabled_reason": "Impersonating staff",
+       "email": "dan@example.test",
+       "email_verified_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "is_staff": false,
+       "name": "Dan"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/users"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "name": "users search",
+   "response": {
+    "body": {
+     "users": [
+      {
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "designs": 3,
+       "disabled_at": null,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "email_verified_at": "2025-01-01T00:00:00.000Z",
+       "id": "00000000-0000-4000-8000-000000000002",
+       "is_staff": false,
+       "name": "Bob"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/users?q=BOB"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT id, disabled_at IS NOT NULL AS disabled, disabled_reason, is_staff FROM users ORDER BY id"
+    },
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id FROM sessions ORDER BY user_id"
+    }
+   ],
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000001",
+       "is_staff": true
+      },
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000002",
+       "is_staff": false
+      },
+      {
+       "disabled": true,
+       "disabled_reason": "Spam wave",
+       "id": "00000000-0000-4000-8000-000000000003",
+       "is_staff": false
+      },
+      {
+       "disabled": true,
+       "disabled_reason": "Impersonating staff",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "is_staff": false
+      }
+     ]
+    },
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "json": {
+    "reason": "Spam wave"
+   },
+   "method": "POST",
+   "name": "disable user directly",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/users/00000000-0000-4000-8000-000000000003/disable"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT id, disabled_at IS NOT NULL AS disabled, disabled_reason, is_staff FROM users ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000001",
+       "is_staff": true
+      },
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000002",
+       "is_staff": false
+      },
+      {
+       "disabled": false,
+       "disabled_reason": null,
+       "id": "00000000-0000-4000-8000-000000000003",
+       "is_staff": false
+      },
+      {
+       "disabled": true,
+       "disabled_reason": "Impersonating staff",
+       "id": "00000000-0000-4000-8000-000000000004",
+       "is_staff": false
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "method": "POST",
+   "name": "enable user",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/users/00000000-0000-4000-8000-000000000003/enable"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "method": "POST",
+   "name": "disable without a body",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/users/00000000-0000-4000-8000-000000000004/disable"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "bad user action",
+   "response": {
+    "body": {
+     "error": "bad_action"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/admin/users/00000000-0000-4000-8000-000000000003/delete"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "method": "POST",
+   "name": "user action on a malformed id",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/admin/users/nope/enable"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "json": {
+    "hash": "XYZ",
+    "source": 5
+   },
+   "method": "POST",
+   "name": "hash: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "regex",
+       "message": "Invalid string: must match pattern /^[0-9a-f]{16}$/",
+       "origin": "string",
+       "path": [
+        "hash"
+       ],
+       "pattern": "/^[0-9a-f]{16}$/"
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "source"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received undefined",
+       "path": [
+        "category"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/admin/hashes"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "json": {
+    "category": "ncii",
+    "hash": "0123456789abcdef",
+    "source": "stopncii"
+   },
+   "method": "POST",
+   "name": "hash",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/hashes"
+  },
+  {
+   "checks": [
+    {
+     "name": "blocklist",
+     "sql": "SELECT hash, source, category FROM hash_blocklist ORDER BY hash"
+    }
+   ],
+   "db": [
+    {
+     "name": "blocklist",
+     "rows": [
+      {
+       "category": "ncii",
+       "hash": "<id:1>",
+       "source": "stopncii"
+      },
+      {
+       "category": "copyright",
+       "hash": "0f0f0f0f0f0f0f0f",
+       "source": "internal"
+      },
+      {
+       "category": "csam",
+       "hash": "ffffffffffffffff",
+       "source": "ncmec"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "json": {
+    "category": "other",
+    "hash": "0123456789abcdef",
+    "source": "other"
+   },
+   "method": "POST",
+   "name": "hash again",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/hashes"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "name": "audit log",
+   "response": {
+    "body": {
+     "brokenAt": null,
+     "events": [
+      {
+       "action": "ts.hash_added",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "18",
+       "ip": "198.51.100.37",
+       "meta": {
+        "source": "other"
+       },
+       "target": "<id:1>"
+      },
+      {
+       "action": "ts.hash_added",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "17",
+       "ip": "198.51.100.36",
+       "meta": {
+        "source": "stopncii"
+       },
+       "target": "<id:1>"
+      },
+      {
+       "action": "admin.user_disable",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "16",
+       "ip": "198.51.100.32",
+       "meta": {
+        "reason": ""
+       },
+       "target": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "action": "admin.user_enable",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "15",
+       "ip": "198.51.100.31",
+       "meta": {
+        "reason": ""
+       },
+       "target": "00000000-0000-4000-8000-000000000003"
+      },
+      {
+       "action": "admin.user_disable",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "14",
+       "ip": "198.51.100.30",
+       "meta": {
+        "reason": "Spam wave"
+       },
+       "target": "00000000-0000-4000-8000-000000000003"
+      },
+      {
+       "action": "ts.decision.takedown",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "13",
+       "ip": "198.51.100.26",
+       "meta": {
+        "note": "Spam",
+        "report": "{{spamReport}}"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.decision.dismiss",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "12",
+       "ip": "198.51.100.25",
+       "meta": {
+        "note": "No violation",
+        "report": "00000000-0000-4000-8000-000000009006"
+       },
+       "target": "design:Sviewlink0000000"
+      },
+      {
+       "action": "ts.decision.restore",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "11",
+       "ip": "198.51.100.24",
+       "meta": {
+        "note": "On appeal",
+        "report": "00000000-0000-4000-8000-000000009001"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.decision.restore",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "10",
+       "ip": "198.51.100.23",
+       "meta": {
+        "note": "Mistake",
+        "report": "00000000-0000-4000-8000-000000009005"
+       },
+       "target": "asset:Scleanasset00000"
+      },
+      {
+       "action": "ts.decision.disable_user",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "9",
+       "ip": "198.51.100.22",
+       "meta": {
+        "note": "Impersonating staff",
+        "report": "00000000-0000-4000-8000-000000009004"
+       },
+       "target": "user:00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "action": "ts.decision.remove_comment",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "8",
+       "ip": "198.51.100.21",
+       "meta": {
+        "note": "Harassment",
+        "report": "00000000-0000-4000-8000-000000009003"
+       },
+       "target": "comment:00000000-0000-4000-8000-000000008000"
+      },
+      {
+       "action": "ts.decision.remove_asset",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "7",
+       "ip": "198.51.100.20",
+       "meta": {
+        "note": "Infringing copy",
+        "report": "00000000-0000-4000-8000-000000009002"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.decision.takedown",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "6",
+       "ip": "198.51.100.19",
+       "meta": {
+        "note": "Hateful imagery",
+        "report": "00000000-0000-4000-8000-000000009001"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "5",
+       "ip": "198.51.100.8",
+       "meta": {
+        "reason": "other",
+        "report": "<uuid:4>"
+       },
+       "target": "user:ghost"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "4",
+       "ip": "198.51.100.7",
+       "meta": {
+        "reason": "csam",
+        "report": "<uuid:3>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "3",
+       "ip": "198.51.100.6",
+       "meta": {
+        "reason": "ncii",
+        "report": "<uuid:2>"
+       },
+       "target": "public_link:Spubdesign000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": "cy@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "2",
+       "ip": "198.51.100.5",
+       "meta": {
+        "reason": "copyright",
+        "report": "<uuid:1>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "1",
+       "ip": "198.51.100.3",
+       "meta": {
+        "reason": "spam",
+        "report": "{{spamReport}}"
+       },
+       "target": "design:Sotherdesign0000"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/audit"
+  },
+  {
+   "name": "tamper with the audit chain",
+   "rows": [
+    {
+     "action": "x"
+    }
+   ],
+   "sql": "UPDATE audit_events SET action = 'x' WHERE id = (SELECT min(id) + 1 FROM audit_events) RETURNING action"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "name": "audit log (broken chain)",
+   "response": {
+    "body": {
+     "brokenAt": 2,
+     "events": [
+      {
+       "action": "ts.hash_added",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "18",
+       "ip": "198.51.100.37",
+       "meta": {
+        "source": "other"
+       },
+       "target": "<id:1>"
+      },
+      {
+       "action": "ts.hash_added",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "17",
+       "ip": "198.51.100.36",
+       "meta": {
+        "source": "stopncii"
+       },
+       "target": "<id:1>"
+      },
+      {
+       "action": "admin.user_disable",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "16",
+       "ip": "198.51.100.32",
+       "meta": {
+        "reason": ""
+       },
+       "target": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "action": "admin.user_enable",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "15",
+       "ip": "198.51.100.31",
+       "meta": {
+        "reason": ""
+       },
+       "target": "00000000-0000-4000-8000-000000000003"
+      },
+      {
+       "action": "admin.user_disable",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "14",
+       "ip": "198.51.100.30",
+       "meta": {
+        "reason": "Spam wave"
+       },
+       "target": "00000000-0000-4000-8000-000000000003"
+      },
+      {
+       "action": "ts.decision.takedown",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "13",
+       "ip": "198.51.100.26",
+       "meta": {
+        "note": "Spam",
+        "report": "{{spamReport}}"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.decision.dismiss",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "12",
+       "ip": "198.51.100.25",
+       "meta": {
+        "note": "No violation",
+        "report": "00000000-0000-4000-8000-000000009006"
+       },
+       "target": "design:Sviewlink0000000"
+      },
+      {
+       "action": "ts.decision.restore",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "11",
+       "ip": "198.51.100.24",
+       "meta": {
+        "note": "On appeal",
+        "report": "00000000-0000-4000-8000-000000009001"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.decision.restore",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "10",
+       "ip": "198.51.100.23",
+       "meta": {
+        "note": "Mistake",
+        "report": "00000000-0000-4000-8000-000000009005"
+       },
+       "target": "asset:Scleanasset00000"
+      },
+      {
+       "action": "ts.decision.disable_user",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "9",
+       "ip": "198.51.100.22",
+       "meta": {
+        "note": "Impersonating staff",
+        "report": "00000000-0000-4000-8000-000000009004"
+       },
+       "target": "user:00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "action": "ts.decision.remove_comment",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "8",
+       "ip": "198.51.100.21",
+       "meta": {
+        "note": "Harassment",
+        "report": "00000000-0000-4000-8000-000000009003"
+       },
+       "target": "comment:00000000-0000-4000-8000-000000008000"
+      },
+      {
+       "action": "ts.decision.remove_asset",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "7",
+       "ip": "198.51.100.20",
+       "meta": {
+        "note": "Infringing copy",
+        "report": "00000000-0000-4000-8000-000000009002"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.decision.takedown",
+       "actor": "ada@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "6",
+       "ip": "198.51.100.19",
+       "meta": {
+        "note": "Hateful imagery",
+        "report": "00000000-0000-4000-8000-000000009001"
+       },
+       "target": "design:Sotherdesign0000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "5",
+       "ip": "198.51.100.8",
+       "meta": {
+        "reason": "other",
+        "report": "<uuid:4>"
+       },
+       "target": "user:ghost"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "4",
+       "ip": "198.51.100.7",
+       "meta": {
+        "reason": "csam",
+        "report": "<uuid:3>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "3",
+       "ip": "198.51.100.6",
+       "meta": {
+        "reason": "ncii",
+        "report": "<uuid:2>"
+       },
+       "target": "public_link:Spubdesign000000"
+      },
+      {
+       "action": "x",
+       "actor": "cy@example.test",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "2",
+       "ip": "198.51.100.5",
+       "meta": {
+        "reason": "copyright",
+        "report": "<uuid:1>"
+       },
+       "target": "asset:Sflagasset000000"
+      },
+      {
+       "action": "ts.report_filed",
+       "actor": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "id": "1",
+       "ip": "198.51.100.3",
+       "meta": {
+        "reason": "spam",
+        "report": "{{spamReport}}"
+       },
+       "target": "design:Sotherdesign0000"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/audit"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "name": "jobs",
+   "response": {
+    "body": {
+     "jobs": [
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:5>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:6>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:7>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:8>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:9>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:10>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:11>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:12>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:13>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:14>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:15>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 0,
+       "created_at": "<ts>",
+       "error": null,
+       "finished_at": null,
+       "id": "<uuid:16>",
+       "label": "Queued",
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "attempts": 3,
+       "created_at": "<ts>",
+       "error": "render failed",
+       "finished_at": "<ts>",
+       "id": "00000000-0000-4000-8000-000000007001",
+       "label": "Export",
+       "queue": "export",
+       "status": "failed"
+      },
+      {
+       "attempts": 1,
+       "created_at": "2025-01-01T00:00:00.000Z",
+       "error": null,
+       "finished_at": "2025-01-01T00:00:05.000Z",
+       "id": "00000000-0000-4000-8000-000000007002",
+       "label": null,
+       "queue": "thumbnail",
+       "status": "done"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/jobs"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.42"
+   },
+   "name": "overview after decisions",
+   "response": {
+    "body": {
+     "designs": 2,
+     "failedJobs24h": 1,
+     "flaggedAssets": 1,
+     "openReports": 4,
+     "users": 4
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/admin/overview"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 1",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "19",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 2",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "18",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 3",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "17",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 4",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "16",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 5",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "15",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 6",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "14",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 7",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "13",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 8",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "12",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 9",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "11",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 10",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "10",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 11",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 12",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "8",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 13",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "7",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 14",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "6",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 15",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "5",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 16",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "4",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 17",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "3",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 18",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "2",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 19",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "1",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 20",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received undefined",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "0",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 400
+   },
+   "url": "/api/reports"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "203.0.113.9"
+   },
+   "method": "POST",
+   "name": "rate limit 21",
+   "response": {
+    "body": {
+     "error": "Rate limit exceeded, retry in 10 minutes"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "retry-after": "600",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "20",
+     "x-ratelimit-remaining": "0",
+     "x-ratelimit-reset": "600"
+    },
+    "status": 429
+   },
+   "url": "/api/reports"
+  }
+ ],
+ "vars": {}
+}

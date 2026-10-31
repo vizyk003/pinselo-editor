@@ -1,0 +1,89 @@
+# The Oracle server's gateway (docs/deploy-oracle.md): deploy/Caddyfile for a single hostname. Uploads are served from
+# the app host. Keep it in step with deploy/Caddyfile. compose.yml mounts it over the one in the gateway image.
+{
+	email {$OC_ACME_EMAIL}
+	servers {
+		trusted_proxies static private_ranges
+	}
+	on_demand_tls {
+		ask http://api:4000/api/sites/domain-check
+	}
+}
+
+(security) {
+	header {
+		Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Cross-Origin-Opener-Policy same-origin
+		Permissions-Policy "camera=(self), microphone=(self), display-capture=(self), geolocation=(), payment=(), usb=()"
+		-Server
+	}
+}
+
+{$OC_APP_HOST} {
+	import security
+	encode zstd gzip
+
+	# The engine (@oc/engine, crates/oc-wasm) needs wasm compilation ('wasm-unsafe-eval'); React uses inline style
+	# attributes. No inline scripts, no eval.
+	# {$OC_SUPABASE_URL} (empty unless Supabase Auth is on): supabase-js calls https://<ref>.supabase.co.
+	header {
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com https://api.openverse.org https://images.unsplash.com https://images.pexels.com https://cdn.pixabay.com https://*.giphy.com; media-src 'self' blob:; font-src 'self' data:; connect-src 'self' wss://{$OC_APP_HOST} {$OC_SUPABASE_URL}; worker-src 'self' blob:; frame-src 'self' https://www.youtube-nocookie.com https://player.vimeo.com https://open.spotify.com https://w.soundcloud.com https://www.google.com https://www.loom.com https://www.figma.com https://embed.figma.com https://codepen.io; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://accounts.google.com https://appleid.apple.com; upgrade-insecure-requests"
+		X-Frame-Options DENY
+	}
+
+	# Public view pages may be embedded by anyone (CO-034 embeds).
+	@embed path /view/*
+	header @embed {
+		-X-Frame-Options
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; frame-ancestors *; object-src 'none'; base-uri 'self'"
+	}
+
+	handle /api/* {
+		reverse_proxy api:4000
+	}
+	# Public REST API (personal access tokens).
+	handle /v1/* {
+		reverse_proxy api:4000
+	}
+	# AI connector (MCP over streamable HTTP) and its OAuth discovery documents.
+	handle /mcp {
+		reverse_proxy api:4000
+	}
+	handle /.well-known/oauth-* {
+		reverse_proxy api:4000
+	}
+	# Published websites (they carry their own CSP).
+	handle /site/* {
+		header -Content-Security-Policy
+		header -X-Frame-Options
+		reverse_proxy api:4000
+	}
+	handle_path /collab* {
+		reverse_proxy collab:4100
+	}
+	handle {
+		root * /srv/web
+		# Hashed build output, the engine's .wasm included (Vite emits it under /assets).
+		@immutable path /assets/*
+		header @immutable Cache-Control "public, max-age=31536000, immutable"
+		@wasm path *.wasm
+		header @wasm Content-Type application/wasm
+		try_files {path} /index.html
+		# The image ships .br/.gz next to the big text and wasm files (deploy/Dockerfile); `encode` above compresses
+		# the rest on the fly, but never with brotli.
+		file_server {
+			precompressed br gzip
+		}
+	}
+}
+
+# Customers' own domains for published websites: certificates are issued on demand, only for domains
+# the API reports as verified (DNS TXT record), so nobody can point arbitrary hosts at us.
+https:// {
+	tls {
+		on_demand
+	}
+	reverse_proxy api:4000
+}

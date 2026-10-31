@@ -1,0 +1,162 @@
+{
+ "redacted": [
+  "id",
+  "run_at",
+  "created_at",
+  "locked_at",
+  "finished_at"
+ ],
+ "enqueued": [
+  {
+   "queue": "golden-a",
+   "payload": {
+    "b": 2,
+    "a": [
+     1,
+     "x"
+    ],
+    "nested": {
+     "k": null
+    }
+   },
+   "opts": {},
+   "row": {
+    "id": "<redacted>",
+    "queue": "golden-a",
+    "payload": {
+     "a": [
+      1,
+      "x"
+     ],
+     "b": 2,
+     "nested": {
+      "k": null
+     }
+    },
+    "status": "queued",
+    "priority": 0,
+    "run_at": "<redacted>",
+    "attempts": 0,
+    "max_attempts": 3,
+    "progress": 0,
+    "label": "Queued",
+    "result": null,
+    "error": null,
+    "owner_id": null,
+    "locked_at": null,
+    "created_at": "<redacted>",
+    "finished_at": null,
+    "run_delay_ms": 0
+   }
+  },
+  {
+   "queue": "golden-b",
+   "payload": {
+    "x": 1
+   },
+   "opts": {
+    "ownerId": "33333333-3333-4333-8333-333333333333",
+    "delayMs": 60000,
+    "maxAttempts": 7,
+    "priority": 5,
+    "label": "Rendering"
+   },
+   "row": {
+    "id": "<redacted>",
+    "queue": "golden-b",
+    "payload": {
+     "x": 1
+    },
+    "status": "queued",
+    "priority": 5,
+    "run_at": "<redacted>",
+    "attempts": 0,
+    "max_attempts": 7,
+    "progress": 0,
+    "label": "Rendering",
+    "result": null,
+    "error": null,
+    "owner_id": "33333333-3333-4333-8333-333333333333",
+    "locked_at": null,
+    "created_at": "<redacted>",
+    "finished_at": null,
+    "run_delay_ms": 60000
+   }
+  }
+ ],
+ "worked": {
+  "ok": {
+   "id": "<redacted>",
+   "queue": "golden-w",
+   "payload": {
+    "do": "ok"
+   },
+   "status": "done",
+   "priority": 0,
+   "run_at": "<redacted>",
+   "attempts": 1,
+   "max_attempts": 3,
+   "progress": 1,
+   "label": "Done",
+   "result": {
+    "n": 3,
+    "done": true
+   },
+   "error": null,
+   "owner_id": null,
+   "locked_at": "<redacted>",
+   "created_at": "<redacted>",
+   "finished_at": "<redacted>",
+   "run_delay_ms": 0
+  },
+  "retry": {
+   "id": "<redacted>",
+   "queue": "golden-w",
+   "payload": {
+    "do": "fail"
+   },
+   "status": "queued",
+   "priority": 0,
+   "run_at": "<redacted>",
+   "attempts": 1,
+   "max_attempts": 3,
+   "progress": 0,
+   "label": "Retrying",
+   "result": null,
+   "error": "boom: it failed",
+   "owner_id": null,
+   "locked_at": "<redacted>",
+   "created_at": "<redacted>",
+   "finished_at": null,
+   "run_delay_ms": 10000
+  },
+  "final": {
+   "id": "<redacted>",
+   "queue": "golden-w",
+   "payload": {
+    "do": "fail"
+   },
+   "status": "failed",
+   "priority": 0,
+   "run_at": "<redacted>",
+   "attempts": 1,
+   "max_attempts": 1,
+   "progress": 0,
+   "label": "Failed",
+   "result": null,
+   "error": "boom: it failed",
+   "owner_id": null,
+   "locked_at": "<redacted>",
+   "created_at": "<redacted>",
+   "finished_at": "<redacted>",
+   "run_delay_ms": 0
+  }
+ },
+ "retryDelaySecondsAfterAttempt": [
+  10,
+  20,
+  40,
+  80,
+  160
+ ]
+}

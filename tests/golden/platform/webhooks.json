@@ -1,0 +1,31 @@
+{
+ "events": [
+  "design.created",
+  "design.deleted",
+  "export.completed",
+  "form.response",
+  "comment.created",
+  "site.published",
+  "ping"
+ ],
+ "signatures": [
+  {
+   "secret": "whsec_abc",
+   "body": "{\"a\":1}",
+   "t": 1760000000,
+   "signature": "t=1760000000,v1=c99704868c84ebd238cfc2a4340df68f27117480792631402335f53fb31fe7cc"
+  },
+  {
+   "secret": "",
+   "body": "",
+   "t": 0,
+   "signature": "t=0,v1=b849d5a581847b281957065739df36df2463d1977ea8d6e1e4e6cf33fadc68c3"
+  },
+  {
+   "secret": "ключ",
+   "body": "{\"msg\":\"héllo ✨\"}",
+   "t": 1234567890,
+   "signature": "t=1234567890,v1=9c29e40250012fc60e1af338af5357b1fbf5fd3537db629d661dddb424ccb250"
+  }
+ ]
+}

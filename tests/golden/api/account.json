@@ -1,0 +1,6954 @@
+{
+ "clock": 1735732800000,
+ "env": {},
+ "fake": {},
+ "objects": [
+  "504b0506000000000000000000000000000000000000"
+ ],
+ "requires": [],
+ "seed": [
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000001', 'ada@example.test', 'Ada', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001001', 'Ada''s workspace', true, '00000000-0000-4000-8000-000000000001', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001001', '00000000-0000-4000-8000-000000000001', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000001')",
+  "INSERT INTO sessions(id, user_id, expires_at, user_agent, ip) VALUES ('92ba63901405cdae3c83bde1abe474f1d6d4124de3c42b6d25090ab18eaab9cd', '00000000-0000-4000-8000-000000000001', now() + interval '30 days', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', '127.0.0.1')",
+  "UPDATE users SET password_hash = 'scrypt$15$8$1$YWRhLi4uLi4uLi4uLi4uLg==$dsIwRevDSTDYcDy0594EUdCvwaupv1Qr4lWOMlj/MF4Atmt+wc4rrFQoHGRzT3u386zGvzLGWyc2b1PcRfYqdw==', birth_year = 1990 WHERE id = '00000000-0000-4000-8000-000000000001'",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000002', 'bob@example.test', 'Bob', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001002', 'Bob''s workspace', true, '00000000-0000-4000-8000-000000000002', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001002', '00000000-0000-4000-8000-000000000002', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000002')",
+  "UPDATE users SET password_hash = 'scrypt$15$8$1$Ym9iLi4uLi4uLi4uLi4uLg==$ICvlglPCLRiYg1tImBK+NIt/UDAhzKhbYVGDOsnxHFkUSD0QBOU5PMU3iBiOxLRWGFFUyMS1Ofj7E/gmYTx22w==', totp_secret = 'JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP', recovery_codes = ARRAY['d803a14342daee97aa8c9ab9af39b532f278ed077e4193a70185c2956db6cafd', '77c6cb460ac95db8c3ca60ea72fe155d72215c13ff1ec7298faf503b15e07cea'] WHERE id = '00000000-0000-4000-8000-000000000002'",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000003', 'cy@example.test', 'Cy', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001003', 'Cy''s workspace', true, '00000000-0000-4000-8000-000000000003', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001003', '00000000-0000-4000-8000-000000000003', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000003')",
+  "UPDATE users SET password_hash = 'scrypt$15$8$1$Y3kuLi4uLi4uLi4uLi4uLg==$pSPZrpP+9XPjO8GISfjGvEb8T6daZrH3gUUiuJwZcqnJzjy1Af6lDJGvHhSagfXTi452k1BOKhtdvCP2t/bawg==', disabled_at = '2025-01-01T00:00:00Z', disabled_reason = 'abuse' WHERE id = '00000000-0000-4000-8000-000000000003'",
+  "INSERT INTO users(id, email, name, color, email_verified_at, is_staff, created_at) VALUES ('00000000-0000-4000-8000-000000000004', 'dee@example.test', 'Dee', '#7c3aed', '2025-01-01T00:00:00Z', false, '2025-01-01T00:00:00Z')",
+  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001004', 'Dee''s workspace', true, '00000000-0000-4000-8000-000000000004', '2025-01-01T00:00:00Z')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000001004', '00000000-0000-4000-8000-000000000004', 'owner')",
+  "INSERT INTO email_preferences(user_id) VALUES ('00000000-0000-4000-8000-000000000004')",
+  "INSERT INTO jobs(id, queue, payload, status, owner_id, label, result, finished_at, created_at) VALUES\n      ('00000000-0000-4000-8000-000000000901', 'account-export', '{}', 'done', '00000000-0000-4000-8000-000000000001', 'Export ready', '{\"sha\":\"8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85\",\"size\":22,\"filename\":\"pinselo-export.zip\"}', '2024-12-30T00:00:00Z', '2024-12-30T00:00:00Z'),\n      ('00000000-0000-4000-8000-000000000902', 'account-export', '{}', 'done', '00000000-0000-4000-8000-000000000001', 'Export ready', '{\"sha\":\"8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85\",\"size\":22,\"filename\":\"old.zip\"}', '2024-12-01T00:00:00Z', '2024-12-01T00:00:00Z'),\n      ('00000000-0000-4000-8000-000000000903', 'account-export', '{}', 'running', '00000000-0000-4000-8000-000000000002', 'Preparing your export', NULL, NULL, '2024-12-30T00:00:00Z')"
+ ],
+ "steps": [
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.1"
+   },
+   "name": "providers",
+   "response": {
+    "body": {
+     "devLogin": true,
+     "passkeys": true,
+     "providers": [],
+     "signup": "open",
+     "supabase": null,
+     "termsVersion": "2026-10-01"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/providers"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.2"
+   },
+   "name": "me signed out",
+   "response": {
+    "body": {
+     "user": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.3"
+   },
+   "json": {
+    "birthYear": 1.5,
+    "email": "x",
+    "name": "",
+    "password": 5
+   },
+   "method": "POST",
+   "name": "signup: invalid body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "email",
+       "message": "Invalid email address",
+       "origin": "string",
+       "path": [
+        "email"
+       ],
+       "pattern": "/^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/"
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "password"
+       ]
+      },
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "int",
+       "format": "safeint",
+       "message": "Invalid input: expected int, received number",
+       "path": [
+        "birthYear"
+       ]
+      },
+      {
+       "code": "invalid_value",
+       "message": "Invalid input: expected true",
+       "path": [
+        "acceptTerms"
+       ],
+       "values": [
+        true
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.4"
+   },
+   "json": null,
+   "method": "POST",
+   "name": "signup: missing body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "object",
+       "message": "Invalid input: expected object, received null",
+       "path": []
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.5"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 2020,
+    "email": "kid@example.test",
+    "name": "Kid",
+    "password": "a long enough pass"
+   },
+   "method": "POST",
+   "name": "signup: too young",
+   "response": {
+    "body": {
+     "error": "age",
+     "message": "You need to be at least 13 to create an account."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.6"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 2030,
+    "email": "kid@example.test",
+    "name": "Kid",
+    "password": "a long enough pass"
+   },
+   "method": "POST",
+   "name": "signup: future birth year",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 2025,
+       "message": "Too big: expected number to be <=2025",
+       "origin": "number",
+       "path": [
+        "birthYear"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.7"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1999,
+    "email": "eve@example.test",
+    "name": "Eve",
+    "password": "password1"
+   },
+   "method": "POST",
+   "name": "signup: weak password",
+   "response": {
+    "body": {
+     "error": "weak_password",
+     "message": "Use at least 10 characters."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.8"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1999,
+    "email": "eve@example.test",
+    "name": "Eve",
+    "password": "short"
+   },
+   "method": "POST",
+   "name": "signup: short password",
+   "response": {
+    "body": {
+     "error": "weak_password",
+     "message": "Use at least 10 characters."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.9"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1999,
+    "email": "eve@example.test",
+    "name": "Eve",
+    "password": "aaaaaaaaaaaa"
+   },
+   "method": "POST",
+   "name": "signup: repeated character",
+   "response": {
+    "body": {
+     "error": "weak_password",
+     "message": "That password is too simple."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.10"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1990,
+    "email": "ADA@example.test",
+    "name": "Ada again",
+    "password": "a long enough pass"
+   },
+   "method": "POST",
+   "name": "signup: existing email",
+   "response": {
+    "body": {
+     "error": "exists",
+     "message": "An account with that email already exists. Sign in instead."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 409
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "capture": {
+    "eve": "body.user.id"
+   },
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    },
+    {
+     "name": "workspaces",
+     "sql": "SELECT w.name, w.personal, w.owner_id, m.user_id, m.role FROM workspaces w JOIN memberships m ON m.workspace_id = w.id ORDER BY w.name, m.user_id"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip, created_at, prev_hash, hash FROM audit_events ORDER BY id"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    },
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id, user_agent, ip, mfa_verified, extract(epoch from expires_at - created_at)::int AS ttl_s FROM sessions ORDER BY created_at, user_id"
+    },
+    {
+     "name": "tokens",
+     "sql": "SELECT kind, user_id, email, data, used_at IS NOT NULL AS used, extract(epoch from expires_at - created_at)::int AS ttl_s FROM auth_tokens ORDER BY created_at, kind"
+    },
+    {
+     "name": "analytics",
+     "sql": "SELECT user_id, name, props FROM analytics_events ORDER BY id"
+    }
+   ],
+   "client": "eve",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Ada",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 2,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": false
+      }
+     ]
+    },
+    {
+     "name": "workspaces",
+     "rows": [
+      {
+       "name": "Ada's workspace",
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "personal": true,
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "name": "Bob's workspace",
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "personal": true,
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "name": "Cy's workspace",
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "personal": true,
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000003"
+      },
+      {
+       "name": "Dee's workspace",
+       "owner_id": "00000000-0000-4000-8000-000000000004",
+       "personal": true,
+       "role": "owner",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "name": "Eve Adams's workspace",
+       "owner_id": "{{eve}}",
+       "personal": true,
+       "role": "owner",
+       "user_id": "{{eve}}"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "auth.signup",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:1>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "terms": "2026-10-01"
+       },
+       "prev_hash": null,
+       "target": null
+      },
+      {
+       "action": "consent.terms",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:2>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "accepted": true,
+        "ip": "198.51.100.11"
+       },
+       "prev_hash": "<sha:1>",
+       "target": "2026-10-01"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token=<token:1>\n",
+       "to_email": "eve@example.test"
+      }
+     ]
+    },
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "ip": "127.0.0.1",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "ip": "198.51.100.11",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "{{eve}}"
+      }
+     ]
+    },
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": false,
+       "user_id": "{{eve}}"
+      }
+     ]
+    },
+    {
+     "name": "analytics",
+     "rows": [
+      {
+       "name": "signup",
+       "props": {
+        "method": "password"
+       },
+       "user_id": null
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.11"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1999,
+    "email": "Eve@Example.test",
+    "extra": "ignored",
+    "name": "  Eve Adams  ",
+    "password": "a long enough pass"
+   },
+   "method": "POST",
+   "name": "signup",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#db2777",
+      "email": "eve@example.test",
+      "id": "{{eve}}",
+      "locale": "en",
+      "mfa": false,
+      "name": "Eve Adams",
+      "staff": false,
+      "verified": false
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:2>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/signup"
+  },
+  {
+   "capture": {
+    "verifyToken": {
+     "from": "rows.0.text",
+     "regex": "token=([A-Za-z0-9_-]+)"
+    }
+   },
+   "name": "verify token from the email",
+   "rows": [
+    {
+     "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token={{verifyToken}}\n"
+    }
+   ],
+   "sql": "SELECT text FROM email_outbox WHERE to_email = 'eve@example.test' ORDER BY created_at DESC LIMIT 1"
+  },
+  {
+   "client": "eve",
+   "headers": {
+    "x-forwarded-for": "198.51.100.13"
+   },
+   "name": "me after signup",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#db2777",
+      "email": "eve@example.test",
+      "id": "{{eve}}",
+      "locale": "en",
+      "mfa": false,
+      "name": "Eve Adams",
+      "staff": false,
+      "verified": false
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.14"
+   },
+   "json": {
+    "token": "nope"
+   },
+   "method": "POST",
+   "name": "verify: wrong token",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This link has expired. Request a new one from Settings."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.15"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "verify: no token",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received undefined",
+       "path": [
+        "token"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.16"
+   },
+   "json": {
+    "token": "{{verifyToken}}"
+   },
+   "method": "POST",
+   "name": "verify",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.17"
+   },
+   "json": {
+    "token": "{{verifyToken}}"
+   },
+   "method": "POST",
+   "name": "verify: used token",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This link has expired. Request a new one from Settings."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/verify"
+  },
+  {
+   "client": "eve",
+   "headers": {
+    "x-forwarded-for": "198.51.100.18"
+   },
+   "name": "me verified",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#db2777",
+      "email": "eve@example.test",
+      "id": "{{eve}}",
+      "locale": "en",
+      "mfa": false,
+      "name": "Eve Adams",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.19"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "resend verification signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/verify/resend"
+  },
+  {
+   "checks": [
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    }
+   ],
+   "client": "eve",
+   "db": [
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token={{verifyToken}}\n",
+       "to_email": "eve@example.test"
+      },
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token=<token:3>\n",
+       "to_email": "eve@example.test"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.20"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "resend verification",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/verify/resend"
+  },
+  {
+   "checks": [
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip, created_at, prev_hash, hash FROM audit_events ORDER BY id"
+    }
+   ],
+   "db": [
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "auth.signup",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:1>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "terms": "2026-10-01"
+       },
+       "prev_hash": null,
+       "target": null
+      },
+      {
+       "action": "consent.terms",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:2>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "accepted": true,
+        "ip": "198.51.100.11"
+       },
+       "prev_hash": "<sha:1>",
+       "target": "2026-10-01"
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:3>",
+       "ip": "198.51.100.21",
+       "meta": {
+        "email": "ada@example.test"
+       },
+       "prev_hash": "<sha:2>",
+       "target": null
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.21"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "wrong password"
+   },
+   "method": "POST",
+   "name": "login: wrong password",
+   "response": {
+    "body": {
+     "error": "invalid",
+     "message": "Wrong email or password."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.22"
+   },
+   "json": {
+    "email": "ghost@example.test",
+    "password": "whatever it is"
+   },
+   "method": "POST",
+   "name": "login: unknown user",
+   "response": {
+    "body": {
+     "error": "invalid",
+     "message": "Wrong email or password."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.23"
+   },
+   "json": {
+    "email": "ghost",
+    "password": "x"
+   },
+   "method": "POST",
+   "name": "login: invalid email",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "email",
+       "message": "Invalid email address",
+       "origin": "string",
+       "path": [
+        "email"
+       ],
+       "pattern": "/^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "checks": [
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id, user_agent, ip, mfa_verified, extract(epoch from expires_at - created_at)::int AS ttl_s FROM sessions ORDER BY created_at, user_id"
+    },
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "ip": "127.0.0.1",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "ip": "198.51.100.11",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "{{eve}}"
+      },
+      {
+       "ip": "198.51.100.24",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    },
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token={{verifyToken}}\n",
+       "to_email": "eve@example.test"
+      },
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token=<token:3>\n",
+       "to_email": "eve@example.test"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.24"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "correct horse battery"
+   },
+   "method": "POST",
+   "name": "login (known device)",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "en",
+      "mfa": false,
+      "name": "Ada",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:4>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "checks": [
+    {
+     "name": "outbox",
+     "sql": "SELECT to_email, subject, category, text FROM email_outbox ORDER BY created_at, to_email"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip, created_at, prev_hash, hash FROM audit_events ORDER BY id"
+    }
+   ],
+   "client": "ada-firefox",
+   "db": [
+    {
+     "name": "outbox",
+     "rows": [
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token={{verifyToken}}\n",
+       "to_email": "eve@example.test"
+      },
+      {
+       "category": "security",
+       "subject": "Confirm your email for Pinselo",
+       "text": "Welcome, Eve Adams\n\nConfirm your email address to finish setting up your account.\n\nConfirm email: https://app.example/auth/verify?token=<token:3>\n",
+       "to_email": "eve@example.test"
+      },
+      {
+       "category": "security",
+       "subject": "New sign-in to Pinselo",
+       "text": "New sign-in\n\nA new sign-in from Firefox on Linux (203.0.113.7) at Wed, 01 Jan 2025 12:00:00 GMT.\n\nIf this wasn’t you, reset your password and sign out other sessions in Settings → Security.\n",
+       "to_email": "ada@example.test"
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "auth.signup",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:1>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "terms": "2026-10-01"
+       },
+       "prev_hash": null,
+       "target": null
+      },
+      {
+       "action": "consent.terms",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:2>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "accepted": true,
+        "ip": "198.51.100.11"
+       },
+       "prev_hash": "<sha:1>",
+       "target": "2026-10-01"
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:3>",
+       "ip": "198.51.100.21",
+       "meta": {
+        "email": "ada@example.test"
+       },
+       "prev_hash": "<sha:2>",
+       "target": null
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:4>",
+       "ip": "198.51.100.22",
+       "meta": {
+        "email": "ghost@example.test"
+       },
+       "prev_hash": "<sha:3>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:5>",
+       "ip": "198.51.100.24",
+       "meta": {
+        "method": "password"
+       },
+       "prev_hash": "<sha:4>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:6>",
+       "ip": "203.0.113.7",
+       "meta": {
+        "method": "password"
+       },
+       "prev_hash": "<sha:5>",
+       "target": null
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+    "x-forwarded-for": "203.0.113.7"
+   },
+   "json": {
+    "email": "Ada@example.test",
+    "password": "correct horse battery"
+   },
+   "method": "POST",
+   "name": "login from a new device",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "en",
+      "mfa": false,
+      "name": "Ada",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:5>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.26"
+   },
+   "json": {
+    "email": "cy@example.test",
+    "password": "correct horse battery"
+   },
+   "method": "POST",
+   "name": "login: disabled account",
+   "response": {
+    "body": {
+     "error": "disabled",
+     "message": "This account is disabled. Contact support if you think this is a mistake."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 403
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "capture": {
+    "ticket": "body.ticket"
+   },
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT kind, user_id, email, data, used_at IS NOT NULL AS used, extract(epoch from expires_at - created_at)::int AS ttl_s FROM auth_tokens ORDER BY created_at, kind"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": true,
+       "user_id": "{{eve}}"
+      },
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": false,
+       "user_id": "{{eve}}"
+      },
+      {
+       "data": {
+        "method": "password"
+       },
+       "email": null,
+       "kind": "mfa",
+       "ttl_s": 600,
+       "used": false,
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.27"
+   },
+   "json": {
+    "email": "bob@example.test",
+    "password": "correct horse battery"
+   },
+   "method": "POST",
+   "name": "login: 2FA required",
+   "response": {
+    "body": {
+     "mfaRequired": true,
+     "ticket": "{{ticket}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.28"
+   },
+   "json": {
+    "code": "000000",
+    "ticket": "{{ticket}}"
+   },
+   "method": "POST",
+   "name": "mfa: wrong code",
+   "response": {
+    "body": {
+     "error": "bad_code",
+     "message": "That code didn’t work."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.29"
+   },
+   "json": {
+    "code": "123456",
+    "ticket": "nope"
+   },
+   "method": "POST",
+   "name": "mfa: unknown ticket",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "That sign-in attempt expired. Start again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.30"
+   },
+   "json": {
+    "code": 5
+   },
+   "method": "POST",
+   "name": "mfa: invalid body",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received undefined",
+       "path": [
+        "ticket"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "string",
+       "message": "Invalid input: expected string, received number",
+       "path": [
+        "code"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT kind, user_id, email, data, used_at IS NOT NULL AS used, extract(epoch from expires_at - created_at)::int AS ttl_s FROM auth_tokens ORDER BY created_at, kind"
+    }
+   ],
+   "client": "bob",
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": true,
+       "user_id": "{{eve}}"
+      },
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": false,
+       "user_id": "{{eve}}"
+      },
+      {
+       "data": {
+        "method": "password"
+       },
+       "email": null,
+       "kind": "mfa",
+       "ttl_s": 600,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.31"
+   },
+   "json": {
+    "code": " {{totp:bobSecret}} ",
+    "ticket": "{{ticket}}"
+   },
+   "method": "POST",
+   "name": "mfa",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "bob@example.test",
+      "id": "00000000-0000-4000-8000-000000000002",
+      "locale": "en",
+      "mfa": true,
+      "name": "Bob",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:6>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.32"
+   },
+   "json": {
+    "code": "{{totp:bobSecret}}",
+    "ticket": "{{ticket}}"
+   },
+   "method": "POST",
+   "name": "mfa: ticket used",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "That sign-in attempt expired. Start again."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "capture": {
+    "ticket2": "body.ticket"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.33"
+   },
+   "json": {
+    "email": "bob@example.test",
+    "password": "correct horse battery"
+   },
+   "method": "POST",
+   "name": "login: 2FA again",
+   "response": {
+    "body": {
+     "mfaRequired": true,
+     "ticket": "{{ticket2}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip, created_at, prev_hash, hash FROM audit_events ORDER BY id"
+    }
+   ],
+   "client": "bob2",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Ada",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "auth.signup",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:1>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "terms": "2026-10-01"
+       },
+       "prev_hash": null,
+       "target": null
+      },
+      {
+       "action": "consent.terms",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:2>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "accepted": true,
+        "ip": "198.51.100.11"
+       },
+       "prev_hash": "<sha:1>",
+       "target": "2026-10-01"
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:3>",
+       "ip": "198.51.100.21",
+       "meta": {
+        "email": "ada@example.test"
+       },
+       "prev_hash": "<sha:2>",
+       "target": null
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:4>",
+       "ip": "198.51.100.22",
+       "meta": {
+        "email": "ghost@example.test"
+       },
+       "prev_hash": "<sha:3>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:5>",
+       "ip": "198.51.100.24",
+       "meta": {
+        "method": "password"
+       },
+       "prev_hash": "<sha:4>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:6>",
+       "ip": "203.0.113.7",
+       "meta": {
+        "method": "password"
+       },
+       "prev_hash": "<sha:5>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:7>",
+       "ip": "198.51.100.31",
+       "meta": {
+        "method": "password+totp"
+       },
+       "prev_hash": "<sha:6>",
+       "target": null
+      },
+      {
+       "action": "auth.recovery_code_used",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:8>",
+       "ip": "198.51.100.34",
+       "meta": null,
+       "prev_hash": "<sha:7>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:9>",
+       "ip": "198.51.100.34",
+       "meta": {
+        "method": "password+totp"
+       },
+       "prev_hash": "<sha:8>",
+       "target": null
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.34"
+   },
+   "json": {
+    "code": "abcde-12345",
+    "ticket": "{{ticket2}}"
+   },
+   "method": "POST",
+   "name": "mfa with a recovery code",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "bob@example.test",
+      "id": "00000000-0000-4000-8000-000000000002",
+      "locale": "en",
+      "mfa": true,
+      "name": "Bob",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:7>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    }
+   ],
+   "client": "newbie",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Ada",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.35"
+   },
+   "json": {
+    "email": "New@example.test",
+    "name": "Newbie"
+   },
+   "method": "POST",
+   "name": "dev login creates the account",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#db2777",
+      "email": "new@example.test",
+      "id": "<uuid:1>",
+      "locale": "en",
+      "mfa": false,
+      "name": "Newbie",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:8>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "client": "plain",
+   "headers": {
+    "x-forwarded-for": "198.51.100.36"
+   },
+   "json": {
+    "email": "plain@example.test",
+    "password": ""
+   },
+   "method": "POST",
+   "name": "dev login, name from the email",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#2563eb",
+      "email": "plain@example.test",
+      "id": "<uuid:2>",
+      "locale": "en",
+      "mfa": false,
+      "name": "plain",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:9>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "client": "newbie",
+   "headers": {
+    "x-forwarded-for": "198.51.100.37"
+   },
+   "name": "me as newbie",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#db2777",
+      "email": "new@example.test",
+      "id": "<uuid:1>",
+      "locale": "en",
+      "mfa": false,
+      "name": "Newbie",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "client": "newbie",
+   "headers": {
+    "x-forwarded-for": "198.51.100.38"
+   },
+   "method": "POST",
+   "name": "logout",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=; Max-Age=0; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/logout"
+  },
+  {
+   "client": "newbie",
+   "headers": {
+    "x-forwarded-for": "198.51.100.39"
+   },
+   "name": "me after logout",
+   "response": {
+    "body": {
+     "user": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.40"
+   },
+   "json": {
+    "email": "nope"
+   },
+   "method": "POST",
+   "name": "magic: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_format",
+       "format": "email",
+       "message": "Invalid email address",
+       "origin": "string",
+       "path": [
+        "email"
+       ],
+       "pattern": "/^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$/"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/magic"
+  },
+  {
+   "checks": [
+    {
+     "name": "tokens",
+     "sql": "SELECT kind, user_id, email, data, used_at IS NOT NULL AS used, extract(epoch from expires_at - created_at)::int AS ttl_s FROM auth_tokens ORDER BY created_at, kind"
+    }
+   ],
+   "db": [
+    {
+     "name": "tokens",
+     "rows": [
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": true,
+       "user_id": "{{eve}}"
+      },
+      {
+       "data": null,
+       "email": null,
+       "kind": "verify",
+       "ttl_s": 259200,
+       "used": false,
+       "user_id": "{{eve}}"
+      },
+      {
+       "data": {
+        "method": "password"
+       },
+       "email": null,
+       "kind": "mfa",
+       "ttl_s": 600,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "data": {
+        "method": "password"
+       },
+       "email": null,
+       "kind": "mfa",
+       "ttl_s": 600,
+       "used": true,
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "data": {
+        "next": "/design/abc"
+       },
+       "email": "dee@example.test",
+       "kind": "magic",
+       "ttl_s": 900,
+       "used": false,
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.41"
+   },
+   "json": {
+    "email": "dee@example.test",
+    "next": "/design/abc"
+   },
+   "method": "POST",
+   "name": "magic for an existing account",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/magic"
+  },
+  {
+   "capture": {
+    "magicDee": {
+     "from": "rows.0.text",
+     "regex": "token=([A-Za-z0-9_-]+)"
+    }
+   },
+   "name": "magic token",
+   "rows": [
+    {
+     "text": "Sign in\n\nClick the button to sign in. The link works once and expires in 15 minutes.\n\nIf you didn’t ask for this, you can ignore this email.\n\nSign in: https://app.example/auth/magic?token={{magicDee}}\n"
+    }
+   ],
+   "sql": "SELECT text FROM email_outbox WHERE to_email = 'dee@example.test' ORDER BY created_at DESC LIMIT 1"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    }
+   ],
+   "client": "dee",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Ada",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#2563eb",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "plain@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "plain",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.43"
+   },
+   "json": {
+    "token": "{{magicDee}}"
+   },
+   "method": "POST",
+   "name": "magic verify",
+   "response": {
+    "body": {
+     "next": "/design/abc",
+     "user": {
+      "color": "#7c3aed",
+      "email": "dee@example.test",
+      "id": "00000000-0000-4000-8000-000000000004",
+      "locale": "en",
+      "mfa": false,
+      "name": "Dee",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:10>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/magic/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.44"
+   },
+   "json": {
+    "token": "{{magicDee}}"
+   },
+   "method": "POST",
+   "name": "magic verify: used",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This link has expired or was already used."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/magic/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.45"
+   },
+   "json": {
+    "email": "fresh@example.test",
+    "next": "//evil.example"
+   },
+   "method": "POST",
+   "name": "magic for a new address",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/magic"
+  },
+  {
+   "capture": {
+    "magicFresh": {
+     "from": "rows.0.text",
+     "regex": "token=([A-Za-z0-9_-]+)"
+    }
+   },
+   "name": "magic token (new)",
+   "rows": [
+    {
+     "text": "Sign in\n\nClick the button to sign in. The link works once and expires in 15 minutes.\n\nIf you didn’t ask for this, you can ignore this email.\n\nSign in: https://app.example/auth/magic?token={{magicFresh}}\n"
+    }
+   ],
+   "sql": "SELECT text FROM email_outbox WHERE to_email = 'fresh@example.test' ORDER BY created_at DESC LIMIT 1"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.47"
+   },
+   "json": {
+    "token": "{{magicFresh}}"
+   },
+   "method": "POST",
+   "name": "magic verify: needs a profile",
+   "response": {
+    "body": {
+     "email": "fresh@example.test",
+     "needsProfile": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/magic/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.48"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 2020,
+    "name": "Fresh",
+    "token": "{{magicFresh}}"
+   },
+   "method": "POST",
+   "name": "magic verify: too young",
+   "response": {
+    "body": {
+     "error": "age",
+     "message": "You need to be at least 13."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/magic/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.49"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1990.5,
+    "name": "Fresh",
+    "token": "{{magicFresh}}"
+   },
+   "method": "POST",
+   "name": "magic verify: invalid birth year",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "int",
+       "format": "safeint",
+       "message": "Invalid input: expected int, received number",
+       "path": [
+        "birthYear"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/magic/verify"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    },
+    {
+     "name": "audit",
+     "sql": "SELECT actor_id, action, target, meta, ip, created_at, prev_hash, hash FROM audit_events ORDER BY id"
+    }
+   ],
+   "client": "fresh",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Ada",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#dc2626",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "fresh@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Fresh",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#2563eb",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "plain@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "plain",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    },
+    {
+     "name": "audit",
+     "rows": [
+      {
+       "action": "auth.signup",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:1>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "terms": "2026-10-01"
+       },
+       "prev_hash": null,
+       "target": null
+      },
+      {
+       "action": "consent.terms",
+       "actor_id": "{{eve}}",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:2>",
+       "ip": "198.51.100.11",
+       "meta": {
+        "accepted": true,
+        "ip": "198.51.100.11"
+       },
+       "prev_hash": "<sha:1>",
+       "target": "2026-10-01"
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:3>",
+       "ip": "198.51.100.21",
+       "meta": {
+        "email": "ada@example.test"
+       },
+       "prev_hash": "<sha:2>",
+       "target": null
+      },
+      {
+       "action": "auth.login_failed",
+       "actor_id": null,
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:4>",
+       "ip": "198.51.100.22",
+       "meta": {
+        "email": "ghost@example.test"
+       },
+       "prev_hash": "<sha:3>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:5>",
+       "ip": "198.51.100.24",
+       "meta": {
+        "method": "password"
+       },
+       "prev_hash": "<sha:4>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:6>",
+       "ip": "203.0.113.7",
+       "meta": {
+        "method": "password"
+       },
+       "prev_hash": "<sha:5>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:7>",
+       "ip": "198.51.100.31",
+       "meta": {
+        "method": "password+totp"
+       },
+       "prev_hash": "<sha:6>",
+       "target": null
+      },
+      {
+       "action": "auth.recovery_code_used",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:8>",
+       "ip": "198.51.100.34",
+       "meta": null,
+       "prev_hash": "<sha:7>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000002",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:9>",
+       "ip": "198.51.100.34",
+       "meta": {
+        "method": "password+totp"
+       },
+       "prev_hash": "<sha:8>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "<uuid:1>",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:10>",
+       "ip": "198.51.100.35",
+       "meta": {
+        "method": "dev"
+       },
+       "prev_hash": "<sha:9>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "<uuid:2>",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:11>",
+       "ip": "198.51.100.36",
+       "meta": {
+        "method": "dev"
+       },
+       "prev_hash": "<sha:10>",
+       "target": null
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "00000000-0000-4000-8000-000000000004",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:12>",
+       "ip": "198.51.100.43",
+       "meta": {
+        "method": "magic"
+       },
+       "prev_hash": "<sha:11>",
+       "target": null
+      },
+      {
+       "action": "consent.terms",
+       "actor_id": "<uuid:3>",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:13>",
+       "ip": "198.51.100.50",
+       "meta": {
+        "accepted": true
+       },
+       "prev_hash": "<sha:12>",
+       "target": "2026-10-01"
+      },
+      {
+       "action": "auth.login",
+       "actor_id": "<uuid:3>",
+       "created_at": "2025-01-01T12:00:00.000Z",
+       "hash": "<sha:14>",
+       "ip": "198.51.100.50",
+       "meta": {
+        "method": "magic"
+       },
+       "prev_hash": "<sha:13>",
+       "target": null
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.50"
+   },
+   "json": {
+    "acceptTerms": true,
+    "birthYear": 1990,
+    "name": "Fresh",
+    "token": "{{magicFresh}}"
+   },
+   "method": "POST",
+   "name": "magic verify: new account",
+   "response": {
+    "body": {
+     "next": "/",
+     "user": {
+      "color": "#dc2626",
+      "email": "fresh@example.test",
+      "id": "<uuid:3>",
+      "locale": "en",
+      "mfa": false,
+      "name": "Fresh",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:11>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/magic/verify"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.51"
+   },
+   "json": {
+    "email": "ghost@example.test"
+   },
+   "method": "POST",
+   "name": "reset request: unknown address",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/reset/request"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.52"
+   },
+   "json": {
+    "email": "ada@example.test"
+   },
+   "method": "POST",
+   "name": "reset request",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/reset/request"
+  },
+  {
+   "capture": {
+    "resetToken": {
+     "from": "rows.0.text",
+     "regex": "token=([A-Za-z0-9_-]+)"
+    }
+   },
+   "name": "reset token",
+   "rows": [
+    {
+     "text": "Reset your password\n\nUse this link within 30 minutes to choose a new password. If you didn’t ask for it, ignore this email — your password stays the same.\n\nChoose a new password: https://app.example/auth/reset?token={{resetToken}}\n"
+    }
+   ],
+   "sql": "SELECT text FROM email_outbox WHERE to_email = 'ada@example.test' ORDER BY created_at DESC LIMIT 1"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.54"
+   },
+   "json": {
+    "password": "opencanvas",
+    "token": "{{resetToken}}"
+   },
+   "method": "POST",
+   "name": "reset: weak",
+   "response": {
+    "body": {
+     "error": "weak_password",
+     "message": "That password is too common."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/reset"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.55"
+   },
+   "json": {
+    "password": "another long password",
+    "token": "nope"
+   },
+   "method": "POST",
+   "name": "reset: bad token",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This link has expired. Request a new one."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/reset"
+  },
+  {
+   "checks": [
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id, user_agent, ip, mfa_verified, extract(epoch from expires_at - created_at)::int AS ttl_s FROM sessions ORDER BY created_at, user_id"
+    },
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    }
+   ],
+   "db": [
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "ip": "198.51.100.11",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "{{eve}}"
+      },
+      {
+       "ip": "198.51.100.31",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.34",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.36",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:2>"
+      },
+      {
+       "ip": "198.51.100.43",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "ip": "198.51.100.50",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:3>"
+      }
+     ]
+    },
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Ada",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#dc2626",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "fresh@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Fresh",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#2563eb",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "plain@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "plain",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.56"
+   },
+   "json": {
+    "password": "another long password",
+    "token": "{{resetToken}}"
+   },
+   "method": "POST",
+   "name": "reset",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/reset"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.57"
+   },
+   "name": "old sessions are gone",
+   "response": {
+    "body": {
+     "user": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.58"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "another long password"
+   },
+   "method": "POST",
+   "name": "login with the new password",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "en",
+      "mfa": false,
+      "name": "Ada",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:12>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.59"
+   },
+   "name": "account signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.60"
+   },
+   "name": "account",
+   "response": {
+    "body": {
+     "auth": {
+      "mode": "builtin",
+      "supabaseEmail": null,
+      "supabaseId": null,
+      "supabaseLinked": false
+     },
+     "hasPassword": true,
+     "oauth": [],
+     "passkeys": [],
+     "prefs": {
+      "comments": true,
+      "mentions": true,
+      "product": false,
+      "shares": true
+     },
+     "recoveryCodesLeft": 0,
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "en",
+      "mfa": false,
+      "name": "Ada",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.61"
+   },
+   "json": {
+    "locale": "a-very-long-locale",
+    "name": ""
+   },
+   "method": "PATCH",
+   "name": "update account: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "too_small",
+       "inclusive": true,
+       "message": "Too small: expected string to have >=1 characters",
+       "minimum": 1,
+       "origin": "string",
+       "path": [
+        "name"
+       ]
+      },
+      {
+       "code": "too_big",
+       "inclusive": true,
+       "maximum": 10,
+       "message": "Too big: expected string to have <=10 characters",
+       "origin": "string",
+       "path": [
+        "locale"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.62"
+   },
+   "json": {
+    "locale": "de",
+    "name": "  Ada L.  "
+   },
+   "method": "PATCH",
+   "name": "update account",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.63"
+   },
+   "json": {
+    "mentions": "yes"
+   },
+   "method": "PUT",
+   "name": "email preferences: invalid",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received string",
+       "path": [
+        "mentions"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received undefined",
+       "path": [
+        "comments"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received undefined",
+       "path": [
+        "shares"
+       ]
+      },
+      {
+       "code": "invalid_type",
+       "expected": "boolean",
+       "message": "Invalid input: expected boolean, received undefined",
+       "path": [
+        "product"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/account/email-preferences"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.64"
+   },
+   "json": {
+    "comments": true,
+    "mentions": false,
+    "product": true,
+    "shares": false
+   },
+   "method": "PUT",
+   "name": "email preferences",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/email-preferences"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.65"
+   },
+   "name": "account after changes",
+   "response": {
+    "body": {
+     "auth": {
+      "mode": "builtin",
+      "supabaseEmail": null,
+      "supabaseId": null,
+      "supabaseLinked": false
+     },
+     "hasPassword": true,
+     "oauth": [],
+     "passkeys": [],
+     "prefs": {
+      "comments": true,
+      "mentions": false,
+      "product": true,
+      "shares": false
+     },
+     "recoveryCodesLeft": 0,
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "ada-phone",
+   "headers": {
+    "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1",
+    "x-forwarded-for": "198.51.100.66"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "another long password"
+   },
+   "method": "POST",
+   "name": "second session",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:13>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "capture": {
+    "phoneSession": "body.sessions.0.id"
+   },
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.67"
+   },
+   "name": "sessions",
+   "response": {
+    "body": {
+     "sessions": [
+      {
+       "created_at": "<ts>",
+       "current": false,
+       "device": "Safari on macOS",
+       "id": "{{phoneSession}}",
+       "ip": "198.51.100.66",
+       "last_seen_at": "<ts>"
+      },
+      {
+       "created_at": "<ts>",
+       "current": true,
+       "device": "Chrome on macOS",
+       "id": "<id:1>",
+       "ip": "198.51.100.58",
+       "last_seen_at": "<ts>"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/sessions"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.68"
+   },
+   "method": "DELETE",
+   "name": "delete the other session",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/sessions/{{phoneSession}}"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.69"
+   },
+   "name": "sessions after delete",
+   "response": {
+    "body": {
+     "sessions": [
+      {
+       "created_at": "<ts>",
+       "current": true,
+       "device": "Chrome on macOS",
+       "id": "<id:1>",
+       "ip": "198.51.100.58",
+       "last_seen_at": "<ts>"
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/sessions"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.70"
+   },
+   "json": {
+    "current": "nope",
+    "password": "yet another password"
+   },
+   "method": "POST",
+   "name": "change password: wrong current",
+   "response": {
+    "body": {
+     "error": "invalid",
+     "message": "Your current password is wrong."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/account/password"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.71"
+   },
+   "json": {
+    "current": "another long password",
+    "password": "qwertyuiop"
+   },
+   "method": "POST",
+   "name": "change password: weak",
+   "response": {
+    "body": {
+     "error": "weak_password",
+     "message": "That password is too common."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/account/password"
+  },
+  {
+   "client": "ada-2",
+   "headers": {
+    "x-forwarded-for": "198.51.100.72"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "another long password"
+   },
+   "method": "POST",
+   "name": "third session",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:14>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "checks": [
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id, user_agent, ip, mfa_verified, extract(epoch from expires_at - created_at)::int AS ttl_s FROM sessions ORDER BY created_at, user_id"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "ip": "198.51.100.11",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "{{eve}}"
+      },
+      {
+       "ip": "198.51.100.31",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.34",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.36",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:2>"
+      },
+      {
+       "ip": "198.51.100.43",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "ip": "198.51.100.50",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:3>"
+      },
+      {
+       "ip": "198.51.100.58",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.73"
+   },
+   "json": {
+    "current": "another long password",
+    "password": "yet another password"
+   },
+   "method": "POST",
+   "name": "change password",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/password"
+  },
+  {
+   "client": "ada-2",
+   "headers": {
+    "x-forwarded-for": "198.51.100.74"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "yet another password"
+   },
+   "method": "POST",
+   "name": "second session again",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:15>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "checks": [
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id, user_agent, ip, mfa_verified, extract(epoch from expires_at - created_at)::int AS ttl_s FROM sessions ORDER BY created_at, user_id"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "ip": "198.51.100.11",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "{{eve}}"
+      },
+      {
+       "ip": "198.51.100.31",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.34",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.36",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:2>"
+      },
+      {
+       "ip": "198.51.100.43",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "ip": "198.51.100.50",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:3>"
+      },
+      {
+       "ip": "198.51.100.58",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.75"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "revoke other sessions",
+   "response": {
+    "body": {
+     "ok": true,
+     "supabase": "skipped"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/sessions/revoke-others"
+  },
+  {
+   "capture": {
+    "adaSecret": "body.secret"
+   },
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.76"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "2fa setup",
+   "response": {
+    "body": {
+     "otpauthUrl": "otpauth://totp/Pinselo:ada%40example.test?issuer=Pinselo&secret={{adaSecret}}&algorithm=SHA1&digits=6&period=30",
+     "secret": "{{adaSecret}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/2fa/setup"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.77"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "2fa setup again: same pending secret",
+   "response": {
+    "body": {
+     "otpauthUrl": "otpauth://totp/Pinselo:ada%40example.test?issuer=Pinselo&secret={{adaSecret}}&algorithm=SHA1&digits=6&period=30",
+     "secret": "{{adaSecret}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/2fa/setup"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.78"
+   },
+   "json": {
+    "code": "000000"
+   },
+   "method": "POST",
+   "name": "2fa enable: wrong code",
+   "response": {
+    "body": {
+     "error": "bad_code",
+     "message": "That code didn’t match. Check your authenticator app’s clock."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/account/2fa/enable"
+  },
+  {
+   "capture": {
+    "code0": "body.recoveryCodes.0",
+    "code1": "body.recoveryCodes.1",
+    "code2": "body.recoveryCodes.2",
+    "code3": "body.recoveryCodes.3",
+    "code4": "body.recoveryCodes.4",
+    "code5": "body.recoveryCodes.5",
+    "code6": "body.recoveryCodes.6",
+    "code7": "body.recoveryCodes.7",
+    "code8": "body.recoveryCodes.8",
+    "code9": "body.recoveryCodes.9"
+   },
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 10,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "de",
+       "name": "Ada L.",
+       "pending": false,
+       "totp_secret": "{{adaSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#dc2626",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "fresh@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Fresh",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#2563eb",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "plain@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "plain",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.79"
+   },
+   "json": {
+    "code": "{{totp:adaSecret}}"
+   },
+   "method": "POST",
+   "name": "2fa enable",
+   "response": {
+    "body": {
+     "recoveryCodes": [
+      "{{code0}}",
+      "{{code1}}",
+      "{{code2}}",
+      "{{code3}}",
+      "{{code4}}",
+      "{{code5}}",
+      "{{code6}}",
+      "{{code7}}",
+      "{{code8}}",
+      "{{code9}}"
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/2fa/enable"
+  },
+  {
+   "capture": {
+    "ticket3": "body.ticket"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.80"
+   },
+   "json": {
+    "email": "ada@example.test",
+    "password": "yet another password"
+   },
+   "method": "POST",
+   "name": "login now needs a code",
+   "response": {
+    "body": {
+     "mfaRequired": true,
+     "ticket": "{{ticket3}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/login"
+  },
+  {
+   "client": "ada-3",
+   "headers": {
+    "x-forwarded-for": "198.51.100.81"
+   },
+   "json": {
+    "code": "{{code0}}",
+    "ticket": "{{ticket3}}"
+   },
+   "method": "POST",
+   "name": "mfa with the new recovery code",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": true,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:16>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/mfa"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.82"
+   },
+   "json": {
+    "code": "111111"
+   },
+   "method": "POST",
+   "name": "2fa disable: wrong code",
+   "response": {
+    "body": {
+     "error": "bad_code",
+     "message": "That code didn’t work."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/account/2fa/disable"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "de",
+       "name": "Ada L.",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#dc2626",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "fresh@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Fresh",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#2563eb",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "plain@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "plain",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.83"
+   },
+   "json": {
+    "code": "{{totp:adaSecret}}"
+   },
+   "method": "POST",
+   "name": "2fa disable",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/2fa/disable"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.84"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey register options signed out",
+   "response": {
+    "body": {
+     "error": "unauthenticated"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/passkey/register/options"
+  },
+  {
+   "client": "eve",
+   "headers": {
+    "x-forwarded-for": "198.51.100.85"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey register: no challenge yet",
+   "response": {
+    "body": {
+     "error": "expired"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/passkey/register/verify"
+  },
+  {
+   "capture": {
+    "regChallenge": "body.challenge"
+   },
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.86"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey register options",
+   "response": {
+    "body": {
+     "attestation": "none",
+     "authenticatorSelection": {
+      "requireResidentKey": false,
+      "residentKey": "preferred",
+      "userVerification": "preferred"
+     },
+     "challenge": "{{regChallenge}}",
+     "excludeCredentials": [],
+     "extensions": {
+      "credProps": true
+     },
+     "hints": [],
+     "pubKeyCredParams": [
+      {
+       "alg": -48,
+       "type": "public-key"
+      },
+      {
+       "alg": -8,
+       "type": "public-key"
+      },
+      {
+       "alg": -7,
+       "type": "public-key"
+      },
+      {
+       "alg": -257,
+       "type": "public-key"
+      }
+     ],
+     "rp": {
+      "id": "app.example",
+      "name": "Pinselo"
+     },
+     "timeout": 60000,
+     "user": {
+      "displayName": "Ada L.",
+      "id": "MDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAx",
+      "name": "ada@example.test"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/register/options"
+  },
+  {
+   "checks": [
+    {
+     "name": "passkeys",
+     "sql": "SELECT id, user_id, public_key, counter, transports, name FROM passkeys ORDER BY id"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "passkeys",
+     "rows": [
+      {
+       "counter": "0",
+       "id": "N4zX8gWeFHbEjtOnCnxvCw",
+       "name": "MacBook",
+       "public_key": {
+        "data": [
+         164,
+         1,
+         1,
+         3,
+         39,
+         32,
+         6,
+         33,
+         88,
+         32,
+         134,
+         249,
+         232,
+         62,
+         84,
+         231,
+         111,
+         161,
+         115,
+         225,
+         183,
+         159,
+         241,
+         161,
+         215,
+         255,
+         202,
+         155,
+         73,
+         254,
+         219,
+         178,
+         113,
+         178,
+         56,
+         80,
+         237,
+         22,
+         123,
+         187,
+         22,
+         22
+        ],
+        "type": "Buffer"
+       },
+       "transports": [
+        "internal"
+       ],
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.87"
+   },
+   "method": "POST",
+   "name": "passkey register",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/register/verify",
+   "webauthn": {
+    "challenge": "regChallenge",
+    "credential": "ada-mac",
+    "kind": "register",
+    "name": "MacBook"
+   }
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.88"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey register options (exclude list)",
+   "response": {
+    "body": {
+     "attestation": "none",
+     "authenticatorSelection": {
+      "requireResidentKey": false,
+      "residentKey": "preferred",
+      "userVerification": "preferred"
+     },
+     "challenge": "<token:17>",
+     "excludeCredentials": [
+      {
+       "id": "N4zX8gWeFHbEjtOnCnxvCw",
+       "transports": [
+        "internal"
+       ],
+       "type": "public-key"
+      }
+     ],
+     "extensions": {
+      "credProps": true
+     },
+     "hints": [],
+     "pubKeyCredParams": [
+      {
+       "alg": -48,
+       "type": "public-key"
+      },
+      {
+       "alg": -8,
+       "type": "public-key"
+      },
+      {
+       "alg": -7,
+       "type": "public-key"
+      },
+      {
+       "alg": -257,
+       "type": "public-key"
+      }
+     ],
+     "rp": {
+      "id": "app.example",
+      "name": "Pinselo"
+     },
+     "timeout": 60000,
+     "user": {
+      "displayName": "Ada L.",
+      "id": "MDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAx",
+      "name": "ada@example.test"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/register/options"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.89"
+   },
+   "name": "account lists the passkey",
+   "response": {
+    "body": {
+     "auth": {
+      "mode": "builtin",
+      "supabaseEmail": null,
+      "supabaseId": null,
+      "supabaseLinked": false
+     },
+     "hasPassword": true,
+     "oauth": [],
+     "passkeys": [
+      {
+       "created_at": "<ts>",
+       "id": "N4zX8gWeFHbEjtOnCnxvCw",
+       "last_used_at": null,
+       "name": "MacBook"
+      }
+     ],
+     "prefs": {
+      "comments": true,
+      "mentions": false,
+      "product": true,
+      "shares": false
+     },
+     "recoveryCodesLeft": 0,
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "capture": {
+    "authChallenge": "body.challenge"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.90"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey login options",
+   "response": {
+    "body": {
+     "challenge": "{{authChallenge}}",
+     "rpId": "app.example",
+     "timeout": 60000,
+     "userVerification": "preferred"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/login/options"
+  },
+  {
+   "checks": [
+    {
+     "name": "passkeys",
+     "sql": "SELECT id, counter, last_used_at IS NOT NULL AS used FROM passkeys ORDER BY id"
+    }
+   ],
+   "client": "ada-passkey",
+   "db": [
+    {
+     "name": "passkeys",
+     "rows": [
+      {
+       "counter": "1",
+       "id": "N4zX8gWeFHbEjtOnCnxvCw",
+       "used": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.91"
+   },
+   "method": "POST",
+   "name": "passkey login",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:18>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/login/verify",
+   "webauthn": {
+    "challenge": "authChallenge",
+    "counter": 1,
+    "credential": "ada-mac",
+    "kind": "login"
+   }
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.92"
+   },
+   "method": "POST",
+   "name": "passkey login: challenge used",
+   "response": {
+    "body": {
+     "error": "expired"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/auth/passkey/login/verify",
+   "webauthn": {
+    "challenge": "authChallenge",
+    "counter": 2,
+    "credential": "ada-mac",
+    "kind": "login"
+   }
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.93"
+   },
+   "method": "POST",
+   "name": "passkey login: unknown key",
+   "response": {
+    "body": {
+     "error": "unknown_passkey",
+     "message": "That passkey isn’t registered here."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/auth/passkey/login/verify",
+   "webauthn": {
+    "challenge": "authChallenge",
+    "counter": 1,
+    "credential": "nobody",
+    "kind": "login"
+   }
+  },
+  {
+   "capture": {
+    "authChallenge2": "body.challenge"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.94"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey login options (2)",
+   "response": {
+    "body": {
+     "challenge": "{{authChallenge2}}",
+     "rpId": "app.example",
+     "timeout": 60000,
+     "userVerification": "preferred"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/login/options"
+  },
+  {
+   "headers": {
+    "x-forwarded-for": "198.51.100.95"
+   },
+   "method": "POST",
+   "name": "passkey login: replayed counter",
+   "response": {
+    "body": {
+     "error": "internal"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 500
+   },
+   "url": "/api/auth/passkey/login/verify",
+   "webauthn": {
+    "challenge": "authChallenge2",
+    "counter": 1,
+    "credential": "ada-mac",
+    "kind": "login"
+   }
+  },
+  {
+   "checks": [
+    {
+     "name": "passkeys",
+     "sql": "SELECT id FROM passkeys"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "passkeys",
+     "rows": []
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.96"
+   },
+   "method": "DELETE",
+   "name": "remove the passkey",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/passkeys/N4zX8gWeFHbEjtOnCnxvCw"
+  },
+  {
+   "capture": {
+    "regChallengePqc": "body.challenge"
+   },
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.97"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey register options (ML-DSA)",
+   "response": {
+    "body": {
+     "attestation": "none",
+     "authenticatorSelection": {
+      "requireResidentKey": false,
+      "residentKey": "preferred",
+      "userVerification": "preferred"
+     },
+     "challenge": "{{regChallengePqc}}",
+     "excludeCredentials": [],
+     "extensions": {
+      "credProps": true
+     },
+     "hints": [],
+     "pubKeyCredParams": [
+      {
+       "alg": -48,
+       "type": "public-key"
+      },
+      {
+       "alg": -8,
+       "type": "public-key"
+      },
+      {
+       "alg": -7,
+       "type": "public-key"
+      },
+      {
+       "alg": -257,
+       "type": "public-key"
+      }
+     ],
+     "rp": {
+      "id": "app.example",
+      "name": "Pinselo"
+     },
+     "timeout": 60000,
+     "user": {
+      "displayName": "Ada L.",
+      "id": "MDAwMDAwMDAtMDAwMC00MDAwLTgwMDAtMDAwMDAwMDAwMDAx",
+      "name": "ada@example.test"
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/register/options"
+  },
+  {
+   "checks": [
+    {
+     "name": "passkeys",
+     "sql": "SELECT id, user_id, length(public_key) AS key_bytes, encode(substr(sha256(public_key), 1, 20), 'hex') AS key_sha256_160, counter, transports, name FROM passkeys ORDER BY id"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "passkeys",
+     "rows": [
+      {
+       "counter": "0",
+       "id": "Y5QCGUBe-WN7JUxmF9E8Wg",
+       "key_bytes": 1322,
+       "key_sha256_160": "cbf6b3454630b01e33869356749655ebe6a23e06",
+       "name": "PQC key",
+       "transports": [
+        "internal"
+       ],
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.98"
+   },
+   "method": "POST",
+   "name": "passkey register (ML-DSA-44, packed)",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/register/verify",
+   "webauthn": {
+    "alg": -48,
+    "challenge": "regChallengePqc",
+    "credential": "ada-pqc",
+    "fmt": "packed",
+    "kind": "register",
+    "name": "PQC key"
+   }
+  },
+  {
+   "capture": {
+    "authChallengePqc": "body.challenge"
+   },
+   "headers": {
+    "x-forwarded-for": "198.51.100.99"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "passkey login options (ML-DSA)",
+   "response": {
+    "body": {
+     "challenge": "{{authChallengePqc}}",
+     "rpId": "app.example",
+     "timeout": 60000,
+     "userVerification": "preferred"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/login/options"
+  },
+  {
+   "checks": [
+    {
+     "name": "passkeys",
+     "sql": "SELECT id, counter, last_used_at IS NOT NULL AS used FROM passkeys ORDER BY id"
+    }
+   ],
+   "client": "ada-pqc",
+   "db": [
+    {
+     "name": "passkeys",
+     "rows": [
+      {
+       "counter": "1",
+       "id": "Y5QCGUBe-WN7JUxmF9E8Wg",
+       "used": true
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.100"
+   },
+   "method": "POST",
+   "name": "passkey login (ML-DSA-44)",
+   "response": {
+    "body": {
+     "user": {
+      "color": "#7c3aed",
+      "email": "ada@example.test",
+      "id": "00000000-0000-4000-8000-000000000001",
+      "locale": "de",
+      "mfa": false,
+      "name": "Ada L.",
+      "staff": false,
+      "verified": true
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=<token:19>; Max-Age=2592000; Path=/; HttpOnly; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/passkey/login/verify",
+   "webauthn": {
+    "alg": -48,
+    "challenge": "authChallengePqc",
+    "counter": 1,
+    "credential": "ada-pqc",
+    "kind": "login"
+   }
+  },
+  {
+   "checks": [
+    {
+     "name": "passkeys",
+     "sql": "SELECT id FROM passkeys"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "passkeys",
+     "rows": []
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.101"
+   },
+   "method": "DELETE",
+   "name": "remove the ML-DSA passkey",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/passkeys/Y5QCGUBe-WN7JUxmF9E8Wg"
+  },
+  {
+   "capture": {
+    "exportJob": "body.jobId"
+   },
+   "checks": [
+    {
+     "name": "jobs",
+     "sql": "SELECT queue, payload, owner_id, label, max_attempts, status FROM jobs ORDER BY created_at, queue"
+    }
+   ],
+   "client": "ada",
+   "db": [
+    {
+     "name": "jobs",
+     "rows": [
+      {
+       "label": "Export ready",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {},
+       "queue": "account-export",
+       "status": "done"
+      },
+      {
+       "label": "Export ready",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {},
+       "queue": "account-export",
+       "status": "done"
+      },
+      {
+       "label": "Preparing your export",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "payload": {},
+       "queue": "account-export",
+       "status": "running"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:4>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:5>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:6>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:7>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:8>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:9>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:10>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Preparing your export",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {
+        "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "account-export",
+       "status": "queued"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.102"
+   },
+   "json": {},
+   "method": "POST",
+   "name": "request an export",
+   "response": {
+    "body": {
+     "jobId": "{{exportJob}}"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/export"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.103"
+   },
+   "name": "export pending",
+   "response": {
+    "body": {
+     "label": "Preparing your export",
+     "progress": 0,
+     "status": "queued"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/exports/{{exportJob}}"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.104"
+   },
+   "name": "export: not a job id",
+   "response": {
+    "body": null,
+    "headers": {
+     "cache-control": "no-store",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/account/exports/not-a-job"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.105"
+   },
+   "name": "export: someone else’s",
+   "response": {
+    "body": {
+     "error": "not_found"
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 404
+   },
+   "url": "/api/account/exports/00000000-0000-4000-8000-000000000903"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.106"
+   },
+   "name": "export download",
+   "response": {
+    "body": {
+     "$binary": {
+      "dims": null,
+      "sha256": "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+      "size": 22
+     }
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-disposition": "attachment; filename=\"pinselo-export.zip\"",
+     "content-type": "application/zip",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account/exports/00000000-0000-4000-8000-000000000901"
+  },
+  {
+   "client": "ada",
+   "headers": {
+    "x-forwarded-for": "198.51.100.107"
+   },
+   "name": "export expired",
+   "response": {
+    "body": {
+     "error": "expired",
+     "message": "This export link has expired. Request a new export in Settings."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 410
+   },
+   "url": "/api/account/exports/00000000-0000-4000-8000-000000000902"
+  },
+  {
+   "client": "eve",
+   "headers": {
+    "x-forwarded-for": "198.51.100.108"
+   },
+   "json": {
+    "password": "a long enough pass"
+   },
+   "method": "DELETE",
+   "name": "delete account: no confirmation",
+   "response": {
+    "body": {
+     "error": "invalid_request",
+     "issues": [
+      {
+       "code": "invalid_value",
+       "message": "Invalid input: expected \"DELETE\"",
+       "path": [
+        "confirm"
+       ],
+       "values": [
+        "DELETE"
+       ]
+      }
+     ]
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 400
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "eve",
+   "headers": {
+    "x-forwarded-for": "198.51.100.109"
+   },
+   "json": {
+    "confirm": "DELETE",
+    "password": "wrong"
+   },
+   "method": "DELETE",
+   "name": "delete account: wrong password",
+   "response": {
+    "body": {
+     "error": "invalid",
+     "message": "Your password is wrong."
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 401
+   },
+   "url": "/api/account"
+  },
+  {
+   "checks": [
+    {
+     "name": "users",
+     "sql": "SELECT email, name, color, email_verified_at IS NOT NULL AS verified, birth_year, locale, is_staff, disabled_at IS NOT NULL AS disabled, disabled_reason,\n  password_hash IS NOT NULL AS has_password, totp_secret, totp_pending IS NOT NULL AS pending, coalesce(array_length(recovery_codes, 1), 0) AS codes FROM users ORDER BY email"
+    },
+    {
+     "name": "jobs",
+     "sql": "SELECT queue, payload, owner_id, label, max_attempts, status FROM jobs ORDER BY created_at, queue"
+    },
+    {
+     "name": "sessions",
+     "sql": "SELECT user_id, user_agent, ip, mfa_verified, extract(epoch from expires_at - created_at)::int AS ttl_s FROM sessions ORDER BY created_at, user_id"
+    }
+   ],
+   "client": "eve",
+   "db": [
+    {
+     "name": "users",
+     "rows": [
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "ada@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "de",
+       "name": "Ada L.",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 1,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "bob@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Bob",
+       "pending": false,
+       "totp_secret": "{{bobSecret}}",
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": true,
+       "disabled_reason": "abuse",
+       "email": "cy@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Cy",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#7c3aed",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "dee@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Dee",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1999,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": true,
+       "disabled_reason": "deletion_requested",
+       "email": "eve@example.test",
+       "has_password": true,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Eve Adams",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": 1990,
+       "codes": 0,
+       "color": "#dc2626",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "fresh@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Fresh",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#db2777",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "new@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "Newbie",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      },
+      {
+       "birth_year": null,
+       "codes": 0,
+       "color": "#2563eb",
+       "disabled": false,
+       "disabled_reason": null,
+       "email": "plain@example.test",
+       "has_password": false,
+       "is_staff": false,
+       "locale": "en",
+       "name": "plain",
+       "pending": false,
+       "totp_secret": null,
+       "verified": true
+      }
+     ]
+    },
+    {
+     "name": "jobs",
+     "rows": [
+      {
+       "label": "Export ready",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {},
+       "queue": "account-export",
+       "status": "done"
+      },
+      {
+       "label": "Export ready",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {},
+       "queue": "account-export",
+       "status": "done"
+      },
+      {
+       "label": "Preparing your export",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "payload": {},
+       "queue": "account-export",
+       "status": "running"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:4>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:5>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:6>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:7>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:8>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:9>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Queued",
+       "max_attempts": 5,
+       "owner_id": null,
+       "payload": {
+        "id": "<uuid:10>"
+       },
+       "queue": "email",
+       "status": "queued"
+      },
+      {
+       "label": "Preparing your export",
+       "max_attempts": 3,
+       "owner_id": "00000000-0000-4000-8000-000000000001",
+       "payload": {
+        "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "account-export",
+       "status": "queued"
+      },
+      {
+       "label": "Deleting account",
+       "max_attempts": 3,
+       "owner_id": null,
+       "payload": {
+        "email": "eve@example.test",
+        "userId": "{{eve}}"
+       },
+       "queue": "account-delete",
+       "status": "queued"
+      }
+     ]
+    },
+    {
+     "name": "sessions",
+     "rows": [
+      {
+       "ip": "198.51.100.31",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.34",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000002"
+      },
+      {
+       "ip": "198.51.100.36",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:2>"
+      },
+      {
+       "ip": "198.51.100.43",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000004"
+      },
+      {
+       "ip": "198.51.100.50",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "<uuid:3>"
+      },
+      {
+       "ip": "198.51.100.58",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "ip": "198.51.100.81",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "ip": "198.51.100.91",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      },
+      {
+       "ip": "198.51.100.100",
+       "mfa_verified": true,
+       "ttl_s": 2592000,
+       "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+       "user_id": "00000000-0000-4000-8000-000000000001"
+      }
+     ]
+    }
+   ],
+   "headers": {
+    "x-forwarded-for": "198.51.100.110"
+   },
+   "json": {
+    "confirm": "DELETE",
+    "password": "a long enough pass"
+   },
+   "method": "DELETE",
+   "name": "delete account",
+   "response": {
+    "body": {
+     "ok": true
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "set-cookie": [
+      "oc_session=; Max-Age=0; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax"
+     ],
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "10",
+     "x-ratelimit-remaining": "9",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/account"
+  },
+  {
+   "client": "eve",
+   "headers": {
+    "x-forwarded-for": "198.51.100.111"
+   },
+   "name": "deleted account is signed out",
+   "response": {
+    "body": {
+     "user": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "name": "audit trail",
+   "rows": [
+    {
+     "action": "auth.signup",
+     "actor_id": "{{eve}}",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:1>",
+     "ip": "198.51.100.11",
+     "meta": {
+      "terms": "2026-10-01"
+     },
+     "prev_hash": null,
+     "target": null
+    },
+    {
+     "action": "consent.terms",
+     "actor_id": "{{eve}}",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:2>",
+     "ip": "198.51.100.11",
+     "meta": {
+      "accepted": true,
+      "ip": "198.51.100.11"
+     },
+     "prev_hash": "<sha:1>",
+     "target": "2026-10-01"
+    },
+    {
+     "action": "auth.login_failed",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:3>",
+     "ip": "198.51.100.21",
+     "meta": {
+      "email": "ada@example.test"
+     },
+     "prev_hash": "<sha:2>",
+     "target": null
+    },
+    {
+     "action": "auth.login_failed",
+     "actor_id": null,
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:4>",
+     "ip": "198.51.100.22",
+     "meta": {
+      "email": "ghost@example.test"
+     },
+     "prev_hash": "<sha:3>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:5>",
+     "ip": "198.51.100.24",
+     "meta": {
+      "method": "password"
+     },
+     "prev_hash": "<sha:4>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:6>",
+     "ip": "203.0.113.7",
+     "meta": {
+      "method": "password"
+     },
+     "prev_hash": "<sha:5>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000002",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:7>",
+     "ip": "198.51.100.31",
+     "meta": {
+      "method": "password+totp"
+     },
+     "prev_hash": "<sha:6>",
+     "target": null
+    },
+    {
+     "action": "auth.recovery_code_used",
+     "actor_id": "00000000-0000-4000-8000-000000000002",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:8>",
+     "ip": "198.51.100.34",
+     "meta": null,
+     "prev_hash": "<sha:7>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000002",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:9>",
+     "ip": "198.51.100.34",
+     "meta": {
+      "method": "password+totp"
+     },
+     "prev_hash": "<sha:8>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "<uuid:1>",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:10>",
+     "ip": "198.51.100.35",
+     "meta": {
+      "method": "dev"
+     },
+     "prev_hash": "<sha:9>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "<uuid:2>",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:11>",
+     "ip": "198.51.100.36",
+     "meta": {
+      "method": "dev"
+     },
+     "prev_hash": "<sha:10>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000004",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:12>",
+     "ip": "198.51.100.43",
+     "meta": {
+      "method": "magic"
+     },
+     "prev_hash": "<sha:11>",
+     "target": null
+    },
+    {
+     "action": "consent.terms",
+     "actor_id": "<uuid:3>",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:13>",
+     "ip": "198.51.100.50",
+     "meta": {
+      "accepted": true
+     },
+     "prev_hash": "<sha:12>",
+     "target": "2026-10-01"
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "<uuid:3>",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:14>",
+     "ip": "198.51.100.50",
+     "meta": {
+      "method": "magic"
+     },
+     "prev_hash": "<sha:13>",
+     "target": null
+    },
+    {
+     "action": "auth.password_reset",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:15>",
+     "ip": "198.51.100.56",
+     "meta": null,
+     "prev_hash": "<sha:14>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:16>",
+     "ip": "198.51.100.58",
+     "meta": {
+      "method": "password"
+     },
+     "prev_hash": "<sha:15>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:17>",
+     "ip": "198.51.100.66",
+     "meta": {
+      "method": "password"
+     },
+     "prev_hash": "<sha:16>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:18>",
+     "ip": "198.51.100.72",
+     "meta": {
+      "method": "password"
+     },
+     "prev_hash": "<sha:17>",
+     "target": null
+    },
+    {
+     "action": "auth.password_changed",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:19>",
+     "ip": "198.51.100.73",
+     "meta": null,
+     "prev_hash": "<sha:18>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:20>",
+     "ip": "198.51.100.74",
+     "meta": {
+      "method": "password"
+     },
+     "prev_hash": "<sha:19>",
+     "target": null
+    },
+    {
+     "action": "auth.sessions_revoked",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:21>",
+     "ip": "198.51.100.75",
+     "meta": null,
+     "prev_hash": "<sha:20>",
+     "target": null
+    },
+    {
+     "action": "auth.2fa_enabled",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:22>",
+     "ip": "198.51.100.79",
+     "meta": null,
+     "prev_hash": "<sha:21>",
+     "target": null
+    },
+    {
+     "action": "auth.recovery_code_used",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:23>",
+     "ip": "198.51.100.81",
+     "meta": null,
+     "prev_hash": "<sha:22>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:24>",
+     "ip": "198.51.100.81",
+     "meta": {
+      "method": "password+totp"
+     },
+     "prev_hash": "<sha:23>",
+     "target": null
+    },
+    {
+     "action": "auth.2fa_disabled",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:25>",
+     "ip": "198.51.100.83",
+     "meta": null,
+     "prev_hash": "<sha:24>",
+     "target": null
+    },
+    {
+     "action": "auth.passkey_added",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:26>",
+     "ip": "198.51.100.87",
+     "meta": null,
+     "prev_hash": "<sha:25>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:27>",
+     "ip": "198.51.100.91",
+     "meta": {
+      "method": "passkey"
+     },
+     "prev_hash": "<sha:26>",
+     "target": null
+    },
+    {
+     "action": "auth.passkey_removed",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:28>",
+     "ip": "198.51.100.96",
+     "meta": null,
+     "prev_hash": "<sha:27>",
+     "target": null
+    },
+    {
+     "action": "auth.passkey_added",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:29>",
+     "ip": "198.51.100.98",
+     "meta": null,
+     "prev_hash": "<sha:28>",
+     "target": null
+    },
+    {
+     "action": "auth.login",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:30>",
+     "ip": "198.51.100.100",
+     "meta": {
+      "method": "passkey"
+     },
+     "prev_hash": "<sha:29>",
+     "target": null
+    },
+    {
+     "action": "auth.passkey_removed",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:31>",
+     "ip": "198.51.100.101",
+     "meta": null,
+     "prev_hash": "<sha:30>",
+     "target": null
+    },
+    {
+     "action": "privacy.export_requested",
+     "actor_id": "00000000-0000-4000-8000-000000000001",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:32>",
+     "ip": "198.51.100.102",
+     "meta": null,
+     "prev_hash": "<sha:31>",
+     "target": null
+    },
+    {
+     "action": "privacy.account_deleted",
+     "actor_id": "{{eve}}",
+     "created_at": "2025-01-01T12:00:00.000Z",
+     "hash": "<sha:33>",
+     "ip": "198.51.100.110",
+     "meta": null,
+     "prev_hash": "<sha:32>",
+     "target": null
+    }
+   ],
+   "sql": "SELECT actor_id, action, target, meta, ip, created_at, prev_hash, hash FROM audit_events ORDER BY id"
+  },
+  {
+   "headers": {
+    "cookie": "oc_session=tok-ada",
+    "x-forwarded-for": "198.51.100.113"
+   },
+   "name": "seeded session cookie",
+   "response": {
+    "body": {
+     "user": null
+    },
+    "headers": {
+     "cache-control": "no-store",
+     "content-type": "application/json; charset=utf-8",
+     "cross-origin-opener-policy": "same-origin",
+     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
+     "referrer-policy": "strict-origin-when-cross-origin",
+     "x-content-type-options": "nosniff",
+     "x-frame-options": "DENY",
+     "x-ratelimit-limit": "600",
+     "x-ratelimit-remaining": "599",
+     "x-ratelimit-reset": "60"
+    },
+    "status": 200
+   },
+   "url": "/api/auth/me"
+  },
+  {
+   "name": "bytea sanity",
+   "rows": [
+    {
+     "b": {
+      "data": [
+       104,
+       105
+      ],
+      "type": "Buffer"
+     }
+    }
+   ],
+   "sql": "SELECT decode('6869', 'hex') AS b"
+  }
+ ],
+ "vars": {
+  "bobSecret": "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP"
+ }
+}

@@ -1,0 +1,20 @@
+[package]
+name = "oc-db"
+description = "Postgres pool, transactions and the forward-only SQL migrator (port of @oc/db). Owns the migrations (migrations/) and the Supabase lockdown (lockdown.sql)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-config = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }
+uuid = { workspace = true }
+futures = { workspace = true }
+thiserror = { workspace = true }
+url = { workspace = true }
+tracing = { workspace = true }
+
+[[bin]]
+name = "oc-migrate"
+path = "src/bin/migrate.rs"

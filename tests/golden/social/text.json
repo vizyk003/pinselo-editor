@@ -1,0 +1,684 @@
+{
+ "composeText": [
+  {
+   "caption": "Big news #launch",
+   "hashtags": [
+    "launch",
+    "#spring",
+    "sale"
+   ],
+   "out": "Big news #launch\n\n#spring #sale"
+  },
+  {
+   "caption": "",
+   "hashtags": [
+    "a"
+   ],
+   "out": "#a"
+  },
+  {
+   "caption": "#launchday",
+   "hashtags": [
+    "launch"
+   ],
+   "out": "#launchday\n\n#launch"
+  },
+  {
+   "caption": "  padded caption  ",
+   "hashtags": [],
+   "out": "padded caption"
+  },
+  {
+   "caption": "",
+   "hashtags": [],
+   "out": ""
+  },
+  {
+   "caption": "Hello #launch!",
+   "hashtags": [
+    "launch"
+   ],
+   "out": "Hello #launch!"
+  },
+  {
+   "caption": "Hello #launch.",
+   "hashtags": [
+    "launch",
+    "launch"
+   ],
+   "out": "Hello #launch."
+  },
+  {
+   "caption": "Hello #launch_2",
+   "hashtags": [
+    "launch"
+   ],
+   "out": "Hello #launch_2\n\n#launch"
+  },
+  {
+   "caption": "Hello #launché",
+   "hashtags": [
+    "launch"
+   ],
+   "out": "Hello #launché\n\n#launch"
+  },
+  {
+   "caption": "Hello(#launch)",
+   "hashtags": [
+    "launch"
+   ],
+   "out": "Hello(#launch)\n\n#launch"
+  },
+  {
+   "caption": "Line one\n#launch\nline three",
+   "hashtags": [
+    "#launch",
+    "##spring",
+    "  ",
+    "#",
+    " sale "
+   ],
+   "out": "Line one\n#launch\nline three\n\n#spring #sale"
+  },
+  {
+   "caption": "Ünïcode #fête #日本",
+   "hashtags": [
+    "fête",
+    "日本",
+    "Fête"
+   ],
+   "out": "Ünïcode #fête #日本\n\n#Fête"
+  },
+  {
+   "caption": "emoji 🎉#party",
+   "hashtags": [
+    "party"
+   ],
+   "out": "emoji 🎉#party\n\n#party"
+  },
+  {
+   "caption": "tab\t#tag",
+   "hashtags": [
+    "tag"
+   ],
+   "out": "tab\t#tag"
+  },
+  {
+   "caption": "nbsp #tag",
+   "hashtags": [
+    "tag"
+   ],
+   "out": "nbsp #tag"
+  },
+  {
+   "caption": "regex chars #c++ and #a.b",
+   "hashtags": [
+    "c++",
+    "a.b",
+    "(x)",
+    "$1"
+   ],
+   "out": "regex chars #c++ and #a.b\n\n#(x) #$1"
+  },
+  {
+   "caption": "#a#a",
+   "hashtags": [
+    "a#a",
+    "a"
+   ],
+   "out": "#a#a"
+  }
+ ],
+ "charCount": [
+  {
+   "text": "👍🏽ok",
+   "provider": null,
+   "out": 3
+  },
+  {
+   "text": "see https://example.com/a/very/long/path/indeed/yes",
+   "provider": "x",
+   "out": 27
+  },
+  {
+   "text": "see https://example.com/a/very/long/path/indeed/yes",
+   "provider": "linkedin",
+   "out": 51
+  },
+  {
+   "text": "été",
+   "provider": null,
+   "out": 3
+  },
+  {
+   "text": "👨‍👩‍👧‍👦 family",
+   "provider": null,
+   "out": 8
+  },
+  {
+   "text": "🇫🇷🇩🇪",
+   "provider": null,
+   "out": 2
+  },
+  {
+   "text": "日本語のテキスト",
+   "provider": "x",
+   "out": 8
+  },
+  {
+   "text": "two http://a.b and https://c.d/e?f=g#h links",
+   "provider": "x",
+   "out": 61
+  },
+  {
+   "text": "http://x",
+   "provider": "x",
+   "out": 23
+  },
+  {
+   "text": "https://",
+   "provider": "x",
+   "out": 8
+  },
+  {
+   "text": "",
+   "provider": null,
+   "out": 0
+  },
+  {
+   "text": "한국어 ᄀᄀᄀ각ᆨᆨ",
+   "provider": null,
+   "out": 5
+  },
+  {
+   "text": "a\r\nb",
+   "provider": null,
+   "out": 3
+  },
+  {
+   "text": "url https://example.com/ after",
+   "provider": "x",
+   "out": 33
+  }
+ ],
+ "littleText": [
+  {
+   "in": "Hi (all) @team #Launch_2 *now*",
+   "out": "Hi \\(all\\) \\@team {hashtag|\\#|Launch_2} \\*now\\*"
+  },
+  {
+   "in": "Hello #launch",
+   "out": "Hello {hashtag|\\#|launch}"
+  },
+  {
+   "in": "back\\slash | pipes {braces} [brackets] <angle> ~tilde_ under",
+   "out": "back\\\\slash \\| pipes \\{braces\\} \\[brackets\\] \\<angle\\> \\~tilde\\_ under"
+  },
+  {
+   "in": "#a#b ## #",
+   "out": "{hashtag|\\#|a}{hashtag|\\#|b} \\#\\# \\#"
+  },
+  {
+   "in": "Été #fête 日本 #日本語 🎉#party",
+   "out": "Été {hashtag|\\#|fête} 日本 {hashtag|\\#|日本語} 🎉{hashtag|\\#|party}"
+  },
+  {
+   "in": "no specials here",
+   "out": "no specials here"
+  }
+ ],
+ "tagFacets": [
+  {
+   "in": "Été #fête now",
+   "out": [
+    {
+     "index": {
+      "byteStart": 6,
+      "byteEnd": 12
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "fête"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "Hello #launch",
+   "out": [
+    {
+     "index": {
+      "byteStart": 6,
+      "byteEnd": 13
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "launch"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "#start middle #end",
+   "out": [
+    {
+     "index": {
+      "byteStart": 0,
+      "byteEnd": 6
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "start"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 14,
+      "byteEnd": 18
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "end"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "no#tag here",
+   "out": []
+  },
+  {
+   "in": "#a #b\t#c\n#d",
+   "out": [
+    {
+     "index": {
+      "byteStart": 0,
+      "byteEnd": 2
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "a"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 3,
+      "byteEnd": 5
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "b"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 6,
+      "byteEnd": 8
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "c"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 9,
+      "byteEnd": 11
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "d"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "out": [
+    {
+     "index": {
+      "byteStart": 0,
+      "byteEnd": 65
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "emoji 🎉 #party 👍🏽 #ok",
+   "out": [
+    {
+     "index": {
+      "byteStart": 11,
+      "byteEnd": 17
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "party"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 27,
+      "byteEnd": 30
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "ok"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "日本語 #日本語タグ",
+   "out": [
+    {
+     "index": {
+      "byteStart": 10,
+      "byteEnd": 26
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "日本語タグ"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "#tag! #tag2. (#paren)",
+   "out": [
+    {
+     "index": {
+      "byteStart": 0,
+      "byteEnd": 4
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "tag"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 6,
+      "byteEnd": 11
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "tag2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "nbsp #tag and ideographic　#space",
+   "out": [
+    {
+     "index": {
+      "byteStart": 6,
+      "byteEnd": 10
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "tag"
+      }
+     ]
+    },
+    {
+     "index": {
+      "byteStart": 29,
+      "byteEnd": 35
+     },
+     "features": [
+      {
+       "$type": "app.bsky.richtext.facet#tag",
+       "tag": "space"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "in": "#",
+   "out": []
+  },
+  {
+   "in": "",
+   "out": []
+  }
+ ],
+ "chunkPlan": [
+  {
+   "size": 0,
+   "out": {
+    "chunkSize": 0,
+    "count": 1
+   }
+  },
+  {
+   "size": 1,
+   "out": {
+    "chunkSize": 1,
+    "count": 1
+   }
+  },
+  {
+   "size": 5000000,
+   "out": {
+    "chunkSize": 5000000,
+    "count": 1
+   }
+  },
+  {
+   "size": 67108864,
+   "out": {
+    "chunkSize": 67108864,
+    "count": 1
+   }
+  },
+  {
+   "size": 67108865,
+   "out": {
+    "chunkSize": 10485760,
+    "count": 6
+   }
+  },
+  {
+   "size": 110100480,
+   "out": {
+    "chunkSize": 10485760,
+    "count": 10
+   }
+  },
+  {
+   "size": 209715323,
+   "out": {
+    "chunkSize": 10485760,
+    "count": 20
+   }
+  }
+ ],
+ "mediaMime": [
+  {
+   "adapter": "local",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "local",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "local",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "instagram",
+   "format": "png",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "instagram",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "instagram",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "facebook",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "facebook",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "facebook",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "linkedin",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "linkedin",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "linkedin",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "x",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "x",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "x",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "tiktok",
+   "format": "png",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "tiktok",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "tiktok",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "youtube",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "youtube",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "youtube",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "pinterest",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "pinterest",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "pinterest",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "threads",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "threads",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "threads",
+   "format": "mp4",
+   "out": "video/mp4"
+  },
+  {
+   "adapter": "bluesky",
+   "format": "png",
+   "out": "image/png"
+  },
+  {
+   "adapter": "bluesky",
+   "format": "jpg",
+   "out": "image/jpeg"
+  },
+  {
+   "adapter": "bluesky",
+   "format": "mp4",
+   "out": "video/mp4"
+  }
+ ]
+}

@@ -1,0 +1,417 @@
+{
+ "seed": [
+  "INSERT INTO users(id, email, name, color) VALUES ('00000000-0000-4000-8000-000000000101', 'store@example.test', 'Store User', '#336699'), ('00000000-0000-4000-8000-000000000102', 'team@example.test', 'Team Mate', '#336699'), ('00000000-0000-4000-8000-000000000103', 'stranger@example.test', 'Stranger', '#336699')",
+  "INSERT INTO workspaces(id, name, personal, owner_id) VALUES ('00000000-0000-4000-8000-000000000201', 'Team', false, '00000000-0000-4000-8000-000000000102')",
+  "INSERT INTO memberships(workspace_id, user_id, role) VALUES ('00000000-0000-4000-8000-000000000201', '00000000-0000-4000-8000-000000000101', 'member'), ('00000000-0000-4000-8000-000000000201', '00000000-0000-4000-8000-000000000102', 'owner')",
+  "INSERT INTO social_accounts(id, user_id, workspace_id, provider, external_id, display_name, handle, meta, created_at) VALUES\n      ('00000000-0000-4000-8000-000000000301', '00000000-0000-4000-8000-000000000102', '00000000-0000-4000-8000-000000000201', 'pinterest', 'pin-team', 'Team Pins', 'teampins', '{\"boards\":[{\"id\":\"B1\",\"name\":\"Ideas\"}]}'::jsonb, '2026-01-01T00:00:00Z'),\n      ('00000000-0000-4000-8000-000000000302', '00000000-0000-4000-8000-000000000103', NULL, 'x', 'x-stranger', 'Stranger X', NULL, '{}', '2026-01-01T00:00:00Z'),\n      ('00000000-0000-4000-8000-000000000303', '00000000-0000-4000-8000-000000000101', NULL, 'linkedin', 'li-none', 'No Tokens', NULL, '{\"boards\":\"not-an-array\"}'::jsonb, '2026-01-02T00:00:00Z')"
+ ],
+ "objects": [],
+ "result": {
+  "sameId": true,
+  "visible": [
+   {
+    "id": "saved:local",
+    "provider": "local",
+    "displayName": "Download & remind",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   },
+   {
+    "id": "saved:a1",
+    "provider": "bluesky",
+    "displayName": "Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed ",
+    "handle": "s.bsky.social",
+    "avatarUrl": "https://cdn/a.png",
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   },
+   {
+    "id": "saved:bad",
+    "provider": "bluesky",
+    "displayName": "did:plc:exp-bad",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   },
+   {
+    "id": "saved:ok",
+    "provider": "bluesky",
+    "displayName": "did:plc:exp-ok",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   },
+   {
+    "id": "saved:pw",
+    "provider": "bluesky",
+    "displayName": "did:plc:exp-pw",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   },
+   {
+    "id": "seed:noTokens",
+    "provider": "linkedin",
+    "displayName": "No Tokens",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "2026-01-02T00:00:00.000Z"
+   },
+   {
+    "id": "seed:team",
+    "provider": "pinterest",
+    "displayName": "Team Pins",
+    "handle": "teampins",
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": "00000000-0000-4000-8000-000000000201",
+    "mine": false,
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "boards": [
+     {
+      "id": "B1",
+      "name": "Ideas"
+     }
+    ]
+   },
+   {
+    "id": "saved:xNo",
+    "provider": "x",
+    "displayName": "x-expired",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   },
+   {
+    "id": "saved:zero",
+    "provider": "x",
+    "displayName": "x-zero",
+    "handle": null,
+    "avatarUrl": null,
+    "status": "ok",
+    "workspaceId": null,
+    "mine": true,
+    "createdAt": "now"
+   }
+  ],
+  "publicWithoutMe": {
+   "id": "saved:local",
+   "provider": "local",
+   "displayName": "Download & remind",
+   "handle": null,
+   "avatarUrl": null,
+   "status": "ok",
+   "workspaceId": null,
+   "createdAt": "now"
+  },
+  "tokens": {
+   "local": {
+    "tokens": {
+     "accessToken": ""
+    }
+   },
+   "a1": {
+    "tokens": {
+     "accessToken": "SECRET-ACCESS",
+     "refreshToken": "R1",
+     "expiresAt": 4102444800000,
+     "extra": {
+      "identifier": "s.bsky.social",
+      "appPassword": "pw-123",
+      "did": "did:plc:store"
+     }
+    }
+   },
+   "a1Forced": {
+    "tokens": {
+     "accessToken": "A2",
+     "refreshToken": "R2",
+     "expiresAt": "+90min",
+     "extra": {
+      "identifier": "s.bsky.social",
+      "appPassword": "pw-123",
+      "pds": "{{FAKE}}/bsky",
+      "did": "did:plc:golden"
+     }
+    }
+   },
+   "refreshOk": {
+    "tokens": {
+     "accessToken": "A2",
+     "refreshToken": "R2",
+     "expiresAt": "+90min",
+     "extra": {
+      "identifier": "",
+      "appPassword": "",
+      "pds": "{{FAKE}}/bsky",
+      "did": "did:plc:golden"
+     }
+    }
+   },
+   "refreshRejected": {
+    "error": {
+     "message": "Bluesky access expired — reconnect the account in Settings → Connected accounts.",
+     "transient": false,
+     "status": 401,
+     "reauth": true
+    }
+   },
+   "refreshFallsBackToPassword": {
+    "tokens": {
+     "accessToken": "A2",
+     "refreshToken": "R2",
+     "expiresAt": "+90min",
+     "extra": {
+      "identifier": "pw.bsky.social",
+      "appPassword": "app-pw",
+      "pds": "{{FAKE}}/bsky",
+      "did": "did:plc:golden"
+     }
+    }
+   },
+   "noRefreshToken": {
+    "error": {
+     "message": "X (Twitter) access expired — reconnect the account in Settings → Connected accounts.",
+     "transient": false,
+     "status": 401,
+     "reauth": true
+    }
+   },
+   "zeroExpiry": {
+    "tokens": {
+     "accessToken": "XZ",
+     "expiresAt": 0
+    }
+   },
+   "noStoredTokens": {
+    "error": {
+     "message": "This account has no stored credentials — reconnect it.",
+     "transient": false,
+     "status": 401,
+     "reauth": true
+    }
+   }
+  }
+ },
+ "checks": [
+  {
+   "name": "social_accounts",
+   "sql": "SELECT provider, external_id, user_id, workspace_id, display_name, handle, avatar_url, status, meta, tokens LIKE 'v1.%' AS sealed,\n              position('SECRET-ACCESS' in coalesce(tokens, '')) > 0 AS plaintext,\n              CASE WHEN token_expires_at IS NULL THEN NULL WHEN token_expires_at > now() + interval '1 year' OR token_expires_at < now() THEN to_char(token_expires_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS.MS') WHEN token_expires_at > now() + interval '80 minutes' THEN 'refreshed' ELSE 'soon' END AS expires\n            FROM social_accounts ORDER BY provider, external_id",
+   "rows": [
+    {
+     "provider": "bluesky",
+     "external_id": "did:plc:exp-bad",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "did:plc:exp-bad",
+     "handle": null,
+     "avatar_url": null,
+     "status": "reauth",
+     "meta": {},
+     "sealed": true,
+     "plaintext": false,
+     "expires": "1970-01-01T00:00:01.000"
+    },
+    {
+     "provider": "bluesky",
+     "external_id": "did:plc:exp-ok",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "did:plc:exp-ok",
+     "handle": null,
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {},
+     "sealed": true,
+     "plaintext": false,
+     "expires": "refreshed"
+    },
+    {
+     "provider": "bluesky",
+     "external_id": "did:plc:exp-pw",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "did:plc:exp-pw",
+     "handle": null,
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {},
+     "sealed": true,
+     "plaintext": false,
+     "expires": "refreshed"
+    },
+    {
+     "provider": "bluesky",
+     "external_id": "did:plc:store",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed Renamed ",
+     "handle": "s.bsky.social",
+     "avatar_url": "https://cdn/a.png",
+     "status": "ok",
+     "meta": {
+      "a": 1,
+      "b": 2
+     },
+     "sealed": true,
+     "plaintext": false,
+     "expires": "refreshed"
+    },
+    {
+     "provider": "linkedin",
+     "external_id": "li-none",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "No Tokens",
+     "handle": null,
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {
+      "boards": "not-an-array"
+     },
+     "sealed": null,
+     "plaintext": false,
+     "expires": null
+    },
+    {
+     "provider": "local",
+     "external_id": "00000000-0000-4000-8000-000000000101",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "Download & remind",
+     "handle": null,
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {},
+     "sealed": null,
+     "plaintext": false,
+     "expires": null
+    },
+    {
+     "provider": "pinterest",
+     "external_id": "pin-team",
+     "user_id": "00000000-0000-4000-8000-000000000102",
+     "workspace_id": "00000000-0000-4000-8000-000000000201",
+     "display_name": "Team Pins",
+     "handle": "teampins",
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {
+      "boards": [
+       {
+        "id": "B1",
+        "name": "Ideas"
+       }
+      ]
+     },
+     "sealed": null,
+     "plaintext": false,
+     "expires": null
+    },
+    {
+     "provider": "x",
+     "external_id": "x-expired",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "x-expired",
+     "handle": null,
+     "avatar_url": null,
+     "status": "reauth",
+     "meta": {},
+     "sealed": true,
+     "plaintext": false,
+     "expires": "1970-01-01T00:00:01.000"
+    },
+    {
+     "provider": "x",
+     "external_id": "x-stranger",
+     "user_id": "00000000-0000-4000-8000-000000000103",
+     "workspace_id": null,
+     "display_name": "Stranger X",
+     "handle": null,
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {},
+     "sealed": null,
+     "plaintext": false,
+     "expires": null
+    },
+    {
+     "provider": "x",
+     "external_id": "x-zero",
+     "user_id": "00000000-0000-4000-8000-000000000101",
+     "workspace_id": null,
+     "display_name": "x-zero",
+     "handle": null,
+     "avatar_url": null,
+     "status": "ok",
+     "meta": {},
+     "sealed": true,
+     "plaintext": false,
+     "expires": null
+    }
+   ]
+  }
+ ],
+ "fake": [
+  {
+   "method": "POST",
+   "path": "/bsky/xrpc/com.atproto.server.createSession",
+   "contentType": "application/json",
+   "authorization": null,
+   "body": {
+    "identifier": "pw.bsky.social",
+    "password": "app-pw"
+   }
+  },
+  {
+   "method": "POST",
+   "path": "/bsky/xrpc/com.atproto.server.refreshSession",
+   "contentType": null,
+   "authorization": "Bearer R-bad",
+   "body": null
+  },
+  {
+   "method": "POST",
+   "path": "/bsky/xrpc/com.atproto.server.refreshSession",
+   "contentType": null,
+   "authorization": "Bearer R-bad",
+   "body": null
+  },
+  {
+   "method": "POST",
+   "path": "/bsky/xrpc/com.atproto.server.refreshSession",
+   "contentType": null,
+   "authorization": "Bearer R1",
+   "body": null
+  },
+  {
+   "method": "POST",
+   "path": "/bsky/xrpc/com.atproto.server.refreshSession",
+   "contentType": null,
+   "authorization": "Bearer R1",
+   "body": null
+  }
+ ]
+}

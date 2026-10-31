@@ -1,0 +1,212 @@
+{
+ "seed": [
+  "INSERT INTO users(id, email, name, color) VALUES ('00000000-0000-4000-8000-000000000501', 'gc@example.test', 'GC', '#336699')",
+  "INSERT INTO workspaces(id, name, personal, owner_id) VALUES ('00000000-0000-4000-8000-000000000502', 'GC', true, '00000000-0000-4000-8000-000000000501')",
+  "INSERT INTO designs(id, workspace_id, owner_id, title, width, height, thumb_sha256) VALUES ('ggc0000000000000', '00000000-0000-4000-8000-000000000502', '00000000-0000-4000-8000-000000000501', 'GC', 100, 100, '2a1133646ef7dc53f0971bf7f649d2efd955c5bff35e3048cbb2ee66929dfc17')",
+  "INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, proxy_sha256, poster_sha256) VALUES ('gc-asset', '00000000-0000-4000-8000-000000000502', '00000000-0000-4000-8000-000000000501', '10b6d4be18ad23aee825677a6522e28abe3739c996cb1818f39410d91bff9196', 'image/png', 'image', 1, 1, 1, '60a8230fc937fc26adf3d572c127b29bc7d2f8668806d88a8f453d3e6b7a88a2', 'd2ebd7dee1003ae4c63b43f21218ac80016206eec6c5d03dee4828643beee0c7')",
+  "INSERT INTO templates(id, title, category, preset, width, height, doc) VALUES ('gc-template', 'T', 'c', 'p', 1, 1, '{\"assets\":{\"a\":{\"src\":\"/api/objects/f3162d9135f067a0ef4ce4c3d8bcf0d776ce3082f831de34a641b4b8c11c83c9\"}}}'::jsonb)",
+  "INSERT INTO custom_fonts(id, workspace_id, family, weight, italic, sha256, bytes, format, license_ack) VALUES ('gc-font', '00000000-0000-4000-8000-000000000502', 'F', 400, false, '89a965f4e82ba9be36ae938e1a3d77c4f7da79278b3a5a53e26b6522c3377bc8', 1, 'woff2', true)",
+  "INSERT INTO email_images(sha256) VALUES ('8973048588fd048962b638ebcc08cfd3567ccc849a76c7f18cedb766c4aa2a00')",
+  "INSERT INTO sites(design_id, slug, title, html_sha256) VALUES ('ggc0000000000000', 'gc-site', 'S', '109bcf6e908cf7877f101514637ce2df8b60c1eecfbc97c5c56297656b39ac63')",
+  "INSERT INTO google_font_files(file, sha256, bytes, source_url) VALUES ('gc.woff2', 'd9d4f9f1a916dd1a8f04a313744b266a46229e69fbabdb68a714b8c5ce0c3f05', 1, 'https://fonts.example/gc.woff2')",
+  "INSERT INTO print_orders(id, number, email, product_id, product_name, size_id, quantity, address, shipping_method, currency, subtotal_cents, shipping_cents, tax_cents, total_cents, price, file_sha) VALUES ('00000000-0000-4000-8000-000000000507', 'GC-1', 'gc@example.test', 'p', 'P', 's', 1, '{}', 'std', 'EUR', 1, 1, 1, 3, '{}', '0610d1480165bf07ac3c901f11dabb92127468d061611be2cd890a3c1034817a')",
+  "INSERT INTO jobs(id, queue, payload, status, result, finished_at) VALUES ('00000000-0000-4000-8000-000000000504', 'import', '{\"sha\":\"65457c327c1a3e7b9f923cbcd2c288bc960778f8f180864e38478a0875bc8f1d\"}'::jsonb, 'done', '{\"files\":[{\"sha\":\"89aeb8516bf9b36363bde425500d54c46b4370e4845e6b7bfa03055ef9cc5b1d\"}]}'::jsonb, now())",
+  "INSERT INTO brand_kits(id, workspace_id, logos) VALUES ('00000000-0000-4000-8000-000000000506', '00000000-0000-4000-8000-000000000502', '[{\"sha256\":\"9fad10ea810a260238029cdfceec867f16667bc3f6f56b612acbbbb221cc182d\"}]'::jsonb)",
+  "INSERT INTO social_posts(id, owner_id, design_id, format, media) VALUES ('00000000-0000-4000-8000-000000000505', '00000000-0000-4000-8000-000000000501', 'ggc0000000000000', 'png', '[{\"sha\":\"97bf88e26342b07c1fbb7eaf85f1d6e269f4e3ebff9fbc7efafe75e8664ff940\"}]'::jsonb)",
+  "INSERT INTO doc_state(design_id, state) VALUES ('ggc0000000000000', decode('0001796a732d62797465732039333962323264626231616430343564636665393034663563616365343033313037333731366338653561656464386338663436323337303264323938323062206d6f7265', 'hex'))",
+  "INSERT INTO doc_updates(design_id, update) VALUES ('ggc0000000000000', decode('0001796a732d62797465732062353639313563386130663239313939303864626137313236613433613231623330313238383130616563353566333430306135393466343030623232313266206d6f7265', 'hex'))",
+  "INSERT INTO design_versions(id, design_id, state) VALUES ('00000000-0000-4000-8000-000000000503', 'ggc0000000000000', decode('0001796a732d62797465732064333037373766396666366261343063643533623430323935646430663036366265306164653766363665393164373463626139396161613136643161353937206d6f7265', 'hex'))"
+ ],
+ "objects": [
+  {
+   "name": "asset",
+   "hex": "67632d6f626a6563742d6173736574",
+   "ageHours": 72
+  },
+  {
+   "name": "proxy",
+   "hex": "67632d6f626a6563742d70726f7879",
+   "ageHours": 72
+  },
+  {
+   "name": "poster",
+   "hex": "67632d6f626a6563742d706f73746572",
+   "ageHours": 72
+  },
+  {
+   "name": "thumb",
+   "hex": "67632d6f626a6563742d7468756d62",
+   "ageHours": 72
+  },
+  {
+   "name": "template",
+   "hex": "67632d6f626a6563742d74656d706c617465",
+   "ageHours": 72
+  },
+  {
+   "name": "font",
+   "hex": "67632d6f626a6563742d666f6e74",
+   "ageHours": 72
+  },
+  {
+   "name": "emailimg",
+   "hex": "67632d6f626a6563742d656d61696c696d67",
+   "ageHours": 72
+  },
+  {
+   "name": "site",
+   "hex": "67632d6f626a6563742d73697465",
+   "ageHours": 72
+  },
+  {
+   "name": "gfont",
+   "hex": "67632d6f626a6563742d67666f6e74",
+   "ageHours": 72
+  },
+  {
+   "name": "print",
+   "hex": "67632d6f626a6563742d7072696e74",
+   "ageHours": 72
+  },
+  {
+   "name": "jobpayload",
+   "hex": "67632d6f626a6563742d6a6f627061796c6f6164",
+   "ageHours": 72
+  },
+  {
+   "name": "jobresult",
+   "hex": "67632d6f626a6563742d6a6f62726573756c74",
+   "ageHours": 72
+  },
+  {
+   "name": "brand",
+   "hex": "67632d6f626a6563742d6272616e64",
+   "ageHours": 72
+  },
+  {
+   "name": "social",
+   "hex": "67632d6f626a6563742d736f6369616c",
+   "ageHours": 72
+  },
+  {
+   "name": "state",
+   "hex": "67632d6f626a6563742d7374617465",
+   "ageHours": 72
+  },
+  {
+   "name": "update",
+   "hex": "67632d6f626a6563742d757064617465",
+   "ageHours": 72
+  },
+  {
+   "name": "version",
+   "hex": "67632d6f626a6563742d76657273696f6e",
+   "ageHours": 72
+  },
+  {
+   "name": "garbage1",
+   "hex": "67632d6f626a6563742d6761726261676531",
+   "ageHours": 72
+  },
+  {
+   "name": "garbage2",
+   "hex": "67632d6f626a6563742d6761726261676532",
+   "ageHours": 72
+  },
+  {
+   "name": "fresh",
+   "hex": "67632d6f626a6563742d6672657368",
+   "ageHours": 1
+  }
+ ],
+ "result": {
+  "marked": [
+   "asset",
+   "brand",
+   "emailimg",
+   "font",
+   "gfont",
+   "jobpayload",
+   "jobresult",
+   "poster",
+   "print",
+   "proxy",
+   "site",
+   "social",
+   "state",
+   "template",
+   "thumb",
+   "update",
+   "version"
+  ],
+  "locked": {
+   "scanned": 0,
+   "deleted": 0,
+   "bytes": 0,
+   "skipped": "another run holds the lock"
+  },
+  "dry": {
+   "scanned": 20,
+   "deleted": 2,
+   "bytes": 36
+  },
+  "presentAfterDry": [
+   "asset",
+   "proxy",
+   "poster",
+   "thumb",
+   "template",
+   "font",
+   "emailimg",
+   "site",
+   "gfont",
+   "print",
+   "jobpayload",
+   "jobresult",
+   "brand",
+   "social",
+   "state",
+   "update",
+   "version",
+   "garbage1",
+   "garbage2",
+   "fresh"
+  ],
+  "real": {
+   "scanned": 20,
+   "deleted": 2,
+   "bytes": 36
+  },
+  "again": {
+   "scanned": 18,
+   "deleted": 0,
+   "bytes": 0
+  },
+  "tiny": {
+   "scanned": 18,
+   "deleted": 1,
+   "bytes": 15
+  },
+  "present": [
+   "asset",
+   "proxy",
+   "poster",
+   "thumb",
+   "template",
+   "font",
+   "emailimg",
+   "site",
+   "gfont",
+   "print",
+   "jobpayload",
+   "jobresult",
+   "brand",
+   "social",
+   "state",
+   "update",
+   "version"
+  ]
+ },
+ "checks": [],
+ "fake": []
+}

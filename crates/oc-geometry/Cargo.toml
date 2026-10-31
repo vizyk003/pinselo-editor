@@ -1,0 +1,18 @@
+[package]
+name = "oc-geometry"
+description = "Pinselo geometry (Rust port of @oc/geometry): matrices, shape outlines, hit-testing, snapping, connectors"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order"] }
+regex = { workspace = true }
+indexmap = { version = "2", features = ["serde"] }
+# fdlibm-derived trig (musl port): bit-identical to V8's `Math.sin/cos/tan/atan2` and the same on every target.
+libm = "0.2"
+# Boolean operations on flattened outlines (union/subtract/intersect/exclude; self-intersections, holes and
+# coincident edges handled). MIT.
+i_overlay = "9"

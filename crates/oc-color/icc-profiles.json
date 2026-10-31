@@ -1,0 +1,67 @@
+{
+  "$comment": "Bundled print colour profiles. Single source for `pnpm icc:sync` (tools/scripts/icc-sync.ts), the API profile list (crates/oc-api, print_profiles.rs) and the colour engine (crates/oc-color, include_str!). ECI profiles are freely redistributable (https://www.eci.org); the compact sRGB v4 profile is CC0 (saucecontrol/Compact-ICC-Profiles) and lives in crates/oc-color/icc/.",
+  "registry": "http://www.color.org",
+  "default": "pso-coated-v3",
+  "profiles": [
+    {
+      "id": "pso-coated-v3",
+      "name": "PSO Coated v3",
+      "colorSpace": "CMYK",
+      "conditionId": "FOGRA51",
+      "condition": "Offset printing according to ISO 12647-2:2013, paper type PS1 (premium coated), FOGRA51",
+      "description": "Offset, premium coated paper (ISO 12647-2:2013). The usual choice for European commercial print.",
+      "paper": "coated",
+      "file": "PSOcoated_v3.icc",
+      "sha256": "c30ad2c01e8f93135ec7682c535e0a81bc2d177c301e196376c5f5838b5c8e86",
+      "package": {
+        "url": "https://eci.org/lib/exe/pso-coated_v3.zip",
+        "sha256": "5c8ed32d40949c2e8b84a03642ca7aadc4e3f153237cf439d3cdddffffd4ed95",
+        "member": "PSOcoated_v3.icc"
+      }
+    },
+    {
+      "id": "pso-uncoated-v3",
+      "name": "PSO Uncoated v3",
+      "colorSpace": "CMYK",
+      "conditionId": "FOGRA52",
+      "condition": "Offset printing according to ISO 12647-2:2013, paper type PS5 (wood-free uncoated), FOGRA52",
+      "description": "Offset, uncoated paper (ISO 12647-2:2013). Letterheads, notebooks, natural paper stocks.",
+      "paper": "uncoated",
+      "file": "PSOuncoated_v3_FOGRA52.icc",
+      "sha256": "7c39f74fbede1e8c85f8fbb9df7d359aea638b9b68dd0854fdd3ba386e3a02c0",
+      "package": {
+        "url": "https://eci.org/lib/exe/pso-uncoated_v3_fogra52.zip",
+        "sha256": "644cabd621faa6f92c81f5596cd60f8360a7cb520b0061454c8d17e6b94cf08a",
+        "member": "pso-uncoated_v3_FOGRA52/PSOuncoated_v3_FOGRA52.icc"
+      }
+    },
+    {
+      "id": "iso-coated-v2",
+      "name": "ISO Coated v2 (ECI)",
+      "colorSpace": "CMYK",
+      "conditionId": "FOGRA39",
+      "condition": "Offset printing according to ISO 12647-2:2004/Amd 1, paper type 1 or 2 (coated art), FOGRA39",
+      "description": "Offset, coated paper (ISO 12647-2:2004). Still requested by many printers.",
+      "paper": "coated",
+      "file": "ISOcoated_v2_eci.icc",
+      "sha256": "128dc02f7246cc3807af0323695379f64151a8f27a587736acc59f8b6ce894b8",
+      "package": {
+        "url": "https://eci.org/lib/exe/eci_offset_2009.zip",
+        "sha256": "e4537702b825ef14c3eb930f68df0a73550220b832bdda4bd812dcf3fe966306",
+        "member": "ECI_Offset_2009/ISOcoated_v2_eci.icc"
+      }
+    },
+    {
+      "id": "srgb",
+      "name": "sRGB IEC61966-2.1",
+      "colorSpace": "RGB",
+      "conditionId": "sRGB IEC61966-2.1",
+      "condition": "sRGB IEC61966-2.1",
+      "description": "Screens and RGB print workflows (digital presses, photo labs).",
+      "paper": "none",
+      "file": "sRGB-v4.icc",
+      "sha256": "c56e1685d888f5edb92fe07f2750f387f8fe8e91b32ff8fb0b56bfbbb9458353",
+      "builtin": true
+    }
+  ]
+}

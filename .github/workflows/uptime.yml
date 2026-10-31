@@ -1,0 +1,25 @@
+name: uptime
+
+# Hourly check of the live site, from outside the server. A failed run is GitHub's alert: it emails the workflow's owner.
+# Runs only on the project owner's repository, so forks do not check the hosted site. GitHub may delay scheduled runs.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    if: github.repository_owner == 'vizyk003'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Status is operational
+        run: |
+          for i in 1 2 3; do
+            body=$(curl -fsS -m 20 https://pinselo.com/api/status) && echo "$body" | grep -q '"overall":"operational"' && exit 0
+            sleep 30
+          done
+          echo "::error::pinselo.com is down or degraded: ${body:-no response}"
+          exit 1

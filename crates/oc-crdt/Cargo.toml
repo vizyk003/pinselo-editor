@@ -1,0 +1,23 @@
+[package]
+name = "oc-crdt"
+description = "Pinselo CRDT layer (Rust port of @oc/crdt): yrs Y.Doc with the same layout as the yjs browser doc"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+oc-schema = { path = "../oc-schema" }
+yrs = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
+thiserror = { workspace = true }
+indexmap = "2"
+
+[dev-dependencies]
+base64 = { workspace = true }
+
+[target.'cfg(all(target_arch = "wasm32", target_os = "unknown"))'.dependencies]
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+[target.'cfg(not(all(target_arch = "wasm32", target_os = "unknown")))'.dependencies]
+getrandom = "0.3"

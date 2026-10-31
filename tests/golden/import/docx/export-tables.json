@@ -1,0 +1,7 @@
+{
+ "file": "export-tables.docx",
+ "html": "<table><tr><td><p><strong>H1</strong></p></td><td colspan=\"2\"><p><strong>H2 wide</strong></p></td></tr><tr><td rowspan=\"2\"><p>tall</p></td><td><p>a</p></td><td><p>b</p></td></tr><tr><td><p>c</p><p>second para</p></td><td></td></tr><tr><td colspan=\"2\" rowspan=\"3\"><p>big</p></td><td><p><em>x</em><br /><a href=\"https://t.example\"><u>y</u></a></p></td></tr><tr><td><p>z</p></td></tr><tr><td></td><td colspan=\"2\"><p>string colspan</p></td></tr></table><table><tr><td><p>uneven</p></td></tr></table><table><tr><td><p>a | pipe</p><p>two</p></td></tr><tr><td><p>b</p></td><td><p>c</p></td><td colspan=\"2\"><p>d</p></td></tr></table><table><tr><td rowspan=\"2\"><p><strong>frac rowspan</strong></p></td><td><p><strong>h</strong></p></td></tr><tr><td><p>r2</p></td></tr></table><table><tr></tr></table>",
+ "warnings": 0,
+ "messages": [],
+ "images": []
+}

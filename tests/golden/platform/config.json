@@ -1,0 +1,1015 @@
+[
+ {
+  "env": {},
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_API_PORT": "8080",
+   "OC_SECRET": "x",
+   "OC_WEB_ORIGIN": "https://app.example.com",
+   "OC_DATA_DIR": "/var/oc"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "x",
+   "webOrigin": "https://app.example.com",
+   "usercontentOrigin": "",
+   "apiPort": 8080,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "/var/oc",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_API_PORT": " 42",
+   "OC_COLLAB_PORT": "123abc",
+   "OC_RENDER_PORT": "-7",
+   "OC_UPLOAD_QUOTA": "1e3",
+   "OC_MAX_UPLOAD_BYTES": "0x10",
+   "OC_MAX_MEDIA_BYTES": "99999999999"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 42,
+   "collabPort": 123,
+   "renderPort": -7,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 1,
+   "maxUploadBytes": 0,
+   "maxMediaBytes": 99999999999
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_API_PORT": "",
+   "OC_SECRET": "",
+   "OC_USERCONTENT_ORIGIN": ""
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_API_PORT": "abc"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": null,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [
+   "OC_SECRET must be a random value of 32+ characters",
+   "OC_WEB_ORIGIN must be https"
+  ],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "OC_WEB_ORIGIN": "https://app.example.com",
+   "OC_USERCONTENT_ORIGIN": "https://uc.example.net"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "webOrigin": "https://app.example.com",
+   "usercontentOrigin": "https://uc.example.net",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "OC_WEB_ORIGIN": "http://app.example.com",
+   "OC_USERCONTENT_ORIGIN": "https://files.app.example.com"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "webOrigin": "http://app.example.com",
+   "usercontentOrigin": "https://files.app.example.com",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [
+   "OC_SECRET must be a random value of 32+ characters",
+   "OC_WEB_ORIGIN must be https",
+   "OC_USERCONTENT_ORIGIN must not be a subdomain of the app origin"
+  ],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "OC_WEB_ORIGIN": "https://example.com",
+   "OC_USERCONTENT_ORIGIN": "https://notexample.com"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "webOrigin": "https://example.com",
+   "usercontentOrigin": "https://notexample.com",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [
+   "OC_USERCONTENT_ORIGIN must not be a subdomain of the app origin"
+  ],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "dev-only-secret-change-me",
+   "OC_WEB_ORIGIN": "https://example.com"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "https://example.com",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [
+   "OC_SECRET must be a random value of 32+ characters"
+  ],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "staging",
+   "OC_SECRET": "short",
+   "OC_WEB_ORIGIN": "http://x"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "staging",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "short",
+   "webOrigin": "http://x",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_DATABASE_SSL_CA": "certs/supabase-ca.crt",
+   "OC_DATABASE_POOL_MAX": "4",
+   "OC_SUPABASE_URL": "https://abc.supabase.co//",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_x"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "certs/supabase-ca.crt",
+   "databasePoolMax": 4,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "sb_publishable_x",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": true,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_DATABASE_POOL_MAX": "many"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": null,
+   "supabase": {
+    "url": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_SUPABASE_URL": "https://abc.supabase.co"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  },
+  "warnings": [
+   "Supabase Auth is off: set both OC_SUPABASE_URL and OC_SUPABASE_PUBLISHABLE_KEY (only one is set)."
+  ]
+ },
+ {
+  "env": {
+   "OC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_x"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "sb_publishable_x",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  },
+  "warnings": [
+   "Supabase Auth is off: set both OC_SUPABASE_URL and OC_SUPABASE_PUBLISHABLE_KEY (only one is set)."
+  ]
+ },
+ {
+  "env": {
+   "OC_SUPABASE_URL": "https://abc.supabase.co",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "sb_secret_abc"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "sb_secret_abc",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": true,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  },
+  "refusal": "Refusing to start: OC_SUPABASE_PUBLISHABLE_KEY holds a secret (service_role) key. Use the publishable (anon) key; it is sent to browsers."
+ },
+ {
+  "env": {
+   "OC_SUPABASE_URL": "https://abc.supabase.co",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.sig"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.sig",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": true,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  },
+  "refusal": "Refusing to start: OC_SUPABASE_PUBLISHABLE_KEY holds a secret (service_role) key. Use the publishable (anon) key; it is sent to browsers."
+ },
+ {
+  "env": {
+   "OC_SUPABASE_URL": "https://abc.supabase.co",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYW5vbiJ9.sig"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYW5vbiJ9.sig",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": true,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "OC_SUPABASE_URL": "https://abc.supabase.co",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "a.b.c"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "development",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "a.b.c",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "dev-only-secret-change-me",
+   "webOrigin": "http://localhost:3000",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": true,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "OC_WEB_ORIGIN": "https://app.example.com",
+   "OC_SUPABASE_URL": "https://abc.supabase.co"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "webOrigin": "https://app.example.com",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [
+   "OC_SUPABASE_URL and OC_SUPABASE_PUBLISHABLE_KEY must be set together (or both left empty for the built-in sign-in)"
+  ],
+  "supabase": {
+   "enabled": false,
+   "issuer": "https://abc.supabase.co/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "OC_WEB_ORIGIN": "https://app.example.com",
+   "OC_SUPABASE_URL": "http://abc.supabase.co/",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_x"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "http://abc.supabase.co",
+    "publishableKey": "sb_publishable_x",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "webOrigin": "https://app.example.com",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [
+   "OC_SUPABASE_URL must be https",
+   "OC_SUPABASE_SECRET_KEY must be set when Supabase Auth is on (account deletion removes the Supabase user)"
+  ],
+  "supabase": {
+   "enabled": true,
+   "issuer": "http://abc.supabase.co/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "OC_WEB_ORIGIN": "https://app.example.com",
+   "OC_SUPABASE_URL": "https://abc.supabase.co",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_x",
+   "OC_SUPABASE_SECRET_KEY": "sb_secret_y",
+   "OC_SUPABASE_JWT_SECRET": "jwt",
+   "OC_SUPABASE_JWT_ISSUER": "https://auth.example.com/auth/v1"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "https://abc.supabase.co",
+    "publishableKey": "sb_publishable_x",
+    "secretKey": "sb_secret_y",
+    "jwtSecret": "jwt",
+    "jwtIssuer": "https://auth.example.com/auth/v1"
+   },
+   "secret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "webOrigin": "https://app.example.com",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": true,
+   "issuer": "https://auth.example.com/auth/v1"
+  }
+ },
+ {
+  "env": {
+   "NODE_ENV": "production",
+   "OC_SECRET": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "OC_WEB_ORIGIN": "https://app.example.com",
+   "OC_SUPABASE_PUBLISHABLE_KEY": "sb_secret_abc"
+  },
+  "config": {
+   "brand": {
+    "name": "Pinselo",
+    "short": "OC",
+    "tagline": "Design anything, together.",
+    "accent": "#0c7a80"
+   },
+   "env": "production",
+   "databaseUrl": "postgres://localhost:5432/opencanvas",
+   "databaseSslCa": "",
+   "databasePoolMax": 10,
+   "supabase": {
+    "url": "",
+    "publishableKey": "sb_secret_abc",
+    "secretKey": "",
+    "jwtSecret": "",
+    "jwtIssuer": ""
+   },
+   "secret": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "webOrigin": "https://app.example.com",
+   "usercontentOrigin": "",
+   "apiPort": 4000,
+   "collabPort": 4100,
+   "renderPort": 4200,
+   "renderUrl": "http://localhost:4200",
+   "apiUrl": "http://localhost:4000",
+   "dataDir": "",
+   "uploadQuota": 5368709120,
+   "maxUploadBytes": 52428800,
+   "maxMediaBytes": 1073741824
+  },
+  "problems": [],
+  "supabase": {
+   "enabled": false,
+   "issuer": "/auth/v1"
+  },
+  "refusal": "Refusing to start: OC_SUPABASE_PUBLISHABLE_KEY holds a secret (service_role) key. Use the publishable (anon) key; it is sent to browsers."
+ }
+]

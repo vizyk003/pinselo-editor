@@ -1,0 +1,365 @@
+{
+ "file": "export-mono.pdf",
+ "doc": {
+  "meta": {
+   "schemaVersion": 1,
+   "minClientSchema": 1,
+   "layoutVersion": 1,
+   "surface": "graphic",
+   "dims": {
+    "w": 1920,
+    "h": 1080,
+    "unit": "px",
+    "dpi": 96
+   },
+   "lang": "en",
+   "title": "export-mono",
+   "epoch": 0
+  },
+  "pages": {
+   "BxqcS68unQnBhmTy": {
+    "id": "BxqcS68unQnBhmTy",
+    "order": "a0",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "a": 1
+      }
+     }
+    ]
+   },
+   "Z7iU4f9QYImCjHKT": {
+    "id": "Z7iU4f9QYImCjHKT",
+    "order": "a1",
+    "background": [
+     {
+      "k": "solid",
+      "color": {
+       "space": "srgb",
+       "r": 1,
+       "g": 1,
+       "b": 1,
+       "a": 1
+      }
+     }
+    ]
+   }
+  },
+  "elements": {
+   "l7myOlscheNw5ZCw": {
+    "id": "l7myOlscheNw5ZCw",
+    "type": "image",
+    "parentId": "BxqcS68unQnBhmTy",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 0,
+     "y": 0,
+     "w": 1920,
+     "h": 1080,
+     "rot": 0
+    },
+    "asset": "A000000000000001",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    },
+    "name": "Page 1 graphics",
+    "lock": {
+     "move": true,
+     "by": "user"
+    }
+   },
+   "i3wfV97l37c75nN2": {
+    "id": "i3wfV97l37c75nN2",
+    "type": "text",
+    "parentId": "BxqcS68unQnBhmTy",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 160,
+     "y": 318.25,
+     "w": 762.1226099375002,
+     "h": 300,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 800,
+      "italic": false,
+      "size": 150,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.06740290600606139,
+        "g": 0.09482858981619449,
+        "b": 0.15360479013901152,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "žuarterly",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "Review",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "UeU0nZQKmKKq1IPu": {
+    "id": "UeU0nZQKmKKq1IPu",
+    "type": "text",
+    "parentId": "BxqcS68unQnBhmTy",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 160,
+     "y": 688.44,
+     "w": 521.4705217499999,
+     "h": 57.599999999999994,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 48,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.42286044072655965,
+        "g": 0.45014717776550434,
+        "b": 0.5046246708410129,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "ž3 2026 · Operations",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.2,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "NyKMcpXxoAREDlgw": {
+    "id": "NyKMcpXxoAREDlgw",
+    "type": "image",
+    "parentId": "Z7iU4f9QYImCjHKT",
+    "z": "a0",
+    "opacity": 1,
+    "xf": {
+     "x": 0,
+     "y": 0,
+     "w": 1920,
+     "h": 1080,
+     "rot": 0
+    },
+    "asset": "A000000000000002",
+    "crop": {
+     "x": 0,
+     "y": 0,
+     "w": 1,
+     "h": 1
+    },
+    "name": "Page 2 graphics",
+    "lock": {
+     "move": true,
+     "by": "user"
+    }
+   },
+   "cmCQY4FjjL7bZipi": {
+    "id": "cmCQY4FjjL7bZipi",
+    "type": "text",
+    "parentId": "Z7iU4f9QYImCjHKT",
+    "z": "a1",
+    "opacity": 1,
+    "xf": {
+     "x": 160,
+     "y": 134.95,
+     "w": 490.1300946874998,
+     "h": 108,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 800,
+      "italic": false,
+      "size": 90,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.06830882284021783,
+        "g": 0.09569926443709673,
+        "b": 0.15441924935201984,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "Highlights",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.2,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   },
+   "LQWgRp4Gm5fygySW": {
+    "id": "LQWgRp4Gm5fygySW",
+    "type": "text",
+    "parentId": "Z7iU4f9QYImCjHKT",
+    "z": "a2",
+    "opacity": 1,
+    "xf": {
+     "x": 160,
+     "y": 306.28,
+     "w": 1101.8121411249997,
+     "h": 360,
+     "rot": 0
+    },
+    "body": {
+     "defaultRun": {
+      "family": "Inter",
+      "weight": 400,
+      "italic": false,
+      "size": 56,
+      "fill": {
+       "k": "solid",
+       "color": {
+        "space": "srgb",
+        "r": 0.2188968388513008,
+        "g": 0.2579371553275838,
+        "b": 0.320446355317721,
+        "a": 1
+       }
+      },
+      "tracking": 0
+     },
+     "paragraphs": [
+      {
+       "runs": [
+        {
+         "text": "• Revenue up 18% quarter over quarter",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.6071428571428572,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "• Churn down to 2.1%",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.6071428571428572,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "• Two new regions launched",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.6071428571428572,
+       "spaceAfter": 0
+      },
+      {
+       "runs": [
+        {
+         "text": "• NPS 61 (+7)",
+         "style": {}
+        }
+       ],
+       "align": "start",
+       "lineHeight": 1.6071428571428572,
+       "spaceAfter": 0
+      }
+     ]
+    },
+    "frame": {
+     "mode": "autoHeight"
+    },
+    "autoFit": "none"
+   }
+  },
+  "assets": {}
+ },
+ "media": [
+  {
+   "name": "page-1.png",
+   "w": 2880,
+   "h": 1620
+  },
+  {
+   "name": "page-2.png",
+   "w": 2880,
+   "h": 1620
+  }
+ ]
+}

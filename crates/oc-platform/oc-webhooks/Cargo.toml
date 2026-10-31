@@ -1,0 +1,30 @@
+[package]
+name = "oc-webhooks"
+description = "Signed webhook fan-out and delivery (port of @oc/webhooks): OC-Signature t=<unix>,v1=<hex HMAC-SHA256>."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+oc-db = { workspace = true }
+oc-jobs = { workspace = true }
+oc-js = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+hmac = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+regex = { workspace = true }
+url = { workspace = true }
+reqwest = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+oc-config = { workspace = true }
+oc-js = { workspace = true }
+tokio = { workspace = true }
+chrono = { workspace = true }
