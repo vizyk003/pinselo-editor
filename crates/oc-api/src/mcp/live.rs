@@ -47,7 +47,6 @@ pub struct Agent {
     /// api_tokens id: one live session per app connection.
     pub token_id: Uuid,
     pub role: Role,
-    pub brand_admin: bool,
 }
 
 // ---------------------------------------------------------------- Hocuspocus wire format (lib0 encoding)
@@ -181,7 +180,6 @@ fn ticket(s: &AppState, design_id: &str, a: &Agent) -> String {
         aud: oc_auth::Audience::Collab,
         design: design_id.into(),
         role: a.role,
-        brand_locked: if a.brand_admin { None } else { Some(true) },
     };
     oc_auth::sign_ticket_with(&s.cfg.secret, &claims, 300)
 }

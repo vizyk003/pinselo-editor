@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Golden replay of the pure module functions (tests/golden/editor/modules.json from tools/golden/editor.ts):
-//! transform, viewport, styles, a11y, templates and the whiteboard helpers, over hand-made inputs and every
+//! transform, viewport, styles, a11y and templates, over hand-made inputs and every
 //! fixtures/templates-seed design. Floats within 1e-9.
 
 mod common;
@@ -9,7 +9,6 @@ use std::collections::{BTreeMap, HashMap};
 
 use common::{golden, json_diff, root, short};
 use indexmap::IndexMap;
-use oc_crdt::board::VoteEntry;
 use oc_editor_core::*;
 use oc_schema::DesignDoc;
 use oc_schema::primitives::{Rect, StoredRect, Xf};
@@ -27,10 +26,6 @@ fn j<T: serde::Serialize>(v: &T) -> Value {
 /// `Map` results are recorded as `[key, value]` entries.
 fn entries<V: serde::Serialize>(m: &IndexMap<String, V>) -> Value {
     Value::Array(m.iter().map(|(k, v)| json!([k, v])).collect())
-}
-
-fn xy(m: &IndexMap<String, (f64, f64)>) -> Value {
-    Value::Array(m.iter().map(|(k, (x, y))| json!([k, { "x": x, "y": y }])).collect())
 }
 
 struct Fixtures(BTreeMap<String, (DesignDoc, Value)>);
@@ -96,51 +91,6 @@ fn run(fx: &Fixtures, fname: &str, a: &[Value]) -> Value {
         "screenToScene" => j(&screen_to_scene(&p::<Viewport>(&a[0]), p(&a[1]))),
         "sceneToScreen" => j(&scene_to_screen(&p::<Viewport>(&a[0]), p(&a[1]))),
         "clampZoom" => j(&clamp_zoom(a[0].as_f64().unwrap())),
-        "sectionsOf" => {
-            let d = fx.doc(&a[0]);
-            Value::Array(sections_of(&d.elements, a[1].as_str().unwrap()).iter().map(|e| json!(e.id())).collect())
-        }
-        "sectionMembers" => j(&section_members(&fx.doc(&a[0]).elements, a[1].as_str().unwrap())),
-        "withSectionMembers" => j(&with_section_members(&fx.doc(&a[0]).elements, &p::<Vec<String>>(&a[1]))),
-        "voteScope" => j(&vote_scope(&fx.doc(&a[0]).elements, a[1].as_str().unwrap(), &p::<Vec<String>>(&a[2]))),
-        "mind" => {
-            let els = &fx.doc(&a[0]).elements;
-            let id = a[1].as_str().unwrap();
-            let e = els.get(id);
-            let (x, y) = mind_child_position(els, id, 60.0);
-            json!({
-                "isSticky": is_sticky(e), "isSection": is_section(e), "isMindNode": is_mind_node(e),
-                "node": mind_node_of(els, id).and_then(|n| n.id()),
-                "children": mind_children(els, id).iter().map(|c| c.id()).collect::<Vec<_>>(),
-                "root": mind_root(els, id),
-                "childPos": { "x": x, "y": y },
-            })
-        }
-        "mindLayout" => {
-            let els = &fx.doc(&a[0]).elements;
-            let sp = a.get(2).cloned().unwrap_or(Value::Null);
-            xy(&mind_layout(els, a[1].as_str().unwrap(), sp["gapX"].as_f64(), sp["gapY"].as_f64()))
-        }
-        "clusterLayout" => xy(&cluster_layout(&fx.doc(&a[0]).elements, &p::<Vec<String>>(&a[1]), 24.0)),
-        "makeTimer" => j(&make_timer(a[0].as_f64().unwrap(), a.get(1).and_then(Value::as_bool).unwrap_or(true))),
-        "formatClock" => json!(format_clock(a[0].as_f64().unwrap())),
-        "tallyVotes" => {
-            let s = &a[0];
-            j(&tally_votes(s["id"].as_str().unwrap(), &p::<Vec<String>>(&s["scope"]), &p::<Vec<VoteEntry>>(&a[1])))
-        }
-        "topVoted" => j(&top_voted(&p::<Vec<VoteTally>>(&a[0]), a[1].as_u64().unwrap() as usize)),
-        "votesUsed" => json!(votes_used(a[0]["id"].as_str().unwrap(), &p::<Vec<VoteEntry>>(&a[1]), a[2].as_str().unwrap())),
-        "voteAllowance" => {
-            let s = &a[0];
-            json!(vote_allowance(
-                s["id"].as_str().unwrap(),
-                s["perPerson"].as_f64().unwrap(),
-                s["status"].as_str().unwrap(),
-                &p::<Vec<VoteEntry>>(&a[1]),
-                a[2].as_str().unwrap()
-            ))
-        }
-        "STICKY_COLORS" => j(&STICKY_COLORS),
         "constants" => json!({ "MIN_ZOOM": MIN_ZOOM, "MAX_ZOOM": MAX_ZOOM, "CORNERS": CORNERS, "EDGES": EDGES, "CLIPBOARD_MIME": CLIPBOARD_MIME }),
         "refitCrop" => {
             let wh = |v: &Value| (v["w"].as_f64().unwrap_or(f64::NAN), v["h"].as_f64().unwrap_or(f64::NAN));
@@ -188,29 +138,12 @@ fn replays_module_functions() {
     let g = golden("modules.json");
     let fx = Fixtures::load();
     let cases = g["cases"].as_array().unwrap();
-    let mut timer: Option<oc_crdt::board::TimerState> = None;
     let mut by_fn: HashMap<String, (usize, usize)> = HashMap::new();
     let mut failures = Vec::new();
     for (i, c) in cases.iter().enumerate() {
         let fname = c["fn"].as_str().unwrap();
         let a = c["args"].as_array().unwrap();
-        let out = if fname == "timer" {
-            // A running sequence: start / remaining / add / pause / reset over one timer.
-            let mut t = timer.take().unwrap_or_else(|| make_timer(5.0 * 60_000.0, true));
-            let (op, at, arg) = (a[0].as_str().unwrap(), a[1].as_f64().unwrap(), a[2].as_f64().unwrap());
-            t = match op {
-                "start" => timer_start(&t, at),
-                "pause" => timer_pause(&t, at),
-                "add" => timer_add(&t, arg, at),
-                "reset" => timer_reset(&t),
-                _ => t,
-            };
-            let out = json!({ "t": t, "remaining": timer_remaining(&t, at), "running": timer_running(&t, at) });
-            timer = Some(t);
-            out
-        } else {
-            run(&fx, fname, a)
-        };
+        let out = run(&fx, fname, a);
         let e = by_fn.entry(fname.to_string()).or_default();
         e.1 += 1;
         let diff = if fname == "designColors" { same_colors(&out, &c["out"]) } else { json_diff(&out, &c["out"], "out") };

@@ -12,8 +12,6 @@
 //! * [`text`]: the oc-text `TextService` (font registry fed from JS) and the JS text-service adapter.
 //! * [`doc`]: `DocRef`, a design parsed once and passed to the document helpers.
 //! * [`schema`], [`geometry`], [`editor_fns`]: the pure helpers apps/web imports.
-//! * `sheet` (feature `sheet`): the oc-sheet `SheetEngine` handle (yrs mirror + formula engine, model writes)
-//!   and the `@oc/sheet` helpers.
 //!
 //! * `render` (feature `render`): oc-render — `resolvePage` → `DisplayList`, the tile `RenderTarget`, the
 //!   `Painter` sharing [`text::TextService::engine`] (one font registry and layout cache for measuring, caret
@@ -28,8 +26,6 @@ pub mod geometry;
 pub mod render;
 pub mod schema;
 pub mod session;
-#[cfg(feature = "sheet")]
-pub mod sheet;
 pub mod text;
 
 pub use doc::{DocRef, design_from_value};
@@ -52,7 +48,6 @@ pub fn engine_info() -> JsValue {
     let features: Vec<&str> = [
         cfg!(feature = "console_error_panic_hook").then_some("console_error_panic_hook"),
         cfg!(feature = "complex-scripts").then_some("complex-scripts"),
-        cfg!(feature = "sheet").then_some("sheet"),
         cfg!(feature = "render").then_some("render"),
     ]
     .into_iter()

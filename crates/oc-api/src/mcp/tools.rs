@@ -20,7 +20,7 @@ use crate::pg;
 use crate::search::like_escape;
 use crate::state::AppState;
 
-/// A failure the assistant is told about (`ToolError` / `UpgradeRequired`), or an unexpected one.
+/// A failure the assistant is told about (`ToolError`), or an unexpected one.
 pub enum Fail {
     Tool(String),
     Other(String),
@@ -28,10 +28,7 @@ pub enum Fail {
 
 impl From<ApiError> for Fail {
     fn from(e: ApiError) -> Self {
-        match e {
-            ApiError::Upgrade { message, .. } => Fail::Tool(message),
-            other => Fail::Other(format!("{other:?}")),
-        }
+        Fail::Other(format!("{e:?}"))
     }
 }
 impl From<sqlx::Error> for Fail {
@@ -132,7 +129,6 @@ async fn agent_for(s: &AppState, u: &BearerUser, design_id: &str) -> Result<Agen
         name: if u.client_name.is_empty() { "AI assistant".into() } else { u.client_name.clone() },
         token_id: u.token_id,
         role,
-        brand_admin: crate::brandhub::is_brand_admin(s, u.id, design_id).await?,
     })
 }
 
@@ -765,9 +761,6 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             need(u, "exports")?;
             let id = a["design_id"].as_str().unwrap_or("").to_owned();
             access(s, u, &id, Role::View).await?;
-            if let Some(g) = crate::brandhub::approval_gate(s, u.id, &id).await? {
-                return tool_err(g["message"].as_str().unwrap_or(""));
-            }
             let format = a["format"].as_str().unwrap_or("").to_owned();
             let mut body = Map::new();
             body.insert("designId".into(), json!(id));
@@ -856,13 +849,12 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
     }
     let actor = format!("ai:{}", agent.token_id);
     let now = s.now_ms() as f64;
-    let brand_admin = agent.brand_admin;
     let r = live::change(
         s,
         &id,
         &agent,
         move |ydoc| {
-            let ctx = EditContext { ydoc, actor, brand_admin, images, now };
+            let ctx = EditContext { ydoc, actor, images, now };
             let res = run_edits(&ops, &ctx);
             let pages = {
                 use yrs::{Map as _, Transact as _};

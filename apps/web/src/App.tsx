@@ -5,12 +5,12 @@ import { loadSession } from './auth/session';
 import { loadAuthConfig } from './auth/authConfig';
 import { safeNext } from './auth/redirect';
 import { Landing } from './pages/Landing';
-import { api, plansEnabled, type User } from './api';
+import { api, type User } from './api';
+import { LimitHost } from './components/LimitHost';
 import { ToastHost } from './components/ui';
 import { Home } from './pages/Home';
 import { ConsentBanner } from './components/ConsentBanner';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { LocalCheckout, Pricing, UpgradeHost } from './pages/Billing';
 import { DevMail } from './pages/DevMail';
 import { HelpArticlePage, HelpContact, HelpHome, HelpRequests, LegalPage, StatusPage } from './pages/Public';
 import { ForgotPassword, InviteLanding, Login, MagicLanding, ResetPassword, Signup, VerifyLanding } from './pages/Auth';
@@ -120,8 +120,6 @@ export function App() {
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/invite" element={<InviteLanding />} />
             <Route path="/dev/mail" element={<DevMail />} />
-            <Route path="/pricing" element={plansEnabled() ? <Pricing /> : <Navigate to="/" replace />} />
-            <Route path="/billing/checkout" element={plansEnabled() ? <RequireAuth><LocalCheckout /></RequireAuth> : <Navigate to="/" replace />} />
             <Route path="/legal/:slug" element={<LegalPage />} />
             <Route path="/help" element={<HelpHome />} />
             <Route path="/help/contact" element={<HelpContact />} />
@@ -136,7 +134,7 @@ export function App() {
             <Route path="/design/:id" element={<RequireAuth><ErrorBoundary label="editor"><Suspense fallback={<div className="empty">{t('Loading editor…')}</div>}><EditorPage /></Suspense></ErrorBoundary></RequireAuth>} />
             <Route path="/*" element={user ? <Home /> : <PublicHome />} />
           </Routes>
-          <UpgradeHost />
+          <LimitHost />
           <ConsentBanner />
           </AuthGateProvider>
         </BrowserRouter>

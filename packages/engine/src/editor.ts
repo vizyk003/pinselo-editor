@@ -2,7 +2,7 @@
 /**
  * `Editor`: the `@oc/editor-core` editor API over the Rust editor (crates/oc-editor-core via crates/oc-wasm).
  *
- * Sync. The browser's yjs `Y.Doc` stays the source of truth (TipTap, the board, `@hocuspocus/provider`). The
+ * Sync. The browser's yjs `Y.Doc` stays the source of truth (TipTap, `@hocuspocus/provider`). The
  * Rust editor holds a yrs mirror: it starts from `Y.encodeStateAsUpdate(ydoc)`, every yjs update not made by
  * this editor is applied to the mirror (`applyRemoteUpdate`), and the mirror's own updates are applied back to
  * the yjs doc right after each call, inside one yjs transaction whose origin is this editor's `origin`.
@@ -207,8 +207,6 @@ export class Editor implements EditorApi, DocOwner {
   private _view: DesignDoc | null = null;
   private _viewKey: [DesignDoc | null, unknown] = [null, null];
   private _ts: TextService | null = null;
-  private _brandAdmin = true;
-  private _user: { id: string; name: string } | null = null;
   private _destroyed = false;
   private _clip: ClipboardPayload | null = null;
   private _syncing = false;
@@ -302,8 +300,6 @@ export class Editor implements EditorApi, DocOwner {
       if (this._ts instanceof EngineTextService) this._raw.setTextService(this._ts.raw);
       else this._raw.setJsTextService(this._ts ?? null);
       if (this._actor !== null) this._raw.dispatch('store.actor=', argsJson([this._actor]));
-      this._raw.dispatch('brandAdmin=', argsJson([this._brandAdmin]));
-      if (this._user) this._raw.dispatch('user=', argsJson([this._user]));
       this.sync(this._raw.status());
     } catch (e) {
       console.error('[engine] restoring the editor settings failed', e);
@@ -533,25 +529,6 @@ export class Editor implements EditorApi, DocOwner {
     this.guard(() => (ts instanceof EngineTextService ? this._raw.setTextService(ts.raw) : this._raw.setJsTextService(ts ?? null)));
   }
 
-  /** Brand-template locks (A8). Writing the field does not notify (like TS); `setBrandAdmin` does. */
-  get brandAdmin(): boolean {
-    return this._brandAdmin;
-  }
-
-  set brandAdmin(v: boolean) {
-    this._brandAdmin = Boolean(v);
-    this.call('brandAdmin=', [this._brandAdmin]);
-  }
-
-  get user(): { id: string; name: string } | null {
-    return this._user;
-  }
-
-  set user(u: { id: string; name: string } | null) {
-    this._user = u ? { id: u.id, name: u.name } : null;
-    this.call('user=', [this._user]);
-  }
-
   /** The editor clock (ms). `state.preview.startedAt` and `state.playAnchor.at` are on this clock. */
   now(): number {
     return this.guard(() => this._raw.now());
@@ -611,7 +588,6 @@ export class Editor implements EditorApi, DocOwner {
 
   // ------------------------------------------------------------------ queries
 
-  expandWhiteboard(margin = 600): void { this.call('expandWhiteboard', [margin]); }
   editShapeLabel(shapeId: ElementId): void { this.call('editShapeLabel', [shapeId]); }
   remeasureText(): void { this.call('remeasureText', []); }
   pageOrigin(pageId: PageId): Vec2 { return this.call('pageOrigin', [pageId]); }
@@ -651,22 +627,9 @@ export class Editor implements EditorApi, DocOwner {
   cancelGesture(): void { this.call('cancelGesture', []); }
   doubleClick(p: Vec2): void { this.call('doubleClick', [p]); }
 
-  // ------------------------------------------------------------------ whiteboard
 
   viewCenter(pageId?: PageId): Vec2 { return this.call('viewCenter', [pageId]); }
-  addSticky(color: string, opts: { text?: string; at?: Vec2; size?: number; author?: { id: string; name: string } | null } = {}): ElementId | null {
-    return this.call('addSticky', [color, opts]);
-  }
-  setStickyColor(color: string, ids?: ElementId[]): number { return this.call('setStickyColor', [color, ids]); }
-  clusterStickies(ids?: ElementId[]): number { return this.call('clusterStickies', [ids]); }
-  createSection(title: string): ElementId | null { return this.call('createSection', [title]); }
-  renameSection(id: ElementId, title: string): void { this.call('renameSection', [id, title]); }
-  toggleSection(id: ElementId): void { this.call('toggleSection', [id]); }
-  moveSection(id: ElementId, dir: -1 | 1): void { this.call('moveSection', [id, dir]); }
   zoomToElement(id: ElementId, pad = 48): void { this.call('zoomToElement', [id, pad]); }
-  mindMapAdd(kind: 'child' | 'sibling'): ElementId | null { return this.call('mindMapAdd', [kind]); }
-  editGroupText(groupId: ElementId): boolean { return this.call('editGroupText', [groupId]); }
-  layoutMindMap(id?: ElementId): number { return this.call('layoutMindMap', [id]); }
   setTool(tool: EditorState['tool']): void { this.call('setTool', [tool]); }
   setBrush(b: Partial<EditorState['brush']>): void { this.call('setBrush', [b]); }
 
@@ -718,7 +681,6 @@ export class Editor implements EditorApi, DocOwner {
   updateAudio(id: string, p: Partial<AudioClip>, merge = true): void { this.call('updateAudio', [id, p, merge]); }
   removeAudio(id: string): void { this.call('removeAudio', [id]); }
   splitAudio(id: string, t?: number): void { this.call('splitAudio', [id, t]); }
-  syncPagesToBeats(beatsMs: number[]): number { return this.call('syncPagesToBeats', [beatsMs]); }
   captions(): ReturnType<TSEditor['captions']> { return this.call('captions', []); }
   setCaptions(track: Parameters<TSEditor['setCaptions']>[0], merge = false): void { this.call('setCaptions', [track, merge]); }
   upsertCue(cue: Partial<CaptionCue> & { id?: string }): string { return this.call('upsertCue', [cue]); }
@@ -784,12 +746,6 @@ export class Editor implements EditorApi, DocOwner {
   distribute(axis: 'x' | 'y'): void { this.call('distribute', [axis]); }
   tidy(): void { this.call('tidy', []); }
   flip(axis: 'x' | 'y'): void { this.call('flip', [axis]); }
-  setBrandAdmin(admin: boolean): void {
-    this._brandAdmin = Boolean(admin);
-    this.call('setBrandAdmin', [admin]);
-  }
-  isBrandLocked(el: Element | undefined): boolean { return this.call('isBrandLocked', [el]); }
-  setBrandLock(levels: { position?: boolean; content?: boolean; style?: boolean } | null): void { this.call('setBrandLock', [levels]); }
   toggleLock(): void { this.call('toggleLock', []); }
   group(): void { this.call('group', []); }
   ungroup(): void { this.call('ungroup', []); }

@@ -100540,7 +100540,6 @@
        "category": "decks",
        "height": 1080,
        "id": "Stplhidden000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [],
        "team": false,
@@ -100554,7 +100553,6 @@
        "category": "decks",
        "height": 1080,
        "id": "Stplpages0000000",
-       "premium": false,
        "preset": "presentation",
        "tags": [],
        "team": false,
@@ -100568,7 +100566,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -100585,7 +100582,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -100602,7 +100598,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplsimilar00000",
-       "premium": false,
        "preset": "poster",
        "tags": [
         "summer"
@@ -100677,7 +100672,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale"
@@ -100693,7 +100687,6 @@
        "category": "decks",
        "height": 1080,
        "id": "Stplhidden000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [],
        "team": false,
@@ -100707,7 +100700,6 @@
        "category": "decks",
        "height": 1080,
        "id": "Stplpages0000000",
-       "premium": false,
        "preset": "presentation",
        "tags": [],
        "team": false,
@@ -100721,7 +100713,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -100738,7 +100729,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -100755,7 +100745,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplsimilar00000",
-       "premium": false,
        "preset": "poster",
        "tags": [
         "summer"
@@ -100822,7 +100811,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale"
@@ -100980,7 +100968,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -100997,7 +100984,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101068,7 +101054,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101085,7 +101070,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101148,7 +101132,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplsimilar00000",
-       "premium": false,
        "preset": "poster",
        "tags": [
         "summer"
@@ -101218,7 +101201,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101235,7 +101217,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101302,7 +101283,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101373,7 +101353,6 @@
        "category": "decks",
        "height": 1080,
        "id": "Stplhidden000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [],
        "team": false,
@@ -101387,7 +101366,6 @@
        "category": "decks",
        "height": 1080,
        "id": "Stplpages0000000",
-       "premium": false,
        "preset": "presentation",
        "tags": [],
        "team": false,
@@ -101401,7 +101379,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101418,7 +101395,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101435,7 +101411,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplsimilar00000",
-       "premium": false,
        "preset": "poster",
        "tags": [
         "summer"
@@ -101543,14 +101518,12 @@
        }
       }
      },
-     "locked": false,
      "similar": [
       {
        "brand": false,
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101567,7 +101540,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplsimilar00000",
-       "premium": false,
        "preset": "poster",
        "tags": [
         "summer"
@@ -101587,7 +101559,6 @@
       "height": 1080,
       "id": "Stplflyer0000000",
       "pages": 1,
-      "premium": false,
       "preset": "ig-post",
       "surface": "graphic",
       "tags": [
@@ -101663,14 +101634,12 @@
        }
       }
      },
-     "locked": false,
      "similar": [
       {
        "brand": false,
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -101691,7 +101660,6 @@
       "height": 1080,
       "id": "Stplgold00000000",
       "pages": 1,
-      "premium": true,
       "preset": "ig-post",
       "surface": "graphic",
       "tags": [
@@ -101724,165 +101692,6 @@
    "url": "/api/templates/Stplgold00000000/preview"
   },
   {
-   "env": {
-    "OC_BILLING": "1"
-   },
-   "headers": {
-    "x-forwarded-for": "198.51.100.29"
-   },
-   "name": "preview of a premium template (plans on, signed out)",
-   "response": {
-    "body": {
-     "doc": null,
-     "locked": true,
-     "similar": [
-      {
-       "brand": false,
-       "category": "flyers",
-       "height": 1080,
-       "id": "Stplflyer0000000",
-       "premium": false,
-       "preset": "ig-post",
-       "tags": [
-        "sale",
-        "summer"
-       ],
-       "team": false,
-       "title": "Sale flyer",
-       "version": 1,
-       "width": 1080,
-       "workspaceId": null
-      }
-     ],
-     "template": {
-      "brand": false,
-      "category": "flyers",
-      "creator": null,
-      "description": null,
-      "height": 1080,
-      "id": "Stplgold00000000",
-      "pages": 1,
-      "premium": true,
-      "preset": "ig-post",
-      "surface": "graphic",
-      "tags": [
-       "sale",
-       "gold"
-      ],
-      "team": false,
-      "teamName": null,
-      "title": "Gold flyer",
-      "unit": "px",
-      "uses": 0,
-      "width": 1080,
-      "workspaceId": null
-     }
-    },
-    "headers": {
-     "cache-control": "no-store",
-     "content-type": "application/json; charset=utf-8",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 200
-   },
-   "url": "/api/templates/Stplgold00000000/preview"
-  },
-  {
-   "headers": {
-    "cookie": "oc_session=tok-ada",
-    "x-forwarded-for": "198.51.100.30"
-   },
-   "name": "preview of a premium template (plans on, free)",
-   "response": {
-    "body": {
-     "doc": null,
-     "locked": true,
-     "similar": [
-      {
-       "brand": false,
-       "category": "flyers",
-       "height": 1080,
-       "id": "Stplflyer0000000",
-       "premium": false,
-       "preset": "ig-post",
-       "tags": [
-        "sale",
-        "summer"
-       ],
-       "team": false,
-       "title": "Sale flyer",
-       "version": 1,
-       "width": 1080,
-       "workspaceId": null
-      },
-      {
-       "brand": true,
-       "category": "brand",
-       "height": 1080,
-       "id": "Stplstudio000000",
-       "premium": false,
-       "preset": "ig-post",
-       "tags": [
-        "sale"
-       ],
-       "team": true,
-       "title": "Studio post",
-       "version": 1,
-       "width": 1080,
-       "workspaceId": "00000000-0000-4000-8000-000000005000"
-      }
-     ],
-     "template": {
-      "brand": false,
-      "category": "flyers",
-      "creator": null,
-      "description": null,
-      "height": 1080,
-      "id": "Stplgold00000000",
-      "pages": 1,
-      "premium": true,
-      "preset": "ig-post",
-      "surface": "graphic",
-      "tags": [
-       "sale",
-       "gold"
-      ],
-      "team": false,
-      "teamName": null,
-      "title": "Gold flyer",
-      "unit": "px",
-      "uses": 0,
-      "width": 1080,
-      "workspaceId": null
-     }
-    },
-    "headers": {
-     "cache-control": "no-store",
-     "content-type": "application/json; charset=utf-8",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 200
-   },
-   "url": "/api/templates/Stplgold00000000/preview"
-  },
-  {
-   "env": {
-    "OC_BILLING": null
-   },
    "headers": {
     "x-forwarded-for": "198.51.100.31"
    },
@@ -101959,14 +101768,12 @@
        }
       }
      },
-     "locked": false,
      "similar": [
       {
        "brand": false,
        "category": "decks",
        "height": 1080,
        "id": "Stplhidden000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [],
        "team": false,
@@ -101984,7 +101791,6 @@
       "height": 1080,
       "id": "Stplpages0000000",
       "pages": 2,
-      "premium": false,
       "preset": "presentation",
       "surface": "graphic",
       "tags": [],
@@ -102058,14 +101864,12 @@
        }
       }
      },
-     "locked": false,
      "similar": [
       {
        "brand": false,
        "category": "decks",
        "height": 1080,
        "id": "Stplpages0000000",
-       "premium": false,
        "preset": "presentation",
        "tags": [],
        "team": false,
@@ -102083,7 +101887,6 @@
       "height": 1080,
       "id": "Stplhidden000000",
       "pages": 1,
-      "premium": false,
       "preset": "ig-post",
       "surface": "presentation",
       "tags": [],
@@ -102182,14 +101985,12 @@
        }
       }
      },
-     "locked": false,
      "similar": [
       {
        "brand": false,
        "category": "flyers",
        "height": 1080,
        "id": "Stplgold00000000",
-       "premium": true,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -102206,7 +102007,6 @@
        "category": "flyers",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "sale",
@@ -102227,7 +102027,6 @@
       "height": 1080,
       "id": "Stplstudio000000",
       "pages": 1,
-      "premium": false,
       "preset": "ig-post",
       "surface": "graphic",
       "tags": [
@@ -102381,7 +102180,6 @@
        }
       },
       "id": "Stplflyer0000000",
-      "premium": false,
       "preset": "ig-post",
       "title": "Sale flyer",
       "workspace_id": null
@@ -102450,7 +102248,6 @@
        }
       },
       "id": "Stplgold00000000",
-      "premium": true,
       "preset": "ig-post",
       "title": "Gold flyer",
       "workspace_id": null
@@ -102473,65 +102270,6 @@
    "url": "/api/templates/Stplgold00000000"
   },
   {
-   "env": {
-    "OC_BILLING": "1"
-   },
-   "headers": {
-    "x-forwarded-for": "198.51.100.40"
-   },
-   "name": "premium template signed out (plans on)",
-   "response": {
-    "body": {
-     "error": "unauthenticated"
-    },
-    "headers": {
-     "cache-control": "no-store",
-     "content-type": "application/json; charset=utf-8",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 401
-   },
-   "url": "/api/templates/Stplgold00000000"
-  },
-  {
-   "headers": {
-    "cookie": "oc_session=tok-ada",
-    "x-forwarded-for": "198.51.100.41"
-   },
-   "name": "premium template on the free plan",
-   "response": {
-    "body": {
-     "error": "upgrade_required",
-     "feature": "premiumTemplates",
-     "message": "This is a premium template. Upgrade to Pro to use it."
-    },
-    "headers": {
-     "cache-control": "no-store",
-     "content-type": "application/json; charset=utf-8",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 402
-   },
-   "url": "/api/templates/Stplgold00000000"
-  },
-  {
-   "env": {
-    "OC_BILLING": null
-   },
    "headers": {
     "x-forwarded-for": "198.51.100.42"
    },
@@ -102630,7 +102368,6 @@
        }
       },
       "id": "Stplstudio000000",
-      "premium": false,
       "preset": "ig-post",
       "title": "Studio post",
       "workspace_id": "00000000-0000-4000-8000-000000005000"

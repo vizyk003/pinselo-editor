@@ -108,10 +108,5 @@ export interface ApplyOptions {
     actor?: string;
     now?: () => number;
     partial?: boolean;
-    /**
-     * Brand-template locks (A8): false holds the writer to `lock.by === 'brand'` masks (team members/designers);
-     * true or unset = brand admin (team owner/admin, server-side tools) who may change or ignore them.
-     */
-    brandAdmin?: boolean;
 }
 export declare function applyOps(ydoc: Y.Doc, ops: DocOp[], origin: unknown, opts?: ApplyOptions): DocOpResult;

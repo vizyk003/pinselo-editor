@@ -294,18 +294,16 @@ fn sets_exact_geometry_and_fills_grid_cells_by_drop() {
 }
 
 #[test]
-fn grows_the_board_when_content_nears_an_edge_keeping_things_in_place_on_screen() {
+fn an_old_whiteboard_opens_as_a_normal_design() {
     let (mut ed, _) = setup_with(2000.0, 1500.0, 1, Some(Surface::Whiteboard), vp(0.0, 0.0, 1200.0, 900.0));
     ed.set_text_service(Some(Box::new(FakeText)));
     let id = ed.insert(vec![shape(xf(0.0, 0.0, 200.0, 200.0))], Some([1000.0, 750.0]), true, false)[0].clone();
-    assert_eq!(ed.doc().doc.meta.dims.w, 2000.0);
     ed.select(std::slice::from_ref(&id), false);
     ed.nudge(850.0, 0.0);
-    assert!(ed.doc().doc.meta.dims.w >= 1950.0 + 600.0);
-    let vx = ed.state.viewport.x;
-    ed.nudge(-1800.0, 0.0);
-    assert!(exf(&ed, &id).x >= 600.0);
-    assert!(ed.state.viewport.x > vx);
+    assert_eq!(ed.doc().doc.meta.dims.w, 2000.0);
+    let before = ed.doc().els().len();
+    ed.handle_key("Tab", NO, None);
+    assert_eq!(ed.doc().els().len(), before);
 }
 
 #[test]

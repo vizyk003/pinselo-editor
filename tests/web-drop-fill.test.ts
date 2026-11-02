@@ -8,8 +8,9 @@ import { describe, expect, it } from 'vitest';
 import { editorOf, ydocOf } from './engine-doc';
 import {
   accepts, detachPhotoOps, dragMedia, fillColorOf, fillOps, findDropTarget, mediaOf, mediaOfMime, withFillColor, withoutPhotoFill, withPhotoFill,
+  userLocked,
 } from '../apps/web/src/editor/dropTarget';
-import { applyAll, clickTarget, detachPhoto, fillTarget, insertAssetAt, photoLockOf, removePhoto, replacePhoto } from '../apps/web/src/editor/insert';
+import { applyAll, clickTarget, detachPhoto, fillTarget, insertAssetAt, removePhoto, replacePhoto } from '../apps/web/src/editor/insert';
 
 const NO = { shift: false, alt: false, meta: false };
 const PHOTO: AssetRef = { id: 'photo1' as AssetId, kind: 'image', sha256: 'x', mime: 'image/png', w: 400, h: 200, name: 'p.png' };
@@ -27,8 +28,8 @@ function setup() {
     return el.id;
   };
   const el = <T extends Element = ShapeEl>(id: ElementId) => store.doc.elements[id] as T;
-  const target = (p: [number, number], media: 'photo' | 'graphic' | 'video' = 'photo', isBrandLocked?: (e: Element) => boolean) =>
-    findDropTarget(store.doc, pageId, p, media, { isBrandLocked });
+  const target = (p: [number, number], media: 'photo' | 'graphic' | 'video' = 'photo') =>
+    findDropTarget(store.doc, pageId, p, media);
   return { store, editor, pageId, add, el, target };
 }
 
@@ -60,15 +61,14 @@ describe('drop target hit-testing', () => {
     expect(target([40, 20])).toEqual({ kind: 'shape', id: below });
   });
 
-  it('honours brand locks for non-admins only', () => {
+  it('ignores an old brand lock', () => {
     const { add, target, editor } = setup();
     const s = add(makeShape({ kind: 'rect', xf: xf(0, 0, 200, 200) }));
-    editor.apply([{ op: 'update', id: s, patch: { lock: { by: 'brand', style: true } } }]);
-    expect(target([100, 100], 'photo', () => true)).toBeNull();
-    expect(target([100, 100], 'photo', () => false)).toEqual({ kind: 'shape', id: s });
+    editor.apply([{ op: 'update', id: s, patch: { lock: { by: 'brand', move: true, style: true } } }]);
+    expect(target([100, 100])).toEqual({ kind: 'shape', id: s });
   });
 
-  it('looks inside groups, but not locked groups or sticky notes', () => {
+  it('looks inside groups, but not locked groups', () => {
     const { add, target, editor } = setup();
     const g = add(makeGroup({ xf: xf(100, 100, 400, 400) }));
     const inner = add(makeShape({ kind: 'ellipse', xf: xf(0, 0, 200, 200) }), g);
@@ -76,8 +76,9 @@ describe('drop target hit-testing', () => {
     expect(target([110, 110])).toBeNull();
     editor.apply([{ op: 'update', id: g, patch: { lock: { move: true, by: 'user' } } }]);
     expect(target([200, 200])).toBeNull();
-    editor.apply([{ op: 'update', id: g, patch: { lock: null, board: { sticky: { color: '#ff0' } } } }]);
-    expect(target([200, 200])).toBeNull();
+    editor.apply([{ op: 'update', id: g, patch: { lock: null } }]);
+    editor.apply([{ op: 'update', id: g, patch: { board: { sticky: { color: '#ff0' } } } }]);
+    expect(target([200, 200])).toEqual({ kind: 'shape', id: inner });
   });
 
   it('follows rotation and flips', () => {
@@ -104,8 +105,8 @@ describe('drop target hit-testing', () => {
     expect(target([700, 100], 'video')).toBeNull();
     expect(target([350, 750])).toEqual({ kind: 'cell', id: grid, cell: 3 });
     expect(target([200, 600])).toBeNull(); // the gap between cells
-    editor.apply([{ op: 'update', id: frame, patch: { lock: { by: 'brand', content: true } } }]);
-    expect(target([400, 100], 'photo', () => true)).toBeNull();
+    editor.apply([{ op: 'update', id: frame, patch: { lock: { by: 'user', move: true } } }]);
+    expect(target([400, 100], 'photo')).toBeNull();
     expect(accepts('shape', 'photo') && !accepts('shape', 'graphic') && !accepts('image', 'video')).toBe(true);
   });
 
@@ -298,61 +299,28 @@ const shownAspect = (c: { w: number; h: number }, a: AssetRef) => (c.w * a.w) / 
 const photoItem = (store: { doc: DesignDoc }, pageId: string, id: ElementId) =>
   resolvePage(store.doc, pageId as PageId).items.find((i) => i.op === 'image' && i.srcEl === id) as Extract<ReturnType<typeof resolvePage>['items'][number], { op: 'image' }>;
 
-describe('photo in a locked shape or frame (brand templates, user locks)', () => {
-  /** A team member's editor on a brand template: the admin locked it, then the member opens it (setBrandAdmin(false), as EditorPage does). */
-  function lockedSetup() {
-    const t = setup();
-    const shape = t.add(makeShape({ kind: 'ellipse', fill: '#ff0000', xf: xf(0, 0, 200, 200) }));
-    const frame = t.add(makeFrame({ clip: 'ellipse', xf: xf(400, 0, 200, 200) }));
-    insertAssetAt(t.editor, PHOTO, [100, 100], t.pageId);
-    insertAssetAt(t.editor, PHOTO, [500, 100], t.pageId);
-    t.editor.select([shape]);
-    t.editor.setBrandLock({ style: true });
-    t.editor.select([frame]);
-    t.editor.setBrandLock({ content: true });
-    t.editor.clearSelection();
-    t.editor.setBrandAdmin(false);
-    t.store.checkpoint();
-    return { ...t, shape, frame };
-  }
-
-  it('offers nothing that would change the photo, and every action changes nothing', async () => {
-    const { editor, store, el, shape, frame, pageId } = lockedSetup();
-    const before = JSON.stringify(store.doc.elements);
-    const depth = store.undo.undoStack.length;
-    expect(photoLockOf(editor, el(shape))).toBe('brand');
-    expect(photoLockOf(editor, el<Extract<Element, { type: 'frame' }>>(frame))).toBe('brand');
-    expect(fillTarget(editor, { kind: 'shape', id: shape }, PHOTO2)).toBe(false);
-    expect(detachPhoto(editor, el(shape))).toBe(false);
-    expect(detachPhoto(editor, el<Extract<Element, { type: 'frame' }>>(frame))).toBe(false); // no movable copy of locked content
-    expect(removePhoto(editor, el(shape))).toBe(false);
-    let uploads = 0;
-    const upload = async () => { uploads++; return { asset: PHOTO2 }; };
-    expect(await replacePhoto(editor, el(shape), new File([], 'x.png'), upload)).toBe(false);
-    expect(await replacePhoto(editor, el<Extract<Element, { type: 'frame' }>>(frame), new File([], 'x.png'), upload)).toBe(false);
-    expect(uploads).toBe(0);
-    // Not even the asset registration or a stray image: the document and the undo history are untouched.
-    expect(JSON.stringify(store.doc.elements)).toBe(before);
-    expect(store.doc.assets[PHOTO2.id]).toBeUndefined();
-    expect(store.undo.undoStack.length).toBe(depth);
-    // A drop onto them adds a separate image instead (it's the member's own element).
-    insertAssetAt(editor, PHOTO2, [100, 100], pageId);
-    expect(Object.values(store.doc.elements).filter((e) => e.type === 'image' && !e.deleted)).toHaveLength(1);
-    expect(el(shape).fills.at(-1)).toMatchObject({ asset: PHOTO.id });
-  });
-
+describe('photo in a locked shape or frame (user locks)', () => {
   it('applies a batch whole or not at all', () => {
-    const { editor, store, el, shape } = lockedSetup();
+    const { add, el, editor, store, pageId } = setup();
+    const shape = add(makeShape({ kind: 'ellipse', fill: '#ff0000', xf: xf(0, 0, 200, 200) }));
+    insertAssetAt(editor, PHOTO, [100, 100], pageId);
+    editor.select([shape]);
+    editor.toggleLock();
     const n = Object.keys(store.doc.elements).length;
     const img = makeImage({ xf: xf(0, 0, 10, 10), asset: PHOTO.id });
     expect(applyAll(editor, [{ op: 'update', id: shape, patch: { fills: [solid('#000000')] } }, { op: 'add', el: { ...img, parentId: el(shape).parentId }, parent: el(shape).parentId }])).toBe(false);
     expect(Object.keys(store.doc.elements)).toHaveLength(n);
   });
 
-  it('admins (and everyone on unlocked photos) can still replace, detach and remove', async () => {
-    const { editor, el, shape, frame } = lockedSetup();
-    editor.setBrandAdmin(true);
-    expect(photoLockOf(editor, el(shape))).toBeNull();
+  it('an old brand lock blocks nothing: replace, detach and remove all work', async () => {
+    const { add, el, editor, pageId } = setup();
+    const shape = add(makeShape({ kind: 'ellipse', fill: '#ff0000', xf: xf(0, 0, 200, 200) }));
+    const frame = add(makeFrame({ clip: 'ellipse', xf: xf(400, 0, 200, 200) }));
+    insertAssetAt(editor, PHOTO, [100, 100], pageId);
+    insertAssetAt(editor, PHOTO, [500, 100], pageId);
+    const lock = { by: 'brand', move: true, resize: true, rotate: true, delete: true, content: true, style: true };
+    editor.apply([{ op: 'update', id: shape, patch: { lock } }, { op: 'update', id: frame, patch: { lock } }]);
+    expect(userLocked(el(shape))).toBe(false);
     expect(await replacePhoto(editor, el(shape), new File([], 'x.png'), async () => ({ asset: PHOTO2 }))).toBe(true);
     expect(el(shape).fills.at(-1)).toMatchObject({ asset: PHOTO2.id });
     expect(detachPhoto(editor, el<Extract<Element, { type: 'frame' }>>(frame))).toBe(true);
@@ -367,7 +335,7 @@ describe('photo in a locked shape or frame (brand templates, user locks)', () =>
     editor.select([s]);
     editor.toggleLock();
     const n = Object.keys(store.doc.elements).length;
-    expect(photoLockOf(editor, el(s))).toBe('user');
+    expect(userLocked(el(s))).toBe(true);
     expect(detachPhoto(editor, el(s))).toBe(false);
     expect(removePhoto(editor, el(s))).toBe(false);
     expect(fillTarget(editor, { kind: 'shape', id: s }, PHOTO2)).toBe(false);

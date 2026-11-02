@@ -9,8 +9,8 @@ use crate::state::AppState;
 pub const CONSENT_VERSION: &str = "2026-10-01";
 
 /// Client events we accept; anything else is dropped.
-pub const CLIENT_EVENTS: [&str; 16] = [
-    "page_view", "editor_open", "element_add", "template_use", "export_start", "share_open", "present_start", "upgrade_view", "checkout_start", "search", "help_view", "upload", "comment_add",
+pub const CLIENT_EVENTS: [&str; 14] = [
+    "page_view", "editor_open", "element_add", "template_use", "export_start", "share_open", "present_start", "search", "help_view", "upload", "comment_add",
     "ai_use", "onboarding_step", "import_done",
 ];
 

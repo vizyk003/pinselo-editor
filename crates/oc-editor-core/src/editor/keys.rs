@@ -3,7 +3,6 @@
 //! `"z"`, `"Enter"`) and `code` like `KeyboardEvent.code` (`"Digit7"`); the host does the DOM event plumbing.
 
 use oc_geometry::Axis;
-use oc_schema::design::Surface;
 use oc_schema::elements::{Element, ShapeKind};
 use oc_schema::factory::{LineOpts, ShapeOpts, TextOpts, make_line, make_shape, make_text};
 use oc_schema::primitives::Xf;
@@ -297,16 +296,6 @@ impl Editor {
             }
             "Enter" => {
                 let sel = self.selected();
-                let doc = self.doc();
-                if doc.doc.meta.surface == Surface::Whiteboard
-                    && sel.len() == 1
-                    && !matches!(sel[0], Element::Text(_))
-                    && sel[0].base().and_then(|b| b.board.as_ref()).and_then(|b| b.mind.as_ref()).and_then(|m| m.parent.as_ref()).and_then(|p| p.as_ref()).is_some()
-                    && !mods.shift
-                    && self.mind_map_add(false).is_some()
-                {
-                    return true;
-                }
                 if sel.len() == 1 && matches!(sel[0], Element::Text(_)) {
                     self.start_text_edit(&el_id(&sel[0]), None, false);
                     return true;
@@ -322,14 +311,6 @@ impl Editor {
                 false
             }
             "Tab" => {
-                // Whiteboards: Tab on a shape or sticky adds a mind-map child (Shift+Tab keeps cycling the selection).
-                if self.doc().doc.meta.surface == Surface::Whiteboard
-                    && !mods.shift
-                    && self.state.selection.len() == 1
-                    && self.mind_map_add(true).is_some()
-                {
-                    return true;
-                }
                 let parent = self.state.entered_group.clone().unwrap_or_else(|| self.state.active_page_id.clone());
                 let doc = self.doc();
                 let kids = children_of(doc.els(), &parent);

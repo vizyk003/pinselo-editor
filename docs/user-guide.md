@@ -4,7 +4,7 @@ This guide covers making designs in Pinselo, from a first page to a print-ready 
 
 ## Creating a design
 
-On the Home page, choose **Create a design**, or pick a tile under **Start a design**: Presentation, Social media, Video, Doc, Whiteboard, Sheet, Website, Email, Print, Photo editor, Custom size or Upload.
+On the Home page, choose **Create a design**, or pick a tile under **Start a design**: Presentation, Social media, Video, Doc, Website, Print, Photo editor, Custom size or Upload.
 
 - **Custom size:** enter a width and height in px, in, mm or cm. Designs can be up to 20,000 px on each side.
 - **From a file:** drop a photo, video, PDF, PowerPoint, Word or Markdown file on the Home page. An image or video starts a design of its size. The document types are imported.
@@ -47,7 +47,7 @@ Open **Elements** and use **Search elements**, or browse:
 - **Shapes:** Basic shapes, Boxes and frames, Polygons, Stars and badges, Symbols, Arrows, Banners and callouts, Flowchart.
 - **Photo grids:** drop photos into the cells and adjust the gap in the toolbar.
 - **Forms:** contact, sign-up, RSVP and feedback forms that collect responses on public links and websites.
-- **Tables**, **Charts**, **Sticky notes** and **QR code**.
+- **Tables**, **Charts** and **QR code**.
 - **Embed a link:** paste a YouTube, Spotify or Maps link.
 
 **Library** searches Photos, Graphics, Videos, Audio, GIFs, Stickers and Emoji. Some of these depend on what the server administrator has connected. Licensed media is listed under **Download > Credits**, so include those credits when you share.
@@ -91,7 +91,7 @@ The toolbar sets:
 
 ## Images
 
-Drag images onto the page, paste them, or use **Uploads**. The panel has **Upload files**, **Upload a folder** and **Record yourself or your screen**, and accepts images, video (MP4, MOV, WebM) and audio (MP3, M4A, WAV).
+Drag images onto the page, paste them, or use **Uploads**. The panel has **Upload files** and **Upload a folder**, and accepts images, video (MP4, MOV, WebM) and audio (MP3, M4A, WAV).
 
 With an image selected:
 
@@ -138,9 +138,7 @@ Team owners and admins can open **Brand controls** on the team page:
 | **Brand fonts only** | Font pickers offer the team's brand-kit fonts only. |
 | **Start from a brand template** | Members and designers create team designs from the team's brand templates. |
 | **Restrict font uploads** | Only owners and admins can upload brand fonts. |
-| **Require approval** | Downloads, public links, website publishing and social scheduling wait until an owner or admin approves the design. Edits after approval need a new approval. |
 
-When approval is required, send a design from **Send for approval** in the **Share** dialog. Reviewers choose **Approve** or **Request changes**.
 
 ## Collaboration and comments
 

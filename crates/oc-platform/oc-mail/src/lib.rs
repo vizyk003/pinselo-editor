@@ -14,19 +14,6 @@ use uuid::Uuid;
 
 mod catalogs;
 
-/// Print order statuses customers are emailed about.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum PrintMailStatus {
-    InProduction,
-    Shipped,
-    Delivered,
-    Failed,
-    Cancelled,
-    Returned,
-    Submitted,
-}
-
 /// Email templates; JSON shape is the TS discriminated union (`{"kind": "magic", "url": …}`).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
@@ -48,20 +35,6 @@ pub enum Template {
     PostPublished { title: String, links: String, url: String },
     PostFailed { title: String, error: String, url: String },
     PostReminder { title: String, caption: String, files: String, url: String },
-    ApprovalRequest { actor: String, title: String, message: String, url: String },
-    ApprovalDecision { actor: String, title: String, approved: bool, note: String, url: String },
-    PrintConfirmed { number: String, product: String, total: String, url: String },
-    PrintStatus { number: String, status: PrintMailStatus, tracking: String, note: String, url: String },
-    PrintOperator {
-        number: String,
-        product: String,
-        quantity: String,
-        shipping: String,
-        address: String,
-        #[serde(rename = "fileUrl")]
-        file_url: String,
-        url: String,
-    },
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -93,15 +66,12 @@ impl Template {
             Template::Magic { .. } | Template::Verify { .. } | Template::Reset { .. } | Template::NewLogin { .. } | Template::AccountDeleted => Security,
             Template::Share { .. } | Template::Invite { .. } => Shares,
             Template::Mention { .. } | Template::Assign { .. } => Mentions,
-            Template::Comment { .. } | Template::Reply { .. } | Template::FormResponse { .. } | Template::ApprovalRequest { .. } | Template::ApprovalDecision { .. } => Comments,
+            Template::Comment { .. } | Template::Reply { .. } | Template::FormResponse { .. } => Comments,
             Template::Decision { .. }
             | Template::ExportReady { .. }
             | Template::PostPublished { .. }
             | Template::PostFailed { .. }
-            | Template::PostReminder { .. }
-            | Template::PrintConfirmed { .. }
-            | Template::PrintStatus { .. }
-            | Template::PrintOperator { .. } => Service,
+            | Template::PostReminder { .. } => Service,
         }
     }
 }
@@ -322,57 +292,6 @@ pub fn render(t: &Template, tr: &Translator) -> Rendered {
             lines.push(tr.t("Caption:"));
             lines.push(if caption.is_empty() { tr.t("(no caption)") } else { caption.clone() });
             r(tr.tr("Time to post \u{201c}{title}\u{201d}", &[("title", title)]), tr.t("It\u{2019}s time to post"), lines, cta(tr.t("Open Content Planner"), url))
-        }
-        Template::ApprovalRequest { actor, title, message, url } => r(
-            tr.tr("{actor} asked you to approve \u{201c}{title}\u{201d}", &[("actor", actor), ("title", title)]),
-            tr.t("Approval requested"),
-            if message.is_empty() { vec![] } else { vec![quoted(message)] },
-            cta(tr.t("Review design"), url),
-        ),
-        Template::PrintConfirmed { number, product, total, url } => r(
-            tr.tr("Order {number} confirmed", &[("number", number)]),
-            tr.t("Thanks for your order"),
-            vec![tr.tr("We received your payment for {product}.", &[("product", product)]), tr.tr("Total: {total}", &[("total", total)]), tr.t("We\u{2019}ll email you when it ships.")],
-            cta(tr.t("View order"), url),
-        ),
-        Template::PrintStatus { number, status, tracking, note, url } => {
-            let label = match status {
-                PrintMailStatus::Submitted => tr.t("Your order is being prepared"),
-                PrintMailStatus::InProduction => tr.t("Your order is being printed"),
-                PrintMailStatus::Shipped => tr.t("Your order is on its way"),
-                PrintMailStatus::Delivered => tr.t("Your order was delivered"),
-                PrintMailStatus::Failed => tr.t("There\u{2019}s a problem with your order"),
-                PrintMailStatus::Cancelled => tr.t("Your order was cancelled"),
-                PrintMailStatus::Returned => tr.t("Your order was returned"),
-            };
-            let mut lines = vec![];
-            if !tracking.is_empty() {
-                lines.push(tr.tr("Tracking: {tracking}", &[("tracking", tracking)]));
-            }
-            if !note.is_empty() {
-                lines.push(note.clone());
-            }
-            r(tr.tr("Order {number}: {status}", &[("number", number), ("status", &label)]), label, lines, cta(tr.t("View order"), url))
-        }
-        Template::PrintOperator { number, product, quantity, shipping, address, file_url, url } => {
-            let mut lines = vec![product.clone(), tr.tr("Quantity: {n}", &[("n", quantity)]), tr.tr("Shipping: {method}", &[("method", shipping)]), tr.t("Ship to:")];
-            lines.extend(address.split('\n').map(str::to_owned));
-            lines.push(tr.tr("Print file (PDF with bleed and crop marks): {url}", &[("url", file_url)]));
-            lines.push(tr.t("Update the status in the admin console once it ships."));
-            let h = tr.tr("New print order {number}", &[("number", number)]);
-            r(h.clone(), h, lines, cta(tr.t("Open print orders"), url))
-        }
-        Template::ApprovalDecision { actor, title, approved, note, url } => {
-            let head = if *approved {
-                tr.tr("\u{201c}{title}\u{201d} was approved", &[("title", title)])
-            } else {
-                tr.tr("Changes requested on \u{201c}{title}\u{201d}", &[("title", title)])
-            };
-            let mut lines = vec![tr.tr("By {actor}", &[("actor", actor)])];
-            if !note.is_empty() {
-                lines.push(quoted(note));
-            }
-            r(head.clone(), head, lines, cta(tr.t("Open design"), url))
         }
         Template::NewLogin { device, ip, when } => r(
             tr.tr("New sign-in to {brand}", &[("brand", brand)]),

@@ -2,7 +2,6 @@
 //!
 //! ```ts
 //! if (err instanceof ZodError) return reply.code(400).send({ error: 'invalid_request', issues: err.issues });
-//! if (err instanceof UpgradeRequired) return reply.code(402).send({ error: 'upgrade_required', feature, message });
 //! const status = err.statusCode ?? 500;
 //! return reply.code(status).send({ error: status >= 500 ? 'internal' : err.message });
 //! ```
@@ -23,8 +22,6 @@ pub enum ApiError {
     Reply(ReplyBox),
     /// `ZodError` → 400 `{error: 'invalid_request', issues}`.
     Invalid(Vec<serde_json::Value>),
-    /// `UpgradeRequired` → 402.
-    Upgrade { feature: String, message: String },
     /// An `Error` with `statusCode` (Fastify's own errors: 413, 415, 400 JSON syntax, 429 rate limit, …).
     Status { status: u16, message: String, close: bool },
     /// Anything unexpected → 500 `{error: 'internal'}` (logged).
@@ -74,7 +71,6 @@ impl IntoResponse for ApiError {
         match self {
             ApiError::Reply(r) => r.0.into_response(),
             ApiError::Invalid(issues) => json(400, json!({ "error": "invalid_request", "issues": issues })).into_response(),
-            ApiError::Upgrade { feature, message } => json(402, json!({ "error": "upgrade_required", "feature": feature, "message": message })).into_response(),
             ApiError::Status { status, message, close } => {
                 let body = if status >= 500 { json!({ "error": "internal" }) } else { json!({ "error": message }) };
                 if status >= 500 {

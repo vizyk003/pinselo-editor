@@ -5,7 +5,6 @@
 mod common;
 
 use common::{assert_same, load, ts_verify, unb64};
-use oc_crdt::board::{Voter, cast_vote, read_timer_value, read_votes};
 use oc_crdt::rng::Mulberry32;
 use oc_crdt::text::plain_text;
 use oc_crdt::{
@@ -40,8 +39,6 @@ fn ts_peers_merge_in_rust() {
     }
     assert_same(&from_y_value(&d), &g["merged"]["design"], "TS peers merged by yrs");
     assert_eq!(json!(text_of(&d, g["textId"].as_str().unwrap())), g["merged"]["plain"]);
-    assert_same(&json!(read_timer_value(&d)), &g["merged"]["timer"], "timer");
-    assert_same(&json!(read_votes(&d, "v")), &g["merged"]["votes"], "votes");
     // Reverse order converges to the same state.
     let e = new_doc_with_client(101);
     for k in ["b", "a", "base"] {
@@ -68,7 +65,6 @@ fn ts_and_rust_peers_converge() {
     apply(&r1, &mut rng, json!([{ "op": "textInsert", "id": text, "offset": 1, "text": "R" }]));
     apply(&r1, &mut rng, json!([{ "op": "xf", "id": s1, "xf": { "x": 3, "y": 3, "w": 10, "h": 10, "rot": 0 } }]));
     apply(&r1, &mut rng, json!([{ "op": "textParagraph", "id": text, "attrs": { "align": "center" } }]));
-    cast_vote(&r1, "v", &Voter { id: "ur".into(), name: Some("Rust".into()) }, s1, 3.0);
     apply(&r2, &mut rng, json!([{ "op": "textDelete", "id": text, "offset": 0, "len": 1 }]));
     apply(&r2, &mut rng, json!([{ "op": "update", "id": s2, "patch": { "opacity": 0.25 } }, { "op": "reorder", "id": s2, "after": "bottom" }]));
     apply(&r2, &mut rng, json!([{ "op": "page", "action": "add", "page": { "id": "convPage00000000" } }]));
@@ -104,14 +100,6 @@ fn ts_and_rust_peers_converge() {
     for (i, res) in r.iter().enumerate() {
         assert_same(&res["design"], &snaps[0].0, &format!("yjs merge #{i}"));
         assert_eq!(res["plain"][text], json!(snaps[0].1), "yjs plainText #{i}");
-        let mut votes: Vec<Value> = read_votes(&peer_with(&snaps[0].2), "v").into_iter().map(|v| serde_json::to_value(v).unwrap()).collect();
-        votes.sort_by_key(|v| v.to_string());
-        assert_eq!(res["board"]["votes"].as_object().unwrap().len(), votes.len());
     }
 }
 
-fn peer_with(update: &[u8]) -> Doc {
-    let d = new_doc_with_client(99);
-    apply_update(&d, update, None).unwrap();
-    d
-}

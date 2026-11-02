@@ -145,7 +145,7 @@ a { color: inherit; text-decoration: none; }
 .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .input:focus-visible { outline: none; }
 /* Large regions show focus through their own content (the selection, the active cell), not a ring round the region. */
-.canvas-wrap:focus-visible, .sheet-scroll:focus-visible { outline: none; }
+.canvas-wrap:focus-visible { outline: none; }
 textarea.input { height: auto; padding: 8px 10px; resize: vertical; }
 /* Selects: the same box as a text input with the lucide chevron instead of the native arrow. */
 select.input {
@@ -404,7 +404,7 @@ pre code { padding: 0; background: none; font-size: inherit; }
 }
 .editor-header .title-input:hover { border-color: rgba(255, 255, 255, .35); }
 .editor-header .title-input:focus { outline: none; background: rgba(0, 0, 0, .2); border-color: rgba(255, 255, 255, .6); }
-/* Doc and Sheet name their surface next to the title, on the teal header. */
+/* Docs name their surface next to the title, on the teal header. */
 .editor-header .surface-label { font-size: 13px; color: rgba(255, 255, 255, .78); }
 .editor-header .status { font-size: 12px; opacity: .85; display: flex; align-items: center; gap: 4px; }
 .editor-header .btn.white { background: #fff; color: #0b4a55; border-color: transparent; }
@@ -612,30 +612,11 @@ pre code { padding: 0; background: none; font-size: inherit; }
 .tl-playhead { position: absolute; top: 0; bottom: 0; width: 2px; background: #ef4444; transform: translateX(-1px); cursor: ew-resize; z-index: 4; }
 .tl-playhead::before { content: ''; position: absolute; top: 0; left: -5px; border: 6px solid transparent; border-top-color: #ef4444; }
 .tl-reset { position: absolute; top: 8px; height: 26px; }
-.rec { position: fixed; inset: 0; z-index: 250; background: #0b0b10; color: #fff; display: grid; grid-template-rows: auto 1fr auto; }
-.rec header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; }
-.rec .stage { position: relative; display: grid; place-items: center; padding: 16px; }
-.rec .stage canvas { max-width: 100%; max-height: calc(100vh - 160px); border-radius: 6px; background: #000; }
-.rec video.cam { position: absolute; right: 32px; bottom: 32px; width: 220px; height: 220px; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,.5); transform: scaleX(-1); }
-.rec footer { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px; }
-.rec .dot { width: 12px; height: 12px; border-radius: 50%; background: #ef4444; animation: pulse 1s infinite; }
 .cue-row { display: grid; grid-template-columns: 70px 70px 1fr auto; gap: 6px; align-items: center; }
 
-/* ---------------------------------------------------------------- pricing, public pages, consent */
-.pricing, .public { min-height: 100%; background: var(--bg); overflow: auto; }
-.pricing { padding-bottom: 48px; }
-.pricing-head { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 5; }
-.pricing-hero { text-align: center; padding: 48px 16px 24px; display: grid; justify-items: center; gap: 12px; }
-.pricing-hero h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); letter-spacing: -.03em; }
-.plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; max-width: 1080px; margin: 0 auto; padding: 8px 16px 24px; }
-.plan { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
-.plan.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow-2); }
-.plan h3 { margin: 0; font-size: 20px; flex: 1; }
-.plan .muted { margin: 0; min-height: 40px; }
-.plan .price b { font-size: 32px; letter-spacing: -.02em; }
-.plan ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
-.plan li { display: flex; gap: 8px; align-items: flex-start; }
-.plan li svg { color: #16a34a; flex: none; margin-top: 2px; }
+/* ---------------------------------------------------------------- public pages, consent */
+.public { min-height: 100%; background: var(--bg); overflow: auto; }
+.public-head { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 5; }
 /* Segmented control: md is 36px (beside 36px buttons), sm 32px (list toolbars); `icons` makes icon-only segments square. */
 .segmented { display: inline-flex; flex: none; background: var(--surface-3); border-radius: 999px; padding: 3px; }
 .segmented button { border: 0; background: none; height: 30px; padding: 0 16px; border-radius: 999px; cursor: pointer; font-weight: 600; color: var(--text-2); display: flex; gap: 6px; align-items: center; justify-content: center; white-space: nowrap; }
@@ -643,9 +624,6 @@ pre code { padding: 0; background: none; font-size: inherit; }
 .segmented.sm button { height: 26px; padding: 0 12px; font-size: 13px; }
 .segmented.icons button { padding: 0; width: 36px; }
 .segmented button.on { background: var(--surface); color: var(--text); box-shadow: var(--shadow-1); }
-.meter { height: 8px; background: var(--surface-3); border-radius: 999px; overflow: hidden; }
-.meter span { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
-.meter span.warn { background: var(--danger); }
 .prose { line-height: 1.65; max-width: 720px; }
 .prose h1 { margin: 0 0 4px; }
 .prose h2 { font-size: 18px; margin: 26px 0 6px; }
@@ -662,9 +640,9 @@ pre code { padding: 0; background: none; font-size: inherit; }
 .status-banner.warnish, .status-warnish { color: #b45309; } .status-banner.warnish { background: color-mix(in srgb, #f59e0b 16%, transparent); }
 .status-banner.bad, .status-bad { color: var(--danger); } .status-banner.bad { background: color-mix(in srgb, var(--danger) 14%, transparent); }
 .consent { position: fixed; left: 16px; right: 16px; bottom: 16px; margin: 0 auto; max-width: 720px; z-index: 150; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-2); padding: 14px 16px; display: flex; gap: 14px; align-items: center; font-size: 13px; }
-@media (max-width: 640px) { .consent { flex-direction: column; align-items: stretch; } .pricing-head { padding: 12px 16px; flex-wrap: wrap; gap: 8px; } .pricing-head > nav { order: 3; width: 100%; overflow-x: auto; } }
-.premium-badge.team { background: #0891b2; }
-.premium-badge { position: absolute; top: 8px; left: 8px; background: #f59e0b; color: #fff; border-radius: 6px; padding: 2px 6px; font-size: 11px; font-weight: 800; display: flex; gap: 4px; align-items: center; box-shadow: var(--shadow-1); }
+@media (max-width: 640px) { .consent { flex-direction: column; align-items: stretch; } .public-head { padding: 12px 16px; flex-wrap: wrap; gap: 8px; } .public-head > nav { order: 3; width: 100%; overflow-x: auto; } }
+.tile-badge.team { background: #0891b2; }
+.tile-badge { position: absolute; top: 8px; left: 8px; background: #f59e0b; color: #fff; border-radius: 6px; padding: 2px 6px; font-size: 11px; font-weight: 800; display: flex; gap: 4px; align-items: center; box-shadow: var(--shadow-1); }
 .bars { display: flex; align-items: flex-end; gap: 2px; height: 120px; padding-top: 8px; }
 .bars span { flex: 1; background: var(--accent); border-radius: 3px 3px 0 0; min-height: 1px; }
 
@@ -982,7 +960,6 @@ ul.plain { list-style: none; margin: 0; padding: 0; }
 .tpl-preview-info { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .tpl-preview-h { font-size: 14px; margin: 4px 0 8px; }
 .tpl-badge { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
-.tpl-badge.pro { background: #f59e0b; color: #fff; border-color: transparent; }
 .tpl-badge.team { background: var(--accent-2); color: var(--surface); border-color: transparent; }
 .chip.tpl-tag, .tpl-tags .chip { height: 28px; font-weight: 500; }
 @media (max-width: 760px) {

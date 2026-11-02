@@ -7,7 +7,6 @@
  *   pnpm --filter @oc/engine build            release build (default features: panic hook, complex scripts)
  *   pnpm --filter @oc/engine build -- --dev   unoptimised wasm, fast to build (tests still pass)
  *   … --lean        without complex-script line-break dictionaries (Thai/Lao/Khmer/Myanmar/CJK): much smaller
- *   … --no-sheet    without the oc-sheet module (formula engine, XLSX)
  *   … --no-render   without the oc-render module (display lists, painter)
  *   … --no-hot      opt-level "z" for the renderer crates too (default: 3 for the painter's hot crates)
  *   … --no-simd     without WebAssembly SIMD (128-bit; every current browser has it — the painter's pipelines use it)
@@ -92,13 +91,12 @@ if (sysroot && !existsSync(join(sysroot, 'lib/rustlib/wasm32-unknown-unknown')))
   process.exit(1);
 }
 
-const noSheet = args.has('--no-sheet');
 const noRender = args.has('--no-render');
 const simd = !args.has('--no-simd');
 // tiny-skia's raster pipelines have a wasm `simd128` path (4–8 lanes per op instead of scalar code).
 if (simd) env.CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS = [process.env.CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUSTFLAGS, '-C target-feature=+simd128'].filter(Boolean).join(' ');
-const featureList = ['console_error_panic_hook', ...(lean ? [] : ['complex-scripts']), ...(noSheet ? [] : ['sheet']), ...(noRender ? [] : ['render'])];
-const features = lean || noSheet || noRender ? ['--no-default-features', '--features', featureList.join(',')] : [];
+const featureList = ['console_error_panic_hook', ...(lean ? [] : ['complex-scripts']), ...(noRender ? [] : ['render'])];
+const features = lean || noRender ? ['--no-default-features', '--features', featureList.join(',')] : [];
 // The painter's hot loops (rasterisation, image decoding/resampling, glyph outlines, shaping) are ~2x faster at
 // opt-level 3 than at "z"; the rest of the core stays size-optimised. `--opt=…` applies one level to everything.
 const HOT = ['tiny-skia', 'tiny-skia-path', 'oc-render', 'oc-text', 'image', 'zune-jpeg', 'zune-core', 'png', 'fdeflate', 'image-webp', 'gif', 'resvg', 'skrifa', 'read-fonts', 'harfrust', 'parley', 'parley_engine'];

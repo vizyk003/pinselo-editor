@@ -20,13 +20,12 @@ use oc_auth::Role;
 use serde_json::Map;
 
 use crate::auth::{at_least, design_role};
-use crate::brandhub;
 use crate::http::ratelimit::{self, Limiter, MINUTE};
 use crate::http::req::Sink;
 use crate::js;
 use crate::prelude::*;
 use crate::routes::assets::{Ingest, IngestOpts, TempDir, ingest_file};
-use crate::routes::designs::{CreateOpts, create_design_from_doc, load_doc};
+use crate::routes::designs::{CreateOpts, create_design_from_doc, is_retired_surface, load_doc, unsupported_surface};
 
 pub const SCOPES: [&str; 5] = ["designs:read", "designs:write", "assets:write", "exports", "webhooks"];
 
@@ -285,6 +284,9 @@ async fn create_design(State(s): State<AppState>, raw: Request) -> Response {
             .parse(Some(&req.body_or_empty()))?;
             let title = b["title"].as_str().unwrap_or("Untitled design").to_owned();
             let mut doc = if truthy(b.get("document")) {
+                if is_retired_surface(&b["document"]) {
+                    return Ok(reply::json(422, unsupported_surface()));
+                }
                 b["document"].clone()
             } else {
                 let p = b.get("preset").and_then(Value::as_str).and_then(oc_schema::presets::find_preset);
@@ -430,7 +432,7 @@ async fn autofill(State(s): State<AppState>, Path(id): Path<String>, raw: Reques
             drop(dir);
             let title = b.get("title").and_then(Value::as_str).map_or_else(|| format!("{} (autofill)", src.pointer("/meta/title").and_then(Value::as_str).unwrap_or("undefined")), str::to_owned);
             set_title(&mut doc, &title);
-            // Stays linked to the source's brand template (its brand locks keep applying).
+            // Stays linked to the source's brand template (the team's brand controls keep applying).
             let link: Option<(Option<String>, Option<Uuid>, Option<i32>)> =
                 sqlx::query_as("SELECT template_id, brand_workspace_id, template_version FROM designs WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
             let (template_id, brand_workspace_id, template_version) = link.unwrap_or((None, None, None));
@@ -456,9 +458,6 @@ async fn start_export(State(s): State<AppState>, Path(id): Path<String>, raw: Re
                 ("print", crate::routes::print_profiles::print_export_options().optional()),
             ])
             .parse(req.body())?;
-            if let Some(gate) = brandhub::approval_gate(&s, u.id, &id).await? {
-                return Ok(reply::json(403, gate)); // brand approvals (A8)
-            }
             let Some(print) = crate::routes::print_profiles::resolve_print_options(&s, u.id, b.get("print")).await? else {
                 return Ok(crate::routes::print_profiles::profile_not_found());
             };

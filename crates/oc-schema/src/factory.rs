@@ -467,7 +467,6 @@ pub fn make_chart(init: ElementBase, o: ChartOpts) -> ChartEl {
                 extra: Extra::new(),
             })
             .collect(),
-        source: None,
         style: ChartStyle {
             family: DEFAULT_FONT.into(),
             text_color: hexc("#374151"),

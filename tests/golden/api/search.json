@@ -517,7 +517,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "team"
@@ -533,7 +532,6 @@
        "category": "sale",
        "height": 1080,
        "id": "Stplsale00000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "summer",
@@ -550,7 +548,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "brand",
@@ -567,7 +564,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplold000000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "bran"
@@ -810,7 +806,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "brand",
@@ -827,7 +822,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplold000000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "bran"
@@ -843,7 +837,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "team"
@@ -859,7 +852,6 @@
        "category": "sale",
        "height": 1080,
        "id": "Stplsale00000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "summer",
@@ -1178,7 +1170,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "brand",
@@ -1195,7 +1186,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplold000000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "bran"
@@ -1211,7 +1201,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "team"
@@ -1227,7 +1216,6 @@
        "category": "sale",
        "height": 1080,
        "id": "Stplsale00000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "summer",
@@ -1673,7 +1661,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "brand",
@@ -1690,7 +1677,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "team"
@@ -1706,7 +1692,6 @@
        "category": "sale",
        "height": 1080,
        "id": "Stplsale00000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "summer",
@@ -2022,7 +2007,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "brand",
@@ -2039,7 +2023,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplold000000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "bran"
@@ -2213,7 +2196,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplflyer0000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "brand",
@@ -2230,7 +2212,6 @@
        "category": "posters",
        "height": 1080,
        "id": "Stplold000000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "bran"
@@ -2246,7 +2227,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stploutside00000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [],
        "team": true,
@@ -2260,7 +2240,6 @@
        "category": "brand",
        "height": 1080,
        "id": "Stplstudio000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "team"
@@ -2276,7 +2255,6 @@
        "category": "sale",
        "height": 1080,
        "id": "Stplsale00000000",
-       "premium": false,
        "preset": "ig-post",
        "tags": [
         "summer",

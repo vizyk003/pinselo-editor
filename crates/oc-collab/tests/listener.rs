@@ -17,7 +17,6 @@ fn ticket(settings: &Settings, sub: &str, iat: i64) -> String {
         aud: oc_auth::Audience::Collab,
         design: DESIGN.into(),
         role: oc_auth::Role::Edit,
-        brand_locked: None,
     };
     oc_auth::sign_ticket_at(&settings.secret, &claims, 300, iat)
 }

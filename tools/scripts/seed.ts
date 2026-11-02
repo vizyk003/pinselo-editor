@@ -24,10 +24,8 @@ const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf
 const TEMPLATES = await buildTemplates((p) => !only || p.id.startsWith(only));
 const bundle = writeBundle(
   join(paths.data, 'seed-bundle'),
-  TEMPLATES.map((t, index) => ({
+  TEMPLATES.map((t) => ({
     id: t.id, title: t.title, category: CATEGORY[t.preset] ?? t.category, preset: t.preset, tags: t.tags,
-    // A third of the catalogue is marked premium (only shown as such with OC_BILLING=1), spread through the list.
-    premium: index % 3 === 2,
     doc: t.doc,
   })),
 );

@@ -9,7 +9,6 @@ use serde_json::Map;
 
 use crate::analytics;
 use crate::auth::{at_least, design_role, personal_workspace};
-use crate::billing;
 use crate::brandhub;
 use crate::prelude::*;
 use crate::projects::{self, Failure, folder_access};
@@ -53,24 +52,22 @@ pub struct CreateOpts {
     pub template_version: Option<i32>,
 }
 
-/// The persisted Yjs state of a new design (`encodeSheetDesign` for sheets, `encodeDoc` otherwise).
+/// The persisted Yjs state of a new design. Sheets are no longer supported, so nothing can start or copy one.
 fn initial_state(doc: &Value) -> Result<Vec<u8>, ApiError> {
     if doc.pointer("/meta/surface").and_then(Value::as_str) == Some("sheet") {
-        return sheet_state(doc);
+        return Err(reply::json(422, unsupported_surface()).into());
     }
     Ok(oc_crdt::encode_doc_value(doc))
 }
 
-#[cfg(feature = "sheet")]
-fn sheet_state(doc: &Value) -> Result<Vec<u8>, ApiError> {
-    let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone())?;
-    Ok(oc_sheet::state::encode_sheet_design(&typed, &mut oc_crdt::rng::OsRandom)?)
+/// Surfaces stored designs may still carry, but that no new design starts on.
+pub fn is_retired_surface(doc: &Value) -> bool {
+    matches!(doc.pointer("/meta/surface").and_then(Value::as_str), Some("sheet" | "whiteboard" | "email"))
 }
 
-/// Without the `sheet` feature (oc-sheet not linked) a sheet design cannot get its first tab: 501.
-#[cfg(not(feature = "sheet"))]
-fn sheet_state(_doc: &Value) -> Result<Vec<u8>, ApiError> {
-    Err(reply::json(501, json!({ "error": "capability_unavailable", "message": "Sheets need the oc-api `sheet` feature." })).into())
+/// The refusal of a create on a retired surface.
+pub fn unsupported_surface() -> Value {
+    json!({ "error": "unsupported_surface", "message": "Sheets, whiteboards and email designs can no longer be created." })
 }
 
 /// `createDesignFromDoc(ownerId, doc, opts)`.
@@ -423,10 +420,10 @@ pub async fn create_design_for_user(s: &AppState, user_id: Uuid, b: &Value, via:
     let mut template_version: Option<i32> = None;
     let doc = match template_id.as_deref().filter(|t| !t.is_empty()) {
         Some(tid) => {
-            type Template = (sqlx::types::Json<Value>, String, bool, Option<Uuid>, bool, Option<sqlx::types::Json<Value>>, i32);
+            type Template = (sqlx::types::Json<Value>, String, Option<Uuid>, bool, i32);
             let t: Option<Template> =
-                sqlx::query_as("SELECT doc, title, premium, workspace_id, brand, locks, version FROM templates WHERE id = $1 AND published").bind(tid).fetch_optional(&s.pool).await?;
-            if let Some((_, _, _, Some(tws), _, _, _)) = &t
+                sqlx::query_as("SELECT doc, title, workspace_id, brand, version FROM templates WHERE id = $1 AND published").bind(tid).fetch_optional(&s.pool).await?;
+            if let Some((_, _, Some(tws), _, _)) = &t
                 && pg::one(&s.pool, "SELECT 1 FROM memberships WHERE workspace_id = $1 AND user_id = $2", &[pg::uuid(*tws), pg::uuid(u.id)]).await?.is_none()
             {
                 return Ok(Err((404, json!({ "error": "not_found" }))));
@@ -434,17 +431,12 @@ pub async fn create_design_for_user(s: &AppState, user_id: Uuid, b: &Value, via:
             if t.is_some() {
                 pg::exec(&s.pool, "UPDATE templates SET uses = uses + 1 WHERE id = $1", &[pg::text(tid)]).await?;
             }
-            if let Some((_, _, true, ..)) = &t {
-                billing::require_feature(&s, u.id, billing::Feature::PremiumTemplates, "This is a premium template. Upgrade to Pro to use it.").await?;
-            }
-            let Some((tdoc, ttitle, _, tws, tbrand, locks, version)) = t else {
+            let Some((tdoc, ttitle, tws, tbrand, version)) = t else {
                 return Ok(Err((404, json!({ "error": "template_not_found" }))));
             };
             let mut doc = tdoc.0;
-            // Brand templates: the template's lock map is authoritative (whatever the stored snapshot says).
-            if tbrand {
-                let locks = locks.map(|l| l.0).and_then(|l| l.as_object().cloned()).unwrap_or_default();
-                brandhub::apply_brand_locks(&mut doc, &locks);
+            if is_retired_surface(&doc) {
+                return Ok(Err((422, unsupported_surface())));
             }
             if let Some(w) = tws {
                 brand_workspace_id = Some(w);
@@ -609,7 +601,7 @@ pub async fn copy_design_for(
         }
     }
     edit(&mut doc);
-    // A copy stays linked to its brand template, so its brand locks keep applying.
+    // A copy stays linked to its brand template, so the team's brand controls keep applying.
     type Src = (Option<String>, Option<Uuid>, Option<i32>, Option<Uuid>);
     let src: Option<Src> =
         sqlx::query_as("SELECT template_id, brand_workspace_id, template_version, folder_id FROM designs WHERE id = $1").bind(id).fetch_optional(&s.pool).await?;
@@ -632,7 +624,6 @@ pub async fn copy_design_for(
 async fn ticket(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
     let Some(role) = design_role(&s, Some(u.id), &id).await? else { return Ok(not_found()) };
-    let brand_admin = brandhub::is_brand_admin(&s, u.id, &id).await?;
     let claims = TicketClaims {
         sub: uid_str(&u),
         name: u.name.clone(),
@@ -640,10 +631,9 @@ async fn ticket(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> 
         aud: Audience::Collab,
         design: id.clone(),
         role,
-        brand_locked: if brand_admin { None } else { Some(true) },
     };
     let token = oc_auth::sign_ticket_at(&s.cfg.secret, &claims, 300, s.now_ms());
-    Ok(Reply::json(json!({ "token": token, "role": role.as_str(), "brandAdmin": brand_admin })))
+    Ok(Reply::json(json!({ "token": token, "role": role.as_str() })))
 }
 
 /// Latest persisted snapshot as JSON (read-only views, previews, tests).
@@ -764,25 +754,14 @@ async fn versions(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
     if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
         return Ok(not_found());
     }
-    // Free plans see the last 30 days; older versions are kept and unlock on upgrade.
-    let days = billing::entitlements_of(&s, u.id).await?.0.version_history_days;
     let versions = pg::json_rows(
         &s.pool,
         "SELECT v.id, v.label, v.created_at, u.name AS author FROM design_versions v LEFT JOIN users u ON u.id = v.created_by
-       WHERE v.design_id = $1 AND ($2::int IS NULL OR v.created_at > now() - make_interval(days => $2::int)) ORDER BY v.created_at DESC LIMIT 100",
-        &[pg::text(&id), Arg::Int(days)],
+       WHERE v.design_id = $1 ORDER BY v.created_at DESC LIMIT 100",
+        &[pg::text(&id)],
     )
     .await?;
-    let hidden = match days {
-        None => 0,
-        Some(d) => sqlx::query_scalar::<_, i32>("SELECT count(*)::int AS n FROM design_versions WHERE design_id = $1 AND created_at <= now() - make_interval(days => $2::int)")
-            .bind(&id)
-            .bind(d)
-            .fetch_optional(&s.pool)
-            .await?
-            .unwrap_or(0),
-    };
-    Ok(Reply::json(json!({ "versions": versions, "limitDays": days, "hiddenOlder": hidden })))
+    Ok(Reply::json(json!({ "versions": versions })))
 }
 
 async fn version(State(s): State<AppState>, Path((id, vid)): Path<(String, String)>, req: Req) -> ApiResult {
@@ -819,7 +798,7 @@ async fn save_version(State(s): State<AppState>, Path(id): Path<String>, req: Re
 async fn export(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
     let b = z::obj([
-        ("format", z::enumeration(&["png", "jpg", "pdf", "pdf-print", "pdf-flat", "pptx", "html-email", "zip", "svg", "mp4", "gif", "docx", "md"])),
+        ("format", z::enumeration(&["png", "jpg", "pdf", "pdf-print", "pdf-flat", "pptx", "zip", "svg", "mp4", "gif", "docx", "md"])),
         ("pages", z::array(z::num().int().nonnegative()).optional()),
         ("scale", z::num().min(0.1).max(4.0).default(json!(1))),
         ("quality", z::num().min(10.0).max(100.0).default(json!(90))),
@@ -842,8 +821,9 @@ async fn export(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> 
     if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
         return Ok(not_found());
     }
-    if let Some(gate) = brandhub::approval_gate(&s, u.id, &id).await? {
-        return Ok(reply::json(403, gate)); // brand approvals (A8)
+    let surface: Option<String> = sqlx::query_scalar("SELECT surface FROM designs WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
+    if surface.as_deref() == Some("sheet") {
+        return Ok(reply::json(422, json!({ "error": "sheet_unsupported", "message": "Sheets are no longer supported, so this design can't be exported." })));
     }
     // Print options: an uploaded colour profile ({ id }) becomes its stored object for the render service.
     let Some(print) = print_profiles::resolve_print_options(&s, u.id, b.get("print")).await? else { return Ok(print_profiles::profile_not_found()) };

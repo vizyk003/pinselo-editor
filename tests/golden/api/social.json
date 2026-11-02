@@ -4293,12 +4293,35 @@
     "timezone": "Europe/Berlin"
    },
    "method": "POST",
-   "name": "create: waits for approval",
+   "name": "create: a stored requireApproval no longer blocks scheduling",
    "response": {
     "body": {
-     "error": "approval_required",
-     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
-     "status": "none"
+     "post": {
+      "accounts": [
+       "00000000-0000-4000-8000-000000007006"
+      ],
+      "caption": "Launch day",
+      "createdAt": "<ts>",
+      "designId": "Sgatedpost000000",
+      "designTitle": null,
+      "error": null,
+      "format": "png",
+      "hashtags": [
+       "launch",
+       "news"
+      ],
+      "id": "<uuid:6>",
+      "mediaCount": 0,
+      "options": {},
+      "ownerId": "00000000-0000-4000-8000-000000000003",
+      "pages": [],
+      "publishedAt": null,
+      "results": {},
+      "scheduledAt": "2025-01-03T09:00:00.000Z",
+      "status": "scheduled",
+      "timezone": "Europe/Berlin",
+      "updatedAt": "<ts>"
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -4312,7 +4335,7 @@
      "x-ratelimit-remaining": "599",
      "x-ratelimit-reset": "60"
     },
-    "status": 403
+    "status": 200
    },
    "url": "/api/social/posts"
   },
@@ -4590,6 +4613,30 @@
         "launch",
         "news"
        ],
+       "id": "<uuid:6>",
+       "job_id": null,
+       "media": [],
+       "options": {},
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "pages": [],
+       "results": {},
+       "scheduled_at": "2025-01-03T09:00:00.000Z",
+       "status": "scheduled",
+       "timezone": "Europe/Berlin",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      },
+      {
+       "accounts": [
+        "00000000-0000-4000-8000-000000007006"
+       ],
+       "caption": "Launch day",
+       "design_id": "Sgatedpost000000",
+       "error": null,
+       "format": "png",
+       "hashtags": [
+        "launch",
+        "news"
+       ],
        "id": "{{gatedDraft}}",
        "job_id": null,
        "media": [],
@@ -4653,6 +4700,13 @@
       {
        "account_id": null,
        "data": null,
+       "kind": "scheduled",
+       "message": "2025-01-03T10:00:00+01:00",
+       "post_id": "<uuid:6>"
+      },
+      {
+       "account_id": null,
+       "data": null,
        "kind": "created",
        "message": null,
        "post_id": "{{gatedDraft}}"
@@ -4675,6 +4729,16 @@
        "owner_id": "00000000-0000-4000-8000-000000000001",
        "payload": {
         "postId": "{{urlPost}}"
+       },
+       "queue": "publish",
+       "status": "queued"
+      },
+      {
+       "label": "Scheduled",
+       "max_attempts": 5,
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "payload": {
+        "postId": "<uuid:6>"
        },
        "queue": "publish",
        "status": "queued"
@@ -5210,6 +5274,30 @@
         "launch",
         "news"
        ],
+       "id": "<uuid:6>",
+       "job_id": null,
+       "media": [],
+       "options": {},
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "pages": [],
+       "results": {},
+       "scheduled_at": "2025-01-03T09:00:00.000Z",
+       "status": "scheduled",
+       "timezone": "Europe/Berlin",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      },
+      {
+       "accounts": [
+        "00000000-0000-4000-8000-000000007006"
+       ],
+       "caption": "Launch day",
+       "design_id": "Sgatedpost000000",
+       "error": null,
+       "format": "png",
+       "hashtags": [
+        "launch",
+        "news"
+       ],
        "id": "{{gatedDraft}}",
        "job_id": null,
        "media": [],
@@ -5289,6 +5377,13 @@
       {
        "account_id": null,
        "data": null,
+       "kind": "scheduled",
+       "message": "2025-01-03T10:00:00+01:00",
+       "post_id": "<uuid:6>"
+      },
+      {
+       "account_id": null,
+       "data": null,
        "kind": "created",
        "message": null,
        "post_id": "{{gatedDraft}}"
@@ -5325,6 +5420,16 @@
        "owner_id": "00000000-0000-4000-8000-000000000001",
        "payload": {
         "postId": "{{urlPost}}"
+       },
+       "queue": "publish",
+       "status": "queued"
+      },
+      {
+       "label": "Scheduled",
+       "max_attempts": 5,
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "payload": {
+        "postId": "<uuid:6>"
        },
        "queue": "publish",
        "status": "queued"
@@ -5699,6 +5804,30 @@
         "launch",
         "news"
        ],
+       "id": "<uuid:6>",
+       "job_id": null,
+       "media": [],
+       "options": {},
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "pages": [],
+       "results": {},
+       "scheduled_at": "2025-01-03T09:00:00.000Z",
+       "status": "scheduled",
+       "timezone": "Europe/Berlin",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      },
+      {
+       "accounts": [
+        "00000000-0000-4000-8000-000000007006"
+       ],
+       "caption": "Launch day",
+       "design_id": "Sgatedpost000000",
+       "error": null,
+       "format": "png",
+       "hashtags": [
+        "launch",
+        "news"
+       ],
        "id": "{{gatedDraft}}",
        "job_id": null,
        "media": [],
@@ -5772,6 +5901,13 @@
        "kind": "scheduled",
        "message": "2025-01-03T10:00:00+01:00",
        "post_id": "{{urlPost}}"
+      },
+      {
+       "account_id": null,
+       "data": null,
+       "kind": "scheduled",
+       "message": "2025-01-03T10:00:00+01:00",
+       "post_id": "<uuid:6>"
       },
       {
        "account_id": null,
@@ -6143,6 +6279,30 @@
         "launch",
         "news"
        ],
+       "id": "<uuid:6>",
+       "job_id": null,
+       "media": [],
+       "options": {},
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "pages": [],
+       "results": {},
+       "scheduled_at": "2025-01-03T09:00:00.000Z",
+       "status": "scheduled",
+       "timezone": "Europe/Berlin",
+       "workspace_id": "00000000-0000-4000-8000-000000005001"
+      },
+      {
+       "accounts": [
+        "00000000-0000-4000-8000-000000007006"
+       ],
+       "caption": "Launch day",
+       "design_id": "Sgatedpost000000",
+       "error": null,
+       "format": "png",
+       "hashtags": [
+        "launch",
+        "news"
+       ],
        "id": "{{gatedDraft}}",
        "job_id": null,
        "media": [],
@@ -6220,6 +6380,13 @@
       {
        "account_id": null,
        "data": null,
+       "kind": "scheduled",
+       "message": "2025-01-03T10:00:00+01:00",
+       "post_id": "<uuid:6>"
+      },
+      {
+       "account_id": null,
+       "data": null,
        "kind": "created",
        "message": null,
        "post_id": "{{gatedDraft}}"
@@ -6284,6 +6451,16 @@
        "owner_id": "00000000-0000-4000-8000-000000000001",
        "payload": {
         "postId": "{{urlPost}}"
+       },
+       "queue": "publish",
+       "status": "queued"
+      },
+      {
+       "label": "Scheduled",
+       "max_attempts": 5,
+       "owner_id": "00000000-0000-4000-8000-000000000003",
+       "payload": {
+        "postId": "<uuid:6>"
        },
        "queue": "publish",
        "status": "queued"
@@ -6396,12 +6573,35 @@
     "x-forwarded-for": "198.51.100.74"
    },
    "method": "POST",
-   "name": "publish now: waits for approval",
+   "name": "publish now: a stored requireApproval no longer blocks it",
    "response": {
     "body": {
-     "error": "approval_required",
-     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
-     "status": "none"
+     "post": {
+      "accounts": [
+       "00000000-0000-4000-8000-000000007006"
+      ],
+      "caption": "Launch day",
+      "createdAt": "<ts>",
+      "designId": "Sgatedpost000000",
+      "designTitle": null,
+      "error": null,
+      "format": "png",
+      "hashtags": [
+       "launch",
+       "news"
+      ],
+      "id": "{{gatedDraft}}",
+      "mediaCount": 0,
+      "options": {},
+      "ownerId": "00000000-0000-4000-8000-000000000003",
+      "pages": [],
+      "publishedAt": null,
+      "results": {},
+      "scheduledAt": "<ts>",
+      "status": "scheduled",
+      "timezone": "Europe/Berlin",
+      "updatedAt": "<ts>"
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -6415,7 +6615,7 @@
      "x-ratelimit-remaining": "599",
      "x-ratelimit-reset": "60"
     },
-    "status": 403
+    "status": 200
    },
    "url": "/api/social/posts/{{gatedDraft}}/publish-now"
   },
@@ -6592,7 +6792,7 @@
       {
        "accountId": null,
        "createdAt": "<ts>",
-       "id": "9",
+       "id": "10",
        "kind": "rescheduled",
        "message": "2025-01-05T09:00:00.000Z"
       }
@@ -6757,8 +6957,12 @@
        "status": "draft"
       },
       {
+       "id": "<uuid:6>",
+       "status": "scheduled"
+      },
+      {
        "id": "{{gatedDraft}}",
-       "status": "draft"
+       "status": "scheduled"
       },
       {
        "id": "{{newPost}}",
@@ -6810,6 +7014,32 @@
    "response": {
     "body": {
      "posts": [
+      {
+       "accounts": [
+        "00000000-0000-4000-8000-000000007006"
+       ],
+       "caption": "Launch day",
+       "createdAt": "<ts>",
+       "designId": "Sgatedpost000000",
+       "designTitle": "Gated post",
+       "error": null,
+       "format": "png",
+       "hashtags": [
+        "launch",
+        "news"
+       ],
+       "id": "<uuid:6>",
+       "mediaCount": 0,
+       "options": {},
+       "ownerId": "00000000-0000-4000-8000-000000000003",
+       "pages": [],
+       "publishedAt": null,
+       "results": {},
+       "scheduledAt": "2025-01-03T09:00:00.000Z",
+       "status": "scheduled",
+       "timezone": "Europe/Berlin",
+       "updatedAt": "<ts>"
+      },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
@@ -7008,8 +7238,8 @@
        "pages": [],
        "publishedAt": null,
        "results": {},
-       "scheduledAt": null,
-       "status": "draft",
+       "scheduledAt": "<ts>",
+       "status": "scheduled",
        "timezone": "Europe/Berlin",
        "updatedAt": "<ts>"
       },

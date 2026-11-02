@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Ports of the @oc/crdt unit tests (crdt.test.ts, board.test.ts, body.test.ts) plus Rust-specific checks.
+//! Ports of the @oc/crdt unit tests (crdt.test.ts, body.test.ts) plus Rust-specific checks.
 
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 
-use oc_crdt::board::{Starter, TimerState, VoteSession, Voter, cast_vote, read_timer, read_vote_session, read_votes, write_timer, write_vote_session};
 use oc_crdt::body::{BodyOp, edit_body};
 use oc_crdt::repair::{RepairReport, repair_y};
 use oc_crdt::text::plain_text;
@@ -168,6 +167,18 @@ fn rejects_cycles_and_edits_to_locked_elements() {
         DocOpErrorCode::Locked
     );
     assert!(run(&ydoc, json!([{ "op": "update", "id": id(&a), "patch": { "lock": null } }])).ok);
+}
+
+#[test]
+fn an_old_brand_lock_holds_nobody() {
+    let (ydoc, page) = setup();
+    let a = shape(0.0);
+    run(&ydoc, json!([{ "op": "add", "el": a, "parent": page }]));
+    let lock = json!({ "by": "brand", "move": true, "resize": true, "rotate": true, "delete": true, "content": true, "style": true });
+    assert!(run(&ydoc, json!([{ "op": "update", "id": id(&a), "patch": { "lock": lock } }])).ok);
+    assert!(run(&ydoc, json!([{ "op": "xf", "id": id(&a), "xf": { "x": 5, "y": 5, "w": 10, "h": 10, "rot": 0 } }])).ok);
+    assert!(run(&ydoc, json!([{ "op": "update", "id": id(&a), "patch": { "opacity": 0.5 } }])).ok);
+    assert!(run(&ydoc, json!([{ "op": "delete", "id": id(&a) }])).ok);
 }
 
 #[test]
@@ -364,82 +375,24 @@ fn repair_tombstones_orphans_breaks_cycles_and_fixes_nan_transforms() {
     assert_eq!(repair_y(&ydoc, 0.0), RepairReport::default());
 }
 
-// ------------------------------------------------------------------ board
+// ------------------------------------------------------------------ retired whiteboard state
 
-fn board_peers(n: usize) -> Vec<Doc> {
+#[test]
+fn documents_with_whiteboard_timer_and_vote_roots_still_decode() {
+    use yrs::{Map, Transact};
     let ydoc = new_doc();
     to_y(&empty_design(&MetaInit { w: 800.0, h: 600.0, surface: Some(Surface::Whiteboard), ..Default::default() }), &ydoc, None).unwrap();
-    let base = encode_state(&ydoc);
-    (0..n)
-        .map(|i| {
-            let d = new_doc_with_client(2000 + i as u64);
-            apply_update(&d, &base, None).unwrap();
-            d
-        })
-        .collect()
-}
-
-fn session() -> VoteSession {
-    VoteSession {
-        id: "v1".into(),
-        per_person: 3.0,
-        anonymous: false,
-        scope: vec!["a".into(), "b".into()],
-        status: "open".into(),
-        started_by: Starter { id: "u1".into(), name: "Ada".into(), extra: Default::default() },
-        started_at: 0.0,
-        ended_at: None,
-        highlight: None,
-        extra: Default::default(),
+    {
+        let board = ydoc.get_or_insert_map("board");
+        let votes = ydoc.get_or_insert_map("votes");
+        let mut txn = ydoc.transact_mut();
+        board.insert(&mut txn, "timer", "old");
+        votes.insert(&mut txn, "v|u|e", 1.0);
     }
-}
-
-fn voter(id: &str, name: Option<&str>) -> Voter {
-    Voter { id: id.into(), name: name.map(str::to_string) }
-}
-
-#[test]
-fn merges_concurrent_votes_from_different_people_without_losing_any() {
-    let docs = board_peers(3);
-    let (x, y, z) = (&docs[0], &docs[1], &docs[2]);
-    write_vote_session(x, Some(&session()));
-    sync(&docs);
-    assert_eq!(read_vote_session(z).map(|s| s.id), Some("v1".into()));
-    // Offline, all three vote on the same element at once.
-    cast_vote(x, "v1", &voter("u1", Some("Ada")), "a", 1.0);
-    cast_vote(x, "v1", &voter("u1", Some("Ada")), "a", 1.0);
-    cast_vote(y, "v1", &voter("u2", Some("Grace")), "a", 1.0);
-    cast_vote(z, "v1", &voter("u3", None), "a", 1.0);
-    cast_vote(z, "v1", &voter("u3", None), "b", 1.0);
-    sync(&docs);
-    let on = |d: &Doc, el: &str| read_votes(d, "v1").iter().filter(|v| v.element == el).map(|v| v.n).sum::<f64>();
-    for d in &docs {
-        assert_eq!(on(d, "a"), 4.0);
-        assert_eq!(on(d, "b"), 1.0);
-        assert_eq!(read_votes(d, "v1").iter().find(|v| v.voter == "u2").and_then(|v| v.name.clone()), Some("Grace".into()));
-    }
-    // Removing a dot concurrently with someone else adding one keeps both intents.
-    cast_vote(x, "v1", &voter("u1", None), "a", -1.0);
-    cast_vote(y, "v1", &voter("u2", None), "a", 1.0);
-    sync(&docs);
-    assert_eq!(on(z, "a"), 4.0);
-    cast_vote(z, "v1", &voter("u3", None), "b", -5.0);
-    sync(&docs);
-    assert!(!read_votes(x, "v1").iter().any(|v| v.element == "b"));
-}
-
-#[test]
-fn shares_the_timer_and_keeps_it_out_of_the_element_tree() {
-    let docs = board_peers(2);
-    let (x, y) = (&docs[0], &docs[1]);
-    let t = TimerState { duration_ms: 60_000.0, ends_at: Some(123.0), remaining_ms: 60_000.0, sound: true, by: None, extra: Default::default() };
-    write_timer(x, Some(&t));
-    sync(&docs);
-    assert_eq!(read_timer(y).and_then(|t| t.ends_at), Some(123.0));
-    write_timer(y, None);
-    sync(&docs);
-    assert!(read_timer(x).is_none());
-    assert_eq!(snap(x)["elements"].as_object().unwrap().len(), 0);
+    let copy = new_doc();
+    apply_update(&copy, &encode_state(&ydoc), None).unwrap();
+    assert_eq!(snap(&copy)["meta"]["surface"], json!("whiteboard"));
+    assert_eq!(snap(&copy)["elements"].as_object().unwrap().len(), 0);
 }
 
 // ------------------------------------------------------------------ editBody

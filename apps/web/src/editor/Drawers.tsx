@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { api, type Comment } from '../api';
 import { useAuth } from '../App';
 import { Avatar, EmptyState, PopoverButton, timeAgo, useToast } from '../components/ui';
-import { fmtDate, t, tn } from '../i18n';
+import { fmtDate, t } from '../i18n';
 import { useEd, useEditorState } from './context';
 import { COMMENTS_REV, commentsChangedBy, type CommentsAwareness } from './liveComments';
 import { LayersPanel } from './Panels';
@@ -172,11 +172,7 @@ export function VersionsDrawer({ onClose }: { onClose: () => void }) {
   const { editor, design, readOnly } = useEd();
   const toast = useToast();
   const [versions, setVersions] = useState<Array<{ id: string; label: string | null; created_at: string; author: string | null }> | null>(null);
-  const [older, setOlder] = useState<{ days: number; n: number } | null>(null);
-  const reload = useCallback(() => api.versions(design.id).then((r) => {
-    setVersions(r.versions);
-    setOlder(r.hiddenOlder && r.limitDays ? { days: r.limitDays, n: r.hiddenOlder } : null);
-  }), [design.id]);
+  const reload = useCallback(() => api.versions(design.id).then((r) => setVersions(r.versions)), [design.id]);
   useEffect(() => {
     void reload();
   }, [reload]);
@@ -215,12 +211,6 @@ export function VersionsDrawer({ onClose }: { onClose: () => void }) {
             {!readOnly && <button className="btn sm" style={{ justifySelf: 'start' }} onClick={() => restore(v.id)}><RotateCcw size={14} /> {t('Restore')}</button>}
           </div>
         ))}
-        {older && (
-          <div className="banner" style={{ marginTop: 8 }}>
-            <span className="grow">{tn(older.n, '{n} version older than {days} days. {upgrade} to see full history.', '{n} versions older than {days} days. {upgrade} to see full history.', { days: older.days })
-              .split('{upgrade}').flatMap((part, i) => (i ? [<a key={i} className="linkish" href="/pricing">{t('Upgrade')}</a>, part] : [part]))}</span>
-          </div>
-        )}
       </div>
     </aside>
   );

@@ -21,7 +21,6 @@ async fn main() {
         eprintln!("[api] OC_STAFF_EMAILS: {e}");
     }
     // In-process job workers of the TS API (`work(...)` in the route plugins).
-    oc_api::print::fulfil::start_worker(&state);
     oc_api::routes::imports::start_worker(&state);
     let app = oc_api::app(state);
     let addr = SocketAddr::from(([0, 0, 0, 0], cfg.api_port as u16));

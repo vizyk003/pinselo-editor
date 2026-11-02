@@ -1,12 +1,12 @@
 /** Insertion helpers shared by panels, drag-and-drop and paste. */
 import type { Editor } from '@oc/engine';
 import {
-  makeEmbed, makeImage, makeText, parseEmbedUrl, type AssetId, type AssetRef, type DocOp, type Element, type ElementId, type FrameEl, type PageId, type RunStyle, type ShapeEl,
+  makeEmbed, makeImage, makeText, parseEmbedUrl, type AssetId, type AssetRef, type DocOp, type ElementId, type FrameEl, type PageId, type RunStyle, type ShapeEl,
   type Vec2,
 } from '@oc/engine';
 import { api, embedApi, type UploadedAsset } from '../api';
 import { tk } from '../i18n';
-import { brandBlock, detachPhotoOps, fillOps, findDropTarget, mediaOf, outlineInside, photoLock, withoutPhotoFill, type DropTarget } from './dropTarget';
+import { detachPhotoOps, fillOps, findDropTarget, mediaOf, outlineInside, userLocked, withoutPhotoFill, type DropTarget } from './dropTarget';
 
 /** Fit an asset into ~60% of the page, preserving aspect. */
 function fitSize(editor: Editor, a: { w: number; h: number }, frac = 0.6) {
@@ -34,7 +34,7 @@ export function insertAssetAt(editor: Editor, asset: AssetRef, at: Vec2 | undefi
     const media = mediaOf(asset);
     const target = opts.target !== undefined
       ? opts.target
-      : at && media ? findDropTarget(editor.doc, pageId, at, media, { isBrandLocked: (el) => editor.isBrandLocked(el), inside: outlineInside(editor.doc) }) : null;
+      : at && media ? findDropTarget(editor.doc, pageId, at, media, { inside: outlineInside(editor.doc) }) : null;
     if (target && fillTarget(editor, target, asset)) return;
   }
   editor.apply([{ op: 'asset', asset }], true);
@@ -63,35 +63,26 @@ export function fillTarget(editor: Editor, target: DropTarget, asset: AssetRef):
   return true;
 }
 
-/**
- * Applies `ops` as one undo step, but only if every one of them can: `Editor.apply` silently drops the ops a brand
- * lock blocks for this user (the document itself rejects a batch that hits a user lock as a whole). True when all
- * applied; nothing changes otherwise.
- */
+/** Applies `ops` as one undo step, but only if every one of them can (the document rejects a batch that hits a lock as a whole). True when all applied. */
 export function applyAll(editor: Editor, ops: DocOp[]): boolean {
-  const held = (el: Element) => editor.isBrandLocked(el);
-  if (ops.some((op) => brandBlock(editor.doc, op, held))) return false;
   const r = editor.apply(ops);
   return r.ok && r.applied === ops.length;
 }
 
 // ------------------------------------------------------------------ the photo in a shape or frame
 
-/** Why this user can't change the photo of `el` (see `photoLock`), or null. */
-export const photoLockOf = (editor: Editor, el: ShapeEl | FrameEl) => photoLock(el, (e) => editor.isBrandLocked(e));
-
 /** Pull the photo out as an image right above the shape or frame (same box, crop and look) and select it. All or nothing. */
 export function detachPhoto(editor: Editor, el: ShapeEl | FrameEl): boolean {
   const crop = editor.mediaCrop(el);
   const r = crop ? detachPhotoOps(el, crop) : null;
-  if (!r || photoLockOf(editor, el) || !applyAll(editor, r.ops)) return false;
+  if (!r || userLocked(el) || !applyAll(editor, r.ops)) return false;
   editor.select([r.imageId]);
   return true;
 }
 
 /** Take the photo out of a shape (back to its colour) or a frame (empty). */
 export function removePhoto(editor: Editor, el: ShapeEl | FrameEl): boolean {
-  if (photoLockOf(editor, el)) return false;
+  if (userLocked(el)) return false;
   return applyAll(editor, [{ op: 'update', id: el.id, patch: el.type === 'shape' ? { fills: withoutPhotoFill(el) } : { content: null } }]);
 }
 
@@ -100,7 +91,7 @@ export function removePhoto(editor: Editor, el: ShapeEl | FrameEl): boolean {
  * when the photo is locked or the file can't go into this target (e.g. a video into a shape).
  */
 export async function replacePhoto(editor: Editor, el: ShapeEl | FrameEl, file: File, upload: (f: File) => Promise<{ asset: AssetRef }> = api.upload): Promise<boolean> {
-  if (photoLockOf(editor, el)) return false;
+  if (userLocked(el)) return false;
   const { asset } = await upload(file);
   return fillTarget(editor, { kind: el.type, id: el.id }, asset);
 }

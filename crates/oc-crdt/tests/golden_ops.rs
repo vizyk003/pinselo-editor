@@ -22,7 +22,6 @@ fn run_case(c: &Value) -> (yrs::Doc, Vec<u8>) {
             actor: o["actor"].as_str().map(str::to_string),
             now: o["now"].as_f64(),
             partial: o["partial"].as_bool().unwrap_or(false),
-            brand_admin: o["brandAdmin"].as_bool(),
             rng: Some(&mut rng),
         };
         let result = apply_ops(&doc, &ops, None, opts);

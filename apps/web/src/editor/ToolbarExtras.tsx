@@ -7,7 +7,6 @@ import { ColorButton } from './ColorPicker';
 import { ChartDataEditor } from '../components/ChartDataEditor';
 import { t, tk } from '../i18n';
 import { useDoc, useEd, useEditorState } from './context';
-import { LinkedChartControls } from '../sheet/linkedCharts';
 
 const PRESET_LABEL: Record<AnimPreset, string> = {
   fade: tk('Fade'), rise: tk('Rise'), drop: tk('Drop'), pan: tk('Pan'), pop: tk('Pop'), zoom: tk('Zoom'), wipe: tk('Wipe'), blur: tk('Blur'), tumble: tk('Tumble'), breathe: tk('Breathe'),
@@ -285,7 +284,6 @@ export function ChartControls({ el }: { el: ChartEl }) {
   const st = el.style;
   return (
     <div className="group">
-      {el.source && <LinkedChartControls el={el} editor={editor} readOnly={readOnly} />}
       <select className="input" style={{ width: 110 }} value={el.kind} onChange={(e) => set({ kind: e.target.value as ChartKind })} aria-label={t('Chart type')}>
         {CHART_KINDS.map((k) => <option key={k} value={k}>{t(CHART_LABEL[k])}</option>)}
       </select>

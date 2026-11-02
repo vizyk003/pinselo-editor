@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Load-time repair and brand-lock checks against the TS results.
+//! Load-time repair against the TS results.
 
 mod common;
 
 use common::{assert_same, load, unb64};
-use oc_crdt::brandlock::{BrandAction, body_change, brand_lock_error, brand_lock_violations};
 use oc_crdt::repair::{repair_y, upgrade_y};
 use oc_crdt::{apply_update, decode_doc_value, from_y_value, new_doc_with_client};
-use serde_json::{Value, json};
+use serde_json::Value;
 
 const NOW: f64 = 1_700_000_000_000.0;
 
@@ -30,55 +29,5 @@ fn repair_matches_ts() {
         assert_same(&from_y_value(&doc), &c["snapshot"], &format!("{name}: snapshot"));
         let ts_after = decode_doc_value(&unb64(&c["after"])).unwrap();
         assert_same(&ts_after, &c["snapshot"], &format!("{name}: TS repaired update decoded by yrs"));
-    }
-}
-
-fn opt(v: &Value) -> Option<&Value> {
-    if v.is_null() || v == "__undefined__" { None } else { Some(v) }
-}
-
-fn action(a: &Value) -> BrandAction<'_> {
-    match a["kind"].as_str().unwrap() {
-        "move" => BrandAction::Move,
-        "delete" => BrandAction::Delete,
-        "content" => BrandAction::Content,
-        "style" => BrandAction::Style,
-        "xf" => BrandAction::Xf { from: opt(&a["from"]), to: opt(&a["to"]) },
-        "patch" => BrandAction::Patch {
-            keys: a["keys"].as_array().unwrap().iter().map(|k| k.as_str().unwrap().to_string()).collect(),
-            xf: a.get("xf").map(|x| (opt(&x["from"]), opt(&x["to"]))),
-            body: a.get("body").map(|x| (opt(&x["from"]), opt(&x["to"]))),
-        },
-        k => panic!("unknown action {k}"),
-    }
-}
-
-#[test]
-fn brand_lock_errors_match_ts() {
-    let g = load("brandlock.json");
-    let errors = g["errors"].as_array().unwrap();
-    assert!(errors.len() > 200);
-    for (i, c) in errors.iter().enumerate() {
-        let lock = c.get("lock").filter(|l| !l.is_null());
-        let out = brand_lock_error(lock, &action(&c["action"]));
-        assert_eq!(json!(out), c["out"], "case {i}: {c}");
-    }
-}
-
-#[test]
-fn body_change_matches_ts() {
-    let g = load("brandlock.json");
-    for (i, c) in g["bodyChanges"].as_array().unwrap().iter().enumerate() {
-        let out = body_change(opt(&c["a"]), opt(&c["b"]));
-        assert_eq!(serde_json::to_value(out).unwrap(), c["out"], "case {i}: {c}");
-    }
-}
-
-#[test]
-fn brand_lock_violations_match_ts() {
-    let g = load("brandlock.json");
-    for (i, c) in g["violations"].as_array().unwrap().iter().enumerate() {
-        let out = brand_lock_violations(c["before"].as_object().unwrap(), c["after"].as_object().unwrap());
-        assert_eq!(serde_json::to_value(out).unwrap(), c["out"], "case {i}");
     }
 }

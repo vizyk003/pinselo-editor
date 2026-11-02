@@ -144,7 +144,7 @@ function DesignTiles({ designs, onPick }: { designs: DesignSummary[]; onPick: (d
 function DesignTile({ d, current, onPick }: { d: DesignSummary; current: boolean; onPick: (d: DesignSummary) => void }) {
   const [imgOk, setImgOk] = useState(true);
   const insertable = !current && canInsertFrom(d.surface);
-  // Docs and sheets can't be inserted from: clicking opens them instead.
+  // Docs can't be inserted from: clicking opens them instead.
   const pick = () => (insertable ? onPick(d) : !current && openInNewTab(d.id));
   return (
     <div style={{ position: 'relative', minWidth: 0 }}>

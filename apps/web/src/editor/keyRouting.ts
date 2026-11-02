@@ -47,7 +47,7 @@ const NEVER = '.canvas-wrap,[aria-modal="true"],[role="dialog"],[role="menu"]';
 /** Dialogs that own the keyboard while open, wherever focus is (the cookie banner doesn't). */
 const OVERLAY = '[aria-modal="true"],[role="dialog"]:not(.consent)';
 
-/** True when a dialog (Share, Download, page grid, recording studio, …) is open over the editor. */
+/** True when a dialog (Share, Download, page grid, …) is open over the editor. */
 export function overlayOpen(doc: { querySelector: (selector: string) => unknown }): boolean {
   return Boolean(doc.querySelector(OVERLAY));
 }
@@ -78,7 +78,6 @@ export function routesToCanvas(e: KeyLike): boolean {
  * - something selected: Tab / Shift+Tab move to the next / previous element; past the last (or before the first)
  *   the selection is cleared and focus leaves the canvas instead of wrapping;
  * - Esc clears the selection (the editor's own Escape), so Esc then Tab always leaves.
- * Whiteboards keep Tab = add a mind-map child while one element is selected (the editor decides).
  *
  * `siblings` are the elements Tab cycles through (children of the entered group or the active page), in order.
  */
@@ -86,13 +85,12 @@ export type CanvasTabAction = 'editor' | 'native' | 'leave' | 'enter';
 
 export function canvasTabAction(
   e: { key: string; shiftKey: boolean; metaKey: boolean; ctrlKey: boolean; altKey: boolean },
-  s: { selection: readonly string[]; siblings: readonly string[]; whiteboard: boolean },
+  s: { selection: readonly string[]; siblings: readonly string[] },
 ): CanvasTabAction | null {
   if (e.metaKey || e.ctrlKey || e.altKey) return null;
   if (e.key === 'Enter') return !e.shiftKey && s.selection.length === 0 && s.siblings.length ? 'enter' : null;
   if (e.key !== 'Tab') return null;
   if (!s.selection.length) return 'native';
-  if (s.whiteboard && !e.shiftKey && s.selection.length === 1) return 'editor';
   const i = s.siblings.indexOf(s.selection[0]!);
   if (i < 0) return 'editor';
   const atEdge = e.shiftKey ? i === 0 : i === s.siblings.length - 1;

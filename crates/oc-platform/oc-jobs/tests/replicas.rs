@@ -34,7 +34,7 @@ async fn replicas_run_each_job_once() {
         enqueue(&t.pool, "replicas", &json!({ "n": n }), EnqueueOpts::default()).await.unwrap();
     }
     let seen: Seen = Arc::default();
-    // Three "processes": two worker loops (concurrency 2, like print-fulfil) and a kick-style drain.
+    // Three "processes": two worker loops (concurrency 2) and a kick-style drain.
     let a = oc_db::connect(&t.url).await.unwrap();
     let b = oc_db::connect(&t.url).await.unwrap();
     let wa = work(a.clone(), "replicas", handler(&seen), WorkOpts { concurrency: 2 });

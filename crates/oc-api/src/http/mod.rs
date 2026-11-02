@@ -7,7 +7,7 @@
 //! | `@fastify/cookie` (signed with `OC_SECRET`)         | [`cookie`]                              |
 //! | `@fastify/multipart` (`limits: { files: 1 }`)       | [`multipart`]                           |
 //! | `@fastify/rate-limit` (600/min + per-route)         | [`ratelimit`]                           |
-//! | `setErrorHandler` (zod 400, 402, `{error}`)         | [`error::ApiError`], [`crate::zod`]     |
+//! | `setErrorHandler` (zod 400, `{error}`)         | [`error::ApiError`], [`crate::zod`]     |
 //! | `onSend` security headers                           | [`global`]                              |
 //! | default 404 handler (also for a wrong method)       | [`not_found`]                           |
 

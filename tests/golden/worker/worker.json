@@ -92,14 +92,7 @@
   "INSERT INTO analytics_events(name, created_at) VALUES ('m-old', now() - interval '401 days'), ('m-new', now() - interval '399 days')",
   "INSERT INTO oauth_clients(id, kind, name, redirect_uris, created_at, last_used_at, fetched_at) VALUES\n      ('m-oc-stale', 'dcr', 'stale', '{https://x.example/cb}', now() - interval '40 days', NULL, NULL),\n      ('m-oc-stale-used', 'dcr', 'stale used', '{https://x.example/cb}', now() - interval '90 days', now() - interval '31 days', NULL),\n      ('m-oc-recent', 'dcr', 'recent', '{https://x.example/cb}', now() - interval '40 days', now() - interval '29 days', NULL),\n      ('m-oc-new', 'dcr', 'new', '{https://x.example/cb}', now() - interval '1 day', NULL, NULL),\n      ('https://m-oc.example/stale.json', 'cimd', 'stale doc', '{https://x.example/cb}', now() - interval '40 days', NULL, now() - interval '35 days'),\n      ('https://m-oc.example/fresh.json', 'cimd', 'fresh doc', '{https://x.example/cb}', now() - interval '40 days', NULL, now() - interval '2 days'),\n      ('m-oc-live', 'dcr', 'live grant', '{https://x.example/cb}', now() - interval '50 days', now() - interval '45 days', NULL),\n      ('m-oc-dead', 'dcr', 'dead grant', '{https://x.example/cb}', now() - interval '50 days', now() - interval '45 days', NULL),\n      ('m-oc-code', 'dcr', 'pending code', '{https://x.example/cb}', now() - interval '50 days', now() - interval '45 days', NULL)",
   "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, kind, client_id, refresh_sha256, refresh_expires_at, family, revoked_at) VALUES\n      ('00000000-0000-4000-8000-000000001051', '00000000-0000-4000-8000-000000001001', 'live', 'm-oc-live-token', 'oc_oat_x', '{designs:read}', 'oauth', 'm-oc-live', 'm-oc-live-refresh', now() + interval '15 days', '00000000-0000-4000-8000-000000001061', NULL),\n      ('00000000-0000-4000-8000-000000001052', '00000000-0000-4000-8000-000000001001', 'dead', 'm-oc-dead-token', 'oc_oat_x', '{designs:read}', 'oauth', 'm-oc-dead', 'm-oc-dead-refresh', now() + interval '15 days', '00000000-0000-4000-8000-000000001062', now() - interval '40 days')",
-  "INSERT INTO oauth_codes(code_sha256, client_id, user_id, redirect_uri, code_challenge, scopes, expires_at) VALUES ('m-oc-code-hash', 'm-oc-code', '00000000-0000-4000-8000-000000001001', 'https://x.example/cb', 'c', '{designs:read}', now() + interval '5 minutes')",
-  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001011', 'sub0', false, '00000000-0000-4000-8000-000000001001', '2025-01-01T00:00:00Z')",
-  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001012', 'sub1', false, '00000000-0000-4000-8000-000000001001', '2025-01-01T00:00:00Z')",
-  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001013', 'sub2', false, '00000000-0000-4000-8000-000000001001', '2025-01-01T00:00:00Z')",
-  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001014', 'sub3', false, '00000000-0000-4000-8000-000000001001', '2025-01-01T00:00:00Z')",
-  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001015', 'sub4', false, '00000000-0000-4000-8000-000000001001', '2025-01-01T00:00:00Z')",
-  "INSERT INTO workspaces(id, name, personal, owner_id, created_at) VALUES ('00000000-0000-4000-8000-000000001016', 'sub5', false, '00000000-0000-4000-8000-000000001001', '2025-01-01T00:00:00Z')",
-  "INSERT INTO subscriptions(workspace_id, plan, status, interval, provider, current_period_end, cancel_at_period_end) VALUES\n      ('00000000-0000-4000-8000-000000001011', 'pro', 'active', 'month', 'local', '2000-01-01T00:00:00Z', true),\n      ('00000000-0000-4000-8000-000000001012', 'pro', 'trialing', 'month', 'local', '2000-01-01T00:00:00Z', false),\n      ('00000000-0000-4000-8000-000000001013', 'teams', 'active', 'year', 'local', '2000-01-01T00:00:00Z', false),\n      ('00000000-0000-4000-8000-000000001014', 'pro', 'active', 'month', 'stripe', '2000-01-01T00:00:00Z', false),\n      ('00000000-0000-4000-8000-000000001015', 'pro', 'active', 'month', 'local', '2100-01-01T00:00:00Z', true),\n      ('00000000-0000-4000-8000-000000001016', 'pro', 'past_due', 'month', 'local', '2000-01-01T00:00:00Z', false)"
+  "INSERT INTO oauth_codes(code_sha256, client_id, user_id, redirect_uri, code_challenge, scopes, expires_at) VALUES ('m-oc-code-hash', 'm-oc-code', '00000000-0000-4000-8000-000000001001', 'https://x.example/cb', 'c', '{designs:read}', now() + interval '5 minutes')"
  ],
  "objects": [
   {
@@ -1331,54 +1324,6 @@
     {
      "k": "token",
      "v": "m-tok-recent"
-    }
-   ]
-  },
-  {
-   "name": "subscriptions",
-   "sql": "SELECT workspace_id, plan, status, to_char(current_period_end AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS period_end, updated_at > now() - interval '1 hour' AS touched FROM subscriptions ORDER BY workspace_id",
-   "rows": [
-    {
-     "workspace_id": "00000000-0000-4000-8000-000000001011",
-     "plan": "free",
-     "status": "canceled",
-     "period_end": "2000-01-01 00:00",
-     "touched": true
-    },
-    {
-     "workspace_id": "00000000-0000-4000-8000-000000001012",
-     "plan": "pro",
-     "status": "active",
-     "period_end": "2000-01-31 00:00",
-     "touched": true
-    },
-    {
-     "workspace_id": "00000000-0000-4000-8000-000000001013",
-     "plan": "teams",
-     "status": "active",
-     "period_end": "2000-12-31 00:00",
-     "touched": true
-    },
-    {
-     "workspace_id": "00000000-0000-4000-8000-000000001014",
-     "plan": "pro",
-     "status": "active",
-     "period_end": "2000-01-01 00:00",
-     "touched": true
-    },
-    {
-     "workspace_id": "00000000-0000-4000-8000-000000001015",
-     "plan": "pro",
-     "status": "active",
-     "period_end": "2100-01-01 00:00",
-     "touched": true
-    },
-    {
-     "workspace_id": "00000000-0000-4000-8000-000000001016",
-     "plan": "pro",
-     "status": "past_due",
-     "period_end": "2000-01-01 00:00",
-     "touched": true
     }
    ]
   },

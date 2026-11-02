@@ -5,7 +5,6 @@
  * elements already in it (no AI).
  */
 import { lineMarkerShape, shapePath, trimLineForMarkers } from '@oc/engine';
-import { STICKY_COLORS } from '@oc/engine';
 import {
   makeChart, parseEmbedUrl, makeLine, makeQr, makeShape, makeStroke, makeTable, SHAPE_KINDS, type ChartKind,
   type Element, type FrameClip, type LineMarker, type ShapeKind, makeGrid, GRID_LAYOUTS, makeForm, type DesignDoc,
@@ -122,8 +121,7 @@ type RecentItem =
   | { k: 'line'; id: string }
   | { k: 'graphic'; id: string; kind: GraphicEntry['kind']; name: string }
   | { k: 'chart'; kind: ChartKind }
-  | { k: 'table'; r: number; c: number }
-  | { k: 'sticky'; color: string };
+  | { k: 'table'; r: number; c: number };
 const RECENT_KEY = 'oc:recent-elements';
 const RECENT_MAX = 12;
 const recentKey = (i: RecentItem) => JSON.stringify(i.k === 'graphic' ? { k: i.k, id: i.id } : i);
@@ -131,7 +129,7 @@ const recentKey = (i: RecentItem) => JSON.stringify(i.k === 'graphic' ? { k: i.k
 function loadRecent(): RecentItem[] {
   try {
     const v = JSON.parse(localStorage.getItem(RECENT_KEY) ?? '[]') as unknown;
-    return Array.isArray(v) ? (v as RecentItem[]).filter((x) => x && typeof x === 'object' && 'k' in x).slice(0, RECENT_MAX) : [];
+    return Array.isArray(v) ? (v as RecentItem[]).filter((x) => x && typeof x === 'object' && 'k' in x && (x.k as string) !== 'sticky').slice(0, RECENT_MAX) : [];
   } catch {
     return [];
   }
@@ -168,10 +166,8 @@ export function recommendElements(doc: Pick<DesignDoc, 'meta' | 'elements'>): Re
     if (out.length >= 3) break;
   }
   const bySurface: Record<string, RecentItem[]> = {
-    whiteboard: [{ k: 'sticky', color: STICKY_COLORS[0]! }, { k: 'shape', kind: 'rect', flow: true }, { k: 'shape', kind: 'diamond', flow: true }, { k: 'shape', kind: 'pill', flow: true }, { k: 'line', id: 'solid-arrow' }, { k: 'table', r: 3, c: 3 }],
     presentation: [{ k: 'chart', kind: 'column' }, { k: 'chart', kind: 'pie' }, { k: 'table', r: 3, c: 3 }, { k: 'shape', kind: 'arrow' }, { k: 'chart', kind: 'progress-ring' }, { k: 'line', id: 'solid-plain' }],
     doc: [{ k: 'table', r: 3, c: 3 }, { k: 'chart', kind: 'bar' }, { k: 'chart', kind: 'line' }, { k: 'line', id: 'solid-plain' }],
-    sheet: [{ k: 'chart', kind: 'column' }, { k: 'chart', kind: 'line' }, { k: 'chart', kind: 'pie' }],
     website: [{ k: 'shape', kind: 'pill' }, { k: 'shape', kind: 'squircle' }, { k: 'line', id: 'solid-plain' }, { k: 'shape', kind: 'ellipse' }],
     print: [{ k: 'shape', kind: 'rect' }, { k: 'line', id: 'solid-plain' }, { k: 'shape', kind: 'badge' }, { k: 'shape', kind: 'ribbon' }],
   };
@@ -215,11 +211,6 @@ export function ElementsPanel() {
     if (kind === 'funnel') return makeChart({ kind, xf, labels: [t('Visitors'), t('Sign-ups'), t('Trials'), t('Customers')], series: [{ name: t('People'), values: [1000, 420, 180, 75] }] });
     if (kind === 'scatter' || kind === 'bubble') return makeChart({ kind, xf, labels: ['1', '3', '4', '6', '8'], series: [{ name: t('Value'), values: [12, 30, 22, 40, 34] }, { name: t('Size'), values: [5, 12, 8, 20, 10] }] });
     return makeChart({ kind, xf });
-  };
-  // Sticky notes carry their colour and author (board.sticky); on whiteboards they keep a fixed size as the board grows.
-  const addSticky = (color: string) => {
-    editor.addSticky(color, { text: t('Write an idea…'), size: doc.meta.surface === 'whiteboard' ? 240 : base * 1.1 });
-    recordRecentElement({ k: 'sticky', color });
   };
   const line = (l: LinePreset) => makeLine({ xf: { x: 0, y: 0, w: base * 1.6, h: 24, rot: 0 }, color: '#1f2328', width: Math.max(3, base / 60), dash: l.dash, startMarker: l.start, endMarker: l.end });
   const insert = (els: Element[], item?: RecentItem) => {
@@ -280,12 +271,6 @@ export function ElementsPanel() {
           </button>
         );
       }
-      case 'sticky':
-        return (
-          <button key={key ?? recentKey(item)} className="tile" title={t('Sticky note')} aria-label={t('Sticky note')} onClick={() => addSticky(item.color)}>
-            <span style={{ width: '70%', height: '70%', background: item.color, boxShadow: '0 3px 6px rgba(0,0,0,.18)', borderRadius: 3 }} />
-          </button>
-        );
     }
   };
 
@@ -391,7 +376,6 @@ export function ElementsPanel() {
           </div>
         </>
       )}
-      {(match('sticky') || match('note') || match(t('Sticky notes'))) && section('sticky', t('Sticky notes'), STICKY_COLORS.map((c) => tileFor({ k: 'sticky', color: c })))}
       {(match('qr') || match('code')) && (
         <>
           <h4>{t('QR code')}</h4>

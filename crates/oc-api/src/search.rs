@@ -255,7 +255,7 @@ pub fn templates_sql(uid: Uuid, p: &SearchParams, now: DateTime<Utc>) -> Built {
     params.push(Arg::Int(Some(p.limit)));
     Built {
         sql: format!(
-            r#"SELECT id, title, category, preset, tags, width, height, premium, workspace_id IS NOT NULL AS team, brand, workspace_id AS "workspaceId", version
+            r#"SELECT id, title, category, preset, tags, width, height, workspace_id IS NOT NULL AS team, brand, workspace_id AS "workspaceId", version
           FROM templates WHERE {} ORDER BY {order} LIMIT ${}"#,
             wh.join(" AND "),
             params.len()

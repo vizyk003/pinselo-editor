@@ -79,27 +79,6 @@ impl TextService for WrapText {
     }
 }
 
-/// whiteboard.test.ts: offsetAt always 0.
-pub struct BoardText;
-
-impl TextService for BoardText {
-    fn height(&self, el: &TextEl, _w: f64) -> f64 {
-        el.body.paragraphs.len() as f64 * 20.0
-    }
-    fn offset_at(&self, _el: &TextEl, _x: f64, _y: f64) -> i64 {
-        0
-    }
-    fn vertical_move(&self, _el: &TextEl, o: i64, _dir: i32) -> i64 {
-        o
-    }
-    fn word_at(&self, _el: &TextEl, o: i64) -> (i64, i64) {
-        (o, o)
-    }
-    fn length(&self, el: &TextEl) -> i64 {
-        FakeText.length(el)
-    }
-}
-
 pub fn editor_for(design: &oc_schema::DesignDoc, vp: Viewport) -> Editor {
     let ydoc = oc_crdt::new_doc_with_client(1);
     oc_crdt::to_y(design, &ydoc, None).expect("to_y");

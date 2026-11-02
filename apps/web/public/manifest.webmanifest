@@ -21,6 +21,5 @@
   "shortcuts": [
     { "name": "New presentation", "url": "/?create=presentation", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
     { "name": "New Instagram post", "url": "/?create=ig-post", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "New whiteboard", "url": "/?create=whiteboard", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

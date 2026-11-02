@@ -5,10 +5,10 @@
  */
 import { BRAND } from '@oc/config';
 import { formatDims, resolvePage, sortedPages, type DesignDoc, type PageId } from '@oc/engine';
-import { ChevronLeft, ChevronRight, Crown, Link2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Link2 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { api, ApiError, plansEnabled, templateThumbUrl, type TemplateSummary } from '../api';
+import { api, templateThumbUrl, type TemplateSummary } from '../api';
 import { useAuth } from '../App';
 import { useAuthGate } from '../auth/AuthGate';
 import { isRtl, t, tk, tn } from '../i18n';
@@ -18,8 +18,8 @@ import { fetchTemplatePreview, presetOf, recordRecentTemplate, templateLink, typ
 import { Modal, useToast } from './ui';
 
 const SURFACE_LABEL: Record<string, string> = {
-  graphic: tk('Graphic'), presentation: tk('Presentation'), print: tk('Print'), video: tk('Video'), whiteboard: tk('Whiteboard'),
-  doc: tk('Doc'), sheet: tk('Sheet'), website: tk('Website'), email: tk('Email'),
+  graphic: tk('Graphic'), presentation: tk('Presentation'), print: tk('Print'), video: tk('Video'),
+  doc: tk('Doc'), website: tk('Website'),
 };
 
 /** Create a design from a template (signed out: sign in first, then /?template= creates it). */
@@ -29,9 +29,8 @@ export function useTemplateUse() {
   const me = useAuth().user?.id ?? null;
   return useCallback(async (tpl: TemplateSummary): Promise<boolean> => {
     if (!requireAuth(`/?template=${encodeURIComponent(tpl.id)}`)) return false;
-    track('template_use', { template: tpl.id, premium: Boolean(tpl.premium) });
+    track('template_use', { template: tpl.id });
     const { id } = await api.createDesign({ templateId: tpl.id });
-    // Only once the design exists (a Pro template on the free plan fails with 402 and is not "used").
     recordRecentTemplate(me, tpl);
     nav(`/design/${id}`);
     return true;
@@ -125,9 +124,8 @@ export function TemplatePreviewModal({ id, initial, onClose, onOpen }: {
     setBusy(true);
     try {
       if (!(await use(tpl))) onClose();
-    } catch (e) {
-      // 402: the global handler already shows the upgrade dialog.
-      if (!(e instanceof ApiError && e.status === 402)) toast(t('Could not create a design from this template'));
+    } catch {
+      toast(t('Could not create a design from this template'));
     } finally {
       setBusy(false);
     }
@@ -166,14 +164,12 @@ export function TemplatePreviewModal({ id, initial, onClose, onOpen }: {
               </div>
             )}
             {pageCount > 1 && <div className="faint center" aria-live="polite">{pages.length > 1 ? t('Page {n} of {total}', { n: page + 1, total: pages.length }) : tn(pageCount, '{n} page', '{n} pages')}</div>}
-            {data?.locked && pageCount > 1 && <div className="faint center">{t('Upgrade to Pro to preview every page of this template.')}</div>}
           </div>
 
           <div className="tpl-preview-info">
             {tpl && (
               <>
                 <div className="row" style={{ flexWrap: 'wrap' }}>
-                  {tpl.premium && plansEnabled() && <span className="tpl-badge pro"><Crown size={11} /> {t('PRO')}</span>}
                   {tpl.team && <span className="tpl-badge team">{t('TEAM')}</span>}
                   {surface && <span className="tpl-badge">{t(SURFACE_LABEL[surface] ?? surface)}</span>}
                 </div>
@@ -213,7 +209,6 @@ export function TemplatePreviewModal({ id, initial, onClose, onOpen }: {
               <button key={s.id} className="tpl-card" style={{ background: 'none', border: 0, padding: 0, textAlign: 'start' }} onClick={() => onOpen(s)} title={s.title}>
                 <div className="img" style={{ position: 'relative' }}>
                   <img src={templateThumbUrl(s.id)} alt="" loading="lazy" />
-                  {s.premium && plansEnabled() && <span className="premium-badge"><Crown size={11} /> {t('PRO')}</span>}
                 </div>
                 <div className="t">{s.title}</div>
               </button>

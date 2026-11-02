@@ -3,7 +3,6 @@
 //!
 //! Also exported for other modules: [`revoke_live`], [`team_role`] / [`team_role_str`], [`rank`].
 
-use crate::billing::{self, PlanId};
 use crate::prelude::*;
 
 pub const LIMITS: &[RouteLimit] = &[];
@@ -156,28 +155,8 @@ async fn invite(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> 
     if personal {
         return Ok(reply::json(400, json!({ "error": "personal", "message": "Create a team to invite people." })));
     }
-    // Seat limits: Free/Pro teams have a member cap; Teams plans bill per seat; no cap while plans are off.
-    let (members, pending): (i32, i32) = sqlx::query_as(
-        "SELECT (SELECT count(*)::int FROM memberships WHERE workspace_id = $1) AS members,
-              (SELECT count(*)::int FROM auth_tokens WHERE kind = 'invite' AND used_at IS NULL AND expires_at > now() AND data->>'workspaceId' = $1::text) AS pending",
-    )
-    .bind(ws_id)
-    .fetch_one(&s.pool)
-    .await?;
-    let wp = billing::workspace_plan(&s, ws_id).await?;
-    let cap = billing::workspace_entitlements(&s, ws_id).await?.team_members;
     let emails: Vec<String> = b["emails"].as_array().map(|a| a.iter().filter_map(Value::as_str).map(str::to_owned).collect()).unwrap_or_default();
     let role = b["role"].as_str().unwrap_or("member");
-    if let Some(cap) = cap
-        && i64::from(members) + i64::from(pending) + emails.len() as i64 > cap
-    {
-        let message = if wp.plan == PlanId::Teams {
-            format!("Your plan has {cap} seats. Add seats in Billing to invite more people.")
-        } else {
-            format!("Free teams can have up to {cap} people. Upgrade to Teams for more.")
-        };
-        return Ok(reply::json(402, json!({ "error": "upgrade_required", "feature": "seats", "message": message })));
-    }
     for email in &emails {
         let token = auth::issue_token(&s, "invite", None, Some(email), Some(json!({ "workspaceId": id, "role": role, "by": u.id.to_string() })), 60 * 24 * 7).await?;
         oc_mail::send_email(

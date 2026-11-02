@@ -7,7 +7,7 @@ import { Download, KeyRound, LogOut, ShieldCheck, Trash2 } from 'lucide-react';
 import QRCode from 'qrcode';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { NavLink, Route, Routes, useNavigate } from 'react-router';
-import { accountApi, ApiError, authApi, plansEnabled, type AccountInfo, type SessionRow } from '../api';
+import { accountApi, ApiError, authApi, type AccountInfo, type SessionRow } from '../api';
 import { useAuth } from '../App';
 import { authModeOf, useAuthConfigState } from '../auth/authConfig';
 import { accountAuth, resendConfirmation, SupabaseDeleteAccount, SupabaseEmailField, SupabaseSecurityTab } from '../auth/SupabaseSettings';
@@ -15,7 +15,6 @@ import { authErrorText } from '../auth/SupabaseAuth';
 import { ConsentSettingsLink } from '../components/ConsentBanner';
 import { SignInUnavailable } from './Auth';
 import { interp, Modal, PageHeader, timeAgo, useScrollFade, useToast } from '../components/ui';
-import { BillingTab } from './Billing';
 import { chooseLocale, getLocale, LOCALES, t, tn } from '../i18n';
 import { DevelopersTab } from './Developers';
 import { ConnectedAccountsTab } from '../social/ConnectedAccounts';
@@ -38,7 +37,6 @@ export function Settings() {
         <NavLink to="/settings/account" end>{t('Your account')}</NavLink>
         <NavLink to="/settings/security">{t('Login & security')}</NavLink>
         <NavLink to="/settings/notifications">{t('Email')}</NavLink>
-        {plansEnabled() && <NavLink to="/settings/billing">{t('Billing')}</NavLink>}
         <NavLink to="/settings/accessibility">{t('Accessibility')}</NavLink>
         <NavLink to="/settings/privacy">{t('Privacy & data')}</NavLink>
         <NavLink to="/settings/accounts">{t('Connected accounts')}</NavLink>
@@ -53,7 +51,6 @@ export function Settings() {
           <Route path="notifications" element={<EmailTab info={info} reload={reload} />} />
           <Route path="privacy" element={<PrivacyTab info={info} />} />
           <Route path="accessibility" element={<AccessibilityTab />} />
-          {plansEnabled() && <Route path="billing" element={<BillingTab />} />}
           <Route path="developers" element={<DevelopersTab />} />
           <Route path="accounts" element={<ConnectedAccountsTab />} />
           <Route path="*" element={<AccountTab info={info} reload={reload} />} />

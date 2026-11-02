@@ -6,8 +6,7 @@
 
 use yrs::Origin;
 
-/// The transaction origins of `@oc/crdt` (`LocalOrigin.I`, `AgentOrigin.I`, …, plus the `REPAIR_ORIGIN` and
-/// `BOARD_ORIGIN` symbols).
+/// The transaction origins of `@oc/crdt` (`LocalOrigin.I`, `AgentOrigin.I`, …, plus the `REPAIR_ORIGIN` symbol).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum OcOrigin {
     Local,
@@ -19,12 +18,10 @@ pub enum OcOrigin {
     Remote,
     /// `REPAIR_ORIGIN` (the load-time repair symbol; distinct from `RepairOrigin.I` like in TS).
     RepairSymbol,
-    /// `BOARD_ORIGIN` (whiteboard timer / votes; never tracked by undo).
-    Board,
 }
 
 impl OcOrigin {
-    pub const ALL: [OcOrigin; 9] = [
+    pub const ALL: [OcOrigin; 8] = [
         OcOrigin::Local,
         OcOrigin::Agent,
         OcOrigin::Template,
@@ -33,7 +30,6 @@ impl OcOrigin {
         OcOrigin::Restore,
         OcOrigin::Remote,
         OcOrigin::RepairSymbol,
-        OcOrigin::Board,
     ];
 
     pub fn tag(self) -> &'static str {
@@ -46,7 +42,6 @@ impl OcOrigin {
             OcOrigin::Restore => "oc:restore",
             OcOrigin::Remote => "oc:remote",
             OcOrigin::RepairSymbol => "oc:repair-load",
-            OcOrigin::Board => "oc:board",
         }
     }
 
@@ -69,5 +64,3 @@ impl From<OcOrigin> for Origin {
 
 /// `REPAIR_ORIGIN`.
 pub const REPAIR_ORIGIN: OcOrigin = OcOrigin::RepairSymbol;
-/// `BOARD_ORIGIN`.
-pub const BOARD_ORIGIN: OcOrigin = OcOrigin::Board;

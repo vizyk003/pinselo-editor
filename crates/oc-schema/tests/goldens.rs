@@ -585,36 +585,13 @@ fn doc_blocks_goldens() {
 fn print_goldens() {
     use oc_schema::print::*;
     let g = golden("print");
-    let cat = &*DEFAULT_PRINT_CATALOG;
     let mut docs: IndexMap<String, oc_schema::DesignDoc> = IndexMap::new();
     let n = replay("print", &g["cases"], |name, a| {
-        let product = |id: &Value| find_product(cat, s(id)).expect("product");
-        let picked = |v: &Value| -> IndexMap<String, String> { de(v) };
         let mut doc = |v: &Value| {
             let n = s(v).to_string();
             docs.entry(n.clone()).or_insert_with(|| named_doc(&g["docs"], &n)).clone()
         };
         match name {
-            "checkPrintCatalog" => {
-                let c: PrintCatalog = if s(&a[0]) == "default" { cat.clone() } else { de(&g["brokenCatalogs"][s(&a[0])]) };
-                match check_print_catalog(&c) {
-                    Ok(()) => ok("ok"),
-                    Err(e) => Out::Err(e),
-                }
-            }
-            "resolveOptions" => res(resolve_options(product(&a[0]), &picked(&a[1]))),
-            "expectedPages" => res(expected_pages(product(&a[0]), &picked(&a[1]))),
-            "preflightTargetFor" => res(preflight_target_for(product(&a[0]), s(&a[1]), &picked(&a[2]))),
-            "unitPriceFor" => res(unit_price_for(product(&a[0]), s(&a[1]), f(&a[2]))),
-            "quotePrint" => res(quote_print(cat, &de(&a[0]), &de(&a[1]), a[2].as_str(), a[3].as_str())),
-            "fillTemplate" => {
-                let tokens: Option<IndexMap<String, IndexMap<String, String>>> = opt(&a[2]);
-                res(fill_template(s(&a[0]), &de(&a[1]), tokens.as_ref()))
-            }
-            "validateAddress" => {
-                let countries: Option<Vec<String>> = opt(&a[1]);
-                ok(validate_address(a[0].as_object().expect("address"), countries.as_deref()))
-            }
             "cmykGamutRisk" => ok(cmyk_gamut_risk(&de(&a[0]))),
             "elementBounds" => ok(element_bounds(&de(&a[0]))),
             "bleedPxFor" => num(bleed_px_for(f(&a[0]))).into(),

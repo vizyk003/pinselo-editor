@@ -150,7 +150,7 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 
 `copy_design` without `scale_content` keeps text and shapes at their size and repositions them. With a resize, give a preset or both width and height.
 
-`export_design` has no bleed, marks or colour profile arguments. For those, use [`POST /v1/designs/{id}/exports`](api.md#post-v1designsidexports). It also refuses when team approval is required and missing.
+`export_design` has no bleed, marks or colour profile arguments. For those, use [`POST /v1/designs/{id}/exports`](api.md#post-v1designsidexports).
 
 ### edit_design
 
@@ -245,11 +245,10 @@ To place a kit file, use `add_image` with `{ "asset": id }` or `{ "brand": { "ki
 
 The server instructions and guide tell assistants to use the matching kit's real logo and graphics, not to draw imitations of them, not to invent quotes, people, prices or figures, and to say so if they use an image from outside the kit. These are instructions to the assistant, which the server cannot enforce.
 
-Three rules are enforced on the server:
+Two rules are enforced on the server:
 
 - **Brand controls:** when a team kit governs a design, `get_design` includes `brand` with its kits, fonts by role and colours (up to 40). If the team has **Brand colours only** or **Brand fonts only** on and you are not an admin, `brand.enforced` is set and `edit_design` rejects other colours and fonts, applying nothing. An empty kit never locks anyone out.
-- **Brand template locks:** `get_design` marks these elements `"locked": "brand"`, and assistants cannot change them.
-- **Approvals:** with **Require approval** on, `export_design` refuses until an owner or admin approves the design. Team admins are exempt.
+- **Locks:** `get_design` marks elements the user locked `"locked": true`, and assistants cannot change them.
 
 ## Undoing AI changes
 

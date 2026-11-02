@@ -101,18 +101,3 @@ fn constants_cross_as_plain_values() {
     assert!(get(&c, "GRID_LAYOUTS").is_object());
     assert_eq!(get(&c, "DOC_CONTENT_WIDTH").as_f64(), Some(656.0));
 }
-
-#[cfg(feature = "sheet")]
-#[wasm_bindgen_test]
-fn the_sheet_engine_uses_the_browser_clock() {
-    let mut s = oc_wasm::sheet::SheetEngine::new(&[], JsValue::UNDEFINED).expect("sheet");
-    s.init_sheet(None, Some(5), Some(5));
-    let t = s.tab_ids()[0].clone();
-    s.set_raw(&t, 0, 0, "=NOW()").unwrap();
-    let serial = s.value(&t, 0, 0).as_f64().expect("a serial date");
-    // Days since 1899-12-30 for "now": well after 2020-01-01 (43831).
-    assert!(serial > 43831.0, "{serial}");
-    assert_eq!(s.kind(&t, 0, 0), "datetime");
-    let ups = s.drain_local_updates();
-    assert!(ups.length() > 0);
-}

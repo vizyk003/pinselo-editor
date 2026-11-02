@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
-//! pptx.ts and email.ts parity with the renderer replayed (`tests/golden/render-svc/pptx/`, `email/`).
+//! pptx.ts parity with the renderer replayed (`tests/golden/render-svc/pptx/`).
 
 use std::collections::{BTreeMap, HashMap};
-use std::sync::{LazyLock, Mutex};
+use std::sync::LazyLock;
 
 use futures::future::BoxFuture;
-use oc_render_svc::email::{EmailDeps, export_email};
 use oc_render_svc::pptx::{AssetError, PptxDeps, pptx_package};
-use oc_render_svc::renderer::RenderError;
 use regex::Regex;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -271,57 +269,4 @@ fn decks_match_ts() {
         decks += 1;
     }
     assert!(decks >= 25, "{decks} decks");
-}
-
-struct Host {
-    n: Mutex<usize>,
-}
-
-impl EmailDeps for Host {
-    fn host<'a>(&'a self, _png: Vec<u8>) -> BoxFuture<'a, Result<String, RenderError>> {
-        let k = {
-            let mut n = self.n.lock().unwrap();
-            *n += 1;
-            *n
-        };
-        Box::pin(async move { Ok(format!("https://img.example/e/{k}.png")) })
-    }
-}
-
-#[test]
-fn emails_match_ts() {
-    let mut n = 0;
-    for (file, g) in golden_dir("email") {
-        let doc = design(g["name"].as_str().unwrap());
-        let r = Replay::default();
-        let host = Host { n: Mutex::new(0) };
-        let pages: Vec<String> = g["pages"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|p| p.as_str().unwrap().to_string())
-            .collect();
-        let out = block_on(export_email(&r, &TestHost::new(), &doc, &pages, &host)).unwrap();
-        if let Some(d) = str_diff(&out.html, g["html"].as_str().unwrap()) {
-            panic!("{file}: html {d}");
-        }
-        assert_eq!(out.text, g["text"].as_str().unwrap(), "{file}: text");
-        assert_eq!(
-            *host.n.lock().unwrap() as u64,
-            g["slices"].as_u64().unwrap(),
-            "{file}: slices"
-        );
-        let calls = r.raster_calls.lock().unwrap().clone();
-        let mut want = g["renderCalls"].as_array().unwrap().clone();
-        for c in want.iter_mut() {
-            oc_schema::js::normalize_numbers(c);
-        }
-        let mut got = calls;
-        for c in got.iter_mut() {
-            oc_schema::js::normalize_numbers(c);
-        }
-        assert_eq!(got, want, "{file}: page rasters");
-        n += 1;
-    }
-    assert!(n >= 6);
 }

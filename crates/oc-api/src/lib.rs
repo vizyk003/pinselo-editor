@@ -6,7 +6,7 @@
 //!
 //! * `routes/<file>.rs` ← `services/api/src/routes/<file>.ts`: `pub fn routes() -> Router<AppState>` plus
 //!   `pub const LIMITS` (its `config.rateLimit` routes) and the helpers other modules import from it;
-//! * `<file>.rs` ← the non-route TS modules (`auth.ts`, `billing.ts`, `brandhub.ts`, `media.ts`, …);
+//! * `<file>.rs` ← the non-route TS modules (`auth.ts`, `brandhub.ts`, `media.ts`, …);
 //! * [`router`]: the one place that assembles every module (main.ts's `app.register(...)` list);
 //! * [`http`]: the Fastify behaviour (body parsing, cookies, rate limits, error replies, security headers);
 //! * [`zod`]: request validation with zod's exact issue format; [`pg`]: node-postgres-shaped rows.
@@ -14,14 +14,12 @@
 pub mod analytics;
 pub mod auth;
 pub mod bearer;
-pub mod billing;
 pub mod brandhub;
 pub mod doc_access;
 pub mod graphics;
 pub mod hash_match;
 pub mod http;
 pub mod importers;
-pub mod insights;
 pub mod js;
 pub mod jwt;
 pub mod login;
@@ -29,7 +27,6 @@ pub mod mcp;
 pub mod media;
 pub mod oauth;
 pub mod pg;
-pub mod print;
 pub mod projects;
 pub mod router;
 pub mod routes;

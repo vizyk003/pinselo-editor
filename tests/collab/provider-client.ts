@@ -162,9 +162,9 @@ async function persisted(design: string): Promise<Y.Doc> {
 // ---------------------------------------------------------------- clients
 
 type Role = 'owner' | 'edit' | 'comment' | 'view';
-function ticket(design: string, sub: string, role: Role, o: { iat?: number; ttl?: number; brandLocked?: boolean; aud?: string } = {}) {
+function ticket(design: string, sub: string, role: Role, o: { iat?: number; ttl?: number; aud?: string } = {}) {
   const now = o.iat ?? Date.now();
-  const t = { sub, name: sub.slice(0, 4), color: '#ff0000', aud: o.aud ?? 'collab', design, role, ...(o.brandLocked ? { brandLocked: true } : {}) };
+  const t = { sub, name: sub.slice(0, 4), color: '#ff0000', aud: o.aud ?? 'collab', design, role };
   const body = Buffer.from(JSON.stringify({ ...t, iat: now, exp: Math.floor(now / 1000) + (o.ttl ?? 300) })).toString('base64url');
   return `${body}.${createHmac('sha256', SECRET).update(body).digest('base64url')}`;
 }
@@ -180,7 +180,7 @@ interface Client {
   destroy: () => void;
 }
 
-function client(design: string, o: { sub?: string; role?: Role; token?: string | (() => string); room?: string; brandLocked?: boolean; socket?: InstanceType<typeof HocuspocusProviderWebsocket> } = {}): Client {
+function client(design: string, o: { sub?: string; role?: Role; token?: string | (() => string); room?: string; socket?: InstanceType<typeof HocuspocusProviderWebsocket> } = {}): Client {
   const doc = new Y.Doc();
   const c = { doc, closes: [] as string[], denied: [] as string[], scopes: [] as string[], stateless: [] as string[] } as Client;
   const sub = o.sub ?? userA;
@@ -188,7 +188,7 @@ function client(design: string, o: { sub?: string; role?: Role; token?: string |
     name: o.room ?? `design:${design}`,
     document: doc,
     // Fetched on every (re)connect, like apps/web.
-    token: o.token ?? (() => ticket(design, sub, o.role ?? 'edit', { brandLocked: o.brandLocked })),
+    token: o.token ?? (() => ticket(design, sub, o.role ?? 'edit')),
     onClose: ({ event }: { event: { reason?: string } }) => c.closes.push(String(event?.reason ?? '')),
     onAuthenticationFailed: ({ reason }: { reason: string }) => c.denied.push(reason),
     onAuthenticated: ({ scope }: { scope: string }) => c.scopes.push(scope),
@@ -693,7 +693,7 @@ async function main() {
     sock.destroy();
   });
 
-  await scenario('brand-locked editors cannot change locked elements', async () => {
+  await scenario('an old brand lock does not hold editors', async () => {
     const d = await newDesign();
     const owner = client(d, { sub: userA, role: 'owner' });
     await synced(owner);
@@ -708,19 +708,14 @@ async function main() {
       owner.doc.getMap('elements').set('elem000000000001', el);
     });
     await acked(owner);
-    const m = client(d, { sub: userB, role: 'edit', brandLocked: true });
+    const m = client(d, { sub: userB, role: 'edit' });
     await synced(m);
     await waitFor(() => m.doc.getMap('elements').has('elem000000000001'), 'locked element synced');
-    // Allowed: unrelated changes.
-    m.doc.getMap('meta').set('note', 'fine');
-    await acked(m);
     (m.doc.getMap('elements').get('elem000000000001') as Y.Map<unknown>).set('xf', { x: 999, y: 10, w: 100, h: 100, rot: 0 });
-    await waitFor(() => m.closes.includes('brand lock'), 'CLOSE "brand lock"');
-    await sleep(300);
+    await acked(m);
+    assert(m.closes.length === 0, 'connection stays open');
     const p = await persisted(d);
-    assert(((p.getMap('elements').get('elem000000000001') as Y.Map<unknown>).get('xf') as { x: number }).x === 10, 'violating update not persisted');
-    assert(p.getMap('meta').get('note') === 'fine', 'allowed change persisted');
-    assert(((owner.doc.getMap('elements').get('elem000000000001') as Y.Map<unknown>).get('xf') as { x: number }).x === 10, 'owner unaffected');
+    assert(((p.getMap('elements').get('elem000000000001') as Y.Map<unknown>).get('xf') as { x: number }).x === 999, 'change persisted');
     owner.destroy();
     m.destroy();
   });

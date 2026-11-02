@@ -64,7 +64,7 @@ describe('display lists and helpers (TS goldens)', () => {
       expect(d, `${c.file} ${c.page}`).toBeNull();
       n++;
     }
-    expect(n).toBeGreaterThanOrEqual(300);
+    expect(n).toBeGreaterThanOrEqual(296);
   });
 
   test('animated pages (times, click steps)', () => {

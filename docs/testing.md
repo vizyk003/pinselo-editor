@@ -70,7 +70,7 @@ These live in `packages/engine/test/` and test the WebAssembly build through the
 | `render.test.ts` | Display lists against `tests/golden/render`; tile painting equals painting a page at once |
 | `ps1.test.ts` | WebAssembly pixels and text layout against the native baselines |
 | `sync.test.ts` | `yjs` and the mirror converge, in both directions |
-| `sheet.test.ts`, `text.test.ts`, `arrange.test.ts`, `robustness.test.ts` | Sheets, text, arrangement, robustness |
+| `text.test.ts`, `arrange.test.ts`, `robustness.test.ts` | Text, arrangement, robustness |
 | `bench.test.ts` | Benchmark |
 
 Environment variables that narrow a run:
@@ -135,7 +135,6 @@ CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_RUNNER=wasm-bindgen-test-runner \
 | `ps1` | `oc-render` (native), engine tests (WebAssembly) |
 | `render` | `oc-render`, engine tests |
 | `render-svc`, `render-video` | `oc-render-svc` |
-| `sheet` | `oc-sheet`, engine tests |
 | `social` | `oc-social` |
 | `text` | `oc-text`, engine tests |
 | `worker` | `oc-worker` |

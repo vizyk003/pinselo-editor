@@ -171,16 +171,6 @@ export declare class Editor {
     readonly store: DocStore;
     state: EditorState;
     textService: TextService | null;
-    /**
-     * Brand-template locks (A8): false for team members/designers working on a design started from a brand
-     * template — `lock.by === 'brand'` masks are then enforced on every write (see @oc/crdt brandLockError).
-     */
-    brandAdmin: boolean;
-    /** The local user (sticky-note authors, mind-map nodes). Set by the UI layer. */
-    user: {
-        id: string;
-        name: string;
-    } | null;
     /** Transient overrides merged over the document while a gesture is running. */
     overrides: Map<ElementId, Partial<Element>>;
     private gesture;
@@ -214,18 +204,13 @@ export declare class Editor {
     /** Connectors follow the elements they are glued to (persisted with the same local change). */
     private fixConnectors;
     /**
-     * Infinite whiteboard (WB-001): the board grows whenever content comes within a margin of an edge.
-     * Growing up/left shifts everything (and the viewport) so nothing moves on screen. It never shrinks.
-     */
-    expandWhiteboard(margin?: number): void;
-    /**
      * Shape labels (WB-004): text that lives inside a shape. The label is a centred text element grouped
      * with the shape, so moving or resizing the shape carries it along.
      */
     editShapeLabel(shapeId: ElementId): void;
     /**
-     * A shape that gains a label is wrapped in a group; the group takes over its whiteboard role (mind-map node,
-     * section, …): the metadata, glued connectors and mind-map children now point at the group.
+     * A shape that gains a label is wrapped in a group; the group takes over the board metadata of older
+     * documents (mind-map node, section, …): the metadata, glued connectors and mind-map children now point at the group.
      */
     private adoptBoardRole;
     /** Re-measure every text element (after fonts load). */
@@ -269,44 +254,8 @@ export declare class Editor {
     doubleClick(p: Vec2): void;
     /** Centre of the visible canvas in page coordinates. */
     viewCenter(pageId?: PageId): Vec2;
-    /**
-     * Add a sticky note: a group of a coloured square and a handwriting text box, tagged with its colour and
-     * author (`board.sticky`). Placed at `at` (page coords) or the centre of the view. Returns the group id.
-     */
-    addSticky(color: string, opts?: {
-        text?: string;
-        at?: Vec2;
-        size?: number;
-        author?: {
-            id: string;
-            name: string;
-        } | null;
-    }): ElementId | null;
-    /** Recolour sticky notes (the selection by default). */
-    setStickyColor(color: string, ids?: ElementId[]): number;
-    /** Arrange the selected sticky notes into one tidy grid per colour. */
-    clusterStickies(ids?: ElementId[]): number;
-    /**
-     * New section: a titled rect at the back that carries the elements inside it. Wraps the selection when
-     * there is one, otherwise appears in the middle of the view.
-     */
-    createSection(title: string): ElementId | null;
-    renameSection(id: ElementId, title: string): void;
-    /** Collapse a section to its title bar (hiding its members) or expand it again. */
-    toggleSection(id: ElementId): void;
-    /** Move a section up (-1) or down (+1) in the navigator order. */
-    moveSection(id: ElementId, dir: -1 | 1): void;
     /** Fit a section (or any element) in the view. */
     zoomToElement(id: ElementId, pad?: number): void;
-    /**
-     * Mind map (WB-040): add a child (to the right, glued with a curved connector) or a sibling of the selected
-     * node. The new node copies the node's look with empty text and starts text editing. Returns its id.
-     */
-    mindMapAdd(kind: 'child' | 'sibling'): ElementId | null;
-    /** Enter a group (sticky note, labelled shape) and start editing its first text element. */
-    editGroupText(groupId: ElementId): boolean;
-    /** Re-layout the mind map containing the selection as a balanced tree. Returns how many nodes moved. */
-    layoutMindMap(id?: ElementId | undefined): number;
     setTool(tool: EditorState['tool']): void;
     setBrush(b: Partial<EditorState['brush']>): void;
     private finishStroke;
@@ -414,8 +363,6 @@ export declare class Editor {
     updateAudio(id: string, patch: Partial<AudioClip>, merge?: boolean): void;
     removeAudio(id: string): void;
     splitAudio(id: string, t?: number): void;
-    /** Beat sync: snap page boundaries to the nearest detected beats (MV-032). */
-    syncPagesToBeats(beatsMs: number[]): number;
     captions(): CaptionTrack;
     setCaptions(track: CaptionTrack, merge?: boolean): void;
     upsertCue(cue: Partial<CaptionCue> & {
@@ -477,20 +424,6 @@ export declare class Editor {
     tidy(): void;
     private applyDeltas;
     flip(axis: 'x' | 'y'): void;
-    setBrandAdmin(admin: boolean): void;
-    /** Why an op would break a brand lock (non-admins only), or null. */
-    private brandViolation;
-    /** True when the element carries a brand-template lock this user can't change. */
-    isBrandLocked(el: Element | undefined): boolean;
-    /**
-     * Mark the selection as locked for a brand template (A8). Levels: position & size, content, style.
-     * `null` removes brand locks. Only brand admins may change an existing brand lock.
-     */
-    setBrandLock(levels: {
-        position?: boolean;
-        content?: boolean;
-        style?: boolean;
-    } | null): void;
     toggleLock(): void;
     group(): void;
     ungroup(): void;

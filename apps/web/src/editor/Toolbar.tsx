@@ -14,7 +14,6 @@ import {
 import { useMemo, useRef, useState } from 'react';
 import { PopoverButton, useToast } from '../components/ui';
 import { ColorButton } from './ColorPicker';
-import { BrandLockButton } from './BrandLock';
 import { t, tk } from '../i18n';
 import { useDoc, useEd, useEditorState } from './context';
 import { FilterGroups, ImageBorder, PageBackgroundImage, PixelateControl, ReplaceImageButton, ScriptButtons, SetAsBackgroundButton, TextAnchor } from './ContentTools';
@@ -25,7 +24,8 @@ import { VectorControls } from './VectorTools';
 import { FrameVideoControls } from './Frames';
 import { AnimateButton, ChartControls, DrawControls, TableControls, VideoControls } from './ToolbarExtras';
 import { fillColorOf, shapePhotoFill, withFillColor } from './dropTarget';
-import { detachPhoto, photoLockOf, removePhoto, replacePhoto } from './insert';
+import { detachPhoto, removePhoto, replacePhoto } from './insert';
+import { userLock, userLocked } from './dropTarget';
 
 export function Toolbar() {
   const { editor, readOnly } = useEd();
@@ -227,13 +227,13 @@ function ShapeControls({ el }: { el: ShapeEl }) {
   const doc = useDoc();
   // A shape filled with a photo (dropped onto it): the colour sits under the photo and stays when it changes.
   const photo = Boolean(shapePhotoFill(el));
-  const lock = photo ? photoLockOf(editor, el) : null;
+  const locked = photo && userLocked(el);
   return (
     <div className="group">
       <ColorButton title={t('Fill colour')} doc={doc} value={fillColorOf(el)} allowGradient allowTransparent
         onChange={(p) => editor.updateSelected((x) => (x.type === 'shape' ? { fills: withFillColor(x, p) } : null))} />
-      {photo && lock !== 'user' && editor.mediaCrop(el) && (
-        <button className="btn ghost sm" disabled={lock === 'brand'} onClick={() => editor.startCrop(el.id)} title={lock ? t('Locked by the brand template') : t('Crop (double-click)')}>
+      {photo && !locked && editor.mediaCrop(el) && (
+        <button className="btn ghost sm" onClick={() => editor.startCrop(el.id)} title={t('Crop (double-click)')}>
           <Crop size={16} /> {t('Crop')}
         </button>
       )}
@@ -325,7 +325,7 @@ function ImageControls({ el }: { el: Extract<Element, { type: 'image' | 'frame' 
   const hasImage = el.type === 'image' || el.type === 'video' || Boolean(el.content);
   const video = el.type === 'video';
   // A frame's photo follows the frame's locks (content); images and videos keep their own controls.
-  const lock = el.type === 'frame' && el.content ? photoLockOf(editor, el) : null;
+  const locked = el.type === 'frame' && Boolean(el.content) && userLocked(el);
   return (
     <div className="group">
       {hasImage && (
@@ -368,8 +368,8 @@ function ImageControls({ el }: { el: Extract<Element, { type: 'image' | 'frame' 
           </div>
         )} />
       )}
-      {hasImage && !video && lock !== 'user' && (
-        <button className="btn ghost sm" disabled={lock === 'brand'} onClick={() => editor.startCrop(el.id)} title={lock ? t('Locked by the brand template') : t('Crop (double-click)')}>
+      {hasImage && !video && !locked && (
+        <button className="btn ghost sm" onClick={() => editor.startCrop(el.id)} title={t('Crop (double-click)')}>
           <Crop size={16} /> {t('Crop')}
         </button>
       )}
@@ -393,22 +393,20 @@ function ImageControls({ el }: { el: Extract<Element, { type: 'image' | 'frame' 
 
 /**
  * The photo in a shape or frame: replace it from a file, pull it out as a separate image, or remove it. Shown but
- * off under a brand-template lock (with the lock message); hidden under the user's own lock (unlock it first).
+ * hidden under the user's own lock (unlock it first).
  */
 function PhotoActions({ el }: { el: ShapeEl | FrameEl }) {
   const { editor } = useEd();
   const toast = useToast();
   const input = useRef<HTMLInputElement>(null);
-  const lock = photoLockOf(editor, el);
-  if (lock === 'user') return null;
-  const why = lock ? t('Locked by the brand template') : undefined;
+  if (userLocked(el)) return null;
   const video = el.type === 'frame' && Boolean(el.content?.video);
   // Acts on the element as it is now (a collaborator may have changed or locked it since this toolbar rendered).
   const cur = () => editor.doc.elements[el.id] as ShapeEl | FrameEl | undefined;
-  const failed = () => toast(cur() && photoLockOf(editor, cur()!) ? t('Locked by the brand template') : t('Couldn’t change the image.'));
+  const failed = () => toast(t('Couldn’t change the image.'));
   return (
     <>
-      <button className="btn ghost sm" disabled={Boolean(lock)} onClick={() => input.current?.click()} title={why ?? t('Replace with a file from your device (or drag another photo onto it)')}>
+      <button className="btn ghost sm" onClick={() => input.current?.click()} title={t('Replace with a file from your device (or drag another photo onto it)')}>
         <Replace size={16} /> {t('Replace')}
       </button>
       <input ref={input} type="file" hidden accept={el.type === 'shape' ? 'image/*' : 'image/*,video/*'} onChange={(e) => {
@@ -418,11 +416,11 @@ function PhotoActions({ el }: { el: ShapeEl | FrameEl }) {
         if (f && target) replacePhoto(editor, target, f).then((ok) => ok || failed()).catch((x) => toast(t('Upload failed: {message}', { message: (x as Error).message })));
       }} />
       {!video && (
-        <button className="btn ghost sm" disabled={Boolean(lock)} onClick={() => { const c = cur(); if (!c || !detachPhoto(editor, c)) failed(); }} title={why ?? t('Pull the image out as a separate element')}>
+        <button className="btn ghost sm" onClick={() => { const c = cur(); if (!c || !detachPhoto(editor, c)) failed(); }} title={t('Pull the image out as a separate element')}>
           <ImageOff size={16} /> {t('Detach image')}
         </button>
       )}
-      <button className="btn ghost sm" disabled={Boolean(lock)} title={why} onClick={() => { const c = cur(); if (!c || !removePhoto(editor, c)) failed(); }}>{t('Remove image')}</button>
+      <button className="btn ghost sm" onClick={() => { const c = cur(); if (!c || !removePhoto(editor, c)) failed(); }}>{t('Remove image')}</button>
     </>
   );
 }
@@ -507,7 +505,7 @@ const ALIGN: Array<[AlignEdge, typeof AlignHorizontalJustifyStart, string]> = [
 
 function CommonControls({ sel }: { sel: Element[] }) {
   const { editor, setDrawer } = useEd();
-  const locked = sel.some((e) => e.lock?.move);
+  const locked = sel.some((e) => userLock(e)?.move);
   const opacity = sel[0]?.opacity ?? 1;
   const link = sel.length === 1 ? sel[0]!.link : undefined;
   const shadow = sel[0]?.effects?.find((e): e is Extract<Effect, { k: 'dropShadow' }> => e.k === 'dropShadow');
@@ -587,7 +585,6 @@ function CommonControls({ sel }: { sel: Element[] }) {
       )}
       {sel.length === 1 && ['image', 'video', 'frame', 'shape', 'grid', 'chart', 'qr', 'draw', 'group'].includes(sel[0]!.type) && <AltText el={sel[0]!} />}
       <button className="btn ghost sm icon" title={locked ? t('Unlock') : t('Lock')} onClick={() => editor.toggleLock()}>{locked ? <Lock size={16} /> : <Unlock size={16} />}</button>
-      <BrandLockButton sel={sel} />
       <button className="btn ghost sm icon" title={t('Duplicate (⌘D)')} onClick={() => editor.duplicate()}><Copy size={16} /></button>
       <button className="btn ghost sm icon" title={t('Delete')} onClick={() => editor.deleteSelection()} disabled={locked}><Trash2 size={16} /></button>
     </div>

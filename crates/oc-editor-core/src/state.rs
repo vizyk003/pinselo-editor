@@ -177,12 +177,6 @@ pub struct FindMatch {
     pub context: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub struct User {
-    pub id: String,
-    pub name: String,
-}
-
 /// Everything the UI renders besides the document.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

@@ -4,7 +4,6 @@ export * from './origins';
 export * from './codec';
 export * from './text';
 export * from './ops';
-export * from './brandlock';
 export * from './store';
 export * from './repair';
 export * from './body';

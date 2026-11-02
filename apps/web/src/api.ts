@@ -28,8 +28,8 @@ export async function req<T>(method: string, url: string, body?: unknown, header
     } catch {
       /* not json */
     }
-    // Plan limits surface as a global upgrade prompt (see UpgradeHost).
-    if (res.status === 402) window.dispatchEvent(new CustomEvent('oc:upgrade', { detail: { code, message } }));
+    // Fair-use limits surface as a global notice (see LimitHost).
+    if (res.status === 402) window.dispatchEvent(new CustomEvent('oc:limit', { detail: { message } }));
     throw new ApiError(res.status, code, message, reason);
   }
   const ct = res.headers.get('content-type') ?? '';
@@ -52,7 +52,7 @@ export interface PrintExportOptions {
   profile?: string | { id: string };
   intent?: 'relative' | 'perceptual';
 }
-export interface TemplateSummary { id: string; title: string; category: string; preset: string; tags: string[]; width: number; height: number; premium?: boolean; team?: boolean; brand?: boolean; workspaceId?: string | null; version?: number }
+export interface TemplateSummary { id: string; title: string; category: string; preset: string; tags: string[]; width: number; height: number; team?: boolean; brand?: boolean; workspaceId?: string | null; version?: number }
 export interface Folder { id: string; name: string; parent_id: string | null; designs: number; workspace_id: string; team: string | null }
 export interface Comment {
   id: string; parent_id: string | null; page_id: string | null; element_id: string | null; body: string; resolved: boolean;
@@ -77,14 +77,14 @@ export const api = {
   restoreDesign: (id: string) => req('POST', `/api/designs/${id}/restore`),
   /** Make a copy; with `w` and `h`, a copy resized to that size ("Copy and resize", g101). */
   copyDesign: (id: string, b?: { w: number; h: number; unit?: string; scaleContent?: boolean; title?: string }) => req<{ id: string; resized?: boolean }>('POST', `/api/designs/${id}/copy`, b),
-  ticket: (id: string) => req<{ token: string; role: Role; brandAdmin?: boolean }>('GET', `/api/designs/${id}/ticket`),
+  ticket: (id: string) => req<{ token: string; role: Role }>('GET', `/api/designs/${id}/ticket`),
   designDoc: (id: string) => req<{ doc: DesignDoc }>('GET', `/api/designs/${id}/doc`),
 
   shares: (id: string) => req<{ linkAccess: DesignSummary['link_access']; owner: User; people: Array<User & { role: Role }> }>('GET', `/api/designs/${id}/shares`),
   share: (id: string, email: string, role: Role) => req('POST', `/api/designs/${id}/shares`, { email, role }),
   unshare: (id: string, userId: string) => req('DELETE', `/api/designs/${id}/shares/${userId}`),
 
-  versions: (id: string) => req<{ versions: Array<{ id: string; label: string | null; created_at: string; author: string | null }>; limitDays: number | null; hiddenOlder: number }>('GET', `/api/designs/${id}/versions`),
+  versions: (id: string) => req<{ versions: Array<{ id: string; label: string | null; created_at: string; author: string | null }> }>('GET', `/api/designs/${id}/versions`),
   version: (id: string, vid: string) => req<{ doc: DesignDoc }>('GET', `/api/designs/${id}/versions/${vid}`),
   /** Latest checkpoint an AI assistant saved before changing the design (AI connector). */
   aiCheckpoint: (id: string) => req<{ checkpoint: { id: string; agent: string; createdAt: string } | null }>('GET', `/api/designs/${id}/ai-checkpoint`),
@@ -124,7 +124,7 @@ export const api = {
 };
 
 export interface BrandKit { name: string; colors: Array<{ name: string; hex: string }>; fonts: { heading?: string; subheading?: string; body?: string }; logos: string[] }
-export interface Notification { id: string; kind: 'mention' | 'comment' | 'share' | 'reply' | 'assign' | 'publish' | 'approval'; design_id: string | null; body: string; read_at: string | null; created_at: string; actor: string | null; actor_color: string | null; design_title: string | null }
+export interface Notification { id: string; kind: 'mention' | 'comment' | 'share' | 'reply' | 'assign' | 'publish'; design_id: string | null; body: string; read_at: string | null; created_at: string; actor: string | null; actor_color: string | null; design_title: string | null }
 export const brand = {
   get: () => req<{ kit: BrandKit }>('GET', '/api/brand'),
   put: (kit: BrandKit) => req('PUT', '/api/brand', kit),
@@ -157,13 +157,6 @@ export function setAssetOrigin(o: string) {
   assetOrigin = o.replace(/\/$/, '');
 }
 export const assetUrl = (id: string) => `${assetOrigin}/api/assets/${id}`;
-/** Paid plans (see /api/config). Off: everything is free and no pricing, plan or upgrade UI is shown. */
-let plansOn = false;
-export function setPlansEnabled(on: boolean) {
-  plansOn = on;
-}
-export const plansEnabled = () => plansOn;
-
 export function download(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -265,30 +258,7 @@ export const devApi = {
   mail: (to?: string) => req<{ messages: Array<{ id: string; to: string; subject: string; text: string; html: string; status: string; createdAt: string }> }>('GET', `/api/dev/mail${to ? `?to=${encodeURIComponent(to)}` : ''}`),
 };
 
-// ---------------------------------------------------------------- billing, growth, status
-
-export type PlanId = 'free' | 'pro' | 'teams';
-export interface PlanInfo {
-  id: PlanId; name: string; tagline: string; price: { month: number; year: number }; minSeats: number; trialDays: number; highlights: string[];
-  entitlements: { storageBytes: number; export4k: boolean; premiumTemplates: boolean; versionHistoryDays: number | null; teamMembers: number | null };
-}
-export interface BillingInfo {
-  workspaceId: string; members: number; provider: 'stripe' | 'local';
-  subscription: { plan: PlanId; status: string; seats: number; interval: 'month' | 'year'; provider: string; current_period_end: string | null; cancel_at_period_end: boolean; trial_end: string | null } | null;
-  invoices: Array<{ id: string; amount_cents: number; currency: string; status: string; url: string | null; created_at: string }>;
-  entitlements: PlanInfo['entitlements'] & { plan: PlanId };
-  usage: { storageBytes: number };
-  manageable: Array<{ id: string; name: string; personal: boolean; plan: PlanId }>;
-}
-export const billingApi = {
-  plans: () => req<{ plans: PlanInfo[]; provider: 'stripe' | 'local' }>('GET', '/api/billing/plans'),
-  get: (workspace?: string) => req<BillingInfo>('GET', `/api/billing${workspace ? `?workspace=${workspace}` : ''}`),
-  checkout: (b: { plan: 'pro' | 'teams'; interval: 'month' | 'year'; workspaceId?: string; seats?: number }) => req<{ url: string }>('POST', '/api/billing/checkout', b),
-  portal: (workspaceId: string) => req<{ url: string }>('POST', '/api/billing/portal', { workspaceId }),
-  localConfirm: (session: string) => req<{ workspaceId: string }>('POST', '/api/billing/local/confirm', { session }),
-  localCancel: (workspaceId: string, resume = false) => req('POST', '/api/billing/local/cancel', { workspaceId, resume }),
-  localSeats: (workspaceId: string, seats: number) => req('POST', '/api/billing/local/seats', { workspaceId, seats }),
-};
+// ---------------------------------------------------------------- growth, status
 
 export interface SupportTicket { id: string; topic: string; subject: string; status: string; created_at: string; updated_at: string; email?: string; messages: Array<{ fromStaff: boolean; body: string; at: string }> | null }
 export const supportApi = {
@@ -314,8 +284,8 @@ export const statusApi = {
 export const analyticsAdminApi = {
   get: (days = 30) => req<{
     daily: Array<{ day: string; signups: number; active: number; designs: number; exports: number }>;
-    events: Array<{ name: string; n: number }>; plans: Array<{ plan: string; status: string; n: number; seats: number }>;
-    funnel: { signed_up: number; created_design: number; exported: number; upgraded: number };
+    events: Array<{ name: string; n: number }>;
+    funnel: { signed_up: number; created_design: number; exported: number };
   }>('GET', `/api/admin/analytics?days=${days}`),
 };
 
@@ -359,11 +329,11 @@ export const contentApi = {
   },
   deleteFont: (id: string) => req('DELETE', `/api/fonts/custom/${id}`),
   designFonts: (designId: string) => req<{ families: Array<{ family: string; slug: string; category: string; license: string; faces: Array<{ weight: number; italic: boolean; file: string; sha256: string; bytes: number }> }> }>('GET', `/api/designs/${designId}/fonts`),
-  publishTemplate: (b: { designId: string; title: string; category: string; tags: string[]; description?: string; scope: 'public' | 'team'; premium?: boolean; brand?: boolean }) =>
+  publishTemplate: (b: { designId: string; title: string; category: string; tags: string[]; description?: string; scope: 'public' | 'team'; brand?: boolean }) =>
     req<{ id: string }>('POST', '/api/templates', b),
-  updateTemplate: (id: string, b: { title?: string; category?: string; tags?: string[]; published?: boolean; premium?: boolean }) => req('PATCH', `/api/templates/${id}`, b),
+  updateTemplate: (id: string, b: { title?: string; category?: string; tags?: string[]; published?: boolean }) => req('PATCH', `/api/templates/${id}`, b),
   deleteTemplate: (id: string) => req('DELETE', `/api/templates/${id}`),
-  adminTemplates: () => req<{ templates: Array<{ id: string; title: string; category: string; tags: string[]; published: boolean; premium: boolean; uses: number; updated_at: string }> }>('GET', '/api/admin/templates'),
+  adminTemplates: () => req<{ templates: Array<{ id: string; title: string; category: string; tags: string[]; published: boolean; uses: number; updated_at: string }> }>('GET', '/api/admin/templates'),
 };
 
 export const importApi = {
@@ -383,32 +353,14 @@ export const formsApi = {
 };
 
 export interface SiteInfo {
-  site: { slug: string; title: string; description: string | null; published: boolean; hasPassword: boolean; noindex: boolean; analytics: boolean; version: number; publishedAt: string | null } | null;
+  site: { slug: string; title: string; description: string | null; published: boolean; hasPassword: boolean; noindex: boolean; version: number; publishedAt: string | null } | null;
   url: string | null;
   domains: Array<{ domain: string; verified_at: string | null; token: string }>;
-  views: Array<{ day: string; views: number }>;
-}
-export interface InsightTop { key: string; n: number }
-export interface SiteInsights {
-  from: string;
-  to: string;
-  totals: { views: number; visitors: number; clicks: number; forms: number };
-  series: Array<{ day: string; views: number; visitors: number }>;
-  referrers: InsightTop[];
-  countries: InsightTop[];
-  devices: InsightTop[];
-  sections: InsightTop[];
-  clicks: InsightTop[];
-  forms: InsightTop[];
 }
 export const siteApi = {
   get: (id: string) => req<SiteInfo>('GET', `/api/designs/${id}/site`),
-  save: (id: string, b: { slug: string; title: string; description?: string; noindex?: boolean; analytics?: boolean; password?: string | null }) => req('PUT', `/api/designs/${id}/site`, b),
+  save: (id: string, b: { slug: string; title: string; description?: string; noindex?: boolean; password?: string | null }) => req('PUT', `/api/designs/${id}/site`, b),
   preview: (id: string) => req<{ html: string }>('POST', `/api/designs/${id}/site/preview`, {}),
-  insights: (id: string, from: string, to: string) => req<SiteInsights>('GET', `/api/designs/${id}/site/insights?from=${from}&to=${to}`),
-  viewInsights: (id: string, days = 30) => req<{ views: number; visitors: number; series: Array<{ day: string; views: number; visitors: number }> }>('GET', `/api/designs/${id}/view-insights?days=${days}`),
-  /** Count an open of a public view link (no-op server-side for DNT/GPC). */
-  viewBeacon: (id: string) => req('POST', `/api/public/designs/${id}/view`, {}),
   publish: (id: string) => req<{ url: string }>('POST', `/api/designs/${id}/site/publish`, {}),
   unpublish: (id: string) => req('POST', `/api/designs/${id}/site/unpublish`, {}),
   addDomain: (id: string, domain: string) => req<{ domain: string; txt: { name: string; value: string }; cname: { name: string; value: string } }>('POST', `/api/designs/${id}/site/domains`, { domain }),
@@ -454,19 +406,12 @@ export interface Kit {
   logos: string[]; photos: string[]; graphics: string[]; voice: string;
 }
 export type KitInput = Omit<Kit, 'id' | 'workspaceId' | 'workspace' | 'personal' | 'isDefault' | 'canEdit'>;
-export interface BrandControls { colors?: boolean; fonts?: boolean; requireTemplate?: boolean; restrictUploads?: boolean; requireApproval?: boolean }
+export interface BrandControls { colors?: boolean; fonts?: boolean; requireTemplate?: boolean; restrictUploads?: boolean }
 export interface BrandWorkspace { id: string; name: string; personal: boolean; role: string; canEdit: boolean; controls: BrandControls }
-export type ApprovalStatus = 'pending' | 'approved' | 'changes_requested' | 'cancelled';
 export interface DesignBrand {
-  workspaceId: string | null; role: string | null; brandAdmin: boolean; controls: BrandControls;
+  workspaceId: string | null; role: string | null; controls: BrandControls;
   template: { id: string; title: string | null; brand: boolean; version: number; latest: number } | null;
-  approval: { status: ApprovalStatus; current: boolean } | null;
   published: Array<{ id: string; title: string; version: number; brand: boolean }>;
-}
-export interface Person { id: string; name: string; email: string; color: string }
-export interface Approval {
-  id: string; status: ApprovalStatus; message: string; createdAt: string; decidedAt: string | null; note: string | null;
-  requestedBy: Person | null; decidedBy: Person | null; reviewers: Person[]; current: boolean; canReview: boolean;
 }
 
 export const brandHub = {
@@ -475,14 +420,8 @@ export const brandHub = {
   updateKit: (id: string, b: Partial<KitInput>) => req('PATCH', `/api/brand-kits/${id}`, b),
   deleteKit: (id: string) => req('DELETE', `/api/brand-kits/${id}`),
   makeDefault: (id: string) => req('POST', `/api/brand-kits/${id}/default`),
-  controls: (ws: string) => req<{ controls: BrandControls; canEdit: boolean; role: string; entitled: { brandControls: boolean; approvals: boolean } }>('GET', `/api/workspaces/${ws}/brand-controls`),
+  controls: (ws: string) => req<{ controls: BrandControls; canEdit: boolean; role: string }>('GET', `/api/workspaces/${ws}/brand-controls`),
   setControls: (ws: string, c: BrandControls) => req<{ controls: BrandControls }>('PUT', `/api/workspaces/${ws}/brand-controls`, c),
   design: (id: string) => req<DesignBrand>('GET', `/api/designs/${id}/brand`),
   republish: (templateId: string) => req<{ version: number }>('POST', `/api/templates/${templateId}/republish`),
-  push: (templateId: string) => req<{ updated: number; failed: string[]; total: number }>('POST', `/api/templates/${templateId}/push`),
-  approval: (id: string) => req<{ approval: Approval | null; required: boolean; suggestedReviewers: Person[] }>('GET', `/api/designs/${id}/approval`),
-  requestApproval: (id: string, b: { message: string; reviewerIds?: string[] }) => req<{ id: string }>('POST', `/api/designs/${id}/approval`, b),
-  decide: (id: string, decision: 'approve' | 'changes', note: string) => req('POST', `/api/designs/${id}/approval/decision`, { decision, note }),
-  cancelApproval: (id: string) => req('DELETE', `/api/designs/${id}/approval`),
-  queue: () => req<{ approvals: Array<{ id: string; designId: string; title: string; message: string; createdAt: string; requestedBy: string }> }>('GET', '/api/approvals'),
 };

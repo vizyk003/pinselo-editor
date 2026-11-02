@@ -17,7 +17,7 @@ string_enum! {
     /// A preset's group (`PresetGroup`).
     pub enum PresetGroup {
         Social = "Social media", Presentations = "Presentations", Print = "Print", Video = "Video",
-        Marketing = "Marketing", Documents = "Documents", Web = "Web", Whiteboard = "Whiteboard",
+        Marketing = "Marketing", Documents = "Documents", Web = "Web",
     }
 }
 
@@ -147,11 +147,10 @@ pub static SIZE_PRESETS: LazyLock<Vec<SizePreset>> = LazyLock::new(|| {
         p("x-video", "X Video", G::Video, 1280.0, 720.0, U::Px, S::Video).platform("X").keywords(&["twitter"]),
         p("pinterest-video", "Pinterest Video Pin", G::Video, 1080.0, 1920.0, U::Px, S::Video).platform("Pinterest"),
 
-        // ---- Presentations and whiteboards
+        // ---- Presentations
         p("presentation", "Presentation (16:9)", G::Presentations, 1920.0, 1080.0, U::Px, S::Presentation).popular().keywords(&["slides", "deck"]),
         p("presentation-43", "Presentation (4:3)", G::Presentations, 1024.0, 768.0, U::Px, S::Presentation).keywords(&["slides", "deck"]),
         p("presentation-mobile", "Mobile-first Presentation", G::Presentations, 1080.0, 1920.0, U::Px, S::Presentation).keywords(&["slides", "vertical"]),
-        p("whiteboard", "Whiteboard", G::Whiteboard, 4000.0, 3000.0, U::Px, S::Whiteboard).popular().keywords(&["brainstorm", "mind map", "board"]),
 
         // ---- Documents (g13). 'doc' is the pageless, flowing document; the others are fixed pages.
         p("doc", "Doc", G::Documents, 816.0, 1056.0, U::Px, S::Doc).popular().keywords(&["pageless", "document", "write"]),
@@ -163,8 +162,6 @@ pub static SIZE_PRESETS: LazyLock<Vec<SizePreset>> = LazyLock::new(|| {
         p("resume", "Resume (A4)", G::Documents, mm(210.0), mm(297.0), U::Mm, S::Print).keywords(&["cv"]),
         p("resume-letter", "Resume (US Letter)", G::Documents, inch(8.5), inch(11.0), U::In, S::Print).keywords(&["cv"]),
         p("report", "Report (A4)", G::Documents, mm(210.0), mm(297.0), U::Mm, S::Print).keywords(&["proposal"]),
-        // Spreadsheet (A15). The size is the export page (A4 landscape) the grid is paginated onto.
-        p("sheet", "Sheet", G::Documents, 1123.0, 794.0, U::Px, S::Sheet).keywords(&["spreadsheet", "table", "excel"]),
 
         // ---- Print design sizes (g12). Sizes only: ordering prints is a separate flow.
         p("poster", "Poster (18 × 24 in)", G::Print, inch(18.0), inch(24.0), U::In, S::Print).popular(),
@@ -222,7 +219,6 @@ pub static SIZE_PRESETS: LazyLock<Vec<SizePreset>> = LazyLock::new(|| {
         p("website", "Website", G::Web, 1366.0, 768.0, U::Px, S::Website).keywords(&["site", "landing page"]),
         // Mobile-first one-page site (link-in-bio): a column of buttons that link out.
         p("link-in-bio", "Link in bio", G::Web, 1080.0, 1920.0, U::Px, S::Website).keywords(&["linktree", "links"]),
-        p("email", "Email", G::Web, 600.0, 1600.0, U::Px, S::Email).keywords(&["newsletter", "html"]),
         p("blog-banner", "Blog Banner", G::Web, 1200.0, 630.0, U::Px, S::Graphic).keywords(&["header", "og image", "social preview"]),
 
     ]
@@ -240,7 +236,7 @@ string_enum! {
     /// Create-dialog categories (g08). `Suggestions` and `Custom` are not preset groups.
     pub enum PresetCategoryId {
         Suggestions = "suggestions", Social = "social", Video = "video", Presentations = "presentations", Print = "print",
-        Documents = "documents", Web = "web", Marketing = "marketing", Whiteboard = "whiteboard", Custom = "custom",
+        Documents = "documents", Web = "web", Marketing = "marketing", Custom = "custom",
     }
 }
 
@@ -253,7 +249,7 @@ pub struct PresetCategory {
 }
 
 /// Create-dialog categories in nav order (`PRESET_CATEGORIES`).
-pub static PRESET_CATEGORIES: [PresetCategory; 10] = {
+pub static PRESET_CATEGORIES: [PresetCategory; 9] = {
     use PresetCategoryId as C;
     use PresetGroup as G;
     const fn c(id: PresetCategoryId, label: &'static str, group: Option<PresetGroup>) -> PresetCategory {
@@ -268,7 +264,6 @@ pub static PRESET_CATEGORIES: [PresetCategory; 10] = {
         c(C::Documents, "Documents", Some(G::Documents)),
         c(C::Web, "Web", Some(G::Web)),
         c(C::Marketing, "Marketing", Some(G::Marketing)),
-        c(C::Whiteboard, "Whiteboard", Some(G::Whiteboard)),
         c(C::Custom, "Custom size", None),
     ]
 };
@@ -324,7 +319,7 @@ pub fn popular_presets() -> Vec<&'static SizePreset> {
 }
 
 /// One starter per surface for "Try something new" (`TRY_NEW_IDS`).
-pub const TRY_NEW_IDS: [&str; 8] = ["video", "whiteboard", "doc", "website", "presentation", "sheet", "email", "link-in-bio"];
+pub const TRY_NEW_IDS: [&str; 5] = ["video", "doc", "website", "presentation", "link-in-bio"];
 
 /// `tryNewPresets(recentIds, max = 4)`: starters on surfaces the person has not used recently.
 pub fn try_new_presets(recent_ids: &[&str], max: usize) -> Vec<&'static SizePreset> {

@@ -1,6 +1,6 @@
 //! Port of services/api/src/mcp/edit.ts — edit operations for AI assistants (MCP `edit_design`). Assistants describe
 //! changes in page-space px with hex colours and font names; each operation compiles to DocOps applied with
-//! `oc_crdt::apply_ops` (schema checks, brand locks) — the same write path as every other editor. Operations run in
+//! `oc_crdt::apply_ops` (schema checks, locks) — the same write path as every other editor. Operations run in
 //! order; an `add_*` operation can carry a `ref` that later operations of the same batch use as `$ref` in place of
 //! an id. Processing stops at the first operation that fails (earlier ones stay applied).
 //!
@@ -24,7 +24,6 @@ use crate::js;
 pub struct EditContext<'a> {
     pub ydoc: &'a Doc,
     pub actor: String,
-    pub brand_admin: bool,
     /// Images imported before the run, by operation index (AssetRef JSON).
     pub images: HashMap<usize, Value>,
     pub now: f64,
@@ -1086,7 +1085,7 @@ pub fn run_edits(ops: &[Value], ctx: &EditContext<'_>) -> EditResult {
                 ctx.ydoc,
                 &parsed,
                 Some(OcOrigin::Agent.origin()),
-                ApplyOptions { actor: Some(ctx.actor.clone()), now: Some(ctx.now), brand_admin: Some(ctx.brand_admin), ..Default::default() },
+                ApplyOptions { actor: Some(ctx.actor.clone()), now: Some(ctx.now), ..Default::default() },
             );
             if !result.ok {
                 let msg = result.errors.iter().map(|e| e.message.clone()).collect::<Vec<_>>().join("; ");

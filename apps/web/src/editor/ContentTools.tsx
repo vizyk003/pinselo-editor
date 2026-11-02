@@ -17,6 +17,7 @@ import { ColorButton } from './ColorPicker';
 import { setImageAsBackground } from './ElementMenu';
 import { applyAll, fillTarget } from './insert';
 import { useDoc, useEd } from './context';
+import { userLock } from './dropTarget';
 
 // ------------------------------------------------------------------ text (g67)
 
@@ -74,7 +75,7 @@ export function ReplaceImageButton({ el }: { el: ImageEl }) {
   const { editor } = useEd();
   const toast = useToast();
   const input = useRef<HTMLInputElement>(null);
-  const locked = Boolean(el.lock?.content);
+  const locked = Boolean(userLock(el)?.content);
   return (
     <>
       <button className="btn ghost sm" disabled={locked} onClick={() => input.current?.click()} title={locked ? t('Locked') : t('Replace with a file from your device (or drag another photo onto it)')}>

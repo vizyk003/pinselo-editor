@@ -10,6 +10,7 @@ import { MenuItem, PopoverButton, useToast } from '../components/ui';
 import { t, tk } from '../i18n';
 import type { Engine } from '../lib/engine';
 import { useDoc, useEd, useEditorState } from './context';
+import { userLock } from './dropTarget';
 
 const BOOL_OPS: Array<{ op: BoolOp; label: string }> = [
   { op: 'union', label: tk('Union') },
@@ -60,7 +61,7 @@ export function VectorControls({ sel }: { sel: Element[] }) {
   const state = useEditorState();
   const toast = useToast();
   const s = useVectorScope(sel);
-  const locked = sel.some((e) => e.lock?.content);
+  const locked = sel.some((e) => userLock(e)?.content);
 
   if (state.pathEdit) {
     const view = editor.pathEditView();

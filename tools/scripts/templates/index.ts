@@ -12,7 +12,7 @@ export const CATEGORY: Record<string, string> = {
   'x-post': 'X Posts', 'linkedin-post': 'LinkedIn Posts', 'linkedin-banner': 'Social Banners', 'pinterest-pin': 'Pinterest Pins', 'yt-thumb': 'YouTube Thumbnails',
   'yt-banner': 'YouTube Banners', presentation: 'Presentations', 'presentation-43': 'Presentations', a4: 'Documents', letter: 'Documents', resume: 'Resumes',
   poster: 'Posters', flyer: 'Flyers', 'business-card': 'Business Cards', invitation: 'Invitations', logo: 'Logos', 'email-header': 'Email Headers',
-  infographic: 'Infographics', whiteboard: 'Whiteboards', website: 'Websites', 'link-in-bio': 'Websites', email: 'Emails', doc: 'Docs',
+  infographic: 'Infographics', website: 'Websites', 'link-in-bio': 'Websites', doc: 'Docs',
 };
 
 export async function buildTemplates(filter?: (p: { id: string; category: string; preset: string }) => boolean): Promise<TemplateDef[]> {

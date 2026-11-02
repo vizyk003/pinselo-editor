@@ -1,8 +1,5 @@
 /* Share dialog (plan 11 batch 2): Add people combobox, quick-action tiles, sub-panes. */
 
-.share-head { display: flex; align-items: center; gap: 8px; margin-top: -4px; }
-.share-head .visitors { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-2); background: var(--surface-3); border-radius: 999px; padding: 3px 10px; }
-
 .share-add { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
 .share-combo { position: relative; flex: 1 1 240px; min-width: 0; }
 .share-combo .field-box {

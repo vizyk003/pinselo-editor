@@ -94,7 +94,6 @@ const live = (doc: DesignDoc, pageId: PageId) => Object.values(doc.elements).fil
 describe('Projects panel: insert from another design (g84)', () => {
   it('only offers element-based designs for inserting', () => {
     expect(canInsertFrom('presentation')).toBe(true);
-    expect(canInsertFrom('whiteboard')).toBe(true);
     expect(canInsertFrom('doc')).toBe(false);
     expect(canInsertFrom('sheet')).toBe(false);
   });

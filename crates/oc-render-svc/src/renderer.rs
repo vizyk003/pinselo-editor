@@ -8,7 +8,7 @@
 //!
 //! | method | TS call it replaces | used by |
 //! |---|---|---|
-//! | [`Renderer::render_rgba`] | `renderer.renderRgba` | email slices, PowerPoint element pictures, video frames |
+//! | [`Renderer::render_rgba`] | `renderer.renderRgba` | PowerPoint element pictures, video frames |
 //! | [`Renderer::render_image`] | `renderer.render` (PNG/JPEG) | thumbnails, page-png, png/jpg/zip exports, doc embeds, doc charts |
 //! | [`Renderer::compose_transition`] | `drawTransition` on two frames | mp4/gif page transitions |
 //! | [`Renderer::vector_pdf`] | `exportVectorPdf` | pdf, pdf-print |
@@ -18,7 +18,7 @@
 //! | [`Renderer::text_faces`] | `TextEngine.faces` over a page's text items | website `@font-face` |
 //! | [`Renderer::pick_face`] | `painter.text.fonts.pickFace` | website font names and files |
 //! | [`Renderer::layout_text`] | `painter.text.layout` (+ `getLineMetrics`) | Docs pagination (docLayout) |
-//! | [`Renderer::encode_png`] | `ck.MakeImage(...).encodeToBytes(PNG)` | email slices, PowerPoint pictures |
+//! | [`Renderer::encode_png`] | `ck.MakeImage(...).encodeToBytes(PNG)` | PowerPoint pictures |
 //! | [`Renderer::transcode_png`] | `ck.MakeImageFromEncoded(...).encodeToBytes(PNG)` | WebP/other images in .docx/.pptx |
 //! | [`Renderer::rasterize_svg`] | `new Resvg(svg).render().asPng()` | recoloured SVG assets |
 //! | [`Renderer::path_commands`] | `ck.Path.MakeFromSVGString(d).toCmds()` | PowerPoint custom geometry |
@@ -76,7 +76,7 @@ impl Rgba {
         }
     }
 
-    /// The `w × h` region at `(x, y)` (clamped to the raster, at least 1 × 1), as email.ts/pptx.ts cut slices.
+    /// The `w × h` region at `(x, y)` (clamped to the raster, at least 1 × 1), as pptx.ts cut slices.
     pub fn crop(&self, x: u32, y: u32, w: u32, h: u32) -> Rgba {
         let x = x.min(self.width.saturating_sub(1));
         let y = y.min(self.height.saturating_sub(1));

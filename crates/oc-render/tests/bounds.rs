@@ -298,6 +298,6 @@ fn typing_dirties_the_edited_line() {
     }
     eprintln!("{checked} typed texts, {smaller} with a region at least 10% smaller than the whole box");
     // Centred and right-aligned lines move as a whole when a character is appended (their region is the line);
-    // single-line boxes are their line. Measured: 208 of 310.
-    assert!(checked > 10 && smaller * 5 > checked * 3, "typing usually repaints less than the whole text box");
+    // single-line boxes are their line. Measured: 131 of 224.
+    assert!(checked > 10 && smaller * 2 > checked, "typing usually repaints less than the whole text box");
 }

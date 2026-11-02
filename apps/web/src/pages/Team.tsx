@@ -14,7 +14,7 @@ import { fmtDate, fmtList, t, tk, tn } from '../i18n';
 
 const ROLE_LABEL: Record<TeamRole, string> = { owner: tk('Owner'), admin: tk('Admin'), designer: tk('Designer'), member: tk('Member') };
 const ROLE_HELP: Record<TeamRole, string> = {
-  owner: tk('Full control, including billing and deleting the team.'),
+  owner: tk('Full control, including deleting the team.'),
   admin: tk('Manages members and every team design.'),
   designer: tk('Creates and edits team designs.'),
   member: tk('Views and comments on team designs.'),

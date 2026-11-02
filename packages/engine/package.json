@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "license": "AGPL-3.0-only",
-  "description": "Browser bridge to the Pinselo Rust core (crates/oc-wasm): editor, schema, geometry, CRDT, text, sheet and renderer, with the document types in src/types",
+  "description": "Browser bridge to the Pinselo Rust core (crates/oc-wasm): editor, schema, geometry, CRDT, text and renderer, with the document types in src/types",
   "exports": {
     ".": "./src/index.ts",
     "./lazy": "./src/api.ts"

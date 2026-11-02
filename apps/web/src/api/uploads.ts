@@ -30,8 +30,8 @@ async function call<T>(method: string, url: string, body?: unknown, signal?: Abo
     } catch {
       /* not json */
     }
-    // Plan limits surface as the global upgrade prompt, like every other API call (see UpgradeHost).
-    if (res.status === 402) window.dispatchEvent(new CustomEvent('oc:upgrade', { detail: { code: j.error ?? 'error', message: j.message } }));
+    // Fair-use limits surface as the global notice, like every other API call (see LimitHost).
+    if (res.status === 402) window.dispatchEvent(new CustomEvent('oc:limit', { detail: { message: j.message } }));
     throw new ApiError(res.status, j.error ?? 'error', j.message);
   }
   return res.json() as Promise<T>;

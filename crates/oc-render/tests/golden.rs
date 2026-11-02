@@ -34,7 +34,7 @@ fn templates_settled() {
         fails.check(|| format!("{file} {page}"), &j(&dl), &c["dl"]);
     }
     let n = fails.finish("templates");
-    assert!(n >= 300, "expected every template page, got {n}");
+    assert!(n >= 296, "expected every template page, got {n}");
 }
 
 #[test]

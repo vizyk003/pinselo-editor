@@ -1,7 +1,6 @@
-import { Crown } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useSearchParams } from 'react-router';
-import { plansEnabled, templateThumbUrl, type TemplateSummary } from '../../api';
+import { templateThumbUrl, type TemplateSummary } from '../../api';
 import { t, tk, tn } from '../../i18n';
 import { useAuth } from '../../App';
 import { TemplatePreviewModal } from '../../components/TemplatePreview';
@@ -28,8 +27,7 @@ export function TemplateCard({ t: tpl, onPreview, masonry }: { t: TemplateSummar
       >
         <div className="img" style={{ position: 'relative', ...(masonry ? { aspectRatio: String(ratio), height: 'auto' } : {}) }}>
           <img src={templateThumbUrl(tpl.id)} alt="" loading="lazy" />
-          {tpl.premium && plansEnabled() && <span className="premium-badge" title={t('Premium template (Pro)')}><Crown size={11} /> {t('PRO')}</span>}
-          {tpl.team && <span className="premium-badge team" title={t('Your team’s template')}>{t('TEAM')}</span>}
+          {tpl.team && <span className="tile-badge team" title={t('Your team’s template')}>{t('TEAM')}</span>}
         </div>
         <div className="t">{tpl.title}</div>
       </button>

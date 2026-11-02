@@ -1040,13 +1040,12 @@
      "issues": [
       {
        "code": "invalid_value",
-       "message": "Invalid option: expected one of \"account\"|\"billing\"|\"editor\"|\"export\"|\"collaboration\"|\"bug\"|\"feature\"|\"other\"",
+       "message": "Invalid option: expected one of \"account\"|\"editor\"|\"export\"|\"collaboration\"|\"bug\"|\"feature\"|\"other\"",
        "path": [
         "topic"
        ],
        "values": [
         "account",
-        "billing",
         "editor",
         "export",
         "collaboration",
@@ -1131,7 +1130,7 @@
        "id": "{{guestTicket}}",
        "status": "open",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "user_id": null
       }
      ]
@@ -1158,8 +1157,8 @@
       },
       {
        "category": "service",
-       "subject": "[#{{guestRef}}] billing: Refund please",
-       "text": "[#{{guestRef}}] billing: Refund please\n\nFrom guest@example.test\n\n\n\nI was charged twice this month.\n",
+       "subject": "[#{{guestRef}}] account: Refund please",
+       "text": "[#{{guestRef}}] account: Refund please\n\nFrom guest@example.test\n\n\n\nI was charged twice this month.\n",
        "to_email": "help@opencanvas.test"
       }
      ]
@@ -1172,7 +1171,7 @@
     "body": "I was charged twice this month.",
     "email": "guest@example.test",
     "subject": "Refund please",
-    "topic": "billing"
+    "topic": "account"
    },
    "method": "POST",
    "name": "support: signed out",
@@ -1217,7 +1216,7 @@
        "id": "{{guestTicket}}",
        "status": "open",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "user_id": null
       },
       {
@@ -1505,7 +1504,7 @@
        "id": "{{guestTicket}}",
        "status": "open",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "user_id": null
       },
       {
@@ -1733,17 +1732,8 @@
      "funnel": {
       "created_design": 0,
       "exported": 0,
-      "signed_up": 0,
-      "upgraded": 1
-     },
-     "plans": [
-      {
-       "n": 1,
-       "plan": "pro",
-       "seats": 3,
-       "status": "active"
-      }
-     ]
+      "signed_up": 0
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -2005,17 +1995,8 @@
      "funnel": {
       "created_design": 0,
       "exported": 0,
-      "signed_up": 0,
-      "upgraded": 1
-     },
-     "plans": [
-      {
-       "n": 1,
-       "plan": "pro",
-       "seats": 3,
-       "status": "active"
-      }
-     ]
+      "signed_up": 0
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -2074,17 +2055,8 @@
      "funnel": {
       "created_design": 0,
       "exported": 0,
-      "signed_up": 0,
-      "upgraded": 1
-     },
-     "plans": [
-      {
-       "n": 1,
-       "plan": "pro",
-       "seats": 3,
-       "status": "active"
-      }
-     ]
+      "signed_up": 0
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -2346,17 +2318,8 @@
      "funnel": {
       "created_design": 0,
       "exported": 0,
-      "signed_up": 0,
-      "upgraded": 1
-     },
-     "plans": [
-      {
-       "n": 1,
-       "plan": "pro",
-       "seats": 3,
-       "status": "active"
-      }
-     ]
+      "signed_up": 0
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -2425,7 +2388,7 @@
        ],
        "status": "open",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "updated_at": "<ts>",
        "user_id": null
       },
@@ -2600,7 +2563,7 @@
        "id": "{{guestTicket}}",
        "status": "answered",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "user_id": null
       },
       {
@@ -2653,8 +2616,8 @@
       },
       {
        "category": "service",
-       "subject": "[#{{guestRef}}] billing: Refund please",
-       "text": "[#{{guestRef}}] billing: Refund please\n\nFrom guest@example.test\n\n\n\nI was charged twice this month.\n",
+       "subject": "[#{{guestRef}}] account: Refund please",
+       "text": "[#{{guestRef}}] account: Refund please\n\nFrom guest@example.test\n\n\n\nI was charged twice this month.\n",
        "to_email": "help@opencanvas.test"
       },
       {
@@ -2723,7 +2686,7 @@
        "id": "{{guestTicket}}",
        "status": "answered",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "user_id": null
       },
       {
@@ -2794,7 +2757,7 @@
        ],
        "status": "answered",
        "subject": "Refund please",
-       "topic": "billing",
+       "topic": "account",
        "updated_at": "<ts>",
        "user_id": null
       }

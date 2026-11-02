@@ -7,9 +7,8 @@ export type ElementType = 'text' | 'shape' | 'line' | 'image' | 'frame' | 'group
 export declare const ELEMENT_TYPES: readonly ElementType[];
 export type SemanticRole = 'headline' | 'subhead' | 'body' | 'quote' | 'caption' | 'cta' | 'logo' | 'hero-image' | 'background' | 'decor' | 'price' | 'legal';
 /**
- * Element lock. `by: 'user'` locks are a convenience anyone with edit access can toggle. `by: 'brand'` locks come
- * from a brand template (A8): only brand admins (team owners/admins) may change or bypass them; everyone else is
- * held to the mask (move/resize/rotate/delete = position & size, content = text/media, style = everything else).
+ * Element lock. `by: 'user'` locks are a convenience anyone with edit access can toggle. `by: 'brand'` locks are
+ * left in old documents and hold nobody.
  */
 export interface LockMask {
     move?: boolean;
@@ -159,7 +158,7 @@ export interface ElementBase {
     dataBinding?: {
         column: string;
     };
-    /** Whiteboard facilitation metadata (sticky notes, sections, mind-map nodes). Stored in `props`. */
+    /** Board metadata of older documents (sticky notes, whiteboard sections and mind-map nodes). Stored in `props`. */
     board?: BoardMeta;
     /** Tombstone. Deleted elements stay in the map so undo can restore concurrent edits. */
     deleted?: {
@@ -170,7 +169,7 @@ export interface ElementBase {
     ext?: Record<string, unknown>;
 }
 /**
- * Whiteboard metadata (WB-020..). `sticky` marks a sticky-note group (shape + text) with its colour and author;
+ * Board metadata. `sticky` marks a sticky-note group (shape + text) with its colour and author;
  * `section` marks a rect shape as a titled section whose members are the top-level elements inside its box;
  * `mind` marks a mind-map node (`parent` null/absent = root).
  */
@@ -373,24 +372,11 @@ export interface ChartSeries {
     values: number[];
     color: ColorValue;
 }
-/**
- * Linked data (A15): the chart mirrors a range of a sheet design. `labels`/`series` stay as the cached
- * values (exports and offline keep working); the editor refreshes them on open and on demand, and the
- * render service re-resolves them at export time. `sheet` is the tab id (falls back to a tab name).
- */
-export interface ChartSource {
-    designId: string;
-    sheet: string;
-    range: string;
-    sheetName?: string;
-    refreshedAt?: number;
-}
 export interface ChartEl extends ElementBase {
     type: 'chart';
     kind: ChartKind;
     labels: string[];
     series: ChartSeries[];
-    source?: ChartSource;
     style: {
         family: string;
         textColor: ColorValue;

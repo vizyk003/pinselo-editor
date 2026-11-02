@@ -36,7 +36,7 @@ fn keep_the_ids_that_designs_templates_and_shortcuts_refer_to() {
     for id in [
         "ig-post", "ig-portrait", "ig-story", "fb-post", "fb-cover", "x-post", "linkedin-post", "linkedin-banner", "pinterest-pin", "yt-thumb", "yt-banner",
         "presentation", "presentation-43", "a4", "letter", "resume", "poster", "flyer", "business-card", "invitation", "logo", "email-header", "infographic",
-        "whiteboard", "doc", "sheet", "website", "link-in-bio", "email",
+        "doc", "website", "link-in-bio",
     ] {
         assert!(find_preset(id).is_some(), "{id}");
     }
@@ -120,8 +120,8 @@ fn keeps_a_capped_de_duplicated_most_recent_first_list() {
 #[test]
 fn suggests_surfaces_the_person_has_not_used() {
     assert_eq!(try_new_presets(&[], 4).len(), 4);
-    let after = try_new_presets(&["tiktok-video", "whiteboard"], 4);
-    assert!(!after.iter().any(|p| p.surface == Surface::Video || p.surface == Surface::Whiteboard));
+    let after = try_new_presets(&["tiktok-video", "doc"], 4);
+    assert!(!after.iter().any(|p| p.surface == Surface::Video || p.surface == Surface::Doc));
 }
 
 #[test]

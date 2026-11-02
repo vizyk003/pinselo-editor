@@ -268,19 +268,11 @@ function Analytics() {
         <div className="stat"><div className="n">{f.signed_up}</div><div className="l">Signed up</div></div>
         <div className="stat"><div className="n">{f.created_design}</div><div className="l">Created a design · {pct(f.created_design, f.signed_up)}</div></div>
         <div className="stat"><div className="n">{f.exported}</div><div className="l">Exported · {pct(f.exported, f.created_design)}</div></div>
-        <div className="stat"><div className="n">{f.upgraded}</div><div className="l">Upgraded</div></div>
       </div>
       <Bars data={data.daily} k="active" label="Active users" />
       <Bars data={data.daily} k="signups" label="Sign-ups" />
       <Bars data={data.daily} k="designs" label="Designs created" />
       <Bars data={data.daily} k="exports" label="Background exports" />
-      <section className="box">
-        <h2>Paid plans</h2>
-        {data.plans.length === 0 ? <p className="muted">No paid plans yet.</p> : (
-          <table className="table"><thead><tr><th>Plan</th><th>Status</th><th>Workspaces</th><th>Seats</th></tr></thead>
-            <tbody>{data.plans.map((p) => <tr key={p.plan + p.status}><td>{p.plan}</td><td>{p.status}</td><td>{p.n}</td><td>{p.seats}</td></tr>)}</tbody></table>
-        )}
-      </section>
       <section className="box">
         <h2>Product events (consented users)</h2>
         <table className="table"><tbody>{data.events.map((e) => <tr key={e.name}><td><code>{e.name}</code></td><td>{e.n}</td></tr>)}</tbody></table>
@@ -378,7 +370,7 @@ function TemplatesAdmin() {
     <>
       <p className="muted" style={{ margin: 0 }}>Publish new ones from any design: File → Publish as template → Public catalogue.</p>
       <table className="table">
-        <thead><tr><th /><th>Template</th><th>Category</th><th>Uses</th><th>Published</th><th>Premium</th><th /></tr></thead>
+        <thead><tr><th /><th>Template</th><th>Category</th><th>Uses</th><th>Published</th><th /></tr></thead>
         <tbody>
           {rows.map((t) => (
             <tr key={t.id}>
@@ -387,7 +379,6 @@ function TemplatesAdmin() {
               <td>{t.category}</td>
               <td>{t.uses}</td>
               <td><input type="checkbox" checked={t.published} onChange={(e) => contentApi.updateTemplate(t.id, { published: e.target.checked }).then(load)} aria-label="Published" /></td>
-              <td><input type="checkbox" checked={t.premium} onChange={(e) => contentApi.updateTemplate(t.id, { premium: e.target.checked }).then(load)} aria-label="Premium" /></td>
               <td><button className="btn sm danger" onClick={() => confirm(`Delete “${t.title}”?`) && contentApi.deleteTemplate(t.id).then(load)}>Delete</button></td>
             </tr>
           ))}

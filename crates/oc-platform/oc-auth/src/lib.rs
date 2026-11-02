@@ -58,9 +58,6 @@ pub struct TicketClaims {
     pub aud: Audience,
     pub design: String,
     pub role: Role,
-    /// Held to brand-template locks (A8).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub brand_locked: Option<bool>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -172,7 +169,7 @@ mod tests {
     use super::*;
 
     fn claims() -> TicketClaims {
-        TicketClaims { sub: "u1".into(), name: "Ann".into(), color: "#f00".into(), aud: Audience::Collab, design: "d1".into(), role: Role::Edit, brand_locked: None }
+        TicketClaims { sub: "u1".into(), name: "Ann".into(), color: "#f00".into(), aud: Audience::Collab, design: "d1".into(), role: Role::Edit }
     }
 
     #[test]

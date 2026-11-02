@@ -2,7 +2,7 @@
 // The Pinselo document contract, implemented by crates/oc-schema (see ../README.md).
 import type { Surface } from './design';
 import type { Unit } from './primitives';
-export type PresetGroup = 'Social media' | 'Presentations' | 'Print' | 'Video' | 'Marketing' | 'Documents' | 'Web' | 'Whiteboard';
+export type PresetGroup = 'Social media' | 'Presentations' | 'Print' | 'Video' | 'Marketing' | 'Documents' | 'Web';
 export interface SizePreset {
     id: string;
     label: string;
@@ -22,7 +22,7 @@ export interface SizePreset {
 export declare const SIZE_PRESETS: SizePreset[];
 export declare function findPreset(id: string | null | undefined): SizePreset | undefined;
 /** Create-dialog categories (g08) in nav order. 'suggestions' and 'custom' are not preset groups. */
-export type PresetCategoryId = 'suggestions' | 'social' | 'video' | 'presentations' | 'print' | 'documents' | 'web' | 'marketing' | 'whiteboard' | 'custom';
+export type PresetCategoryId = 'suggestions' | 'social' | 'video' | 'presentations' | 'print' | 'documents' | 'web' | 'marketing' | 'custom';
 export declare const PRESET_CATEGORIES: Array<{
     id: PresetCategoryId;
     label: string;

@@ -9,8 +9,7 @@
 //!   `undefined`s before serialising.
 //! * `null` is `null`. Where TS treats `null` and `undefined` differently, so does the dispatcher:
 //!   `addPage(null)` adds at the end while `addPage()` adds after the active page; `pasteStyle(ids, null)`
-//!   applies nothing while `pasteStyle(ids)` applies the armed style brush; `addSticky(c, { author: null })` is
-//!   anonymous while a missing `author` uses the editor's user.
+//!   applies nothing while `pasteStyle(ids)` applies the armed style brush.
 //! * Callback and `Map` arguments are plain data: `updateSelected(patch, deep?, merge?)` takes one patch for
 //!   every element, `updateSelectedMap(patches, deep?, merge?)` (Rust addition) takes `{ [id]: patch | null }`;
 //!   `bulkCreate`'s image map is an object `{ value: { id, w, h } }` or a list of `[value, { id, w, h }]` entries.
@@ -18,8 +17,8 @@
 //! The result is the TS return value as JSON (`null` for `undefined`). Elements are returned as the stored
 //! JSON (exactly what TS returns), not re-serialised typed values.
 //!
-//! Properties: `state`, `doc`, `view`, `version`, `brandAdmin`, `user`, `overrides`, `clipboard`, `editingTableText`,
-//! `canUndo`, `canRedo` (`store.undo.undoStack/redoStack.length > 0`); assignments `brandAdmin=` / `user=` (TS field
+//! Properties: `state`, `doc`, `view`, `version`, `overrides`, `clipboard`, `editingTableText`,
+//! `canUndo`, `canRedo` (`store.undo.undoStack/redoStack.length > 0`); assignment `user=` (TS field
 //! writes, no notification). Store members: `store.checkpoint` (alias `checkpoint`), `store.apply(ops, origin?)` with
 //! an origin name (`local`, `agent`, `template`, `migration`, `repair`, `restore`, `remote`, …), `store.actor` /
 //! `store.actor=`, and `flush` (react to host writes made directly on the yrs document). Not JSON-callable, so
@@ -37,7 +36,7 @@ use oc_schema::table::{BorderPreset, CellPos, StructureAction, TableStylePreset}
 use serde::de::DeserializeOwned;
 use serde_json::{Map, Value};
 
-use crate::editor::commands::{Arrange, BrandLockLevels, FindOpts, GeometryPatch, PageNumberPosition, ResolvedImage};
+use crate::editor::commands::{Arrange, FindOpts, GeometryPatch, PageNumberPosition, ResolvedImage};
 use crate::editor::text::CaretKey;
 use crate::editor::timeline::MediaAsset;
 use crate::editor::{Editor, el_id};
@@ -210,17 +209,6 @@ impl Editor {
             "doc" => Ok(self.doc_json()),
             "view" => Ok(self.view_json()),
             "version" => Ok(num(self.version() as f64)),
-            "brandAdmin" => Ok(Value::Bool(self.brand_admin())),
-            "user" => Ok(opt(self.user.clone())),
-            "user=" => {
-                self.user = a.opt_parse(0)?;
-                unit()
-            }
-            "brandAdmin=" => {
-                // `editor.brandAdmin = x` (a plain field in TS: no notification; `setBrandAdmin` notifies).
-                self.brand_admin = a.flag(0, false);
-                unit()
-            }
             "overrides" => Ok(Value::Object(self.overrides().iter().map(|(k, v)| (k.clone(), Value::Object(v.clone()))).collect())),
             "clipboard" => Ok(opt(self.clipboard().cloned())),
             "editingTableText" => Ok(Value::Bool(self.editing_table_text())),
@@ -255,10 +243,6 @@ impl Editor {
             "apply" => {
                 let ops: Vec<DocOp> = a.parse(0)?;
                 Ok(jv(&self.apply(ops, a.flag(1, false))))
-            }
-            "expandWhiteboard" => {
-                self.expand_whiteboard(a.opt_f64(0)?.unwrap_or(600.0));
-                unit()
             }
             "editShapeLabel" => {
                 self.edit_shape_label(a.str(0)?);
@@ -391,58 +375,10 @@ impl Editor {
                 unit()
             }
 
-            // ---------------------------------------------------------------- whiteboard
             "viewCenter" => Ok(jv(&self.view_center(a.opt_str(0)?))),
-            "addSticky" => {
-                let color = a.str(0)?.to_string();
-                let o = a.opts(1)?;
-                let author: Option<Option<User>> = match o.get("author") {
-                    None => None,
-                    Some(Value::Null) => Some(None),
-                    Some(v) => Some(Some(serde_json::from_value(v.clone()).map_err(|e| a.err(format!("author: {e}")))?)),
-                };
-                let text: Option<String> = field(&a, &o, "text")?;
-                let at: Option<Vec2> = field(&a, &o, "at")?;
-                let size: Option<f64> = field(&a, &o, "size")?;
-                Ok(opt(self.add_sticky(&color, text.as_deref(), at, size, author)))
-            }
-            "setStickyColor" => {
-                let ids = a.opt_strings(1)?;
-                Ok(num(self.set_sticky_color(a.str(0)?, ids.as_deref()) as f64))
-            }
-            "clusterStickies" => {
-                let ids = a.opt_strings(0)?;
-                Ok(num(self.cluster_stickies(ids.as_deref()) as f64))
-            }
-            "createSection" => Ok(opt(self.create_section(a.str(0)?))),
-            "renameSection" => {
-                self.rename_section(a.str(0)?, a.str(1)?);
-                unit()
-            }
-            "toggleSection" => {
-                self.toggle_section(a.str(0)?);
-                unit()
-            }
-            "moveSection" => {
-                self.move_section(a.str(0)?, a.f64(1)? as i32);
-                unit()
-            }
             "zoomToElement" => {
                 self.zoom_to_element(a.str(0)?, a.opt_f64(1)?.unwrap_or(48.0));
                 unit()
-            }
-            "mindMapAdd" => {
-                let child = match a.str(0)? {
-                    "child" => true,
-                    "sibling" => false,
-                    k => return Err(a.err(format!("unknown kind {k}"))),
-                };
-                Ok(opt(self.mind_map_add(child)))
-            }
-            "editGroupText" => Ok(Value::Bool(self.edit_group_text(a.str(0)?))),
-            "layoutMindMap" => {
-                let id = a.opt_str(0)?.map(str::to_string);
-                Ok(num(self.layout_mind_map(id.as_deref()) as f64))
             }
 
             // ---------------------------------------------------------------- freehand draw
@@ -623,10 +559,6 @@ impl Editor {
                 self.split_audio(a.str(0)?, a.opt_f64(1)?);
                 unit()
             }
-            "syncPagesToBeats" => {
-                let beats: Vec<f64> = a.parse(0)?;
-                Ok(num(self.sync_pages_to_beats(&beats) as f64))
-            }
             "captions" => Ok(Value::Object(self.captions())),
             "setCaptions" => {
                 self.set_captions(a.obj(0)?, a.flag(1, false));
@@ -775,23 +707,6 @@ impl Editor {
             "flip" => {
                 let x: Axis = a.parse(0)?;
                 self.flip(x);
-                unit()
-            }
-            "setBrandAdmin" => {
-                self.set_brand_admin(a.flag(0, false));
-                unit()
-            }
-            "isBrandLocked" => {
-                let el: Option<Element> = match a.get(0) {
-                    None => None,
-                    Some(Value::String(id)) => self.doc().el(id).cloned(),
-                    Some(v) => Some(serde_json::from_value(v.clone()).map_err(|e| a.err(e.to_string()))?),
-                };
-                Ok(Value::Bool(self.is_brand_locked(el.as_ref())))
-            }
-            "setBrandLock" => {
-                let levels: Option<BrandLockLevels> = a.opt_parse(0)?;
-                self.set_brand_lock(levels);
                 unit()
             }
             "toggleLock" => {

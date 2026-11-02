@@ -11,7 +11,6 @@ import { Lock } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
 import { Popover, useToast } from '../components/ui';
 import { ElementDialogs, ElementMenu } from './ElementMenu';
-import { ImageEraserHost } from './ImageEraser';
 import { PageHeaders, QuickBar } from './PageControls';
 import { useEd, useEditorState, useView, type Presence } from './context';
 import { blocksBareShortcut } from '../lib/appearance';
@@ -27,7 +26,7 @@ import { contentApi, type StockKind } from '../api';
 import { Rulers } from './Rulers';
 import { BLEED_PX, marginOf, useViewPrefs } from './viewPrefs';
 import { t } from '../i18n';
-import { WhiteboardLayer } from './Whiteboard';
+import { userLock } from './dropTarget';
 
 const mods = (e: { shiftKey: boolean; altKey: boolean; metaKey: boolean; ctrlKey: boolean }): Mods => ({
   shift: e.shiftKey, alt: e.altKey, meta: e.metaKey || e.ctrlKey,
@@ -195,7 +194,7 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
       return hit.dl;
     };
     const { pages, layout } = scenePages(v, port, dlFor);
-    return scene.frame({ view: v, port, dpr, workspace: rgba(cssVar('--workspace', '#e8e8ee'), [0.91, 0.91, 0.93, 1]), whiteboard: v.meta.surface === 'whiteboard', pages, layout });
+    return scene.frame({ view: v, port, dpr, workspace: rgba(cssVar('--workspace', '#e8e8ee'), [0.91, 0.91, 0.93, 1]), pages, layout });
   };
 
   // ---------------------------------------------------------------- coordinates
@@ -471,7 +470,7 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
       case 'Home': e.preventDefault(); editor.moveCaret('home', e.shiftKey); return;
       case 'End': e.preventDefault(); editor.moveCaret('end', e.shiftKey); return;
       case 'Escape': e.preventDefault(); editor.handleKey('Escape', mods(e)); wrapRef.current?.focus(); return;
-      case 'Tab': e.preventDefault(); if (editor.state.editingCell) editor.cellTab(e.shiftKey ? -1 : 1); else if (!e.shiftKey && editor.doc.meta.surface === 'whiteboard') editor.mindMapAdd('child'); return;
+      case 'Tab': e.preventDefault(); if (editor.state.editingCell) editor.cellTab(e.shiftKey ? -1 : 1); return;
     }
     if (cmd) {
       const k = e.key.toLowerCase();
@@ -496,7 +495,6 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
     const tab = canvasTabAction(e, {
       selection: st.selection,
       siblings: childrenOf(editor.doc, st.enteredGroup ?? st.activePageId).map((el) => el.id),
-      whiteboard: !readOnly && editor.doc.meta.surface === 'whiteboard',
     });
     if (tab === 'native') return;
     // Shift+F10 / the context-menu key: the element (or page) menu, at the selection.
@@ -557,7 +555,7 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
   const targetAt = (e: React.DragEvent, media: DropMedia | null): DropTarget | null => {
     const at = dropPoint(e);
     if (!at || !media || e.altKey) return null;
-    return findDropTarget(editor.doc, at.slot.page.id, at.local, media, { isBrandLocked: (el) => editor.isBrandLocked(el), inside: outlineInside(editor.doc) });
+    return findDropTarget(editor.doc, at.slot.page.id, at.local, media, { inside: outlineInside(editor.doc) });
   };
 
   // dragover repeats while a drag is over the canvas, so the hint and highlight are cleared by a short timer: after a
@@ -655,7 +653,7 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
   // ---------------------------------------------------------------- overlay rendering
   const sel = state.selection.filter((id) => view.elements[id] && !view.elements[id].deleted);
   const single = sel.length === 1 ? view.elements[sel[0]!]! : null;
-  const showHandles = !readOnly && !state.editingText && !state.presenting && sel.length > 0 && !state.pathEdit && !sel.some((id) => view.elements[id]!.lock?.move);
+  const showHandles = !readOnly && !state.editingText && !state.presenting && sel.length > 0 && !state.pathEdit && !sel.some((id) => userLock(view.elements[id]!)?.move);
   // Finger-sized handles on touch screens.
   const handleSize = coarse ? 18 : 9;
 
@@ -969,7 +967,7 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
             </g>
           );
         })()}
-        {sel.length === 1 && single?.lock?.move && quad && (
+        {sel.length === 1 && single && userLock(single)?.move && quad && (
           <g transform={`translate(${quad[1]![0] - 8},${quad[1]![1] - 26})`}>
             <rect width={22} height={22} rx={6} fill="var(--surface)" stroke="var(--border)" />
             <Lock x={4} y={4} size={14} />
@@ -1015,7 +1013,7 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
       </svg>
       {!state.presenting && <PageHeaders slots={slots} toScreen={S} zoom={vp.zoom} height={vp.height} />}
       {quickBar && <QuickBar box={quickBar} wrapWidth={vp.width} onMore={openMenuFor} />}
-      {view.meta.surface === 'whiteboard' && <WhiteboardLayer />}
+      
       {state.tool === 'pen' && (
         <p className="sr-only" role="status">
           {t('Pen: click to add points, drag to curve, click the first point to close. Keys: arrows move the cursor, Space adds a point, C closes, Enter finishes, Escape cancels.')}
@@ -1070,7 +1068,6 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
         </Popover>
       )}
       <ElementDialogs />
-      <ImageEraserHost />
     </div>
   );
 }

@@ -170,7 +170,7 @@ Scope: `designs:read`. Needs at least view access. Answers `{"document": { ... }
 
 ### POST /v1/designs/{id}/autofill
 
-Scope: `designs:write`. Needs at least view access to the source. Copies a design and fills its data-bound elements. The source is not changed. The copy stays linked to the source's brand template, so its brand locks keep applying.
+Scope: `designs:write`. Needs at least view access to the source. Copies a design and fills its data-bound elements. The source is not changed. The copy stays linked to the source's brand template, so the team's brand controls keep applying.
 
 | Field | Type | Notes |
 |---|---|---|
@@ -242,7 +242,6 @@ Answers `202`:
 
 | Status | `error` | Meaning |
 |---|---|---|
-| 403 | `approval_required` | The team requires approval and this design has none that is current. The body also has `message` and `status` (for example `none` or `stale`). |
 | 404 | `profile_not_found` | The colour profile does not exist or is not shared with the user. |
 
 ### GET /v1/exports/{job}
@@ -379,8 +378,6 @@ The routes below serve the web app. They can change with it, so prefer `/v1` for
 
 Unless a section says otherwise, expect these routes to use the session cookie. A handler can accept signed-out callers, so check it before relying on that. Routes under `/api/public/` and `/site/` serve signed-out visitors. `/api/admin/*` is limited to staff accounts.
 
-Paid plans are off by default, so `/api/billing/*` only matters on a server with `OC_BILLING=1`.
-
 ### Accounts and sign-in (`account.rs`, `supabase.rs`)
 
 | Methods | Path |
@@ -400,7 +397,7 @@ Paid plans are off by default, so `/api/billing/*` only matters on a server with
 | POST | `/api/account/2fa/setup`, `/api/account/2fa/enable`, `/api/account/2fa/disable` |
 | POST, GET | `/api/account/export`, `/api/account/exports/{job}` |
 
-### Designs (`designs.rs`, `docs.rs`, `imports.rs`, `sheets.rs`)
+### Designs (`designs.rs`, `docs.rs`, `imports.rs`)
 
 | Methods | Path |
 |---|---|
@@ -408,7 +405,7 @@ Paid plans are off by default, so `/api/billing/*` only matters on a server with
 | POST | `/api/designs/bulk` |
 | GET, PATCH, DELETE | `/api/designs/{id}` |
 | POST | `/api/designs/{id}/restore`, `/api/designs/{id}/copy`, `/api/designs/{id}/touch`, `/api/designs/{id}/export` |
-| GET | `/api/designs/{id}/ticket`, `/api/designs/{id}/doc`, `/api/designs/{id}/thumbnail.png`, `/api/designs/{id}/pages/{page}`, `/api/designs/{id}/sheet/values` |
+| GET | `/api/designs/{id}/ticket`, `/api/designs/{id}/doc`, `/api/designs/{id}/thumbnail.png`, `/api/designs/{id}/pages/{page}` |
 | GET, POST | `/api/designs/{id}/shares`, `/api/designs/{id}/versions` |
 | DELETE | `/api/designs/{id}/shares/{user_id}` |
 | GET | `/api/designs/{id}/versions/{vid}` |
@@ -421,15 +418,15 @@ Paid plans are off by default, so `/api/billing/*` only matters on a server with
 |---|---|
 | GET, POST | `/api/assets` |
 | GET, PATCH, DELETE | `/api/assets/{id}` |
-| GET | `/api/assets/trash`, `/api/assets/{id}/download`, `/api/assets/{id}/poster`, `/api/assets/{id}/svg`, `/api/assets/{id}/recolor/{pairs}`, `/api/assets/{id}/waveform`, `/api/assets/{id}/beats` |
-| POST | `/api/assets/batch`, `/api/assets/import-url`, `/api/assets/{id}/restore`, `/api/assets/{id}/transcribe` |
-| GET | `/api/capabilities`, `/api/export-jobs/{job}`, `/api/export-jobs/{job}/file` |
+| GET | `/api/assets/trash`, `/api/assets/{id}/download`, `/api/assets/{id}/poster`, `/api/assets/{id}/svg`, `/api/assets/{id}/recolor/{pairs}`, `/api/assets/{id}/waveform` |
+| POST | `/api/assets/batch`, `/api/assets/import-url`, `/api/assets/{id}/restore` |
+| GET | `/api/export-jobs/{job}`, `/api/export-jobs/{job}/file` |
 | POST | `/api/designs/{id}/export-jobs` |
 | GET, POST | `/api/stock/providers`, `/api/stock/search` (GET); `/api/stock/import` (POST) |
 | GET, POST | `/api/emoji/index.json`, `/api/emoji/{hex}` (GET); `/api/emoji/{hex}/asset` (POST) |
 | GET, POST | `/api/graphics/sets`, `/api/graphics/search`, `/api/graphics/{file}` (GET); `/api/graphics/{id}/asset` (POST) |
 | GET, POST, DELETE | `/api/fonts/custom` (GET, POST); `/api/fonts/custom/{id}` (DELETE) |
-| GET | `/api/fonts/manifest.json`, `/api/fonts/preview/{file}`, `/api/fonts/files/{*rel}`, `/api/fonts/files/custom/{file}`, `/api/designs/{id}/fonts`, `/api/designs/{id}/credits`, `/api/email-images/{file}` |
+| GET | `/api/fonts/manifest.json`, `/api/fonts/preview/{file}`, `/api/fonts/files/{*rel}`, `/api/fonts/files/custom/{file}`, `/api/designs/{id}/fonts`, `/api/designs/{id}/credits` |
 | POST | `/api/embeds` |
 
 ### Templates, folders, comments and access (`misc.rs`, `content.rs`, `sharing.rs`, `search.rs`)
@@ -462,9 +459,8 @@ Paid plans are off by default, so `/api/billing/*` only matters on a server with
 | GET, PATCH, DELETE | `/api/brand-kits/{id}` |
 | POST | `/api/brand-kits/{id}/default` |
 | GET, PUT | `/api/brand`, `/api/workspaces/{id}/brand-controls` |
-| GET | `/api/designs/{id}/brand`, `/api/designs/{id}/approval/gate`, `/api/approvals` |
-| GET, POST, DELETE | `/api/designs/{id}/approval` |
-| POST | `/api/designs/{id}/approval/decision`, `/api/templates/{id}/republish`, `/api/templates/{id}/push` |
+| GET | `/api/designs/{id}/brand` |
+| POST | `/api/templates/{id}/republish` |
 | GET | `/api/notifications` |
 | POST | `/api/notifications/read` |
 | GET, POST | `/api/workspaces`, `/api/workspaces/{id}/groups` |
@@ -487,25 +483,17 @@ Paid plans are off by default, so `/api/billing/*` only matters on a server with
 | GET, PUT | `/api/designs/{id}/site` |
 | POST | `/api/designs/{id}/site/publish`, `/api/designs/{id}/site/preview`, `/api/designs/{id}/site/unpublish`, `/api/designs/{id}/site/domains`, `/api/designs/{id}/site/domains/{domain}/verify` |
 | DELETE | `/api/designs/{id}/site/domains/{domain}` |
-| GET | `/api/designs/{id}/site/insights`, `/api/designs/{id}/view-insights` |
 | POST | `/api/forms/{design_id}/{element_id}` |
 | GET | `/api/designs/{id}/forms/{element_id}/responses` |
 | DELETE | `/api/designs/{id}/forms/{element_id}/responses/{rid}` |
 
-### Print (`print.rs`, `print_profiles.rs`)
+### Print (`print_profiles.rs`)
 
 | Methods | Path |
 |---|---|
-| GET | `/api/print/catalog`, `/api/print/files/{file}` |
-| POST | `/api/print/quote`, `/api/print/preflight`, `/api/print/gamut` |
-| GET, POST | `/api/print/profiles`, `/api/print/addresses`, `/api/print/orders` |
+| POST | `/api/print/gamut` |
+| GET, POST | `/api/print/profiles` |
 | DELETE | `/api/print/profiles/{id}` |
-| PUT, DELETE | `/api/print/addresses/{id}` |
-| GET | `/api/print/orders/{id}`, `/api/print/orders/{id}/file` |
-| POST | `/api/print/orders/{id}/pay`, `/api/print/orders/{id}/local-pay`, `/api/print/orders/{id}/cancel` |
-| POST | `/api/print/webhooks/gelato`, `/api/print/webhooks/printful` |
-| GET | `/api/admin/print/orders`, `/api/admin/print/orders/{id}`, `/api/admin/print/orders/{id}/file` |
-| POST | `/api/admin/print/orders/{id}/status`, `/api/admin/print/orders/{id}/retry` |
 
 ### Social scheduling (`social.rs`)
 
@@ -527,13 +515,6 @@ Described in [mcp-connector.md](mcp-connector.md).
 | POST | `/api/oauth/register`, `/api/oauth/token`, `/api/oauth/revoke`, `/api/oauth/authorize` |
 | GET | `/api/oauth/authorize/info`, `/api/oauth/connections`, `/api/mcp/files/{sha}`, `/api/designs/{id}/ai-checkpoint` |
 | DELETE | `/api/oauth/connections/{client_id}` |
-
-### Billing (`billing.rs`)
-
-| Methods | Path |
-|---|---|
-| GET | `/api/billing/plans`, `/api/billing` |
-| POST | `/api/billing/checkout`, `/api/billing/portal`, `/api/billing/local/confirm`, `/api/billing/local/cancel`, `/api/billing/local/seats`, `/api/billing/stripe/webhook` |
 
 ### Operations, support and moderation (`health.rs`, `growth.rs`, `safety.rs`, `dev.rs`)
 

@@ -15,12 +15,7 @@ export { decodeDesign, encodeDesign } from './crdt';
 export * from './schema';
 export * from './geometry';
 export * from './editor-fns';
-export * from './sheet';
 export type * from './types';
 export { maskOf } from './vector';
 export type { BoolOp, GroupMask, MaskMode, NodePart, NodeRef, PathEditState, PathEditView, PathNode, PenState, SubPath, TextOutline, Tool } from './vector';
-// Whiteboard facilitation state (timer, dot votes) is yjs plumbing on the browser's Y.Doc (its own `board` / `votes`
-// root maps, outside the element tree and undo), kept in TS like the sheet accessors that only read yjs maps.
-// oc-crdt has the same functions over yrs (crates/oc-crdt/src/board.rs) for the server.
-export { BOARD_ORIGIN, castVote, clearVotes, observeBoard, readTimer, readVoteSession, readVotes, writeTimer, writeVoteSession, type TimerState, type VoteCell, type VoteEntry, type VoteSession } from './board';
 export type { DocOp, DocOpResult } from './types/crdt';

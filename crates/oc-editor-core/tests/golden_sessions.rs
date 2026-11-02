@@ -137,8 +137,6 @@ fn replay(file: &str) -> (usize, usize, Option<String>) {
     if g["text"].as_str() == Some("gold") {
         ed.set_text_service(Some(Box::new(GoldText)));
     }
-    ed.brand_admin = g["brandAdmin"].as_bool().unwrap();
-    ed.user = serde_json::from_value(g["user"].clone()).unwrap();
     let mut expected = g["doc"].clone();
     let steps = g["steps"].as_array().unwrap();
     if let Some(d) = json_diff(&ed.doc_json(), &expected, "doc") {

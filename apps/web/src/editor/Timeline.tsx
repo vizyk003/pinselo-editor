@@ -3,13 +3,13 @@
  * caption cues, a scrubbable playhead, split, and per-clip volume/fades. All edits are DocOps via the Editor.
  */
 import { clipLengthMs, elementWindow, KEYFRAME_NEUTRAL, KEYFRAME_PROPS, keyframeValue, pageDurationMs, timelineOf, type AudioClip, type CaptionCue, type Element, type KeyframeProp, type VideoEl } from '@oc/engine';
-import { Captions, Circle, Music, Pause, Play, Scissors, SkipBack, Trash2, Waves, X as XIcon, ZoomIn, ZoomOut } from 'lucide-react';
+import { Captions, Circle, Music, Pause, Play, Scissors, SkipBack, Trash2, X as XIcon, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPE } from 'react';
-import { PopoverButton, useToast } from '../components/ui';
+import { PopoverButton } from '../components/ui';
 import { useDoc, useEd, useEditorState } from './context';
 import { assetUrl } from '../api';
 import { fmtTime } from './media';
-import { t, tk, tn } from '../i18n';
+import { t, tk } from '../i18n';
 
 type Sel = { kind: 'audio'; id: string } | { kind: 'cue'; id: string } | null;
 
@@ -61,7 +61,6 @@ export function Timeline({ onClose }: { onClose: () => void }) {
   const { editor, readOnly } = useEd();
   const doc = useDoc();
   const state = useEditorState();
-  const toast = useToast();
   const wrap = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(800);
   const [zoom, setZoom] = useState(1);
@@ -126,13 +125,6 @@ export function Timeline({ onClose }: { onClose: () => void }) {
   const step = [250, 500, 1000, 2000, 5000, 10000, 30000, 60000].find((s) => s * pxPerMs >= 60) ?? 60000;
   for (let ms = 0; ms <= totalMs; ms += step) ticks.push(ms);
 
-  const beatSync = async (c: AudioClip) => {
-    const r = await fetch(`/api/assets/${c.asset}/beats`).then((x) => x.json()) as { bpm: number; beats: number[] };
-    const beats = r.beats.map((b) => c.startMs + (b - c.trimStartMs)).filter((b) => b >= c.startMs && b <= c.startMs + c.durationMs);
-    const n = editor.syncPagesToBeats(beats);
-    toast(n ? tn(n, 'Synced {n} page to the beat ({bpm} BPM)', 'Synced {n} pages to the beat ({bpm} BPM)', { bpm: r.bpm }) : t('Need at least 2 pages and a rhythmic track'));
-  };
-
   return (
     <div className="timeline" aria-label={t('Timeline')}>
       <div className="tl-bar">
@@ -149,7 +141,6 @@ export function Timeline({ onClose }: { onClose: () => void }) {
             <label className="row" style={{ fontSize: 12 }}>{t('Fade in')}<input type="range" min={0} max={5000} step={100} value={selClip.fadeInMs} onChange={(e) => editor.updateAudio(selClip.id, { fadeInMs: +e.target.value })} style={{ width: 60 }} /></label>
             <label className="row" style={{ fontSize: 12 }}>{t('out')}<input type="range" min={0} max={5000} step={100} value={selClip.fadeOutMs} onChange={(e) => editor.updateAudio(selClip.id, { fadeOutMs: +e.target.value })} style={{ width: 60 }} /></label>
             <button className="btn ghost sm" onClick={() => editor.splitAudio(selClip.id, now)} title={t('Split at playhead')}><Scissors size={14} /></button>
-            <button className="btn ghost sm" onClick={() => beatSync(selClip)} title={t('Snap page cuts to the beat')}><Waves size={14} /> {t('Beat sync')}</button>
             <button className="btn ghost sm" onClick={() => { editor.removeAudio(selClip.id); setSel(null); }} title={t('Remove')}><Trash2 size={14} /></button>
           </div>
         )}

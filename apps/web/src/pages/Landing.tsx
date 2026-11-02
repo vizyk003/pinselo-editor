@@ -6,7 +6,7 @@ import { BRAND } from '@oc/config';
 import { Accessibility, Globe, Layers, Languages, Lock, Search, Sparkles, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { api, plansEnabled, type TemplateSummary } from '../api';
+import { api, type TemplateSummary } from '../api';
 import { useAuthGate } from '../auth/AuthGate';
 import { t, tk } from '../i18n';
 import { TemplateCard } from './Home';
@@ -14,9 +14,9 @@ import { QUICK_TILES, QuickTiles, seeAllIntent, tileIntent } from './home/quickT
 import { TemplatesBrowser } from './home/Templates';
 
 const FEATURES = [
-  { icon: <Sparkles size={20} />, title: tk('Templates for everything'), body: tk('Social posts, presentations, video, print, websites, docs and whiteboards — all original and free to start.') },
+  { icon: <Sparkles size={20} />, title: tk('Templates for everything'), body: tk('Social posts, presentations, video, print, websites and docs — all original and free.') },
   { icon: <Users size={20} />, title: tk('Real-time collaboration'), body: tk('Edit together with live cursors, comments, tasks and version history.') },
-  { icon: <Layers size={20} />, title: tk('Pro tools, simple editor'), body: tk('Keyframe animation, 1,950 Google Fonts, charts linked to sheets, vector PDF and PPTX export.') },
+  { icon: <Layers size={20} />, title: tk('Pro tools, simple editor'), body: tk('Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.') },
   { icon: <Globe size={20} />, title: tk('Publish anywhere'), body: tk('Download, present, publish a website, schedule social posts or order prints.') },
   { icon: <Languages size={20} />, title: tk('In your language'), body: tk('Nine languages, right-to-left support and every writing system.') },
   { icon: <Accessibility size={20} />, title: tk('Accessible by design'), body: tk('Screen-reader support, keyboard editing and a built-in accessibility checker.') },
@@ -45,7 +45,6 @@ export function Landing({ templatesOnly }: { templatesOnly?: boolean }) {
         <Link to="/" className="logo"><img src="/favicon.svg" alt="" /> {BRAND.name}</Link>
         <nav className="row" aria-label={t('Main')}>
           <Link to="/templates">{t('Templates')}</Link>
-          {plansEnabled() && <Link to="/pricing">{t('Pricing')}</Link>}
           <Link to="/help">{t('Help')}</Link>
         </nav>
         <span className="grow" />
@@ -112,7 +111,6 @@ export function Landing({ templatesOnly }: { templatesOnly?: boolean }) {
       <footer className="landing-foot">
         <span>© {BRAND.name}</span>
         <Link className="landing-foot-nav" to="/templates">{t('Templates')}</Link>
-        {plansEnabled() && <Link className="landing-foot-nav" to="/pricing">{t('Pricing')}</Link>}
         <Link className="landing-foot-nav" to="/help">{t('Help')}</Link>
         <Link to="/legal/terms">{t('Terms of Use')}</Link>
         <Link to="/legal/privacy">{t('Privacy Policy')}</Link>

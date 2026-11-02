@@ -424,7 +424,7 @@ document.querySelectorAll('form.fm,form.mf').forEach(function(f){
     f.querySelectorAll('[name]').forEach(function(i){if(i.type==='checkbox'){if(i.checked)(d[i.name]=d[i.name]||[]).push(i.value)}else if(i.type==='radio'){if(i.checked)d[i.name]=i.value}else d[i.name]=i.value});
     fetch(f.action,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json().then(function(j){
       f.querySelectorAll('.bad').forEach(function(x){x.classList.remove('bad')});
-      if(r.ok){if(window.__ocTrack)window.__ocTrack('form',f.getAttribute('aria-label')||'Form');var m=document.createElement('div');m.className='done';m.setAttribute('role','status');m.textContent=j.message||'Thanks!';f.appendChild(m)}
+      if(r.ok){var m=document.createElement('div');m.className='done';m.setAttribute('role','status');m.textContent=j.message||'Thanks!';f.appendChild(m)}
       else Object.keys(j.problems||{}).forEach(function(k){var x=f.querySelector('[name="'+k+'"]');if(x)x.classList.add('bad')})})})});
 });
 </script>"#;

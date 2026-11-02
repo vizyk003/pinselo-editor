@@ -17,7 +17,6 @@ are the parts a pure-Rust UI cannot fully replace.
 | Editor logic | `@oc/editor-core` | `crates/oc-editor-core` (DocOps in, DocOps out) |
 | Text | `@oc/text` (SkParagraph) | `crates/oc-text` (parley + swash) |
 | Rendering | `@oc/render-core` + `@oc/render-canvaskit` | `crates/oc-render` (display list + tiny-skia raster + PDF) |
-| Sheets | `@oc/sheet` (HyperFormula) | `crates/oc-sheet` |
 | Platform libs | config, db, auth, storage, jobs, mail, webhooks, audit, gfonts | `crates/oc-platform/*` |
 | Services | api, collab, render, worker (Fastify, Hocuspocus) | `crates/oc-api`, `oc-collab`, `oc-render-svc`, `oc-worker` (axum, tokio, sqlx) |
 | Browser bridge | — | `crates/oc-wasm` (wasm-bindgen) behind thin TS facades with the old signatures |
@@ -73,9 +72,9 @@ regenerated goldens with the port.
 
 1. Workspace, `oc-schema`, `oc-geometry`, platform crates.
 2. `oc-crdt` (yrs, cross-decoding yjs updates), `oc-editor-core`.
-3. `oc-text`, `oc-render` (raster + PDF + SVG), `oc-sheet`.
+3. `oc-text`, `oc-render` (raster + PDF + SVG).
 4. `oc-wasm` + TS facades in `apps/web`; remove CanvasKit from the browser. *(Done on branch `engine-web`: apps/web
-   depends on `@oc/engine` only — editor, schema, geometry, sheet, text and renderer in one WebAssembly module; the
+   depends on `@oc/engine` only — editor, schema, geometry, text and renderer in one WebAssembly module; the
    editor paints with oc-render in scene-anchored tiles, see `packages/engine/README.md`. The TS packages remain in the
    repo for the services and the goldens until phase 6.)*
 5. Services: collab → render → worker → api, each cut over behind the same ports and routes.

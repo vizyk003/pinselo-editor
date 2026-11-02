@@ -11,7 +11,7 @@ use oc_schema::elements::{ChartKind, Element, FormField, Keyframe, TableEl};
 use oc_schema::factory::*;
 use oc_schema::presets::{self, PresetCategoryId, SizeSide};
 use oc_schema::primitives::{ColorValue, Paint, Unit, Xf};
-use oc_schema::print::{self, Destination, PreflightTarget, PrintCatalog, PrintProduct, PrintSelection};
+use oc_schema::print::{self, PreflightTarget};
 use oc_schema::table::{CellRange, Geometry, TableStylePreset};
 use oc_schema::text::{RunStyleOverride, TextAlign, TextBody};
 use oc_schema::timeline::PageSpan;
@@ -524,20 +524,6 @@ pub fn format_dims(w: f64, h: f64, unit: JsValue) -> Result<String, JsError> {
 
 // ------------------------------------------------------------------ print
 
-#[wasm_bindgen(js_name = expectedPages)]
-pub fn expected_pages(p: JsValue, picked: JsValue) -> Result<f64, JsError> {
-    let p: PrintProduct = arg("product", &p)?;
-    let picked: IndexMap<String, String> = opt_arg("picked", &picked)?.unwrap_or_default();
-    print::expected_pages(&p, &picked).map_err(err)
-}
-
-#[wasm_bindgen(js_name = preflightTargetFor)]
-pub fn preflight_target_for(p: JsValue, size_id: &str, options: JsValue) -> Result<JsValue, JsError> {
-    let p: PrintProduct = arg("product", &p)?;
-    let o: IndexMap<String, String> = opt_arg("options", &options)?.unwrap_or_default();
-    to_js(&print::preflight_target_for(&p, size_id, &o).map_err(err)?)
-}
-
 #[wasm_bindgen(js_name = standalonePrintTarget)]
 pub fn standalone_print_target(doc: &DocRef) -> JsValue {
     js(&print::standalone_print_target(doc.doc()))
@@ -581,24 +567,6 @@ pub fn print_colors(doc: &DocRef, max: Option<f64>) -> JsValue {
 pub fn print_color_key(c: JsValue) -> Result<String, JsError> {
     let c: ColorValue = arg("color", &c)?;
     Ok(print::print_color_key(&c))
-}
-
-/// `quotePrint(catalog, sel, dest?, shippingMethod?, currency?)`.
-#[wasm_bindgen(js_name = quotePrint)]
-pub fn quote_print(catalog: JsValue, sel: JsValue, dest: JsValue, shipping_method: Option<String>, currency: Option<String>) -> Result<JsValue, JsError> {
-    let c: PrintCatalog = arg("catalog", &catalog)?;
-    let s: PrintSelection = arg("selection", &sel)?;
-    let d: Destination = opt_arg("dest", &dest)?.unwrap_or_default();
-    to_js(&print::quote_print(&c, &s, &d, shipping_method.as_deref(), currency.as_deref()).map_err(err)?)
-}
-
-#[wasm_bindgen(js_name = validateAddress)]
-pub fn validate_address(a: JsValue, countries: Option<Vec<String>>) -> Result<JsValue, JsError> {
-    let m: Map<String, Value> = match value(&a)? {
-        Value::Object(m) => m,
-        _ => Map::new(),
-    };
-    to_js(&print::validate_address(&m, countries.as_deref()))
 }
 
 // ------------------------------------------------------------------ docs, embeds, svg, keyframes

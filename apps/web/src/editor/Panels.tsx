@@ -3,7 +3,7 @@ import { templatePages } from '@oc/engine';
 import { childrenOf, makeText, sortedPages, type Element, type ElementId } from '@oc/engine';
 import { Video, Music, Eye, EyeOff, Group, Image as ImageIcon, Lock, Shapes, Trash2, Type, Upload, Minus, Square, Circle, QrCode } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { api, ApiError, assetUrl, plansEnabled, templateThumbUrl, type TemplateSummary, type UploadedAsset } from '../api';
+import { api, assetUrl, templateThumbUrl, type TemplateSummary, type UploadedAsset } from '../api';
 import { useAuth } from '../App';
 import { tabPanelProps, tabProps } from '../components/tabs';
 import { SearchField, useScrollFade, useToast } from '../components/ui';
@@ -14,14 +14,13 @@ import { TemplateDetailsPopover } from './TemplateDetails';
 import { recentTemplates, recommendTemplates, recordRecentTemplate } from '../lib/templates';
 import { assetRef, insertAssetAt, uploadAndInsert } from './insert';
 import { setAssetDrag } from './dropTarget';
-import { Camera, ChevronLeft, FolderUp } from 'lucide-react';
+import { Eraser, FolderUp } from 'lucide-react';
 import { uploadsApi, type UploadPage } from '../api/uploads';
 import { filesFromDrop, folderInputRef, uploadMany } from '../lib/uploadFiles';
 import { uploadSummary } from '../pages/home/Uploads';
 import { fmtBytes, fmtDuration, uploadTypeOf, type UploadType } from '../pages/home/uploadsModel';
-import { VideoPanel } from './VideoPanel';
 import { shapeLabel } from './ElementsPanel';
-import { EraserTile, SignatureSection } from './Signature';
+import { userLock } from './dropTarget';
 
 // ------------------------------------------------------------------ templates
 
@@ -59,9 +58,8 @@ export function TemplatesPanel() {
     let template;
     try {
       ({ template } = await api.template(tpl.id));
-    } catch (e) {
-      // A Pro template on the free plan: the global 402 handler already shows the upgrade dialog.
-      if (!(e instanceof ApiError && e.status === 402)) toast(t('Could not apply template'));
+    } catch {
+      toast(t('Could not apply template'));
       return;
     }
     const imported = templatePages(template.doc, { w, h });
@@ -92,11 +90,10 @@ export function TemplatesPanel() {
       {items.map((tpl) => (
         <button
           key={`${key}:${tpl.id}`} className="tile" style={{ aspectRatio: 'auto', minHeight: 120, position: 'relative' }} aria-haspopup="dialog"
-          onClick={(e) => setPicked({ tpl, anchor: e.currentTarget })} title={`${tpl.title} · ${tpl.category}${tpl.premium && plansEnabled() ? ' · Pro' : ''}`}
+          onClick={(e) => setPicked({ tpl, anchor: e.currentTarget })} title={`${tpl.title} · ${tpl.category}`}
         >
           <img src={templateThumbUrl(tpl.id)} alt={tpl.title} style={{ objectFit: 'contain' }} loading="lazy" />
-          {tpl.premium && plansEnabled() && <span className="premium-badge">{t('PRO')}</span>}
-          {tpl.team && <span className="premium-badge team">{t('TEAM')}</span>}
+          {tpl.team && <span className="tile-badge team">{t('TEAM')}</span>}
         </button>
       ))}
     </div>
@@ -152,7 +149,11 @@ export function DrawPanel() {
             <span style={{ fontSize: 12, textTransform: 'capitalize' }}>{{ pen: t('Pen'), marker: t('Marker'), highlighter: t('Highlighter') }[k]}</span>
           </button>
         ))}
-        <EraserTile active={erasing} onClick={() => editor.setTool(erasing ? 'draw' : 'erase')} />
+        <button className="tile" aria-pressed={erasing} style={{ flexDirection: 'column', gap: 4, borderColor: erasing ? 'var(--accent)' : undefined }} onClick={() => editor.setTool(erasing ? 'draw' : 'erase')}
+          title={t('Erase parts of your drawings. Drag across the strokes to remove.')}>
+          <Eraser aria-hidden style={{ width: 30, height: 30 }} />
+          <span style={{ fontSize: 12 }}>{t('Eraser')}</span>
+        </button>
       </div>
       <h4>{t('Paths')}</h4>
       <div className="tiles">
@@ -176,7 +177,6 @@ export function DrawPanel() {
       <label className="field">{t('Weight ({value})', { value: b.size })}
         <input type="range" min={1} max={40} value={b.size} onChange={(e) => editor.setBrush({ size: +e.target.value })} />
       </label>
-      <SignatureSection />
     </>
   );
 }
@@ -190,10 +190,9 @@ const dragsFiles = (e: React.DragEvent) => Array.from(e.dataTransfer?.types ?? [
 
 /**
  * Uploads panel (g87): name search, Images / Videos / Audio tabs, a masonry grid, upload files (placed on the page) or a
- * whole folder (added to the library), drop files or folders here, and a Record entry. Click a tile or drag it onto the
- * page. `onRecord` opens the Video panel's recording tools; without it they open here.
+ * whole folder (added to the library) and drop files or folders here. Click a tile or drag it onto the page.
  */
-export function UploadsPanel({ onRecord }: { onRecord?: () => void } = {}) {
+export function UploadsPanel() {
   const { editor } = useEd();
   const toast = useToast();
   const input = useRef<HTMLInputElement>(null);
@@ -205,7 +204,6 @@ export function UploadsPanel({ onRecord }: { onRecord?: () => void } = {}) {
   const [query, setQuery] = useState('');
   const [data, setData] = useState<UploadPage | null>(null);
   const [busy, setBusy] = useState<{ done: number; total: number } | null>(null);
-  const [recording, setRecording] = useState(false);
   const [over, setOver] = useState(false);
   const depth = useRef(0);
   const seq = useRef(0);
@@ -259,15 +257,6 @@ export function UploadsPanel({ onRecord }: { onRecord?: () => void } = {}) {
     void reload();
   };
 
-  if (recording) {
-    return (
-      <>
-        <button className="btn sm ghost" style={{ alignSelf: 'flex-start' }} onClick={() => setRecording(false)}><ChevronLeft size={16} /> {t('Back to uploads')}</button>
-        <VideoPanel />
-      </>
-    );
-  }
-
   const items = data?.assets ?? [];
   // Marks the drag as media so shapes, frames and grid cells light up as drop targets (drop to fill).
   const drag = (a: UploadedAsset) => (e: React.DragEvent) => setAssetDrag(e.dataTransfer, assetRef(a));
@@ -294,7 +283,6 @@ export function UploadsPanel({ onRecord }: { onRecord?: () => void } = {}) {
           <Upload size={16} /> {busy ? t('Uploading {n}…', { n: busy.total - busy.done }) : t('Upload files')}
         </button>
         <button className="btn icon" title={t('Upload a folder')} aria-label={t('Upload a folder')} onClick={() => folder.current?.click()} disabled={Boolean(busy)}><FolderUp size={16} /></button>
-        <button className="btn icon" title={t('Record yourself or your screen')} aria-label={t('Record yourself or your screen')} onClick={() => (onRecord ? onRecord() : setRecording(true))}><Camera size={16} /></button>
       </div>
       <input ref={input} type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,video/*,audio/*" multiple hidden
         onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ''; void upload(f, true); }} />
@@ -406,7 +394,7 @@ export function LayersPanel() {
           >
             <Icon size={15} className="faint" />
             <span className="name">{layerName(el)}</span>
-            {el.lock?.move && <Lock size={13} className="faint" />}
+            {userLock(el)?.move && <Lock size={13} className="faint" />}
             <button className="btn ghost sm icon" style={{ width: 24, height: 24 }} title={hidden ? t('Show') : t('Hide')}
               onClick={(e) => { e.stopPropagation(); editor.apply([{ op: 'update', id: el.id, patch: { visible: hidden ? null : false } }]); }}>
               {hidden ? <EyeOff size={13} /> : <Eye size={13} />}

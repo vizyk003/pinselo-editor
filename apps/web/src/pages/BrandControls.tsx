@@ -1,6 +1,6 @@
 /** Brand controls (Brand Hub, A8): team settings that owners and admins use to keep designs on brand. */
 import { useEffect, useState } from 'react';
-import { ApiError, brandHub, type BrandControls } from '../api';
+import { brandHub, type BrandControls } from '../api';
 import { Modal, useToast } from '../components/ui';
 import { t, tk } from '../i18n';
 
@@ -9,7 +9,6 @@ const ITEMS: Array<[keyof BrandControls, string, string]> = [
   ['fonts', tk('Brand fonts only'), tk('Font pickers offer the team’s brand-kit fonts only.')],
   ['requireTemplate', tk('Start from a brand template'), tk('Members and designers create team designs from the team’s brand templates.')],
   ['restrictUploads', tk('Restrict font uploads'), tk('Only owners and admins can upload brand fonts.')],
-  ['requireApproval', tk('Require approval'), tk('Downloads, public links, website publishing and social scheduling wait until an owner or admin approves the design. Edits after approval need a new approval.')],
 ];
 
 export function BrandControlsDialog({ workspaceId, onClose }: { workspaceId: string; onClose: () => void }) {
@@ -24,12 +23,11 @@ export function BrandControlsDialog({ workspaceId, onClose }: { workspaceId: str
       const r = await brandHub.setControls(workspaceId, { [k]: on });
       setData({ ...data, controls: r.controls });
     } catch (e) {
-      if (!(e instanceof ApiError && e.status === 402)) toast((e as Error).message);
+      toast((e as Error).message);
     }
   };
   return (
     <Modal title={t('Brand controls')} onClose={onClose} size="sm">
-      {!data.entitled.brandControls && <p className="muted" style={{ margin: 0 }}>{t('Brand controls and approvals are part of the Teams plan.')}</p>}
       {ITEMS.map(([k, label, help]) => (
         <label key={k} className="check" style={{ alignItems: 'flex-start' }}>
           <input type="checkbox" checked={Boolean(data.controls[k])} disabled={!data.canEdit} onChange={(e) => set(k, e.target.checked)} />
