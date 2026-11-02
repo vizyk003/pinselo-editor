@@ -88,8 +88,12 @@ multer = "3"
 aws-lc-sys = "0.45"
 # --- oc-render-svc deps (appended by render service port) ---
 quick-xml = "0.41"
-# --- oc-geometry: cubic curves ---
+# --- oc-api deps: passkey CBOR and the TXT lookup behind custom domains ---
+ciborium = "0.2"
 kurbo = "0.13"
+hickory-resolver = "0.26"
+jsonwebtoken = { version = "11", default-features = false, features = ["aws_lc_rs"] }
+totp-rs = { version = "6", default-features = false, features = ["std"] }
 # --- oc-import deps (appended by importers port) ---
 hayro = { version = "0.8", default-features = false }
 phf = { version = "0.13", default-features = false, features = ["macros"] }

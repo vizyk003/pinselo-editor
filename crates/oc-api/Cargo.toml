@@ -43,12 +43,15 @@ url = { workspace = true }
 hex = { workspace = true }
 base64 = { workspace = true }
 sha2 = { workspace = true }
-sha1 = { workspace = true }
 hmac = { workspace = true }
 subtle = { workspace = true }
 aws-lc-sys = { workspace = true }
 ring = { workspace = true }
 ml-dsa = { workspace = true }
+ciborium = { workspace = true }
+hickory-resolver = { workspace = true }
+jsonwebtoken = { workspace = true }
+totp-rs = { workspace = true }
 reqwest = { workspace = true }
 futures = { workspace = true }
 bytes = { workspace = true }

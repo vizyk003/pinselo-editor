@@ -146,41 +146,7 @@ pub fn trim(s: &str) -> &str {
     s.trim_matches(is_js_space)
 }
 
-/// `encodeURIComponent`.
-pub fn encode_uri_component(s: &str) -> String {
-    let mut out = String::with_capacity(s.len());
-    for b in s.bytes() {
-        let keep = b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_' | b'.' | b'!' | b'~' | b'*' | b'\'' | b'(' | b')');
-        if keep {
-            out.push(b as char);
-        } else {
-            out.push_str(&format!("%{b:02X}"));
-        }
-    }
-    out
-}
-
-/// `decodeURIComponent`; `None` where JS throws `URIError` (malformed escapes or invalid UTF-8).
-pub fn decode_uri_component(s: &str) -> Option<String> {
-    let bytes = s.as_bytes();
-    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
-    let mut i = 0;
-    while i < bytes.len() {
-        if bytes[i] == b'%' {
-            let hex = s.get(i + 1..i + 3)?;
-            let v = u8::from_str_radix(hex, 16).ok()?;
-            if !hex.bytes().all(|b| b.is_ascii_hexdigit()) {
-                return None;
-            }
-            out.push(v);
-            i += 3;
-        } else {
-            out.push(bytes[i]);
-            i += 1;
-        }
-    }
-    String::from_utf8(out).ok()
-}
+pub use oc_js::{decode_uri_component, encode_uri_component};
 
 /// JS `parseFloat` over a prefix (used for CSS-ish numeric tokens already matched by a regex).
 pub fn parse_float(s: &str) -> f64 {

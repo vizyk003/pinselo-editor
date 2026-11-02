@@ -9,6 +9,9 @@ use std::sync::LazyLock;
 
 use fancy_regex::{Captures, Regex};
 use indexmap::IndexMap;
+use quick_xml::escape::{escape, unescape};
+use quick_xml::events::{BytesStart, Event};
+use quick_xml::reader::Reader;
 use serde::{Deserialize, Serialize};
 
 use crate::js::{self, JS_S};
@@ -101,6 +104,7 @@ struct SanitizeRes {
     import: Regex,
     javascript: Regex,
     vbscript: Regex,
+    image_set: Regex,
 }
 
 static SANITIZE: LazyLock<SanitizeRes> = LazyLock::new(|| SanitizeRes {
@@ -129,6 +133,7 @@ static SANITIZE: LazyLock<SanitizeRes> = LazyLock::new(|| SanitizeRes {
     import: re(r"(?i)@import[^;]*;?"),
     javascript: re(r"(?i)javascript\s*:"),
     vbscript: re(r"(?i)vbscript\s*:"),
+    image_set: re(r"(?i)image-set\("),
 });
 
 /// Strip active content and external references from an SVG.
@@ -156,7 +161,166 @@ pub fn sanitize_svg(svg: &str) -> String {
     s = strip(&r.import, &s);
     s = strip(&r.javascript, &s);
     s = strip(&r.vbscript, &s);
-    s
+    clean_markup(&s)
+}
+
+/// CSS `\75` and `\u` escapes resolved, so an escaped `url(` can't hide from the patterns.
+fn css_unescape(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    let mut chars = s.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        let mut hex = String::new();
+        while hex.len() < 6 && chars.peek().is_some_and(char::is_ascii_hexdigit) {
+            hex.extend(chars.next());
+        }
+        if hex.is_empty() {
+            out.extend(chars.next());
+        } else {
+            out.push(u32::from_str_radix(&hex, 16).ok().and_then(char::from_u32).unwrap_or('\u{FFFD}'));
+            if chars.peek().is_some_and(|c| c.is_ascii_whitespace()) {
+                chars.next();
+            }
+        }
+    }
+    out
+}
+
+/// The decoded value without external references and script URLs; `None` when it has none.
+fn clean_css(decoded: &str) -> Option<String> {
+    let r = &*SANITIZE;
+    let v = if decoded.contains('\\') { css_unescape(decoded) } else { decoded.to_string() };
+    if ![&r.url, &r.import, &r.image_set, &r.javascript, &r.vbscript].iter().any(|x| is_match(x, &v)) {
+        return None;
+    }
+    let v = replace_all_with(&r.url, &v, |_| "none".to_string());
+    let v = strip(&r.image_set, &strip(&r.import, &v));
+    Some(strip(&r.vbscript, &strip(&r.javascript, &v)))
+}
+
+/// One start tag: `None` drops the element, otherwise the tag to write (byte-identical when nothing in it is unsafe).
+fn clean_tag(e: &BytesStart, raw: &str, empty: bool) -> Option<String> {
+    let r = &*SANITIZE;
+    let name = std::str::from_utf8(e.name().0).ok()?;
+    // `<svg/onload=x>`: an HTML parser ends the name at the `/`, XML has no such name.
+    if !name.chars().all(|c| c.is_alphanumeric() || matches!(c, '_' | '-' | '.' | ':')) {
+        return None;
+    }
+    // Local names: `<x:script xmlns:x="http://www.w3.org/2000/svg">` is a script too.
+    let local = |n: &str| n.rsplit(':').next().unwrap_or(n).to_ascii_lowercase();
+    let element = local(name);
+    if DANGEROUS_ELEMENTS.iter().any(|t| t.eq_ignore_ascii_case(&element)) {
+        return None;
+    }
+    let mut changed = false;
+    let mut out = format!("<{name}");
+    for attr in e.html_attributes() {
+        let attr = attr.ok()?;
+        let key = std::str::from_utf8(attr.key.0).ok()?;
+        let value = std::str::from_utf8(&attr.value).ok()?;
+        let key_local = local(key);
+        // `x="1"/onclick=y`: an HTML parser takes the `/` as a separator, XML reads it as part of the name.
+        if key_local.starts_with("on") || !key.chars().all(|c| c.is_alphanumeric() || matches!(c, '_' | '-' | '.' | ':')) {
+            changed = true;
+            continue;
+        }
+        let Ok(decoded) = unescape(value) else {
+            changed = true;
+            continue;
+        };
+        if element.starts_with("animate") && key_local == "attributename" {
+            let target = local(js::trim(&decoded));
+            if target.contains("href") || target.starts_with("on") {
+                return None;
+            }
+        }
+        let replaced = if key_local == "href" || key_local == "src" {
+            (!js::trim(&decoded).starts_with('#') && !is_match(&r.raster, &decoded)).then(|| "#".to_string())
+        } else {
+            clean_css(&decoded)
+        };
+        changed |= replaced.is_some();
+        let kept = replaced.as_deref().map_or_else(|| value.replace('"', "&quot;"), |v| escape(v).into_owned());
+        out.push_str(&format!(" {key}=\"{kept}\""));
+    }
+    if !changed {
+        return Some(raw.to_string());
+    }
+    out.push_str(if empty { "/>" } else { ">" });
+    Some(out)
+}
+
+/// The contents of a `<style>`: unchanged, or re-escaped without what `clean_css` removed.
+fn clean_style(raw: &str) -> String {
+    match unescape(raw) {
+        Ok(decoded) => clean_css(&decoded).map_or_else(|| raw.to_string(), |v| escape(&v).into_owned()),
+        Err(_) => String::new(),
+    }
+}
+
+/// What the patterns above can't see: entity and CSS escapes, namespace prefixes, tags only an HTML parser would
+/// read. Parses with quick-xml and copies everything safe through unchanged; the rest of a document that stops
+/// parsing is dropped.
+fn clean_markup(svg: &str) -> String {
+    let mut reader = Reader::from_str(svg);
+    reader.config_mut().check_end_names = false;
+    reader.config_mut().allow_unmatched_ends = true;
+    let mut out = String::with_capacity(svg.len());
+    let mut skip = 0usize;
+    let mut style: Option<String> = None;
+    loop {
+        let start = reader.buffer_position() as usize;
+        let Ok(event) = reader.read_event() else { break };
+        let raw = &svg[start..reader.buffer_position() as usize];
+        if matches!(event, Event::Eof) {
+            break;
+        }
+        if skip > 0 {
+            match event {
+                Event::Start(_) => skip += 1,
+                Event::End(_) => skip -= 1,
+                _ => {}
+            }
+            continue;
+        }
+        if let Some(css) = &mut style {
+            match event {
+                // Unlike HTML, XML parses elements inside a <style>; they are not CSS.
+                Event::Start(_) => skip = 1,
+                Event::Empty(_) => {}
+                Event::End(_) => {
+                    out.push_str(&clean_style(css));
+                    out.push_str(raw);
+                    style = None;
+                }
+                _ => css.push_str(raw),
+            }
+            continue;
+        }
+        match &event {
+            Event::Start(e) | Event::Empty(e) => {
+                let empty = matches!(event, Event::Empty(_));
+                match clean_tag(e, raw, empty) {
+                    Some(tag) => {
+                        out.push_str(&tag);
+                        if !empty && e.local_name().as_ref().eq_ignore_ascii_case(b"style") {
+                            style = Some(String::new());
+                        }
+                    }
+                    None => skip = usize::from(!empty),
+                }
+            }
+            Event::Comment(_) | Event::PI(_) | Event::DocType(_) => {}
+            _ => out.push_str(raw),
+        }
+    }
+    if let Some(css) = style {
+        out.push_str(&clean_style(&css));
+    }
+    out
 }
 
 // ------------------------------------------------------------------ colours
@@ -410,3 +574,40 @@ pub fn is_svg_color_value(s: &str) -> bool {
 /// Source of the key pattern (zod error messages quote it).
 pub const SVG_COLOR_KEY_SOURCE: &str = "/^(currentColor|#[0-9a-f]{6}([0-9a-f]{2})?)$/";
 pub const SVG_COLOR_VALUE_SOURCE: &str = "/^#[0-9a-f]{6}([0-9a-f]{2})?$/";
+
+#[cfg(test)]
+mod tests {
+    use super::sanitize_svg;
+
+    #[test]
+    fn sanitize_sees_through_encoding_and_prefixes() {
+        for bad in [
+            r#"<svg/onload=alert(1)>"#,
+            r#"<svg><rect x='1'onclick=alert(1) /></svg>"#,
+            r#"<svg><a href=java&#115;cript:alert(1)><text>x</text></a></svg>"#,
+            r#"<svg><a><animate attributeName='&#104;ref' values='java&#115;cript:alert(1)'/><text>x</text></a></svg>"#,
+            r#"<svg><animate attributeName=href to=javascript:alert(1) /></svg>"#,
+            r#"<x:svg xmlns:x="http://www.w3.org/2000/svg"><x:script>alert(1)</x:script></x:svg>"#,
+            r#"<svg><a y:href="javascript:alert(1)" xmlns:y="http://www.w3.org/1999/xlink"/></svg>"#,
+            r#"<svg><rect style='fill:u&#114;l(//evil.example/x)'/></svg>"#,
+            r#"<svg><style>rect{fill:\75rl(//evil.example/x)}</style></svg>"#,
+            r#"<svg><style>a{fill:&#117;rl(//evil.example/x)}</style></svg>"#,
+            r#"<svg><style><x:script xmlns:x="http://www.w3.org/2000/svg">alert(1)</x:script></style></svg>"#,
+            r#"<svg><image href=//evil.example/a.png /></svg>"#,
+            r#"<svg><use href=data:image/svg+xml;base64,AAA /></svg>"#,
+            r#"<svg><rect x="1"/onclick=alert(1) /></svg>"#,
+            "<svg><a x=\"1\"/href=\"java&#9;script:alert(1)\"><text>x</text></a></svg>",
+        ] {
+            let out = sanitize_svg(bad);
+            for needle in ["alert", "evil.example", "svg+xml"] {
+                assert!(!out.contains(needle), "{bad} -> {out}");
+            }
+        }
+    }
+
+    #[test]
+    fn sanitize_leaves_clean_svg_untouched() {
+        let good = r##"<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox='0 0 1 1'><style>.a{fill:url(#g)}</style><defs><linearGradient id="g"/></defs><use xlink:href="#g"/><text class="a">a &amp; b</text></svg>"##;
+        assert_eq!(sanitize_svg(good), good);
+    }
+}

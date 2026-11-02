@@ -187,7 +187,7 @@ static TEMPLATE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\{\{(totp:)?([A
 
 fn totp(secret: &str) -> String {
     let key = oc_api::routes::account::base32_decode(secret).unwrap_or_default();
-    oc_api::routes::account::hotp(&key, (CLOCK as f64 / 1000.0 / 30.0).floor() as u64)
+    oc_api::routes::account::totp_code(&key, (CLOCK / 1000) as u64)
 }
 
 pub fn subst(s: &str, vars: &HashMap<String, String>) -> String {
