@@ -374,7 +374,8 @@ async fn mfa(State(s): State<AppState>, req: Req) -> ApiResult {
         audit(&s, Some(u.id), "auth.recovery_code_used", None, None, &req.ip).await?;
     }
     if !ok && locked {
-        return Ok(reply::json(429, json!({ "error": "too_many_codes", "message": "Too many wrong codes. Try again in an hour, or use a recovery code." })));
+        // Not 429: fail2ban counts those here, and a ban would also block the recovery code.
+        return Ok(reply::json(423, json!({ "error": "too_many_codes", "message": "Too many wrong codes. Try again in an hour, or use a recovery code." })));
     }
     if !ok {
         // The rate limit is per IP, so the ticket has to run out by itself or six digits can be walked.
