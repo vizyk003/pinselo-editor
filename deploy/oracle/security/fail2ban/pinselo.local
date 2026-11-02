@@ -1,0 +1,34 @@
+# Installed by harden.sh as /etc/fail2ban/jail.d/pinselo.local, which fills in @IGNORE@ and @LOG@.
+# Published Docker ports pass through FORWARD, never INPUT, so web bans go in DOCKER-USER.
+[DEFAULT]
+ignoreip = @IGNORE@
+bantime.increment = true
+bantime.maxtime = 7d
+
+[sshd]
+enabled = true
+backend = systemd
+banaction = iptables-multiport
+maxretry = 5
+findtime = 10m
+bantime = 1h
+
+[pinselo-auth]
+enabled = true
+backend = polling
+logpath = @LOG@
+banaction = iptables-allports
+chain = DOCKER-USER
+maxretry = 15
+findtime = 10m
+bantime = 1h
+
+[pinselo-429]
+enabled = true
+backend = polling
+logpath = @LOG@
+banaction = iptables-allports
+chain = DOCKER-USER
+maxretry = 120
+findtime = 5m
+bantime = 1h

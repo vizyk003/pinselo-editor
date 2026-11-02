@@ -21,8 +21,33 @@
 	}
 }
 
+# Read by fail2ban and CrowdSec on the host (docs/deploy-oracle.md). Sign-in links and OAuth redirects carry secrets in
+# the query string, and the Referer repeats them; Caddy already redacts cookies and Authorization.
+(access_log) {
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 50MiB
+			roll_keep 5
+			roll_keep_for 168h
+		}
+		format filter {
+			fields {
+				request>uri query {
+					delete token
+					delete code
+					delete state
+					delete ticket
+					delete access_token
+				}
+				request>headers>Referer delete
+			}
+		}
+	}
+}
+
 {$OC_APP_HOST} {
 	import security
+	import access_log
 	encode zstd gzip
 
 	# The engine (@oc/engine, crates/oc-wasm) needs wasm compilation ('wasm-unsafe-eval'); React uses inline style
@@ -82,6 +107,7 @@
 # Customers' own domains for published websites: certificates are issued on demand, only for domains
 # the API reports as verified (DNS TXT record), so nobody can point arbitrary hosts at us.
 https:// {
+	import access_log
 	tls {
 		on_demand
 	}

@@ -142,6 +142,43 @@ deploy/oracle/build-on-server.sh both --deploy     # or frontend, or backend; wi
 
 It sends the committed `HEAD`, adds swap the first time, limits the builder to 1.5 CPUs and 8 GB so the site keeps running, and tags images with the commit. The cache stays on the server, so later builds are faster. To roll back, set `OC_RUNTIME_IMAGE` and `OC_GATEWAY_IMAGE` in `.env` to an older commit's tag and run `./update.sh`.
 
+## Banning abusive clients
+
+The API's own limits answer 429 (10 requests a minute on sign-in routes, 600 on most others). fail2ban and CrowdSec run on the host and drop clients at the firewall when they keep going:
+
+| Tool | Watches | Bans |
+|---|---|---|
+| fail2ban `sshd` | SSH log | 5 failures in 10 minutes: 1 hour |
+| fail2ban `pinselo-auth` | Gateway log: failed sign-ins and 429s on sign-in and account routes | 15 in 10 minutes: 1 hour |
+| fail2ban `pinselo-429` | Gateway log: 429s on other routes | 120 in 5 minutes: 1 hour |
+| CrowdSec | SSH and gateway logs, for scanners, known CVE probes and brute force | 4 hours |
+| CrowdSec community blocklist | Addresses reported by other CrowdSec users | While listed |
+
+fail2ban's ban time grows for repeat offenders, up to 7 days. `/mcp`, `/v1`, `/api/oauth` and the OAuth discovery documents never count towards a ban, because AI connector traffic comes from addresses that providers share between users. CrowdSec reports the addresses it bans to its central service, which is what pays for the blocklist.
+
+Install from your computer, then on the server:
+
+```bash
+scp -r deploy/oracle/compose.yml deploy/oracle/Caddyfile deploy/oracle/security ubuntu@<public IP>:opencanvas/
+ssh ubuntu@<public IP>
+cd ~/opencanvas && docker compose up -d --no-deps gateway
+security/harden.sh     # or: security/harden.sh <your IP or CIDR>
+```
+
+Your current address is never banned by the rules above. If it changes, run `harden.sh` again with the new one. **Keep this SSH session open** and check that a new one connects before you close it. If you are locked out anyway, use the instance's console connection in the Oracle Console.
+
+The gateway log is at `~/opencanvas/logs/caddy/access.log` and holds client IP addresses for up to 7 days. Secret query parameters and the `Referer` header are removed. A token in a URL path, such as a share link, stays in the log.
+
+```bash
+sudo fail2ban-client status pinselo-auth        # who is banned
+sudo fail2ban-client unban <IP>
+sudo cscli decisions list                       # the same for CrowdSec, without the blocklist
+sudo cscli decisions delete --ip <IP>
+sudo cscli alerts list
+```
+
+Bans cover the whole address, so one abusive client can also block others behind the same office or mobile network. If that happens, unban the address and raise `maxretry` in `/etc/fail2ban/jail.d/pinselo.local`.
+
 ## Backups and monitoring
 
 `backup.sh` dumps the database to `~/opencanvas/backups`, keeps the last 7, and copies the Supabase file bucket there. The live data is in Supabase, so this copy is on a different provider. With `OC_BACKUP_S3_*` set in `.env` it also copies everything to a bucket off this server, which protects against losing Supabase and this server together. The backups hold user data; `backups/` is private to this account.

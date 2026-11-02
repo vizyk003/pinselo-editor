@@ -1,0 +1,7 @@
+# A ban covers a whole address, and AI connector traffic arrives from providers' addresses shared with other users.
+name: pinselo/connector-whitelist
+description: "Don't count AI connector and token API requests towards bans"
+whitelist:
+  reason: "AI connector and token API traffic"
+  expression:
+    - "evt.Meta.http_path startsWith '/mcp' || evt.Meta.http_path startsWith '/v1/' || evt.Meta.http_path startsWith '/api/oauth/' || evt.Meta.http_path startsWith '/.well-known/oauth-'"

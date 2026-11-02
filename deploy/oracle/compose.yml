@@ -48,6 +48,7 @@ services:
     volumes:
       - caddy:/data
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./logs/caddy:/var/log/caddy
     depends_on: [api, collab]
     restart: unless-stopped
 

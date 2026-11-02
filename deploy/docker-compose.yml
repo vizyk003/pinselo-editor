@@ -50,7 +50,7 @@ services:
     build: { context: .., dockerfile: deploy/Dockerfile, target: gateway }
     env_file: .env
     ports: ['80:80', '443:443']
-    volumes: [caddy:/data]
+    volumes: [caddy:/data, ./logs/caddy:/var/log/caddy]
     depends_on: [api, collab]
     restart: unless-stopped
 
