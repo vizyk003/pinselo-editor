@@ -517,7 +517,7 @@ async fn wrong_two_factor_codes_lock_the_account_across_tickets() {
         }
         let ticket = oc_api::auth::issue_token(&s, "mfa", Some(id), None, None, 10).await.expect("ticket");
         let r = post(&s, "/api/auth/mfa", json!({ "ticket": ticket, "code": "not-a-code" })).await;
-        assert_eq!((r.status, r.body["error"].as_str()), (429, Some("too_many_codes")), "{:?}", r.body);
+        assert_eq!((r.status, r.body["error"].as_str()), (423, Some("too_many_codes")), "{:?}", r.body);
         let r = post(&s, "/api/auth/mfa", json!({ "ticket": ticket, "code": "abcd-efgh" })).await;
         assert_eq!(r.status, 200, "a recovery code still works: {:?}", r.body);
         let left: i64 = sqlx::query_scalar("SELECT sum(failures)::bigint FROM auth_tokens WHERE user_id = $1").bind(id).fetch_one(&ctx.pool).await.expect("failures");
