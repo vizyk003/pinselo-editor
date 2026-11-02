@@ -16,3 +16,5 @@ libm = "0.2"
 # Boolean operations on flattened outlines (union/subtract/intersect/exclude; self-intersections, holes and
 # coincident edges handled). MIT.
 i_overlay = "9"
+# Bézier evaluation, extrema and nearest point.
+kurbo = { workspace = true }

@@ -34,6 +34,7 @@ image = { workspace = true }
 miniz_oxide = { version = "0.8", optional = true }
 
 [dev-dependencies]
+moxcms = { workspace = true }
 serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
 # PDF rasteriser: renders the written PDFs back so the tests can compare them with the painter.
 hayro = { version = "0.8", default-features = false }
