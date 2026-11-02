@@ -1,10 +1,23 @@
 // SPDX-License-Identifier: Apache-2.0
-//! CIE colorimetry: linear RGB → XYZ, XYZ ↔ L*a*b* and CIEDE2000, in f64 (moxcms has neither f64 Lab nor CIEDE2000).
+//! CIE colorimetry: RGB primaries → XYZ (D50, Bradford-adapted like ICC v4 matrix/TRC profiles), XYZ ↔ L*a*b*,
+//! and CIEDE2000.
 
 /// The ICC profile connection space white (D50), XYZ with Y = 1.
 pub const D50: [f64; 3] = [0.9642, 1.0, 0.8249];
+/// CIE D65 (sRGB, Display-P3 white).
+pub const D65: [f64; 3] = [0.95047, 1.0, 1.08883];
 
 pub type M3 = [[f64; 3]; 3];
+
+fn mul(a: &M3, b: &M3) -> M3 {
+    let mut r = [[0.0; 3]; 3];
+    for (i, row) in r.iter_mut().enumerate() {
+        for (j, v) in row.iter_mut().enumerate() {
+            *v = (0..3).map(|k| a[i][k] * b[k][j]).sum();
+        }
+    }
+    r
+}
 
 pub fn apply(m: &M3, v: [f64; 3]) -> [f64; 3] {
     [
@@ -14,12 +27,48 @@ pub fn apply(m: &M3, v: [f64; 3]) -> [f64; 3] {
     ]
 }
 
+fn inverse(m: &M3) -> M3 {
+    let [[a, b, c], [d, e, f], [g, h, i]] = *m;
+    let det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+    let k = 1.0 / det;
+    [
+        [(e * i - f * h) * k, (c * h - b * i) * k, (b * f - c * e) * k],
+        [(f * g - d * i) * k, (a * i - c * g) * k, (c * d - a * f) * k],
+        [(d * h - e * g) * k, (b * g - a * h) * k, (a * e - b * d) * k],
+    ]
+}
+
+/// Bradford chromatic adaptation from white `src` to white `dst`.
+pub fn bradford(src: [f64; 3], dst: [f64; 3]) -> M3 {
+    const B: M3 = [[0.8951, 0.2664, -0.1614], [-0.7502, 1.7135, 0.0367], [0.0389, -0.0685, 1.0296]];
+    let s = apply(&B, src);
+    let d = apply(&B, dst);
+    let diag = [[d[0] / s[0], 0.0, 0.0], [0.0, d[1] / s[1], 0.0], [0.0, 0.0, d[2] / s[2]]];
+    mul(&inverse(&B), &mul(&diag, &B))
+}
+
+/// Linear RGB → XYZ for the given chromaticities (x, y of R, G, B) and white, adapted to D50.
+pub fn rgb_to_xyz_d50(prim: [[f64; 2]; 3], white: [f64; 3]) -> M3 {
+    let col = |p: [f64; 2]| [p[0] / p[1], 1.0, (1.0 - p[0] - p[1]) / p[1]];
+    let (r, g, b) = (col(prim[0]), col(prim[1]), col(prim[2]));
+    let p: M3 = [[r[0], g[0], b[0]], [r[1], g[1], b[1]], [r[2], g[2], b[2]]];
+    let s = apply(&inverse(&p), white);
+    let m: M3 = [
+        [p[0][0] * s[0], p[0][1] * s[1], p[0][2] * s[2]],
+        [p[1][0] * s[0], p[1][1] * s[1], p[1][2] * s[2]],
+        [p[2][0] * s[0], p[2][1] * s[1], p[2][2] * s[2]],
+    ];
+    mul(&bradford(white, D50), &m)
+}
+
 /// sRGB / Display-P3 transfer function (IEC 61966-2-1), encoded → linear.
 pub fn srgb_eotf(v: f64) -> f64 {
     let v = v.clamp(0.0, 1.0);
     if v <= 0.04045 { v / 12.92 } else { ((v + 0.055) / 1.055).powf(2.4) }
 }
 
+pub const SRGB_PRIMARIES: [[f64; 2]; 3] = [[0.64, 0.33], [0.30, 0.60], [0.15, 0.06]];
+pub const P3_PRIMARIES: [[f64; 2]; 3] = [[0.680, 0.320], [0.265, 0.690], [0.150, 0.060]];
 
 /// Encoded RGB with the sRGB curve and the given primaries → XYZ D50.
 pub fn rgb_to_xyz(m: &M3, rgb: [f64; 3]) -> [f64; 3] {
@@ -115,9 +164,18 @@ mod tests {
     use super::*;
 
     #[test]
+    fn rgb_white_is_the_lab_reference_white() {
+        // xyz_to_lab divides by D50, so any other white gives neutrals a tint and moves their CMYK.
+        for prim in [SRGB_PRIMARIES, P3_PRIMARIES] {
+            let lab = xyz_to_lab(rgb_to_xyz(&rgb_to_xyz_d50(prim, D65), [1.0, 1.0, 1.0]));
+            assert!((lab[0] - 100.0).abs() < 1e-9 && lab[1].abs() < 1e-9 && lab[2].abs() < 1e-9, "{lab:?}");
+        }
+    }
+
+    #[test]
     fn srgb_matrix_matches_icc_v4() {
         // The D50-adapted sRGB matrix ICC v4 profiles carry (rXYZ/gXYZ/bXYZ tags, rounded to s15Fixed16).
-        let m = moxcms::ColorProfile::new_srgb().rgb_to_xyz_matrix().v;
+        let m = rgb_to_xyz_d50(SRGB_PRIMARIES, D65);
         let want = [[0.4360, 0.3851, 0.1431], [0.2225, 0.7169, 0.0606], [0.0139, 0.0971, 0.7139]];
         for i in 0..3 {
             for j in 0..3 {

@@ -95,7 +95,8 @@ impl<'a> Decoder<'a> {
         let mut c = Cursor::new(&self.buf[self.pos..]);
         let v: u64 = c.read_var().map_err(|_| TRUNCATED)?;
         self.pos += c.next;
-        if v > (1u64 << 53) - 1 {
+        // From the tenth byte on, read_var has shifted bits out of the u64, so the value alone can look in range.
+        if c.next > 9 || v > (1u64 << 53) - 1 {
             return Err(DecodeError("Integer out of range"));
         }
         Ok(v)
@@ -238,6 +239,8 @@ mod tests {
         }
         assert!(Decoder::new(&[0x80]).var_uint().is_err());
         assert!(Decoder::new(&[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]).var_uint().is_err());
+        assert!(Decoder::new(&[0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x02]).var_uint().is_err());
+        assert!(Decoder::new(&[0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]).var_uint().is_err());
     }
 
     #[test]

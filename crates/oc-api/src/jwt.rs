@@ -32,7 +32,8 @@ fn verify_with(token: &str, jwks: &Value, issuer: &str, audience: &str, now_ms: 
             })
         })
         .ok_or("no applicable key found in the JSON Web Key Set")?;
-    let field = |k: &str| key.get(k).and_then(Value::as_str).ok_or_else(|| format!("JWK is missing {k}"));
+    // The library refuses padded members, which some key sets carry.
+    let field = |k: &str| key.get(k).and_then(Value::as_str).map(|v| v.trim_end_matches('=')).ok_or_else(|| format!("JWK is missing {k}"));
     let decoding = match header.alg {
         Algorithm::RS256 => DecodingKey::from_rsa_components(field("n")?, field("e")?),
         _ => DecodingKey::from_ec_components(field("x")?, field("y")?),
@@ -47,6 +48,10 @@ fn verify_with(token: &str, jwks: &Value, issuer: &str, audience: &str, now_ms: 
     rules.set_issuer(&[issuer]);
     rules.set_audience(&[audience]);
     let payload = jsonwebtoken::decode::<Value>(token, &decoding, &rules).map_err(|e| e.to_string())?.claims;
+    // The library also accepts an array with the issuer among its members, and a payload that is an array.
+    if payload.get("iss").and_then(Value::as_str) != Some(issuer) {
+        return Err("unexpected \"iss\" claim value".into());
+    }
 
     let now = (now_ms as f64 / 1000.0).floor();
     if let Some(exp) = payload.get("exp") {
@@ -103,12 +108,26 @@ mod tests {
     }
 
     #[test]
+    fn accepts_a_key_set_with_padded_members() {
+        let k = key();
+        let mut keys = jwks(&k);
+        for member in ["x", "y"] {
+            let padded = format!("{}=", keys["keys"][0][member].as_str().unwrap());
+            keys["keys"][0][member] = json!(padded);
+        }
+        let token = sign(&k, &json!({ "alg": "ES256", "kid": "k" }), &json!({ "iss": "iss", "aud": "aud" }));
+        assert!(super::verify_with(&token, &keys, "iss", "aud", NOW * 1000).is_ok());
+    }
+
+    #[test]
     fn refuses_bad_claims() {
         let k = key();
         for claims in [
             json!({ "aud": "aud" }),
             json!({ "iss": "iss" }),
             json!({ "iss": "other", "aud": "aud" }),
+            json!({ "iss": ["evil", "iss"], "aud": "aud" }),
+            json!([0, 0, "s", "iss", "aud"]),
             json!({ "iss": "iss", "aud": "other" }),
             json!({ "iss": "iss", "aud": "aud", "exp": NOW }),
             json!({ "iss": "iss", "aud": "aud", "nbf": NOW + 1 }),
