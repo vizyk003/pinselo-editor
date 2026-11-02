@@ -88,6 +88,8 @@ multer = "3"
 aws-lc-sys = "0.45"
 # --- oc-render-svc deps (appended by render service port) ---
 quick-xml = "0.41"
+# --- oc-geometry: cubic curves ---
+kurbo = "0.13"
 # --- oc-import deps (appended by importers port) ---
 hayro = { version = "0.8", default-features = false }
 phf = { version = "0.13", default-features = false, features = ["macros"] }

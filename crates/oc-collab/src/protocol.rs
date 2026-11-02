@@ -4,6 +4,9 @@
 
 use std::fmt;
 
+use yrs::encoding::read::{Cursor, Read as _};
+use yrs::encoding::write::Write as _;
+
 /// `MessageType` of `@hocuspocus/server`.
 pub mod msg {
     pub const SYNC: u64 = 0;
@@ -69,11 +72,13 @@ impl fmt::Display for DecodeError {
 
 impl std::error::Error for DecodeError {}
 
-/// lib0 `Decoder`.
+const TRUNCATED: DecodeError = DecodeError("Unexpected end of array");
+
+/// lib0 `Decoder`, on the one in yrs.
 #[derive(Debug, Clone)]
 pub struct Decoder<'a> {
     buf: &'a [u8],
-    pub pos: usize,
+    pos: usize,
 }
 
 impl<'a> Decoder<'a> {
@@ -85,55 +90,21 @@ impl<'a> Decoder<'a> {
         self.pos < self.buf.len()
     }
 
-    fn byte(&mut self) -> Result<u8, DecodeError> {
-        let b = *self.buf.get(self.pos).ok_or(DecodeError("Unexpected end of array"))?;
-        self.pos += 1;
-        Ok(b)
-    }
-
     /// `readVarUint` (lib0 limits values to 53 bits).
     pub fn var_uint(&mut self) -> Result<u64, DecodeError> {
-        let mut num: u64 = 0;
-        let mut mult: u64 = 1;
-        loop {
-            let r = self.byte()?;
-            num = num.wrapping_add(u64::from(r & 0x7f).wrapping_mul(mult));
-            mult = mult.wrapping_mul(128);
-            if r < 0x80 {
-                return Ok(num);
-            }
-            if num > (1u64 << 53) - 1 || mult > (1u64 << 56) {
-                return Err(DecodeError("Integer out of range"));
-            }
+        let mut c = Cursor::new(&self.buf[self.pos..]);
+        let v: u64 = c.read_var().map_err(|_| TRUNCATED)?;
+        self.pos += c.next;
+        if v > (1u64 << 53) - 1 {
+            return Err(DecodeError("Integer out of range"));
         }
-    }
-
-    /// `readVarInt` (lib0 signed varint: first byte holds 6 value bits, a sign bit and a continuation bit).
-    pub fn var_int(&mut self) -> Result<i64, DecodeError> {
-        let r = self.byte()?;
-        let mut num = i64::from(r & 0x3f);
-        let mut mult: i64 = 64;
-        let sign = if r & 0x40 > 0 { -1 } else { 1 };
-        if r & 0x80 == 0 {
-            return Ok(sign * num);
-        }
-        loop {
-            let r = self.byte()?;
-            num = num.wrapping_add(i64::from(r & 0x7f).wrapping_mul(mult));
-            mult = mult.wrapping_mul(128);
-            if r < 0x80 {
-                return Ok(sign * num);
-            }
-            if num > (1i64 << 53) - 1 {
-                return Err(DecodeError("Integer out of range"));
-            }
-        }
+        Ok(v)
     }
 
     /// `readVarUint8Array`.
     pub fn var_bytes(&mut self) -> Result<&'a [u8], DecodeError> {
         let len = self.var_uint()? as usize;
-        let end = self.pos.checked_add(len).filter(|e| *e <= self.buf.len()).ok_or(DecodeError("Unexpected end of array"))?;
+        let end = self.pos.checked_add(len).filter(|e| *e <= self.buf.len()).ok_or(TRUNCATED)?;
         let out = &self.buf[self.pos..end];
         self.pos = end;
         Ok(out)
@@ -150,7 +121,7 @@ impl<'a> Decoder<'a> {
     }
 }
 
-/// lib0 `Encoder`.
+/// lib0 `Encoder`, on the one in yrs.
 #[derive(Debug, Clone, Default)]
 pub struct Encoder {
     pub buf: Vec<u8>,
@@ -161,18 +132,13 @@ impl Encoder {
         Encoder::default()
     }
 
-    pub fn var_uint(&mut self, mut n: u64) -> &mut Self {
-        while n > 0x7f {
-            self.buf.push(0x80 | (n & 0x7f) as u8);
-            n >>= 7;
-        }
-        self.buf.push(n as u8);
+    pub fn var_uint(&mut self, n: u64) -> &mut Self {
+        self.buf.write_var(n);
         self
     }
 
     pub fn var_bytes(&mut self, b: &[u8]) -> &mut Self {
-        self.var_uint(b.len() as u64);
-        self.buf.extend_from_slice(b);
+        self.buf.write_buf(b);
         self
     }
 
@@ -271,10 +237,7 @@ mod tests {
             assert_eq!(Decoder::new(&b).var_uint().unwrap(), n);
         }
         assert!(Decoder::new(&[0x80]).var_uint().is_err());
-        // lib0 writeVarUint(1) is readable as a varInt (how the provider reads SyncStatus).
-        assert_eq!(Decoder::new(&[1]).var_int().unwrap(), 1);
-        assert_eq!(Decoder::new(&[0]).var_int().unwrap(), 0);
-        assert_eq!(Decoder::new(&[0x41]).var_int().unwrap(), -1);
+        assert!(Decoder::new(&[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]).var_uint().is_err());
     }
 
     #[test]

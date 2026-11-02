@@ -9,6 +9,7 @@
 //! A segment from node `a` to node `b` is a cubic when `a.out` or `b.in` is set (a missing handle sits on its
 //! node) and a straight line otherwise. Quadratics are raised to cubics on parse.
 
+use kurbo::{CubicBez, Line, ParamCurve, ParamCurveExtrema, ParamCurveNearest, Point};
 use serde::{Deserialize, Serialize};
 
 use crate::matrix::apply;
@@ -85,14 +86,20 @@ fn scl(a: P, k: f64) -> P {
     [a[0] * k, a[1] * k]
 }
 
+const NEAREST_ACCURACY: f64 = 1e-6;
+
+fn pt(p: P) -> Point {
+    Point::new(p[0], p[1])
+}
+
+fn bez(c: &Cubic) -> CubicBez {
+    CubicBez::new(pt(c[0]), pt(c[1]), pt(c[2]), pt(c[3]))
+}
+
 /// Point on a cubic at `t`.
 pub fn cubic_point(c: &Cubic, t: f64) -> P {
-    let mt = 1.0 - t;
-    let a = mt * mt * mt;
-    let b = 3.0 * mt * mt * t;
-    let cc = 3.0 * mt * t * t;
-    let d = t * t * t;
-    [a * c[0][0] + b * c[1][0] + cc * c[2][0] + d * c[3][0], a * c[0][1] + b * c[1][1] + cc * c[2][1] + d * c[3][1]]
+    let p = bez(c).eval(t);
+    [p.x, p.y]
 }
 
 /// de Casteljau split at `t`: (left, right).
@@ -108,31 +115,6 @@ pub fn split_cubic(c: &Cubic, t: f64) -> (Cubic, Cubic) {
 
 fn is_line(c: &Cubic) -> bool {
     c[1] == c[0] && c[2] == c[3]
-}
-
-/// Parameter values in (0, 1) where one coordinate of the cubic has an extremum.
-fn extrema(c: &Cubic) -> Vec<f64> {
-    let mut out = Vec::new();
-    for (p0, p1, p2, p3) in [(c[0][0], c[1][0], c[2][0], c[3][0]), (c[0][1], c[1][1], c[2][1], c[3][1])] {
-        // Derivative / 3: a t² + b t + c
-        let a = -p0 + 3.0 * p1 - 3.0 * p2 + p3;
-        let b = 2.0 * (p0 - 2.0 * p1 + p2);
-        let cc = p1 - p0;
-        if a.abs() < 1e-12 {
-            if b.abs() > 1e-12 {
-                out.push(-cc / b);
-            }
-        } else {
-            let disc = b * b - 4.0 * a * cc;
-            if disc >= 0.0 {
-                let s = disc.sqrt();
-                out.push((-b + s) / (2.0 * a));
-                out.push((-b - s) / (2.0 * a));
-            }
-        }
-    }
-    out.retain(|t| *t > 0.0 && *t < 1.0);
-    out
 }
 
 fn fmt(v: f64) -> String {
@@ -426,7 +408,7 @@ impl VectorPath {
                 pts.push(nd.p);
             }
             for (_, c) in self.segments(s) {
-                for t in extrema(&c) {
+                for t in bez(&c).extrema() {
                     pts.push(cubic_point(&c, t));
                 }
             }
@@ -578,40 +560,8 @@ impl VectorPath {
         let mut best: Option<(usize, usize, f64, f64)> = None;
         for s in 0..self.subpaths.len() {
             for (k, c) in self.segments(s) {
-                let steps = if is_line(&c) { 1 } else { 48 };
-                let mut bt = 0.0;
-                let mut bd = f64::INFINITY;
-                if steps == 1 {
-                    let (a, b) = (c[0], c[3]);
-                    let ab = sub(b, a);
-                    let l2 = ab[0] * ab[0] + ab[1] * ab[1];
-                    let t = if l2 == 0.0 { 0.0 } else { (((p[0] - a[0]) * ab[0] + (p[1] - a[1]) * ab[1]) / l2).clamp(0.0, 1.0) };
-                    bt = t;
-                    bd = dist(p, lerp(a, b, t));
-                } else {
-                    for j in 0..=steps {
-                        let t = j as f64 / steps as f64;
-                        let d = dist(p, cubic_point(&c, t));
-                        if d < bd {
-                            bd = d;
-                            bt = t;
-                        }
-                    }
-                    // Refine around the best sample.
-                    let mut lo = (bt - 1.0 / steps as f64).max(0.0);
-                    let mut hi = (bt + 1.0 / steps as f64).min(1.0);
-                    for _ in 0..24 {
-                        let m1 = lo + (hi - lo) / 3.0;
-                        let m2 = hi - (hi - lo) / 3.0;
-                        if dist(p, cubic_point(&c, m1)) < dist(p, cubic_point(&c, m2)) {
-                            hi = m2;
-                        } else {
-                            lo = m1;
-                        }
-                    }
-                    bt = (lo + hi) / 2.0;
-                    bd = dist(p, cubic_point(&c, bt));
-                }
+                let near = if is_line(&c) { Line::new(pt(c[0]), pt(c[3])).nearest(pt(p), NEAREST_ACCURACY) } else { bez(&c).nearest(pt(p), NEAREST_ACCURACY) };
+                let (bt, bd) = (near.t, near.distance_sq.sqrt());
                 if best.is_none_or(|b| bd < b.3) {
                     best = Some((s, k, bt, bd));
                 }

@@ -896,29 +896,7 @@ impl Server {
     }
 }
 
-/// Node's lenient `Buffer.from(s, 'base64')` (both alphabets, padding optional, junk skipped).
-pub fn node_base64(s: &str) -> Vec<u8> {
-    use base64::Engine as _;
-    let cleaned: String = s
-        .chars()
-        .take_while(|c| *c != '=')
-        .filter_map(|c| match c {
-            '-' => Some('+'),
-            '_' => Some('/'),
-            c if c.is_ascii_alphanumeric() || c == '+' || c == '/' => Some(c),
-            _ => None,
-        })
-        .collect();
-    let usable = if cleaned.len() % 4 == 1 { &cleaned[..cleaned.len() - 1] } else { &cleaned[..] };
-    base64::engine::GeneralPurpose::new(
-        &base64::alphabet::STANDARD,
-        base64::engine::GeneralPurposeConfig::new()
-            .with_decode_allow_trailing_bits(true)
-            .with_decode_padding_mode(base64::engine::DecodePaddingMode::RequireNone),
-    )
-    .decode(usable)
-    .unwrap_or_default()
-}
+pub use oc_js::node_base64;
 
 #[cfg(test)]
 mod tests {
