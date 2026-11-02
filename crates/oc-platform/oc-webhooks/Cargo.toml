@@ -9,6 +9,7 @@ license.workspace = true
 oc-db = { workspace = true }
 oc-jobs = { workspace = true }
 oc-js = { workspace = true }
+oc-netguard = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 sqlx = { workspace = true }
@@ -17,7 +18,6 @@ chrono = { workspace = true }
 hmac = { workspace = true }
 sha2 = { workspace = true }
 hex = { workspace = true }
-regex = { workspace = true }
 url = { workspace = true }
 reqwest = { workspace = true }
 tokio = { workspace = true }

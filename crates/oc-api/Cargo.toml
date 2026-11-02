@@ -20,6 +20,7 @@ oc-storage = { workspace = true }
 oc-auth = { path = "../oc-platform/oc-auth" }
 oc-mail = { path = "../oc-platform/oc-mail" }
 oc-webhooks = { path = "../oc-platform/oc-webhooks" }
+oc-netguard = { workspace = true }
 oc-audit = { path = "../oc-platform/oc-audit" }
 oc-gfonts = { path = "../oc-platform/oc-gfonts" }
 oc-schema = { path = "../oc-schema" }

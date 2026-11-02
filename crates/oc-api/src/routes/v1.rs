@@ -382,13 +382,14 @@ async fn autofill(State(s): State<AppState>, Path(id): Path<String>, raw: Reques
                         if !crate::stock::is_public_host(&host) {
                             return Ok(reply::json(400, json!({ "error": "bad_url" })));
                         }
-                        let r = s.http.get(value).timeout(std::time::Duration::from_secs(30)).send().await?;
-                        if !r.status().is_success() {
+                        let f = dir.0.join(oc_schema::ids::new_id());
+                        if let Err(e) = crate::routes::content::download(value, |_| true, &f).await {
+                            // A redirect or DNS record that leads off the public internet is the same refusal as the URL itself.
+                            if matches!(e.as_str(), "media host not allowed" | "media host resolves to a private address" | "insecure media URL") {
+                                return Ok(reply::json(400, json!({ "error": "bad_url" })));
+                            }
                             return Ok(reply::json(400, json!({ "error": "fetch_failed", "message": format!("Couldn’t fetch {value}") })));
                         }
-                        let bytes = r.bytes().await?;
-                        let f = dir.0.join(oc_schema::ids::new_id());
-                        tokio::fs::write(&f, &bytes).await?;
                         let name = value.rsplit('/').next().filter(|n| !n.is_empty()).unwrap_or("image").to_owned();
                         let ing = ingest_file(
                             &s,

@@ -1,0 +1,9 @@
+[package]
+name = "oc-netguard"
+description = "SSRF guard for server-side fetches of user-chosen URLs (port of services/api/src/netguard.ts)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio = { workspace = true }

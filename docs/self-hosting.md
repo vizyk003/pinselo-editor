@@ -75,7 +75,7 @@ Pinselo is licensed under the AGPL-3.0. If you run a modified version as a netwo
    curl https://design.example.com/api/status
    ```
 
-   A healthy site reports `"overall":"operational"`. Then open `https://design.example.com` and sign up with an address from `OC_STAFF_EMAILS`. The staff console is at `/admin`. The API applies `OC_STAFF_EMAILS` each time it starts.
+   A healthy site reports `"overall":"operational"`. Then open `https://design.example.com` and sign up with an address from `OC_STAFF_EMAILS` and verify it from the email you receive. The API applies `OC_STAFF_EMAILS` each time it starts, to verified addresses only, so restart it after verifying (`docker compose restart api`). The staff console is at `/admin`.
 
 ### Why a service refuses to start
 
@@ -174,7 +174,7 @@ The third site block serves customers' own domains for published websites. Caddy
 
 `/healthz` is not routed through the gateway, so use `/api/status` for external monitoring.
 
-The API takes the client address from `X-Forwarded-For`, so keep port 4000 private. The Compose file does not publish it.
+The API takes the client address from `X-Forwarded-For`, but only when the connection comes from a private address, reading from the right and skipping private hops. A proxy in front of it must therefore connect from a private address and append to the header (Caddy does both). Keep port 4000 private. The Compose file does not publish it.
 
 If you add stock media sources or embeds, note that the `Content-Security-Policy` in `deploy/Caddyfile` allows a fixed list of origins. When you use Supabase Auth, `OC_SUPABASE_URL` must also reach the `gateway` service, which it does through `env_file: .env`.
 

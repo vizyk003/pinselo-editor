@@ -61,7 +61,7 @@ pub struct Req {
     pub url: String,
     pub path: String,
     pub headers: HeaderMap,
-    /// `request.ip` (`trustProxy: true`: the left-most `X-Forwarded-For` entry).
+    /// `request.ip`: see [`client_ip`].
     pub ip: String,
     /// `request.cookies`.
     pub cookies: HashMap<String, String>,
@@ -118,12 +118,24 @@ impl Req {
     }
 }
 
-/// `request.ip` with `trustProxy: true`.
+/// An address a proxy of ours may have: the ranges of Caddy's `trusted_proxies static private_ranges`.
+fn is_proxy_addr(ip: std::net::IpAddr) -> bool {
+    match ip.to_canonical() {
+        std::net::IpAddr::V4(a) => a.is_private() || a.is_loopback(),
+        std::net::IpAddr::V6(a) => a.is_loopback() || a.segments()[0] & 0xfe00 == 0xfc00,
+    }
+}
+
+/// `request.ip`: `X-Forwarded-For` counts only when a proxy sent it, and is read from the right, because the client
+/// writes the left end. The nearest hop that isn't a proxy of ours is the client; if all are private, the furthest.
 pub fn client_ip(headers: &HeaderMap, peer: Option<SocketAddr>) -> String {
-    if let Some(xff) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok())
-        && let Some(first) = xff.split(',').next()
+    if peer.is_none_or(|p| is_proxy_addr(p.ip()))
+        && let Some(xff) = headers.get("x-forwarded-for").and_then(|v| v.to_str().ok())
     {
-        return first.trim().to_owned();
+        let hops: Vec<(&str, std::net::IpAddr)> = xff.split(',').filter_map(|h| Some((h.trim(), h.trim().parse().ok()?))).collect();
+        if let Some((ip, _)) = hops.iter().rev().find(|(_, a)| !is_proxy_addr(*a)).or(hops.first()) {
+            return (*ip).to_owned();
+        }
     }
     match peer {
         Some(a) => match a.ip() {
@@ -243,5 +255,28 @@ impl FromRequest<AppState> for Req {
         };
 
         Ok(Req { method: parts.method, url, path, headers: parts.headers, ip, cookies, query, body })
+    }
+}
+
+#[cfg(test)]
+mod client_ip_tests {
+    use super::*;
+
+    fn ip(xff: &str, peer: &str) -> String {
+        let mut h = HeaderMap::new();
+        h.insert("x-forwarded-for", xff.parse().unwrap());
+        client_ip(&h, Some(peer.parse().unwrap()))
+    }
+
+    #[test]
+    fn the_client_cannot_choose_its_address() {
+        let proxy = "172.18.0.5:4000";
+        assert_eq!(ip("203.0.113.9", proxy), "203.0.113.9");
+        assert_eq!(ip("1.2.3.4, 203.0.113.9", proxy), "203.0.113.9"); // spoofed left entry
+        assert_eq!(ip("1.2.3.4, 203.0.113.9, 10.0.0.2", proxy), "203.0.113.9"); // a load balancer in front of Caddy
+        assert_eq!(ip("10.0.0.1, 192.168.0.1", proxy), "10.0.0.1"); // a client on the private network
+        assert_eq!(ip("junk, 203.0.113.9, also-junk", proxy), "203.0.113.9");
+        assert_eq!(ip("1.2.3.4", "203.0.113.50:4000"), "203.0.113.50"); // no proxy in between: the header is the client's own
+        assert_eq!(ip("junk", proxy), "172.18.0.5");
     }
 }

@@ -97,8 +97,8 @@ with the reason in the commit message. The steps below are how every existing gr
 * **Response headers** `content-length`/`connection` are transport details (hyper sets them); JSON object key
   order of design documents follows yrs (sorted) where yjs keeps insertion order — clients do not depend on it,
   the transcripts compare JSON with sorted keys.
-* **Body limits and IPs** follow Fastify (`bodyLimit` 10 MiB, `trustProxy: true` → left-most
-  `X-Forwarded-For`); a body sent to an unknown route is not parsed (Fastify would parse it and could answer
+* **Body limits and IPs** follow Fastify (`bodyLimit` 10 MiB, except the client IP: `X-Forwarded-For` counts only from a private peer and is read from
+  the right, skipping private hops, where Fastify's `trustProxy: true` takes the spoofable left-most entry); a body sent to an unknown route is not parsed (Fastify would parse it and could answer
   400 for malformed JSON instead of 404).
 * Database sessions run in UTC (sqlx); node-postgres uses the server's default time zone, so DST-sensitive
   `now() + interval '30 days'` can differ by an hour on servers not running in UTC.

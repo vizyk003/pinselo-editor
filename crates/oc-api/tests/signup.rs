@@ -452,3 +452,47 @@ async fn supabase_bridge() {
         assert_eq!(r.body["needsProfile"], true, "{:?}", r.body);
     });
 }
+
+#[tokio::test]
+async fn staff_emails_only_promote_verified_accounts() {
+    with_db!(ctx, {
+        let s = ctx.app(INVITE).await;
+        let add = async |email: &str, verified: bool| {
+            sqlx::query("INSERT INTO users(id, email, name, color, email_verified_at) VALUES ($1, $2, 'x', '#000000', CASE WHEN $3 THEN now() END)")
+                .bind(uuid::Uuid::new_v4())
+                .bind(email)
+                .bind(verified)
+                .execute(&ctx.pool)
+                .await
+                .expect("insert user");
+        };
+        add("root@example.test", false).await;
+        let staff = async || -> bool { sqlx::query_scalar("SELECT is_staff FROM users WHERE email = 'root@example.test'").fetch_one(&ctx.pool).await.expect("is_staff") };
+        oc_api::routes::safety::bootstrap_staff(&s).await.expect("bootstrap");
+        assert!(!staff().await, "someone who registered a listed address without proving it");
+        sqlx::query("UPDATE users SET email_verified_at = now() WHERE email = 'root@example.test'").execute(&ctx.pool).await.expect("verify");
+        oc_api::routes::safety::bootstrap_staff(&s).await.expect("bootstrap");
+        assert!(staff().await);
+    });
+}
+
+#[tokio::test]
+async fn wrong_two_factor_codes_cancel_the_ticket() {
+    with_db!(ctx, {
+        let s = ctx.app(&[]).await;
+        let id = uuid::Uuid::new_v4();
+        sqlx::query("INSERT INTO users(id, email, name, color, totp_secret) VALUES ($1, 'mfa@example.test', 'x', '#000000', 'unused')").bind(id).execute(&ctx.pool).await.expect("insert user");
+        for data in [None, Some(json!({ "method": "password" }))] {
+            let ticket = oc_api::auth::issue_token(&s, "mfa", Some(id), None, data, 10).await.expect("ticket");
+            let attempt = async || post(&s, "/api/auth/mfa", json!({ "ticket": ticket, "code": "not-a-code" })).await;
+            for _ in 0..4 {
+                let r = attempt().await;
+                assert_eq!((r.status, r.body["error"].as_str()), (401, Some("bad_code")), "{:?}", r.body);
+            }
+            for _ in 0..2 {
+                let r = attempt().await;
+                assert_eq!((r.status, r.body["error"].as_str()), (401, Some("expired")), "{:?}", r.body);
+            }
+        }
+    });
+}

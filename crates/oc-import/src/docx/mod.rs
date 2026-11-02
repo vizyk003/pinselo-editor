@@ -18,9 +18,9 @@ mod dingbats;
 mod xml;
 
 use std::collections::HashMap;
-use std::io::{Cursor, Read};
+use std::io::Cursor;
 
-use crate::common::ImportError;
+use crate::common::{ImportError, MAX_PART_BYTES, MAX_XML_PART_BYTES, read_limited};
 use xml::{XElement, XNode};
 
 /// An image found in the document, handed to the caller's ingest step. `content_type` is the package's content
@@ -56,17 +56,19 @@ impl Package {
     }
 
     fn read(&mut self, name: &str) -> Res<Option<Vec<u8>>> {
-        let mut f = match self.zip.by_name(name) {
+        self.read_limited(name, MAX_PART_BYTES)
+    }
+
+    fn read_limited(&mut self, name: &str, limit: u64) -> Res<Option<Vec<u8>>> {
+        let f = match self.zip.by_name(name) {
             Ok(f) if !f.is_dir() => f,
             _ => return Ok(None),
         };
-        let mut out = Vec::new();
-        f.read_to_end(&mut out).map_err(|e| e.to_string())?;
-        Ok(Some(out))
+        read_limited(f, limit).map(Some).map_err(|e| e.to_string())
     }
 
     fn xml(&mut self, name: &str) -> Res<Option<XElement>> {
-        match self.read(name)? {
+        match self.read_limited(name, MAX_XML_PART_BYTES)? {
             Some(b) => xml::parse(&b).map(Some),
             None => Ok(None),
         }

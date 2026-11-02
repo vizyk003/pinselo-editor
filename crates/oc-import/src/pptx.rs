@@ -16,7 +16,7 @@
 mod xml;
 
 use std::collections::HashMap;
-use std::io::{Cursor, Read};
+use std::io::Cursor;
 
 use indexmap::IndexMap;
 use oc_schema::color::hex;
@@ -36,7 +36,7 @@ use oc_schema::text::{ListKind, ListSpec, Paragraph, Run, RunStyle, RunStyleOver
 use oc_schema::tree::sorted_pages;
 use oc_schema::DesignDoc;
 
-use crate::common::{ImportError, ImportOptions, MediaFn, map_font};
+use crate::common::{ImportError, ImportOptions, MAX_PART_BYTES, MAX_XML_PART_BYTES, MediaFn, map_font, read_limited};
 use xml::{Node, OptNode, root_of};
 
 const EMU: f64 = 9525.0;
@@ -260,16 +260,17 @@ struct Pkg<'z> {
 
 impl Pkg<'_> {
     fn bytes(&mut self, p: &str) -> Option<Vec<u8>> {
-        let mut f = self.zip.by_name(p).ok()?;
+        self.bytes_limited(p, MAX_PART_BYTES)
+    }
+    fn bytes_limited(&mut self, p: &str, limit: u64) -> Option<Vec<u8>> {
+        let f = self.zip.by_name(p).ok()?;
         if f.is_dir() {
             return None;
         }
-        let mut out = Vec::new();
-        f.read_to_end(&mut out).ok()?;
-        Some(out)
+        read_limited(f, limit).ok()
     }
     fn read(&mut self, p: &str) -> Option<String> {
-        self.bytes(p).map(|b| String::from_utf8_lossy(&b).into_owned())
+        self.bytes_limited(p, MAX_XML_PART_BYTES).map(|b| String::from_utf8_lossy(&b).into_owned())
     }
     fn parse(&mut self, p: &str) -> Result<Option<Vec<xml::Child>>, ImportError> {
         match self.read(p) {

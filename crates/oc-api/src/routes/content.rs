@@ -66,10 +66,8 @@ fn err_body(error: &str, message: String) -> Value {
 
 // ---------------------------------------------------------------- downloads (stock imports, image URLs)
 
-static NO_REDIRECT: LazyLock<reqwest::Client> = LazyLock::new(|| reqwest::Client::builder().redirect(reqwest::redirect::Policy::none()).build().expect("http client"));
-
-/// `download(url, hosts, dest)`: public https hosts only, size-capped, redirects re-checked. Errors are the
-/// `Error.message` the TS throws.
+/// `download(url, hosts, dest)`: public https hosts only, size-capped, redirects re-checked, each connection pinned to
+/// the addresses that passed the check (DNS rebinding). Errors are the `Error.message` the TS throws.
 pub(crate) async fn download(url: &str, host_ok: impl Fn(&str) -> bool, dest: &FsPath) -> Result<(), String> {
     let mut target = url::Url::parse(url).map_err(|_| "Invalid URL".to_owned())?;
     for _ in 0..4 {
@@ -82,10 +80,11 @@ pub(crate) async fn download(url: &str, host_ok: impl Fn(&str) -> bool, dest: &F
         }
         let bare = host.trim_start_matches('[').trim_end_matches(']').to_owned();
         let addrs: Vec<std::net::SocketAddr> = tokio::net::lookup_host((bare.as_str(), 443)).await.map_err(|e| format!("getaddrinfo {e} {host}"))?.collect();
-        if addrs.is_empty() || addrs.iter().any(|a| !stock::is_public_host(&a.ip().to_string())) {
+        if addrs.is_empty() || addrs.iter().any(|a| !oc_netguard::is_public_ip(a.ip())) {
             return Err("media host resolves to a private address".into());
         }
-        let r = NO_REDIRECT.get(target.clone()).header("user-agent", "Pinselo/1.0").timeout(Duration::from_secs(120)).send().await.map_err(|_| "fetch failed".to_owned())?;
+        let client = reqwest::Client::builder().redirect(reqwest::redirect::Policy::none()).resolve_to_addrs(&bare, &addrs).build().map_err(|e| e.to_string())?;
+        let r = client.get(target.clone()).header("user-agent", "Pinselo/1.0").timeout(Duration::from_secs(120)).send().await.map_err(|_| "fetch failed".to_owned())?;
         let status = r.status().as_u16();
         if (300..400).contains(&status)
             && let Some(loc) = r.headers().get("location").and_then(|v| v.to_str().ok())

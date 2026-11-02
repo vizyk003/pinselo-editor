@@ -483,27 +483,7 @@ pub fn attribution_of(i: &Value) -> Value {
     ])
 }
 
-static PRIVATE_V6: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^\[?(::1|fc|fd|fe80)").expect("regex"));
-static IPV4: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^(\d+)\.(\d+)\.(\d+)\.(\d+)$").expect("regex"));
-
-/// `isPublicHost(hostname)`: private, loopback and link-local addresses are never fetched (SSRF guard).
-pub fn is_public_host(hostname: &str) -> bool {
-    let h = hostname.to_lowercase();
-    if h == "localhost" || h.ends_with(".localhost") || h.ends_with(".local") || h.ends_with(".internal") {
-        return false;
-    }
-    if PRIVATE_V6.is_match(&h) {
-        return false;
-    }
-    if let Some(c) = IPV4.captures(&h) {
-        let a: f64 = c[1].parse().unwrap_or(f64::NAN);
-        let b: f64 = c[2].parse().unwrap_or(f64::NAN);
-        if a == 10.0 || a == 127.0 || a == 0.0 || (a == 169.0 && b == 254.0) || (a == 172.0 && (16.0..=31.0).contains(&b)) || (a == 192.0 && b == 168.0) || (a == 100.0 && (64.0..=127.0).contains(&b)) {
-            return false;
-        }
-    }
-    true
-}
+pub use oc_netguard::is_public_host;
 
 #[cfg(test)]
 mod tests {
