@@ -496,3 +496,31 @@ async fn wrong_two_factor_codes_cancel_the_ticket() {
         }
     });
 }
+
+#[tokio::test]
+async fn wrong_two_factor_codes_lock_the_account_across_tickets() {
+    with_db!(ctx, {
+        let s = ctx.app(&[]).await;
+        let id = uuid::Uuid::new_v4();
+        let recovery = oc_api::auth::sha("ABCD-EFGH");
+        sqlx::query("INSERT INTO users(id, email, name, color, totp_secret, recovery_codes) VALUES ($1, 'lock@example.test', 'x', '#000000', 'unused', $2)")
+            .bind(id)
+            .bind(vec![recovery])
+            .execute(&ctx.pool)
+            .await
+            .expect("insert user");
+        for _ in 0..2 {
+            let ticket = oc_api::auth::issue_token(&s, "mfa", Some(id), None, None, 10).await.expect("ticket");
+            for _ in 0..5 {
+                post(&s, "/api/auth/mfa", json!({ "ticket": ticket, "code": "not-a-code" })).await;
+            }
+        }
+        let ticket = oc_api::auth::issue_token(&s, "mfa", Some(id), None, None, 10).await.expect("ticket");
+        let r = post(&s, "/api/auth/mfa", json!({ "ticket": ticket, "code": "not-a-code" })).await;
+        assert_eq!((r.status, r.body["error"].as_str()), (429, Some("too_many_codes")), "{:?}", r.body);
+        let r = post(&s, "/api/auth/mfa", json!({ "ticket": ticket, "code": "abcd-efgh" })).await;
+        assert_eq!(r.status, 200, "a recovery code still works: {:?}", r.body);
+        let left: i64 = sqlx::query_scalar("SELECT sum(failures)::bigint FROM auth_tokens WHERE user_id = $1").bind(id).fetch_one(&ctx.pool).await.expect("failures");
+        assert_eq!(left, 0, "signing in clears the count");
+    });
+}

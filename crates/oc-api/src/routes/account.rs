@@ -33,6 +33,9 @@ use crate::{jwt, webauthn};
 
 /// Wrong codes after which a sign-in ticket is cancelled and the password has to be entered again.
 const MFA_MAX_FAILURES: i32 = 5;
+/// Wrong codes across all of an account's tickets from the last hour, after which only a recovery code is accepted.
+/// A ticket lives 10 minutes, so whoever has the password could otherwise keep fetching new ones.
+const MFA_ACCOUNT_MAX_FAILURES: i64 = 10;
 
 pub const LIMITS: &[RouteLimit] = &[
     strict("POST", "/api/auth/signup"),
@@ -358,12 +361,20 @@ async fn mfa(State(s): State<AppState>, req: Req) -> ApiResult {
     let Some(secret) = u.totp_secret.clone().filter(|t| !t.is_empty()) else { return Ok(expired()) };
     let code = crate::js::trim(b["code"].as_str().unwrap_or("")).to_owned();
     let stripped: String = code.chars().filter(|c| !crate::js::is_ws(*c)).collect();
-    let mut ok = SIX_DIGITS.is_match(&stripped) && check_totp(&s, &secret, &code)?;
+    let failures: i64 = sqlx::query_scalar("SELECT COALESCE(sum(failures), 0)::bigint FROM auth_tokens WHERE kind = 'mfa' AND user_id = $1 AND expires_at > now() - interval '50 minutes'")
+        .bind(u.id)
+        .fetch_one(&s.pool)
+        .await?;
+    let locked = failures >= MFA_ACCOUNT_MAX_FAILURES;
+    let mut ok = !locked && SIX_DIGITS.is_match(&stripped) && check_totp(&s, &secret, &code)?;
     let hashed = sha(&code.to_uppercase());
     if !ok && u.recovery_codes.as_ref().is_some_and(|c| c.contains(&hashed)) {
         ok = true;
         sqlx::query("UPDATE users SET recovery_codes = array_remove(recovery_codes, $2) WHERE id = $1").bind(u.id).bind(&hashed).execute(&s.pool).await?;
         audit(&s, Some(u.id), "auth.recovery_code_used", None, None, &req.ip).await?;
+    }
+    if !ok && locked {
+        return Ok(reply::json(429, json!({ "error": "too_many_codes", "message": "Too many wrong codes. Try again in an hour, or use a recovery code." })));
     }
     if !ok {
         // The rate limit is per IP, so the ticket has to run out by itself or six digits can be walked.
@@ -383,6 +394,7 @@ async fn mfa(State(s): State<AppState>, req: Req) -> ApiResult {
     if consume_token(&s, "mfa", ticket).await?.is_none() {
         return Ok(expired()); // a concurrent submit of the same ticket won
     }
+    sqlx::query("UPDATE auth_tokens SET failures = 0 WHERE kind = 'mfa' AND user_id = $1").bind(u.id).execute(&s.pool).await?;
     // A Supabase bridge waiting for this code (plan 12 §B3): its link, email sync and recovery sign-out happen only now.
     if let Some(p) = data.as_ref().and_then(|d| d.0.get("supabase")).filter(|v| crate::supabase::js_truthy(Some(v))).and_then(PendingBridge::from_json) {
         return finish_supabase_login(&s, &req, u.id, &p, "supabase+totp").await;
