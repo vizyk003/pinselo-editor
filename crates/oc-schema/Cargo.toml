@@ -10,6 +10,8 @@ serde = { workspace = true }
 # `preserve_order`: JSON objects keep insertion order like JS objects (stable round-trips of unknown fields).
 serde_json = { workspace = true, features = ["preserve_order"] }
 thiserror = { workspace = true }
+quick-xml = { workspace = true }
+oc-js = { workspace = true }
 indexmap = { version = "2", features = ["serde"] }
 # Backreferences and look-arounds used by the SVG sanitiser/recolourer regexes (pure Rust, wasm-friendly).
 fancy-regex = "0.14"

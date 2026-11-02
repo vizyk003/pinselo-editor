@@ -11,7 +11,7 @@
 use std::time::Duration;
 
 use base64::Engine as _;
-use base64::engine::general_purpose::{STANDARD, URL_SAFE_NO_PAD};
+use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use serde_json::{Map, Value, json};
 use sha2::{Digest, Sha256};
 use uuid::Uuid;
@@ -629,7 +629,7 @@ pub fn client_credentials(authorization: Option<&str>, body: &Map<String, Value>
         return Err(oe("invalid_request", "Use one client authentication method."));
     }
     let b64 = h[5..].trim_start_matches(|c: char| c.is_whitespace());
-    let raw = String::from_utf8_lossy(&node_base64(b64)).into_owned();
+    let raw = String::from_utf8_lossy(&oc_js::node_base64(b64)).into_owned();
     let (id, secret) = match raw.find(':') {
         None => (dec(&raw), None),
         Some(i) => (dec(&raw[..i]), Some(dec(&raw[i + 1..]))),
@@ -638,19 +638,6 @@ pub fn client_credentials(authorization: Option<&str>, body: &Map<String, Value>
         return Err(OAuthError { error: "invalid_client", message: "client_id doesn’t match the Authorization header.".into(), status: 401 });
     }
     Ok(Credentials { client_id: id, secret })
-}
-
-/// `Buffer.from(s, 'base64')`: lenient (stops at the first `=`, ignores the rest).
-fn node_base64(s: &str) -> Vec<u8> {
-    let core: String = s.split('=').next().unwrap_or("").chars().filter(|c| c.is_ascii_alphanumeric() || *c == '+' || *c == '/').collect();
-    let mut padded = core.clone();
-    match core.len() % 4 {
-        1 => padded.truncate(core.len() - 1),
-        2 => padded.push_str("=="),
-        3 => padded.push('='),
-        _ => {}
-    }
-    STANDARD.decode(padded.as_bytes()).unwrap_or_default()
 }
 
 /// The client making a token or revocation request; confidential clients must present their secret.

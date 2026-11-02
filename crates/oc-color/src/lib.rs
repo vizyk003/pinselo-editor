@@ -259,8 +259,8 @@ impl Converter {
             cmyk_to_xyz,
             black: None,
             max_black: None,
-            srgb: cie::rgb_to_xyz_d50(cie::SRGB_PRIMARIES, cie::D65),
-            p3: cie::rgb_to_xyz_d50(cie::P3_PRIMARIES, cie::D65),
+            srgb: ColorProfile::new_srgb().rgb_to_xyz_matrix().v,
+            p3: ColorProfile::new_display_p3().rgb_to_xyz_matrix().v,
             lut: OnceLock::new(),
         };
         if intent == Intent::Relative {

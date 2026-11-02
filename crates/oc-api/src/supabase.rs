@@ -281,24 +281,8 @@ async fn jwks_key(s: &AppState, alg: &str, kid: Option<&Value>) -> Result<Value,
     }
 }
 
-/// `Buffer.from(s, 'base64url')`-style lenient decoding of JWK members.
-fn b64_lenient(s: &str) -> Vec<u8> {
-    let clean: String = s.chars().take_while(|c| *c != '=').filter(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '_' | '+' | '/')).map(|c| match c {
-        '+' => '-',
-        '/' => '_',
-        c => c,
-    }).collect();
-    let usable = if clean.len() % 4 == 1 { &clean[..clean.len() - 1] } else { &clean[..] };
-    base64::engine::GeneralPurpose::new(
-        &base64::alphabet::URL_SAFE,
-        base64::engine::GeneralPurposeConfig::new().with_decode_allow_trailing_bits(true).with_decode_padding_mode(base64::engine::DecodePaddingMode::RequireNone),
-    )
-    .decode(usable)
-    .unwrap_or_default()
-}
-
 fn jwk_bytes(jwk: &Value, k: &str) -> Option<Vec<u8>> {
-    jwk.get(k).and_then(Value::as_str).map(b64_lenient)
+    jwk.get(k).and_then(Value::as_str).map(oc_js::node_base64)
 }
 
 /// Import a public JWK and verify `sig` over `data`. Err(Unavailable) where WebCrypto's importKey (or jose's

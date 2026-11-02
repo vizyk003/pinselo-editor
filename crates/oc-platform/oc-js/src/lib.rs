@@ -264,17 +264,39 @@ pub fn parse_int(s: &str) -> Option<f64> {
     Some(if neg { -v } else { v })
 }
 
+/// What `encodeURIComponent` escapes: everything but letters, digits and `-_.!~*'()`.
+const URI_COMPONENT: &percent_encoding::AsciiSet = &percent_encoding::NON_ALPHANUMERIC.remove(b'-').remove(b'_').remove(b'.').remove(b'!').remove(b'~').remove(b'*').remove(b'\'').remove(b'(').remove(b')');
+
 /// `encodeURIComponent(s)`.
 pub fn encode_uri_component(s: &str) -> String {
-    let mut out = String::with_capacity(s.len());
-    for b in s.bytes() {
-        if b.is_ascii_alphanumeric() || b"-_.!~*'()".contains(&b) {
-            out.push(b as char);
-        } else {
-            let _ = write!(out, "%{b:02X}");
-        }
-    }
-    out
+    percent_encoding::utf8_percent_encode(s, URI_COMPONENT).to_string()
+}
+
+/// `decodeURIComponent(s)`; `None` where JS throws a `URIError` (malformed escapes or invalid UTF-8).
+pub fn decode_uri_component(s: &str) -> Option<String> {
+    // percent-encoding passes a malformed escape through as text; JS refuses it.
+    let b = s.as_bytes();
+    let well_formed = b.iter().enumerate().filter(|(_, c)| **c == b'%').all(|(i, _)| b.get(i + 1..i + 3).is_some_and(|h| h.iter().all(u8::is_ascii_hexdigit)));
+    well_formed.then(|| percent_encoding::percent_decode_str(s).decode_utf8().ok().map(|c| c.into_owned())).flatten()
+}
+
+/// Node's `Buffer.from(s, 'base64' | 'base64url')`: both alphabets, padding optional, junk skipped, stops at the first
+/// `=`, a lone trailing character ignored.
+pub fn node_base64(s: &str) -> Vec<u8> {
+    use base64::Engine as _;
+    use base64::engine::{DecodePaddingMode, GeneralPurpose, GeneralPurposeConfig};
+    let cleaned: String = s
+        .chars()
+        .take_while(|c| *c != '=')
+        .filter_map(|c| match c {
+            '-' => Some('+'),
+            '_' => Some('/'),
+            c if c.is_ascii_alphanumeric() || c == '+' || c == '/' => Some(c),
+            _ => None,
+        })
+        .collect();
+    let usable = if cleaned.len() % 4 == 1 { &cleaned[..cleaned.len() - 1] } else { &cleaned[..] };
+    GeneralPurpose::new(&base64::alphabet::STANDARD, GeneralPurposeConfig::new().with_decode_allow_trailing_bits(true).with_decode_padding_mode(DecodePaddingMode::RequireNone)).decode(usable).unwrap_or_default()
 }
 
 /// `new Date(t).toISOString()`: millisecond precision (truncated), always `Z`.

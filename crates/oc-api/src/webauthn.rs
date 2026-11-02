@@ -48,82 +48,26 @@ impl Cbor {
     }
 }
 
-/// Decode the first CBOR item of `b`: the item and the number of bytes it used.
-pub fn cbor_first(b: &[u8]) -> Result<(Cbor, usize), String> {
-    fn arg(b: &[u8], p: &mut usize, info: u8) -> Result<u64, String> {
-        let take = |p: &mut usize, n: usize| -> Result<u64, String> {
-            let s = b.get(*p..*p + n).ok_or("cbor: truncated")?;
-            *p += n;
-            Ok(s.iter().fold(0u64, |a, &x| (a << 8) | u64::from(x)))
-        };
-        match info {
-            0..=23 => Ok(u64::from(info)),
-            24 => take(p, 1),
-            25 => take(p, 2),
-            26 => take(p, 4),
-            27 => take(p, 8),
-            _ => Err("cbor: unsupported length".into()),
-        }
-    }
-    fn item(b: &[u8], p: &mut usize, depth: usize) -> Result<Cbor, String> {
-        if depth > 32 {
-            return Err("cbor: too deep".into());
-        }
-        let ib = *b.get(*p).ok_or("cbor: truncated")?;
-        *p += 1;
-        let (major, info) = (ib >> 5, ib & 0x1f);
-        Ok(match major {
-            0 => Cbor::Int(i128::from(arg(b, p, info)?)),
-            1 => Cbor::Int(-1 - i128::from(arg(b, p, info)?)),
-            2 | 3 => {
-                let n = arg(b, p, info)? as usize;
-                let s = b.get(*p..*p + n).ok_or("cbor: truncated")?.to_vec();
-                *p += n;
-                if major == 2 { Cbor::Bytes(s) } else { Cbor::Text(String::from_utf8(s).map_err(|_| "cbor: bad text")?) }
-            }
-            4 => {
-                let n = arg(b, p, info)?;
-                let mut v = Vec::new();
-                for _ in 0..n {
-                    v.push(item(b, p, depth + 1)?);
-                }
-                Cbor::Array(v)
-            }
-            5 => {
-                let n = arg(b, p, info)?;
-                let mut v = Vec::new();
-                for _ in 0..n {
-                    let k = item(b, p, depth + 1)?;
-                    let x = item(b, p, depth + 1)?;
-                    v.push((k, x));
-                }
-                Cbor::Map(v)
-            }
-            7 => match info {
-                20 => Cbor::Bool(false),
-                21 => Cbor::Bool(true),
-                22 | 23 => Cbor::Null,
-                25 => {
-                    let h = arg(b, p, 25)? as u16;
-                    Cbor::Float(half(h))
-                }
-                26 => Cbor::Float(f64::from(f32::from_bits(arg(b, p, 26)? as u32))),
-                27 => Cbor::Float(f64::from_bits(arg(b, p, 27)?)),
-                _ => return Err("cbor: unsupported simple value".into()),
-            },
-            _ => return Err("cbor: unsupported major type".into()),
-        })
-    }
-    let mut p = 0;
-    let v = item(b, &mut p, 0)?;
-    Ok((v, p))
+fn from_value(v: ciborium::Value) -> Result<Cbor, String> {
+    use ciborium::Value as V;
+    Ok(match v {
+        V::Integer(i) => Cbor::Int(i.into()),
+        V::Bytes(b) => Cbor::Bytes(b),
+        V::Text(t) => Cbor::Text(t),
+        V::Array(a) => Cbor::Array(a.into_iter().map(from_value).collect::<Result<_, _>>()?),
+        V::Map(m) => Cbor::Map(m.into_iter().map(|(k, x)| Ok((from_value(k)?, from_value(x)?))).collect::<Result<_, String>>()?),
+        V::Bool(b) => Cbor::Bool(b),
+        V::Null => Cbor::Null,
+        V::Float(f) => Cbor::Float(f),
+        _ => return Err("cbor: unsupported major type".into()),
+    })
 }
 
-fn half(h: u16) -> f64 {
-    let exp = (h >> 10) & 0x1f;
-    let mant = f64::from(h & 0x3ff);
-    let v = if exp == 0 { mant * 2f64.powi(-24) } else if exp != 31 { (mant + 1024.0) * 2f64.powi(i32::from(exp) - 25) } else if mant == 0.0 { f64::INFINITY } else { f64::NAN };
-    if h & 0x8000 != 0 { -v } else { v }
+/// Decode the first CBOR item of `b`: the item and the number of bytes it used.
+pub fn cbor_first(b: &[u8]) -> Result<(Cbor, usize), String> {
+    let mut rest = b;
+    let v: ciborium::Value = ciborium::de::from_reader_with_recursion_limit(&mut rest, 32).map_err(|e| format!("cbor: {e}"))?;
+    Ok((from_value(v)?, b.len() - rest.len()))
 }
 
 pub fn b64url(b: &[u8]) -> String {
@@ -425,6 +369,20 @@ mod tests {
         assert_eq!(n, b.len());
         assert_eq!(v.get_int(3), Some(&Cbor::Int(-8)));
         assert_eq!(v.get_int(-2), Some(&Cbor::Bytes(vec![1, 2])));
+    }
+
+    #[test]
+    fn cbor_rejects_hostile_input() {
+        // Truncated; a 2^64-element array and byte string headers with no content; 64 nested arrays.
+        for b in [&b"\xa1\x01"[..], &b"\x9b\xff\xff\xff\xff\xff\xff\xff\xff"[..], &b"\x5b\xff\xff\xff\xff\xff\xff\xff\xff"[..], &[0x81; 64][..]] {
+            assert!(cbor_first(b).is_err());
+        }
+    }
+
+    #[test]
+    fn cbor_reports_bytes_used() {
+        // authData carries the credential key followed by extensions: the length must stop at the first item.
+        assert_eq!(cbor_first(b"\xa1\x01\x02\xa0\xff").unwrap().1, 3);
     }
 
     /// COSE AKP key `{1: 7, 3: -48, -1: pub}` (what an ML-DSA-44 authenticator and the harnesses send).

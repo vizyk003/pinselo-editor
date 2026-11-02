@@ -85,7 +85,7 @@ fn mean_de(a: &[u8], b: &[u8]) -> f64 {
     let lab = |p: &[u8]| {
         let al = f64::from(p[3]) / 255.0;
         let rgb = [p[0], p[1], p[2]].map(|v| f64::from(v) / 255.0 * al + (1.0 - al));
-        let m = oc_color::cie::rgb_to_xyz_d50(oc_color::cie::SRGB_PRIMARIES, oc_color::cie::D65);
+        let m = moxcms::ColorProfile::new_srgb().rgb_to_xyz_matrix().v;
         oc_color::cie::xyz_to_lab(oc_color::cie::rgb_to_xyz(&m, rgb))
     };
     let n = a.len() / 4;

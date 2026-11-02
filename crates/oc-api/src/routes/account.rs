@@ -9,9 +9,8 @@ use std::sync::{LazyLock, Mutex};
 use base64::Engine as _;
 use base64::engine::general_purpose::URL_SAFE_NO_PAD;
 use chrono::Datelike as _;
-use hmac::{Hmac, Mac};
 use regex::Regex;
-use sha1::Sha1;
+use totp_rs::{Algorithm, Builder, Secret, Totp};
 use sha2::{Digest, Sha256};
 
 use crate::analytics;
@@ -115,49 +114,26 @@ async fn complete_login(s: &AppState, req: &Req, u: &UserFull, method: &str, ski
 
 // ---------------------------------------------------------------- TOTP (otpauth: SHA1, 6 digits, 30 s)
 
-const B32: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-
+/// `base32Encode`, unpadded.
 pub fn base32_encode(b: &[u8]) -> String {
-    let (mut bits, mut value, mut out) = (0u32, 0u32, String::new());
-    for &x in b {
-        value = (value << 8) | u32::from(x);
-        bits += 8;
-        while bits >= 5 {
-            out.push(B32[((value >> (bits - 5)) & 31) as usize] as char);
-            bits -= 5;
-        }
-    }
-    if bits > 0 {
-        out.push(B32[((value << (5 - bits)) & 31) as usize] as char);
-    }
-    out
+    Secret::from(b).to_base32()
 }
 
 /// `base32Decode` (spaces and `=` padding removed, upper-cased); `None` on an invalid character.
 pub fn base32_decode(s: &str) -> Option<Vec<u8>> {
-    let s: String = s.replace(' ', "").to_uppercase();
-    let s = s.trim_end_matches('=');
-    let (mut bits, mut value, mut out) = (0u32, 0u32, Vec::new());
-    for c in s.bytes() {
-        let idx = B32.iter().position(|&x| x == c)? as u32;
-        value = (value << 5) | idx;
-        bits += 5;
-        if bits >= 8 {
-            bits -= 8;
-            out.push(((value >> bits) & 0xff) as u8);
-        }
-    }
-    Some(out)
+    let secret = Secret::try_from_base32(s.replace(' ', "").trim_end_matches('=').to_uppercase()).ok()?;
+    Some(secret.as_bytes().to_vec())
 }
 
-/// `HOTP.generate({ secret, counter })`.
-pub fn hotp(secret: &[u8], counter: u64) -> String {
-    let mut m = Hmac::<Sha1>::new_from_slice(secret).expect("hmac key");
-    m.update(&counter.to_be_bytes());
-    let d = m.finalize().into_bytes();
-    let off = (d[d.len() - 1] & 15) as usize;
-    let otp = ((u32::from(d[off]) & 127) << 24 | u32::from(d[off + 1]) << 16 | u32::from(d[off + 2]) << 8 | u32::from(d[off + 3])) % 1_000_000;
-    format!("{otp:06}")
+/// `build_noncompliant`: secrets under the library's 128-bit minimum stay valid. Skew 1 is the window around the
+/// current step.
+fn totp(key: &[u8]) -> Totp {
+    Builder::new().with_algorithm(Algorithm::SHA1).with_digits(6).with_skew(1).with_step_duration(30).with_secret(key).build_noncompliant()
+}
+
+/// The code for `unix_seconds`.
+pub fn totp_code(secret: &[u8], unix_seconds: u64) -> String {
+    totp(secret).generate(unix_seconds).to_string()
 }
 
 /// `checkTotp(secret, email, code)`: window 1 around the current 30 s step. An undecodable secret throws in TS
@@ -168,13 +144,7 @@ fn check_totp(s: &AppState, secret: &str, code: &str) -> Result<bool, ApiError> 
     if token.encode_utf16().count() != 6 {
         return Ok(false);
     }
-    let counter = (s.now_ms() as f64 / 1000.0 / 30.0).floor() as i64;
-    for c in [counter, counter - 1, counter + 1] {
-        if c >= 0 && hotp(&key, c as u64) == token {
-            return Ok(true);
-        }
-    }
-    Ok(false)
+    Ok(totp(&key).check(&token, (s.now_ms() / 1000).max(0) as u64).is_some())
 }
 
 fn otpauth_url(secret: &str, email: &str) -> String {
@@ -1058,7 +1028,7 @@ mod tests {
     #[test]
     fn totp_rfc6238_vector() {
         // RFC 6238 SHA1 test secret "12345678901234567890", T = 59 s → counter 1 → 94287082 (8 digits) / 287082.
-        assert_eq!(hotp(b"12345678901234567890", 1), "287082");
+        assert_eq!(totp_code(b"12345678901234567890", 59), "287082");
         assert_eq!(base32_decode(&base32_encode(b"hello world!")).unwrap(), b"hello world!");
         assert_eq!(device_label("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.0 Safari/605.1.15"), "Safari on macOS");
     }

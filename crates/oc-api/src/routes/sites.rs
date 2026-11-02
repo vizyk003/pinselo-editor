@@ -676,103 +676,35 @@ async fn remove_domain(State(s): State<AppState>, Path((id, domain)): Path<(Stri
     Ok(Reply::json(json!({ "ok": true })))
 }
 
-/// `dns.promises.resolveTxt` (c-ares): a TXT lookup over UDP against the first `/etc/resolv.conf` name servers.
-/// Every record is its strings joined (`r.join('')`); any failure is no records (the route's `.catch(() => [])`).
+/// `dns.promises.resolveTxt`: every record is its strings joined (`r.join('')`); any failure is no records (the
+/// route's `.catch(() => [])`). A resolver per lookup, so a retry after adding the record never hits a cached miss.
 mod dns {
-    use std::time::Duration;
-
-    fn nameservers() -> Vec<String> {
-        let conf = std::fs::read_to_string("/etc/resolv.conf").unwrap_or_default();
-        let mut out: Vec<String> = conf
-            .lines()
-            .filter_map(|l| {
-                let mut p = l.split_whitespace();
-                (p.next() == Some("nameserver")).then(|| p.next().map(str::to_owned)).flatten()
-            })
-            .collect();
-        if out.is_empty() {
-            out.push("127.0.0.1".into());
-        }
-        out
-    }
-
-    fn query(id: u16, name: &str) -> Option<Vec<u8>> {
-        let mut q = id.to_be_bytes().to_vec();
-        q.extend_from_slice(&[0x01, 0x00, 0, 1, 0, 0, 0, 0, 0, 0]);
-        for label in name.trim_end_matches('.').split('.') {
-            if label.is_empty() || label.len() > 63 {
-                return None;
-            }
-            q.push(label.len() as u8);
-            q.extend_from_slice(label.as_bytes());
-        }
-        q.extend_from_slice(&[0, 0, 16, 0, 1]);
-        Some(q)
-    }
-
-    fn skip_name(b: &[u8], mut i: usize) -> Option<usize> {
-        loop {
-            let len = *b.get(i)? as usize;
-            if len & 0xc0 == 0xc0 {
-                return Some(i + 2);
-            }
-            if len == 0 {
-                return Some(i + 1);
-            }
-            i += 1 + len;
-        }
-    }
-
-    fn parse(b: &[u8], id: u16) -> Option<Vec<String>> {
-        if b.len() < 12 || u16::from_be_bytes([b[0], b[1]]) != id || b[3] & 0x0f != 0 {
-            return None;
-        }
-        let qd = u16::from_be_bytes([b[4], b[5]]);
-        let an = u16::from_be_bytes([b[6], b[7]]);
-        let mut i = 12;
-        for _ in 0..qd {
-            i = skip_name(b, i)? + 4;
-        }
-        let mut out = Vec::new();
-        for _ in 0..an {
-            i = skip_name(b, i)?;
-            let ty = u16::from_be_bytes([*b.get(i)?, *b.get(i + 1)?]);
-            let len = u16::from_be_bytes([*b.get(i + 8)?, *b.get(i + 9)?]) as usize;
-            let data = b.get(i + 10..i + 10 + len)?;
-            if ty == 16 {
-                let mut j = 0;
-                let mut rec = Vec::new();
-                while j < data.len() {
-                    let l = data[j] as usize;
-                    rec.extend_from_slice(data.get(j + 1..j + 1 + l)?);
-                    j += 1 + l;
-                }
-                out.push(String::from_utf8_lossy(&rec).into_owned());
-            }
-            i += 10 + len;
-        }
-        Some(out)
-    }
+    use hickory_resolver::Resolver;
+    use hickory_resolver::proto::rr::{RData, RecordType};
 
     pub async fn resolve_txt(name: &str) -> Vec<String> {
-        let id = u16::from_be_bytes([oc_db::uuid().as_bytes()[0], oc_db::uuid().as_bytes()[1]]);
-        let Some(q) = query(id, name) else { return vec![] };
-        for ns in nameservers().into_iter().take(3) {
-            let addr = if ns.contains(':') { format!("[{ns}]:53") } else { format!("{ns}:53") };
-            let bind = if ns.contains(':') { "[::]:0" } else { "0.0.0.0:0" };
-            let Ok(sock) = tokio::net::UdpSocket::bind(bind).await else { continue };
-            if sock.send_to(&q, &addr).await.is_err() {
-                continue;
-            }
-            let mut buf = vec![0u8; 4096];
-            match tokio::time::timeout(Duration::from_secs(5), sock.recv(&mut buf)).await {
-                Ok(Ok(n)) => match parse(&buf[..n], id) {
-                    Some(r) => return r,
-                    None => return vec![],
-                },
-                _ => continue,
-            }
+        let Ok(resolver) = Resolver::builder_tokio().and_then(|b| b.build()) else { return vec![] };
+        // The trailing dot keeps the host's search domains out of it.
+        let Ok(lookup) = resolver.lookup(format!("{}.", name.trim_end_matches('.')), RecordType::TXT).await else { return vec![] };
+        lookup
+            .answers()
+            .iter()
+            .filter_map(|r| match &r.data {
+                RData::TXT(txt) => Some(String::from_utf8_lossy(&txt.txt_data.concat()).into_owned()),
+                _ => None,
+            })
+            .collect()
+    }
+
+    #[cfg(test)]
+    mod tests {
+        // Needs the network; run by hand with `--ignored`.
+        #[tokio::test]
+        #[ignore]
+        async fn resolves_large_txt_sets() {
+            let records = super::resolve_txt("google.com").await;
+            assert!(records.iter().any(|r| r.starts_with("v=spf1")), "{records:?}");
+            assert!(super::resolve_txt("no-such-name.invalid").await.is_empty());
         }
-        vec![]
     }
 }
