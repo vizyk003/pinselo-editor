@@ -5,7 +5,6 @@
 //! The delivered body is `JSON.stringify` of the stored jsonb payload — i.e. Postgres' jsonb key order,
 //! compact, numbers printed as JS would — so a Rust worker sends byte-identical bodies to a TS worker.
 
-use std::sync::OnceLock;
 use std::time::Duration;
 
 use hmac::{Hmac, Mac};
@@ -72,15 +71,6 @@ pub fn sign_payload(secret: &str, body: &str) -> String {
     sign_payload_at(secret, body, oc_js::now_ms().div_euclid(1000))
 }
 
-/// The TS private-address test, applied to the textual address (same regex, case-insensitive).
-pub fn private_ip(ip: &str) -> bool {
-    static RE: OnceLock<regex::Regex> = OnceLock::new();
-    RE.get_or_init(|| {
-        regex::Regex::new(r"(?i)^(10\.|127\.|0\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.|::1$|f[cd]|fe80)").unwrap()
-    })
-    .is_match(ip)
-}
-
 /// Payload stored for each delivery: `{ id, event, created, data }`.
 #[derive(Debug, Clone, Serialize)]
 pub struct EventPayload<'a> {
@@ -135,9 +125,8 @@ fn is_production() -> bool {
     std::env::var("NODE_ENV").as_deref() == Ok("production")
 }
 
-fn client() -> &'static reqwest::Client {
-    static C: OnceLock<reqwest::Client> = OnceLock::new();
-    C.get_or_init(|| reqwest::Client::builder().redirect(reqwest::redirect::Policy::none()).timeout(Duration::from_secs(10)).build().expect("http client"))
+fn client() -> reqwest::ClientBuilder {
+    reqwest::Client::builder().redirect(reqwest::redirect::Policy::none()).timeout(Duration::from_secs(10))
 }
 
 async fn attempt(url: &str, delivery_id: Uuid, secret: &str, body: &str) -> Result<u16, (Option<u16>, String)> {
@@ -146,14 +135,23 @@ async fn attempt(url: &str, delivery_id: Uuid, secret: &str, body: &str) -> Resu
     if u.scheme() != "https" && !(!is_production() && host == "localhost") {
         return Err((None, "webhook URLs must use https".into()));
     }
+    let mut client = client();
     if is_production() {
-        let lookup_host = host.trim_start_matches('[').trim_end_matches(']').to_owned();
-        let addrs = tokio::net::lookup_host((lookup_host.as_str(), 0)).await.map_err(|e| (None, e.to_string()))?;
-        if addrs.into_iter().any(|a| private_ip(&a.ip().to_string())) {
-            return Err((None, "webhook host resolves to a private address".into()));
+        // Blind SSRF: the status code alone would map internal ports, so the connection stays on the checked addresses.
+        let private = || (None, "webhook host resolves to a private address".to_owned());
+        if !oc_netguard::is_public_host(&host) {
+            return Err(private());
         }
+        let lookup_host = host.trim_start_matches('[').trim_end_matches(']').to_owned();
+        let addrs: Vec<std::net::SocketAddr> = tokio::net::lookup_host((lookup_host.as_str(), 0)).await.map_err(|e| (None, e.to_string()))?.collect();
+        if addrs.is_empty() || addrs.iter().any(|a| !oc_netguard::is_public_ip(a.ip())) {
+            return Err(private());
+        }
+        client = client.resolve_to_addrs(&lookup_host, &addrs);
     }
-    let res = client()
+    let res = client
+        .build()
+        .map_err(|e| (None, e.to_string()))?
         .post(u)
         .header("content-type", "application/json")
         .header("user-agent", USER_AGENT)
@@ -216,16 +214,6 @@ pub async fn deliver_webhook(pool: &PgPool, delivery_id: Uuid) -> Result<(), Web
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn private_ranges() {
-        for ip in ["10.0.0.1", "127.0.0.1", "0.0.0.0", "169.254.1.1", "192.168.1.1", "172.16.0.1", "172.31.255.255", "100.64.0.1", "100.127.0.1", "::1", "fc00::1", "FD12::1", "fe80::1"] {
-            assert!(private_ip(ip), "{ip}");
-        }
-        for ip in ["8.8.8.8", "172.32.0.1", "100.128.0.1", "100.63.0.1", "2001:db8::1", "::ffff:127.0.0.1", "::10"] {
-            assert!(!private_ip(ip), "{ip}");
-        }
-    }
 
     #[test]
     fn events() {

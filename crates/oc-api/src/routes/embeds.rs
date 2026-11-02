@@ -162,30 +162,26 @@ async fn embed(State(s): State<AppState>, req: Req) -> ApiResult {
         let host = hostname_of(&t).ok_or_else(|| ApiError::internal("Invalid URL"))?;
         if is_public_host(&host) {
             let dir = TempDir::new("oc-embed-").await?;
-            if let Ok(r) = s.http.get(&t).timeout(Duration::from_secs(10)).send().await
-                && r.status().is_success()
-                && let Ok(bytes) = r.bytes().await
-            {
-                let f = dir.0.join("thumb");
-                if tokio::fs::write(&f, &bytes).await.is_ok() {
-                    let name = format!("{} poster", if title.is_empty() { provider.as_str() } else { title.as_str() });
-                    let ing = ingest_file(
-                        &s,
-                        &f,
-                        &dir.0,
-                        IngestOpts {
-                            name: &name,
-                            owner_id: u.id,
-                            ip: Some(&req.ip),
-                            source: Some("stock"),
-                            attribution: Some(json!({ "provider": provider, "sourceUrl": url })),
-                            skip_quota: false,
-                        },
-                    )
-                    .await;
-                    if let Ok(Ingest::Asset(a)) = ing {
-                        poster = a;
-                    }
+            let f = dir.0.join("thumb");
+            // The provider's oEmbed answer names this URL, so it gets the full guard.
+            if tokio::time::timeout(Duration::from_secs(10), crate::routes::content::download(&t, |_| true, &f)).await.is_ok_and(|r| r.is_ok()) {
+                let name = format!("{} poster", if title.is_empty() { provider.as_str() } else { title.as_str() });
+                let ing = ingest_file(
+                    &s,
+                    &f,
+                    &dir.0,
+                    IngestOpts {
+                        name: &name,
+                        owner_id: u.id,
+                        ip: Some(&req.ip),
+                        source: Some("stock"),
+                        attribution: Some(json!({ "provider": provider, "sourceUrl": url })),
+                        skip_quota: false,
+                    },
+                )
+                .await;
+                if let Ok(Ingest::Asset(a)) = ing {
+                    poster = a;
                 }
             }
         }

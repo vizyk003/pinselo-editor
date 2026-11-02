@@ -80,11 +80,12 @@ pub async fn file_report(state: &AppState, r: NewReport<'_>) -> Result<uuid::Uui
     Ok(id)
 }
 
-/// The plugin's start-up step: staff accounts from `OC_STAFF_EMAILS` (comma-separated).
+/// The plugin's start-up step: staff accounts from `OC_STAFF_EMAILS` (comma-separated). Only once the address is
+/// verified: sign-up doesn't require it, so anyone could register a listed address first.
 pub async fn bootstrap_staff(state: &AppState) -> Result<(), sqlx::Error> {
     let emails: Vec<String> = state.env("OC_STAFF_EMAILS").unwrap_or_default().split(',').map(|s| crate::js::trim(s).to_lowercase()).filter(|s| !s.is_empty()).collect();
     if !emails.is_empty() {
-        sqlx::query("UPDATE users SET is_staff = true WHERE email = ANY($1)").bind(&emails).execute(&state.pool).await?;
+        sqlx::query("UPDATE users SET is_staff = true WHERE email = ANY($1) AND email_verified_at IS NOT NULL").bind(&emails).execute(&state.pool).await?;
     }
     Ok(())
 }

@@ -31,6 +31,9 @@ use crate::prelude::*;
 use crate::{jwt, webauthn};
 
 
+/// Wrong codes after which a sign-in ticket is cancelled and the password has to be entered again.
+const MFA_MAX_FAILURES: i32 = 5;
+
 pub const LIMITS: &[RouteLimit] = &[
     strict("POST", "/api/auth/signup"),
     strict("POST", "/api/auth/login"),
@@ -363,6 +366,18 @@ async fn mfa(State(s): State<AppState>, req: Req) -> ApiResult {
         audit(&s, Some(u.id), "auth.recovery_code_used", None, None, &req.ip).await?;
     }
     if !ok {
+        // The rate limit is per IP, so the ticket has to run out by itself or six digits can be walked.
+        let spent: Option<bool> = sqlx::query_scalar(
+            "UPDATE auth_tokens SET failures = failures + 1, used_at = CASE WHEN failures + 1 >= $2 THEN now() END
+              WHERE id = $1 AND used_at IS NULL RETURNING used_at IS NOT NULL",
+        )
+        .bind(sha(ticket))
+        .bind(MFA_MAX_FAILURES)
+        .fetch_optional(&s.pool)
+        .await?;
+        if spent != Some(false) {
+            return Ok(expired());
+        }
         return Ok(reply::json(401, json!({ "error": "bad_code", "message": "That code didn’t work." })));
     }
     if consume_token(&s, "mfa", ticket).await?.is_none() {

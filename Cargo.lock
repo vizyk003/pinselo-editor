@@ -2819,6 +2819,7 @@ dependencies = [
  "oc-jobs",
  "oc-js",
  "oc-mail",
+ "oc-netguard",
  "oc-schema",
  "oc-sheet",
  "oc-social",
@@ -3066,6 +3067,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "oc-netguard"
+version = "0.1.0"
+dependencies = [
+ "tokio",
+]
+
+[[package]]
 name = "oc-platform"
 version = "0.1.0"
 dependencies = [
@@ -3278,7 +3286,7 @@ dependencies = [
  "oc-db",
  "oc-jobs",
  "oc-js",
- "regex",
+ "oc-netguard",
  "reqwest",
  "serde",
  "serde_json",

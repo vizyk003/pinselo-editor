@@ -36,6 +36,7 @@ oc-js = { path = "crates/oc-platform/oc-js" }
 oc-config = { path = "crates/oc-platform/oc-config" }
 oc-db = { path = "crates/oc-platform/oc-db" }
 oc-jobs = { path = "crates/oc-platform/oc-jobs" }
+oc-netguard = { path = "crates/oc-platform/oc-netguard" }
 oc-storage = { path = "crates/oc-platform/oc-storage" }
 # --- oc-crdt deps (appended by crdt port) ---
 yrs = "0.28"

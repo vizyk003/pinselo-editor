@@ -389,42 +389,7 @@ pub fn is_metadata_url(id: &str) -> bool {
     parse_url(id).is_some_and(|u| u.path() != "/" && u.username().is_empty() && u.password().is_none())
 }
 
-/// `isPublicAddress(ip)` (services/api/src/netguard.ts): refuses loopback, private, link-local (cloud metadata),
-/// CGNAT, documentation, benchmarking, multicast and reserved ranges, and IPv6 forms that can wrap an IPv4 address
-/// (mapped, compatible, NAT64, 6to4, Teredo).
-pub fn is_public_ip(ip: std::net::IpAddr) -> bool {
-    use std::net::IpAddr;
-    let v4_blocked: [(u32, u32); 15] = [
-        (0x0000_0000, 8), (0x0a00_0000, 8), (0x6440_0000, 10), (0x7f00_0000, 8), (0xa9fe_0000, 16), (0xac10_0000, 12), (0xc000_0000, 24), (0xc000_0200, 24),
-        (0xc058_6300, 24), (0xc0a8_0000, 16), (0xc612_0000, 15), (0xc633_6400, 24), (0xcb00_7100, 24), (0xe000_0000, 4), (0xf000_0000, 4),
-    ];
-    let v6_blocked: [(u128, u32); 12] = [
-        (0, 96), (0xffff_0000_0000, 96), (0x0064_ff9b_0000_0000_0000_0000_0000_0000, 96), (0x0064_ff9b_0001_0000_0000_0000_0000_0000, 48),
-        (0x0100_0000_0000_0000_0000_0000_0000_0000, 64), (0x2001_0000_0000_0000_0000_0000_0000_0000, 32), (0x2001_0db8_0000_0000_0000_0000_0000_0000, 32),
-        (0x2002_0000_0000_0000_0000_0000_0000_0000, 16), (0xfc00_0000_0000_0000_0000_0000_0000_0000, 7), (0xfe80_0000_0000_0000_0000_0000_0000_0000, 10),
-        (0xfec0_0000_0000_0000_0000_0000_0000_0000, 10), (0xff00_0000_0000_0000_0000_0000_0000_0000, 8),
-    ];
-    match ip {
-        IpAddr::V4(a) => {
-            let x = u32::from(a);
-            !v4_blocked.iter().any(|&(net, bits)| x >> (32 - bits) == net >> (32 - bits))
-        }
-        IpAddr::V6(a) => {
-            let x = u128::from(a);
-            !v6_blocked.iter().any(|&(net, bits)| x >> (128 - bits) == net >> (128 - bits))
-        }
-    }
-}
-
-/// `publicLookup`: every address `host` resolves to, refused if ANY is not public. The client then connects to
-/// exactly these addresses (`resolve_to_addrs`), so DNS rebinding can't slip in between the check and the connect.
-pub async fn resolve_public(host: &str, port: u16) -> Result<Vec<std::net::SocketAddr>, String> {
-    let addrs: Vec<std::net::SocketAddr> = tokio::net::lookup_host((host, port)).await.map_err(|e| e.to_string())?.collect();
-    if addrs.is_empty() || addrs.iter().any(|a| !is_public_ip(a.ip())) {
-        return Err(format!("{host} resolves to a non-public address"));
-    }
-    Ok(addrs)
-}
+pub use oc_netguard::{is_public_ip, resolve_public};
 
 /// GET a metadata document: public hosts only (the name, an IP literal, and every address it resolves to, pinned for
 /// the connection), no redirects, 5 s in all, at most 64 KB of JSON.
