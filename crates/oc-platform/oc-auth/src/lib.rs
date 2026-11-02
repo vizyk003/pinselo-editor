@@ -100,36 +100,6 @@ fn mac(secret: &str, data: &[u8]) -> [u8; 32] {
     m.finalize().into_bytes().into()
 }
 
-/// Node's `Buffer.from(s, 'base64url')` is lenient: it accepts both alphabets, padding and skips junk.
-fn b64url_decode_lenient(s: &str) -> Vec<u8> {
-    let cleaned: String = s
-        .chars()
-        .filter_map(|c| match c {
-            '+' => Some('-'),
-            '/' => Some('_'),
-            c if c.is_ascii_alphanumeric() || c == '-' || c == '_' => Some(c),
-            _ => None,
-        })
-        .collect();
-    // Node also stops at the first '=' — everything after padding is ignored.
-    let cleaned = match s.find('=') {
-        Some(i) => {
-            let prefix_len = s[..i].chars().filter(|c| c.is_ascii_alphanumeric() || "-_+/".contains(*c)).count();
-            cleaned[..prefix_len].to_owned()
-        }
-        None => cleaned,
-    };
-    let usable = if cleaned.len() % 4 == 1 { &cleaned[..cleaned.len() - 1] } else { &cleaned[..] };
-    base64::engine::GeneralPurpose::new(
-        &base64::alphabet::URL_SAFE,
-        base64::engine::GeneralPurposeConfig::new()
-            .with_decode_allow_trailing_bits(true)
-            .with_decode_padding_mode(base64::engine::DecodePaddingMode::RequireNone),
-    )
-    .decode(usable)
-    .unwrap_or_default()
-}
-
 /// `signTicket(t, ttlSec)` with an explicit secret and clock (`now_ms` = `Date.now()`).
 pub fn sign_ticket_at(secret: &str, claims: &TicketClaims, ttl_sec: i64, now_ms: i64) -> String {
     let t = Ticket { claims: claims.clone(), iat: now_ms, exp: now_ms.div_euclid(1000) + ttl_sec };
@@ -154,11 +124,11 @@ pub fn verify_ticket_at(secret: &str, token: &str, aud: Audience, now_ms: i64) -
     let body = parts.next().filter(|s| !s.is_empty())?;
     let sig = parts.next().filter(|s| !s.is_empty())?;
     let expect = mac(secret, body.as_bytes());
-    let got = b64url_decode_lenient(sig);
+    let got = oc_js::node_base64(sig);
     if got.len() != expect.len() || !bool::from(got.ct_eq(&expect)) {
         return None;
     }
-    let json = String::from_utf8_lossy(&b64url_decode_lenient(body)).into_owned();
+    let json = String::from_utf8_lossy(&oc_js::node_base64(body)).into_owned();
     let t: Ticket = serde_json::from_str(&json).ok()?;
     if t.claims.aud != aud || (t.exp as f64) < now_ms as f64 / 1000.0 {
         return None;

@@ -59,24 +59,7 @@ fn decode(s: &str) -> String {
     decode_uri_component(s).unwrap_or_else(|| s.to_owned())
 }
 
-/// `decodeURIComponent(s)`; `None` where JS throws a `URIError`.
-pub fn decode_uri_component(s: &str) -> Option<String> {
-    let b = s.as_bytes();
-    let mut out = Vec::with_capacity(b.len());
-    let mut i = 0;
-    while i < b.len() {
-        if b[i] == b'%' {
-            let h = b.get(i + 1..i + 3)?;
-            let v = u8::from_str_radix(std::str::from_utf8(h).ok()?, 16).ok()?;
-            out.push(v);
-            i += 3;
-        } else {
-            out.push(b[i]);
-            i += 1;
-        }
-    }
-    String::from_utf8(out).ok()
-}
+pub use oc_js::decode_uri_component;
 
 fn is_cookie_octet(s: &str) -> bool {
     s.bytes().all(|c| matches!(c, b'!' | b'#' | b'$' | b'&' | b'\'' | b'(' | b')' | b'*' | b'+' | b'-' | b'.' | b'/' | b'0'..=b'9' | b':' | b'<' | b'=' | b'>' | b'?' | b'@' | b'A'..=b'Z' | b'[' | b']' | b'^' | b'_' | b'`' | b'a'..=b'z' | b'{' | b'|' | b'}' | b'~'))
