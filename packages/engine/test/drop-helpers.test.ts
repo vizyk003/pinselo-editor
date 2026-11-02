@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 /**
  * The helpers apps/web's drop targets use (editor/dropTarget.ts): `coverCrop`, `invert`, `frameOutline`,
- * `hitElement`, `gridCellBox`, `brandLockError` — facade (Rust) against tests/golden/engine/drop-helpers.json, the
+ * `hitElement`, `gridCellBox` — facade (Rust) against tests/golden/engine/drop-helpers.json, the
  * TS originals' outputs on the seed templates (recorded before the TS packages were deleted, plan 13 4.1).
  */
 import { describe, expect, test } from 'vitest';
-import { apply, brandLockError, coverCrop, frameOutline, gridCellBox, hitElement, invert, worldMatrix, type DesignDoc, type Element } from '../src/index';
+import { apply, coverCrop, frameOutline, gridCellBox, hitElement, invert, worldMatrix, type DesignDoc, type Element } from '../src/index';
 import { diff, fixture, golden } from './helpers';
 
 const close = (a: readonly number[], b: readonly number[]) => a.every((v, i) => Math.abs(v - b[i]!) <= 1e-9 * Math.max(1, Math.abs(v)));
@@ -19,7 +19,6 @@ interface Recorded {
 const G = golden<{
   coverCrop: Array<{ args: [number, number]; out: unknown }>;
   docs: Record<string, Record<string, Recorded>>;
-  brandLock: Array<{ lock: unknown; action: unknown; out: string | null }>;
 }>('engine', 'drop-helpers');
 
 describe('drop target helpers', () => {
@@ -61,7 +60,4 @@ describe('drop target helpers', () => {
     expect(hits).toBeGreaterThan(1000);
   });
 
-  test('brandLockError', () => {
-    for (const { lock, action, out } of G.brandLock) expect(brandLockError(lock as never, action as never), JSON.stringify([lock, action])).toBe(out);
-  });
 });

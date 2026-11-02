@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Typed views of a DocStore snapshot. The CRDT snapshot is JSON (`oc_crdt::DocSnapshot`); geometry and most
-//! editor logic want `oc_schema` types. A [`DocView`] carries both: the raw JSON maps (used for clones, patches and
-//! brand-lock checks, like the TS plain objects) and the parsed `DesignDoc`. Elements are parsed once and reused
+//! editor logic want `oc_schema` types. A [`DocView`] carries both: the raw JSON maps (used for clones and patches,
+//! like the TS plain objects) and the parsed `DesignDoc`. Elements are parsed once and reused
 //! while their snapshot `Arc` is unchanged.
 
 use std::collections::{BTreeMap, HashMap};

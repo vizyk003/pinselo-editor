@@ -1,20 +1,18 @@
 // SPDX-License-Identifier: Apache-2.0
 //! `@oc/editor-core` module functions used by apps/web (TS name → oc-editor-core).
 
-use oc_crdt::board::{TimerState, VoteEntry};
 use oc_editor_core as ec;
-use oc_editor_core::{FontSet, VoteTally, Viewport};
+use oc_editor_core::{FontSet, Viewport};
 use oc_schema::primitives::Vec2;
 use serde_json::{Value, json};
 use wasm_bindgen::prelude::*;
 
-use crate::convert::{arg, element, js, opt_element, to_js, value};
+use crate::convert::{arg, element, js, to_js, value};
 use crate::doc::DocRef;
 
 #[wasm_bindgen(js_name = editorConstants)]
 pub fn editor_constants() -> JsValue {
     js(&json!({
-        "STICKY_COLORS": ec::STICKY_COLORS,
         "MIN_ZOOM": ec::MIN_ZOOM,
         "MAX_ZOOM": ec::MAX_ZOOM,
         "CORNERS": ec::CORNERS,
@@ -92,122 +90,3 @@ pub fn template_pages(tpl: &DocRef, w: f64, h: f64) -> JsValue {
     js(&ec::template_pages(tpl.doc(), w, h, &mut oc_editor_core::OsRandom))
 }
 
-// ------------------------------------------------------------------ whiteboard
-
-#[wasm_bindgen(js_name = isSticky)]
-pub fn is_sticky(el: JsValue) -> Result<bool, JsError> {
-    Ok(ec::is_sticky(opt_element(&el)?.as_ref()))
-}
-
-#[wasm_bindgen(js_name = isSection)]
-pub fn is_section(el: JsValue) -> Result<bool, JsError> {
-    Ok(ec::is_section(opt_element(&el)?.as_ref()))
-}
-
-#[wasm_bindgen(js_name = isMindNode)]
-pub fn is_mind_node(el: JsValue) -> Result<bool, JsError> {
-    Ok(ec::is_mind_node(opt_element(&el)?.as_ref()))
-}
-
-#[wasm_bindgen(js_name = sectionsOf)]
-pub fn sections_of(doc: &DocRef, page_id: &str) -> Vec<String> {
-    ec::sections_of(&doc.doc().elements, page_id).iter().map(|e| e.id().unwrap_or("").to_string()).collect()
-}
-
-#[wasm_bindgen(js_name = mindNodeOf)]
-pub fn mind_node_of(doc: &DocRef, id: &str) -> Option<String> {
-    ec::mind_node_of(&doc.doc().elements, id).and_then(|e| e.id()).map(str::to_string)
-}
-
-#[wasm_bindgen(js_name = voteScope)]
-pub fn vote_scope(doc: &DocRef, page_id: &str, selection: Vec<String>) -> Vec<String> {
-    ec::vote_scope(&doc.doc().elements, page_id, &selection)
-}
-
-/// `tallyVotes(session: { id, scope }, entries)`.
-#[wasm_bindgen(js_name = tallyVotes)]
-pub fn tally_votes(session_id: &str, scope: Vec<String>, entries: JsValue) -> Result<JsValue, JsError> {
-    let e: Vec<VoteEntry> = arg("entries", &entries)?;
-    to_js(&ec::tally_votes(session_id, &scope, &e))
-}
-
-#[wasm_bindgen(js_name = topVoted)]
-pub fn top_voted(tally: JsValue, n: u32) -> Result<Vec<String>, JsError> {
-    let t: Vec<VoteTally> = arg("tally", &tally)?;
-    Ok(ec::top_voted(&t, n as usize))
-}
-
-/// `voteAllowance(session: { id, perPerson, status }, entries, voter)`.
-#[wasm_bindgen(js_name = voteAllowance)]
-pub fn vote_allowance(session_id: &str, per_person: f64, status: &str, entries: JsValue, voter: &str) -> Result<f64, JsError> {
-    let e: Vec<VoteEntry> = arg("entries", &entries)?;
-    Ok(ec::vote_allowance(session_id, per_person, status, &e, voter))
-}
-
-#[wasm_bindgen(js_name = formatClock)]
-pub fn format_clock(ms: f64) -> String {
-    ec::format_clock(ms)
-}
-
-#[wasm_bindgen(js_name = makeTimer)]
-pub fn make_timer(duration_ms: f64, sound: bool) -> JsValue {
-    js(&ec::make_timer(duration_ms, sound))
-}
-
-fn timer(t: &JsValue) -> Result<TimerState, JsError> {
-    arg("timer", t)
-}
-
-#[wasm_bindgen(js_name = timerRemaining)]
-pub fn timer_remaining(t: JsValue, now: f64) -> Result<f64, JsError> {
-    Ok(ec::timer_remaining(&timer(&t)?, now))
-}
-
-#[wasm_bindgen(js_name = timerRunning)]
-pub fn timer_running(t: JsValue, now: f64) -> Result<bool, JsError> {
-    Ok(ec::timer_running(&timer(&t)?, now))
-}
-
-#[wasm_bindgen(js_name = timerStart)]
-pub fn timer_start(t: JsValue, now: f64) -> Result<JsValue, JsError> {
-    to_js(&ec::timer_start(&timer(&t)?, now))
-}
-
-#[wasm_bindgen(js_name = timerPause)]
-pub fn timer_pause(t: JsValue, now: f64) -> Result<JsValue, JsError> {
-    to_js(&ec::timer_pause(&timer(&t)?, now))
-}
-
-#[wasm_bindgen(js_name = timerReset)]
-pub fn timer_reset(t: JsValue) -> Result<JsValue, JsError> {
-    to_js(&ec::timer_reset(&timer(&t)?))
-}
-
-#[wasm_bindgen(js_name = timerAdd)]
-pub fn timer_add(t: JsValue, ms: f64, now: f64) -> Result<JsValue, JsError> {
-    to_js(&ec::timer_add(&timer(&t)?, ms, now))
-}
-
-/// `brandLockError(lock, action)` (`@oc/crdt`): why an action would break a brand lock, `null` when allowed.
-#[wasm_bindgen(js_name = brandLockError)]
-pub fn brand_lock_error(lock: JsValue, action: JsValue) -> Result<Option<String>, JsError> {
-    use oc_crdt::brandlock::BrandAction;
-    let lock = value(&lock)?;
-    let a = value(&action)?;
-    let pair = |v: &Value| -> Option<(Option<Value>, Option<Value>)> { v.is_object().then(|| (v.get("from").cloned(), v.get("to").cloned())) };
-    let xf = a.get("xf").and_then(pair);
-    let body = a.get("body").and_then(pair);
-    let keys: Vec<String> = a.get("keys").and_then(Value::as_array).map(|k| k.iter().filter_map(|x| x.as_str().map(str::to_owned)).collect()).unwrap_or_default();
-    let (from, to) = (a.get("from").cloned(), a.get("to").cloned());
-    let act = match a.get("kind").and_then(Value::as_str) {
-        Some("patch") => BrandAction::Patch { keys, xf: xf.as_ref().map(|(f, t)| (f.as_ref(), t.as_ref())), body: body.as_ref().map(|(f, t)| (f.as_ref(), t.as_ref())) },
-        Some("xf") => BrandAction::Xf { from: from.as_ref(), to: to.as_ref() },
-        Some("move") => BrandAction::Move,
-        Some("delete") => BrandAction::Delete,
-        Some("content") => BrandAction::Content,
-        Some("style") => BrandAction::Style,
-        _ => return Err(crate::convert::err("brandLockError: unknown action kind")),
-    };
-    let l = (!lock.is_null()).then_some(&lock);
-    Ok(oc_crdt::brandlock::brand_lock_error(l, &act).map(str::to_owned))
-}

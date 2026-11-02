@@ -1,8 +1,7 @@
 //! Port of services/api/src/routes/sites.ts — websites (WS-001..006): publish a design as a site at
-//! `/site/{slug}` or on a custom domain, with SEO fields, optional password, privacy-friendly insights and
-//! DNS-verified domains.
+//! `/site/{slug}` or on a custom domain, with SEO fields, optional password and DNS-verified domains.
 //!
-//! The public routes (serving, beacons, the password form, the TLS domain check, OG images) need no sign-in; the
+//! The public routes (serving, the password form, the TLS domain check, OG images) need no sign-in; the
 //! editor routes run `requireUser` first (the child plugin's `preHandler`). The plugin also registers an
 //! `application/x-www-form-urlencoded` body parser for its own routes (the password form posts one): see
 //! [`form_body`]. [`custom_domain_hook`] is the app-wide `onRequest` hook (wired into the global middleware).
@@ -18,19 +17,14 @@ use serde_json::Map;
 use sha2::Sha256;
 
 use crate::auth::{at_least, design_role, hash_password, verify_password};
-use crate::billing;
-use crate::brandhub::approval_gate;
 use crate::http::ratelimit::MINUTE;
 use crate::http::{cookie, jsjson};
-use crate::insights;
 use crate::prelude::*;
 use crate::site_seo::{robots_txt, sitemap_xml};
 use oc_auth::Role;
 
 /// Routes with their own `config.rateLimit`.
 pub const LIMITS: &[RouteLimit] = &[
-    RouteLimit { method: "POST", path: "/api/sites/{id}/e", max: 60, window_ms: MINUTE },
-    RouteLimit { method: "POST", path: "/api/public/designs/{id}/view", max: 30, window_ms: MINUTE },
     RouteLimit { method: "POST", path: "/site/{slug}", max: 10, window_ms: MINUTE },
 ];
 
@@ -38,14 +32,10 @@ pub fn routes() -> Router<AppState> {
     Router::new()
         .route("/site/{slug}", get(public_site).post(unlock))
         .route("/site/{slug}/{file}", get(public_seo))
-        .route("/api/sites/{id}/e", post(beacon))
-        .route("/api/public/designs/{id}/view", post(view_beacon))
         .route("/api/sites/domain-check", get(domain_check))
         .route("/api/sites/og/{file}", get(og_image))
         .route("/api/designs/{id}/site", get(get_site).put(put_site))
         .route("/api/designs/{id}/site/publish", post(publish))
-        .route("/api/designs/{id}/site/insights", get(site_insights))
-        .route("/api/designs/{id}/view-insights", get(view_insights))
         .route("/api/designs/{id}/site/preview", post(preview))
         .route("/api/designs/{id}/site/unpublish", post(unpublish))
         .route("/api/designs/{id}/site/domains", post(add_domain))
@@ -102,7 +92,6 @@ pub struct SiteRow {
     html_sha256: Option<String>,
     version: i32,
     published_at: Option<chrono::DateTime<chrono::Utc>>,
-    analytics: bool,
 }
 
 async fn site_by_slug(s: &AppState, slug: &str) -> Result<Option<SiteRow>, sqlx::Error> {
@@ -210,7 +199,7 @@ async fn serve_seo(s: &AppState, site: &SiteRow, file: &str, base: &str) -> Resu
     Ok(Reply::bytes("application/xml; charset=utf-8", sitemap_xml(&entries)).header("cache-control", "public, max-age=300"))
 }
 
-async fn serve_site(s: &AppState, site: &SiteRow, headers: &HeaderMap, cookies: &std::collections::HashMap<String, String>, ip: &str, app_origin: bool) -> Result<Reply, ApiError> {
+async fn serve_site(s: &AppState, site: &SiteRow, cookies: &std::collections::HashMap<String, String>, app_origin: bool) -> Result<Reply, ApiError> {
     let Some(sha) = site.html_sha256.clone().filter(|h| site.published && !h.is_empty()) else { return Ok(site_not_found()) };
     if !owner_active(s, &site.design_id).await? {
         return Ok(site_not_found());
@@ -219,33 +208,10 @@ async fn serve_site(s: &AppState, site: &SiteRow, headers: &HeaderMap, cookies: 
         let nonce = site_nonce();
         return Ok(site_headers(s, html(200, password_page(site, false)), &nonce, app_origin).header("cache-control", "no-store"));
     }
-    // Privacy-friendly insights (no cookies, no IPs stored): skipped for DNT/GPC, bots, or when the owner turned them off.
-    let track = site.analytics && !insights::do_not_track(headers) && !insights::is_bot(insights::header(headers, "user-agent"));
-    if track {
-        let (pool, id) = (s.pool.clone(), site.design_id.clone());
-        s.spawn(async move {
-            let _ = sqlx::query("INSERT INTO site_views(design_id, day, views) VALUES ($1, current_date, 1) ON CONFLICT (design_id, day) DO UPDATE SET views = site_views.views + 1").bind(id).execute(&pool).await;
-        });
-        let host = insights::header(headers, "host").split(':').next().unwrap_or("").to_owned();
-        let (s2, id, h, ip, own) = (s.clone(), site.design_id.clone(), headers.clone(), ip.to_owned(), vec![host, web_host(s)]);
-        s.spawn(async move {
-            let _ = insights::record_visit(&s2, "site", &id, &h, &ip, &own).await;
-        });
-    }
     let nonce = site_nonce();
     let page = nonce_scripts(&String::from_utf8_lossy(&s.store.get(&sha).await?), &nonce);
     let sandbox = app_origin && sandboxable(&page);
-    let page = if track { inject_beacon(&page, &site.design_id, &nonce) } else { page };
     Ok(site_headers(s, Reply::bytes("text/html; charset=utf-8", page), &nonce, sandbox))
-}
-
-/// `html.replace(/<\/body>\s*<\/html>\s*$/, beacon)`.
-fn inject_beacon(page: &str, design_id: &str, nonce: &str) -> String {
-    static END: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| regex::Regex::new(r"</body>\s*</html>\s*\z").expect("regex"));
-    match END.find(page) {
-        Some(m) => format!("{}{}\n</body>\n</html>", &page[..m.start()], insights::beacon_script(design_id).replacen("<script>", &format!("<script nonce=\"{nonce}\">"), 1)),
-        None => page.to_owned(),
-    }
 }
 
 /// `build(designId, site)`: the site HTML from the render service.
@@ -302,8 +268,7 @@ pub async fn custom_domain_hook(state: &AppState, method: Method, uri: Uri, head
         }
         if url == "/" || url.starts_with("/?") {
             let cookies = headers.get("cookie").and_then(|v| v.to_str().ok()).map(cookie::parse).unwrap_or_default();
-            let ip = crate::http::req::client_ip(&headers, None);
-            return Ok(Some(serve_site(state, &site, &headers, &cookies, &ip, false).await?));
+            return Ok(Some(serve_site(state, &site, &cookies, false).await?));
         }
         if url == "/robots.txt" || url == "/sitemap.xml" {
             return Ok(Some(serve_seo(state, &site, &url[1..], &format!("https://{host}/")).await?));
@@ -316,29 +281,6 @@ pub async fn custom_domain_hook(state: &AppState, method: Method, uri: Uri, head
         Ok(None) => None,
         Err(e) => Some(e.into_response()),
     }
-}
-
-/// `rangeOf(q, now)`: a validated date range from `?from=&to=` (or `?days=`), clamped to a year.
-pub fn range_of(q: &Value, now_ms: i64) -> (String, String) {
-    let day = |k: &str| q.get(k).and_then(Value::as_str).filter(|v| insights::parse_day(v).is_some()).map(str::to_owned);
-    let today = insights::utc_day(now_ms);
-    let mut to = day("to").unwrap_or_else(|| today.clone());
-    if to > today {
-        to = today;
-    }
-    let n = js_number(q.get("days"));
-    let n = if n == 0.0 || n.is_nan() { 30.0 } else { n };
-    let days = n.clamp(1.0, 366.0);
-    let to_ms = insights::parse_day(&to).unwrap_or(0) as f64;
-    let mut from = day("from").unwrap_or_else(|| insights::utc_day((to_ms - (days - 1.0) * 86_400_000.0) as i64));
-    let min = insights::utc_day((to_ms - 365.0 * 86_400_000.0) as i64);
-    if from < min {
-        from = min;
-    }
-    if from > to {
-        from.clone_from(&to);
-    }
-    (from, to)
 }
 
 /// `Number(v)` of a query value (`undefined` → NaN, a repeated key → an array).
@@ -383,7 +325,7 @@ fn not_found() -> Reply {
 
 async fn public_site(State(s): State<AppState>, Path(slug): Path<String>, req: Req) -> ApiResult {
     let Some(site) = site_by_slug(&s, &slug).await? else { return Ok(site_not_found()) };
-    serve_site(&s, &site, &req.headers, &req.cookies, &req.ip, true).await
+    serve_site(&s, &site, &req.cookies, true).await
 }
 
 async fn public_seo(State(s): State<AppState>, Path((slug, file)): Path<(String, String)>, req: Req) -> ApiResult {
@@ -393,38 +335,6 @@ async fn public_seo(State(s): State<AppState>, Path((slug, file)): Path<(String,
     }
     let Some(site) = site_by_slug(&s, &slug).await? else { return Ok(Reply::empty(404)) };
     serve_seo(&s, &site, &file, &format!("{}/site/{slug}/", s.cfg.web_origin)).await
-}
-
-// ---------------------------------------------------------------- insights beacons (public)
-
-/// Site beacon: sections seen, outbound clicks, form submissions. Sent with sendBeacon (text/plain JSON).
-async fn beacon(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    if insights::do_not_track(&req.headers) || insights::is_bot(insights::header(&req.headers, "user-agent")) {
-        return Ok(Reply::empty(204));
-    }
-    let site: Option<(bool, bool)> = sqlx::query_as("SELECT published, analytics FROM sites WHERE design_id = $1").bind(&id).fetch_optional(&s.pool).await?;
-    if !matches!(site, Some((true, true))) {
-        return Ok(Reply::empty(204));
-    }
-    let body = match &req.body {
-        crate::http::req::Body::Text(t) => jsjson::parse(t).ok(),
-        crate::http::req::Body::Json(v) => Some(v.clone()),
-        _ => None,
-    };
-    if let Some(Value::Array(events)) = body.as_ref().and_then(|b| b.get("e")) {
-        insights::record_events(&s, &id, events).await?;
-    }
-    Ok(Reply::empty(204))
-}
-
-/// Public view links (/view/:id): one beacon per open.
-async fn view_beacon(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let d: Option<(bool, Option<chrono::DateTime<chrono::Utc>>)> = sqlx::query_as("SELECT public_view, trashed_at FROM designs WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
-    if !matches!(d, Some((true, None))) {
-        return Ok(Reply::empty(404));
-    }
-    let _ = insights::record_visit(&s, "view", &id, &req.headers, &req.ip, &[web_host(&s)]).await;
-    Ok(Reply::empty(204))
 }
 
 async fn unlock(State(s): State<AppState>, Path(slug): Path<String>, req: Req) -> ApiResult {
@@ -478,18 +388,17 @@ async fn get_site(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
     }
     let site = site_by_design(&s, &id).await?;
     let domains = pg::json_rows(&s.pool, "SELECT domain, verified_at, token FROM site_domains WHERE design_id = $1 ORDER BY created_at", &[pg::text(&id)]).await?;
-    let views = pg::json_rows(&s.pool, "SELECT to_char(day, 'YYYY-MM-DD') AS day, views FROM site_views WHERE design_id = $1 AND day > current_date - 30 ORDER BY day", &[pg::text(&id)]).await?;
     let (site_json, url) = match &site {
         Some(x) => (
             json!({
                 "slug": x.slug, "title": x.title, "description": x.description, "published": x.published, "hasPassword": x.password_hash.as_deref().is_some_and(|p| !p.is_empty()),
-                "noindex": x.noindex, "analytics": x.analytics, "version": x.version, "publishedAt": x.published_at.map(|t| oc_js::iso_string(&t)),
+                "noindex": x.noindex, "version": x.version, "publishedAt": x.published_at.map(|t| oc_js::iso_string(&t)),
             }),
             json!(format!("{}/site/{}", s.cfg.web_origin, x.slug)),
         ),
         None => (Value::Null, Value::Null),
     };
-    Ok(Reply::json(json!({ "site": site_json, "url": url, "domains": domains, "views": views })))
+    Ok(Reply::json(json!({ "site": site_json, "url": url, "domains": domains })))
 }
 
 async fn put_site(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
@@ -502,7 +411,6 @@ async fn put_site(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
         ("title", z::str().min(1.0).max(120.0)),
         ("description", z::str().max(300.0).optional()),
         ("noindex", z::bool().optional()),
-        ("analytics", z::bool().optional()),
         ("password", z::str().max(200.0).nullable().optional()),
     ])
     .parse(req.body())?;
@@ -521,9 +429,9 @@ async fn put_site(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
         Some(_) => Some(None),
     };
     sqlx::query(
-        "INSERT INTO sites(design_id, slug, title, description, noindex, password_hash, analytics) VALUES ($1,$2,$3,$4,$5,$6,COALESCE($8, true))
+        "INSERT INTO sites(design_id, slug, title, description, noindex, password_hash) VALUES ($1,$2,$3,$4,$5,$6)
          ON CONFLICT (design_id) DO UPDATE SET slug = $2, title = $3, description = $4, noindex = $5,
-           password_hash = CASE WHEN $7 THEN $6 ELSE sites.password_hash END, analytics = COALESCE($8, sites.analytics), updated_at = now()",
+           password_hash = CASE WHEN $7 THEN $6 ELSE sites.password_hash END, updated_at = now()",
     )
     .bind(&id)
     .bind(&slug)
@@ -532,7 +440,6 @@ async fn put_site(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
     .bind(b.get("noindex").and_then(Value::as_bool).unwrap_or(false))
     .bind(pw.clone().flatten())
     .bind(pw.is_some())
-    .bind(b.get("analytics").and_then(Value::as_bool))
     .execute(&s.pool)
     .await?;
     Ok(Reply::json(json!({ "ok": true })))
@@ -542,9 +449,6 @@ async fn publish(State(s): State<AppState>, Path(id): Path<String>, req: Req) ->
     let u = require_user(&s, &req).await?;
     if !can_edit(&s, u.id, &id).await? {
         return Ok(not_found());
-    }
-    if let Some(gate) = approval_gate(&s, u.id, &id).await? {
-        return Ok(reply::json(403, gate)); // brand approvals (A8)
     }
     let Some(site) = site_by_design(&s, &id).await? else { return Ok(reply::json(400, json!({ "error": "no_site", "message": "Choose an address first." }))) };
     let page = build(&s, &id, &site.title, site.description.as_deref(), site.noindex).await?;
@@ -578,27 +482,6 @@ async fn publish(State(s): State<AppState>, Path(id): Path<String>, req: Req) ->
     Ok(Reply::json(json!({ "ok": true, "url": url })))
 }
 
-/// Insights for a date range (default: the last 30 days, at most a year).
-async fn site_insights(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    if !can_edit(&s, u.id, &id).await? {
-        return Ok(not_found());
-    }
-    let (from, to) = range_of(&req.query, s.now_ms());
-    Ok(Reply::json(insights::load_summary(&s, &id, "site", &from, &to).await?))
-}
-
-/// Views of the public view link (Share dialog).
-async fn view_insights(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    if !can_edit(&s, u.id, &id).await? {
-        return Ok(not_found());
-    }
-    let (from, to) = range_of(&req.query, s.now_ms());
-    let sum = insights::load_summary(&s, &id, "view", &from, &to).await?;
-    Ok(Reply::json(json!({ "from": from, "to": to, "views": sum["totals"]["views"], "visitors": sum["totals"]["visitors"], "series": sum["series"] })))
-}
-
 /// Build the site HTML without publishing (the editor's mobile/desktop preview).
 async fn preview(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
@@ -626,7 +509,6 @@ async fn add_domain(State(s): State<AppState>, Path(id): Path<String>, req: Req)
     if !can_edit(&s, u.id, &id).await? {
         return Ok(not_found());
     }
-    billing::require_feature(&s, u.id, billing::Feature::CustomDomains, "Custom domains are part of Pro.").await?;
     let b = z::obj([("domain", z::str().to_lower_case().regex_fn(DOMAIN_JS, domain_ok))]).parse(req.body())?;
     let domain = b["domain"].as_str().unwrap_or("").to_owned();
     let host = web_host(&s);

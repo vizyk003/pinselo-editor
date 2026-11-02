@@ -7,7 +7,6 @@ use oc_auth::Role;
 
 use crate::analytics;
 use crate::auth::{at_least, design_role, random_token};
-use crate::brandhub;
 use crate::http::ratelimit::MINUTE;
 use crate::prelude::*;
 use crate::routes::{brand, designs, teams};
@@ -114,22 +113,11 @@ async fn sharing(State(s): State<AppState>, Path(id): Path<String>, req: Req) ->
     let personal = d["personal"].as_bool().unwrap_or(false);
     let member = d["member"].as_bool().unwrap_or(false);
     let team = if !personal && (owner || member) { json!({ "id": d["workspace_id"], "name": d["team_name"], "access": d["team_access"] }) } else { Value::Null };
-    // Visitor count for the header (public view link stats, all time): for the people who manage the design.
-    let visitors = if at_least(role, Role::Edit) {
-        let n: Option<i32> = sqlx::query_scalar("SELECT COALESCE(sum(n), 0)::int AS n FROM insight_daily WHERE design_id = $1 AND scope = 'view' AND kind = 'visitor'")
-            .bind(&id)
-            .fetch_optional(&s.pool)
-            .await?;
-        json!(n.unwrap_or(0))
-    } else {
-        Value::Null
-    };
     let public_view = d["public_view"].as_bool().unwrap_or(false);
     Ok(Reply::json(json!({
         "role": role.map(|r| r.as_str()),
         "team": team,
         "groups": groups,
-        "visitors": visitors,
         "slug": if public_view || owner { d["public_slug"].clone() } else { Value::Null },
         "templateLink": if owner { json!({ "token": d["template_token"], "uses": d["template_uses"] }) } else { Value::Null },
     })))
@@ -339,9 +327,6 @@ async fn template_link(State(s): State<AppState>, Path(id): Path<String>, req: R
     let regenerate = b["regenerate"].as_bool().unwrap_or(false);
     if design_role(&s, Some(u.id), &id).await? != Some(Role::Owner) {
         return Ok(forbidden());
-    }
-    if let Some(gate) = brandhub::approval_gate(&s, u.id, &id).await? {
-        return Ok(reply::json(403, gate)); // brand approvals (A8): handing out copies is sharing
     }
     let cur: Option<(Option<String>, i32)> = sqlx::query_as("SELECT template_token, template_uses FROM designs WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
     if let Some((Some(tok), uses)) = &cur

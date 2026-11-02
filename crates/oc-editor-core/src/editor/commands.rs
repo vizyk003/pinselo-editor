@@ -5,12 +5,11 @@
 use std::collections::HashMap;
 
 use indexmap::IndexMap;
-use oc_crdt::{BrandAction, DocOp, PageOp, brand_lock_error, is_brand_lock};
+use oc_crdt::{DocOp, PageOp};
 use oc_geometry::{
     AlignEdge, AlignItem, Axis, HitTestOpts, align_deltas, apply, apply_vector, distribute_deltas, hit_test, invert, local_matrix,
     multiply, normalize_angle, parent_inverse, selection_bounds, world_bounds, world_matrix, xf_from_matrix,
 };
-use oc_schema::design::Surface;
 use oc_schema::primitives::Unit;
 use oc_schema::elements::{Element, GroupEl};
 use oc_schema::factory::{TextOpts, make_group, make_text, grid_cell_box};
@@ -25,7 +24,6 @@ use crate::state::*;
 use crate::styles::{FontSet, font_set_ops, palette_map, recolor_ops};
 use crate::transform::{refit_crop, scale_patches};
 use crate::util::{byte_to_utf16, jm, jv, len16, max, min, num, round, s, slice16};
-use crate::whiteboard::with_section_members;
 
 /// Crop rect (normalized) that makes an image of `img_aspect` cover a box of `box_aspect`.
 pub fn cover_crop(box_aspect: f64, img_aspect: f64) -> Rect {
@@ -71,17 +69,6 @@ pub struct GeometryPatch {
     pub h: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rot: Option<f64>,
-}
-
-/// Brand-lock levels for [`Editor::set_brand_lock`].
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-pub struct BrandLockLevels {
-    #[serde(default)]
-    pub position: bool,
-    #[serde(default)]
-    pub content: bool,
-    #[serde(default)]
-    pub style: bool,
 }
 
 /// Find options.
@@ -392,11 +379,7 @@ impl Editor {
 
     pub fn nudge(&mut self, dx: f64, dy: f64) {
         let doc = self.doc();
-        let moving: Vec<Element> = if doc.doc.meta.surface == Surface::Whiteboard {
-            with_section_members(doc.els(), &self.state.selection).iter().filter_map(|i| doc.el(i).cloned()).collect()
-        } else {
-            self.selected()
-        };
+        let moving: Vec<Element> = self.selected();
         let ops: Vec<DocOp> = moving
             .iter()
             .filter(|e| !locked_move(e))
@@ -525,88 +508,8 @@ impl Editor {
         );
     }
 
-    // ------------------------------------------------------------------ brand locks (A8)
-
-    pub fn brand_admin(&self) -> bool {
-        self.brand_admin
-    }
-
-    pub fn set_brand_admin(&mut self, admin: bool) {
-        self.brand_admin = admin;
-        self.emit();
-    }
-
-    /// Why an op would break a brand lock (non-admins only).
-    pub(crate) fn brand_violation(&self, op: &DocOp) -> Option<&'static str> {
-        let id = match op {
-            DocOp::Page(_) | DocOp::Meta { .. } | DocOp::Asset { .. } | DocOp::Add { .. } => return None,
-            DocOp::Update { id, .. }
-            | DocOp::Xf { id, .. }
-            | DocOp::Reparent { id, .. }
-            | DocOp::Reorder { id, .. }
-            | DocOp::Delete { id }
-            | DocOp::SetText { id, .. }
-            | DocOp::TextInsert { id, .. }
-            | DocOp::TextDelete { id, .. }
-            | DocOp::TextFormat { id, .. }
-            | DocOp::TextParagraph { id, .. } => id,
-        };
-        let doc = self.doc();
-        let raw = doc.raw_el(id)?;
-        let lock = raw.get("lock");
-        if !is_brand_lock(lock) {
-            return None;
-        }
-        let action = match op {
-            DocOp::Update { patch, .. } => BrandAction::Patch {
-                keys: patch.keys().cloned().collect(),
-                xf: patch.get("xf").filter(|v| crate::util::truthy(Some(v))).map(|to| (raw.get("xf"), Some(to))),
-                body: patch.contains_key("body").then(|| (raw.get("body"), patch.get("body"))),
-            },
-            DocOp::Xf { xf, .. } => BrandAction::Xf { from: raw.get("xf"), to: Some(xf) },
-            DocOp::Reparent { .. } | DocOp::Reorder { .. } => BrandAction::Move,
-            DocOp::Delete { .. } => BrandAction::Delete,
-            DocOp::SetText { .. } | DocOp::TextInsert { .. } | DocOp::TextDelete { .. } => BrandAction::Content,
-            DocOp::TextFormat { .. } | DocOp::TextParagraph { .. } => BrandAction::Style,
-            _ => return None,
-        };
-        brand_lock_error(lock, &action)
-    }
-
-    /// True when the element carries a brand-template lock this user can't change.
-    pub fn is_brand_locked(&self, el: Option<&Element>) -> bool {
-        el.and_then(lock_of).is_some_and(|l| l.by == oc_schema::elements::LockBy::Brand) && !self.brand_admin
-    }
-
-    /// Mark the selection as locked for a brand template (A8). `None` (or no level) removes brand locks.
-    pub fn set_brand_lock(&mut self, levels: Option<BrandLockLevels>) {
-        let sel: Vec<Element> = self.selected().into_iter().filter(|e| !self.is_brand_locked(Some(e))).collect();
-        if sel.is_empty() {
-            return;
-        }
-        let lock = match levels {
-            Some(l) if l.position || l.content || l.style => {
-                let mut m = one("by", Value::String("brand".into()));
-                if l.position {
-                    for k in ["move", "resize", "rotate", "delete"] {
-                        m.insert(k.into(), Value::Bool(true));
-                    }
-                }
-                if l.content {
-                    m.insert("content".into(), Value::Bool(true));
-                }
-                if l.style {
-                    m.insert("style".into(), Value::Bool(true));
-                }
-                Value::Object(m)
-            }
-            _ => Value::Null,
-        };
-        self.apply(sel.iter().map(|e| op_update(&el_id(e), one("lock", lock.clone()))).collect(), false);
-    }
-
     pub fn toggle_lock(&mut self) {
-        let sel: Vec<Element> = self.selected().into_iter().filter(|e| !self.is_brand_locked(Some(e))).collect();
+        let sel: Vec<Element> = self.selected();
         let any_unlocked = sel.iter().any(|e| !locked_move(e));
         if sel.is_empty() {
             return;

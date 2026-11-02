@@ -2,7 +2,7 @@
 //! Text editing (caret model over UTF-16 offsets) and styling commands.
 
 use oc_crdt::body::BodyOp;
-use oc_crdt::{BrandAction, DocOp, brand_lock_error};
+use oc_crdt::DocOp;
 use oc_geometry::{apply, invert, world_matrix};
 use oc_schema::elements::{Element, TextEl};
 use oc_schema::tree::descendants;
@@ -360,16 +360,6 @@ impl Editor {
         let mut ops = Vec::new();
         for el in &els {
             let Some(p) = f(el) else { continue };
-            // Brand-locked elements in a mixed selection are skipped rather than failing the whole batch.
-            if self.is_brand_locked(Some(el)) {
-                let raw = jm(el);
-                let keys: Vec<String> = p.keys().cloned().collect();
-                let xf = p.get("xf").map(|to| (raw.get("xf"), Some(to)));
-                let body = p.get("body").map(|_| (raw.get("body"), p.get("body")));
-                if brand_lock_error(raw.get("lock"), &BrandAction::Patch { keys, xf, body }).is_some() {
-                    continue;
-                }
-            }
             ops.push(op_update(&el_id(el), p));
         }
         if !ops.is_empty() {

@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: Apache-2.0
 //! The writers over the real painter (crates/oc-render, bundled fonts, test assets): where the TS output is
 //! structural it must match the goldens exactly — the website HTML (inner SVG content masked, as in the replay
-//! test) and the email HTML (its slices are numbered, so pixels don't enter it).
+//! test).
 
 use std::path::PathBuf;
-use std::sync::{Arc, LazyLock, Mutex};
+use std::sync::{Arc, LazyLock};
 
 use futures::future::BoxFuture;
 use oc_gfonts::manifest::{FontFamily, FontManifest};
-use oc_render_svc::email::{EmailDeps, export_email};
 use oc_render_svc::oc_renderer::OcRenderer;
 use oc_render_svc::renderer::{RenderError, RenderFuture, RenderHost};
 use oc_render_svc::site::{SiteOptions, build_site};
@@ -126,47 +125,6 @@ fn sites_match_ts_with_the_real_painter() {
         n += 1;
     }
     assert!(n >= 15);
-}
-
-struct Numbered(Mutex<usize>);
-
-impl EmailDeps for Numbered {
-    fn host<'a>(&'a self, png: Vec<u8>) -> BoxFuture<'a, Result<String, RenderError>> {
-        assert_eq!(&png[..4], b"\x89PNG");
-        let k = {
-            let mut n = self.0.lock().unwrap();
-            *n += 1;
-            *n
-        };
-        Box::pin(async move { Ok(format!("https://img.example/e/{k}.png")) })
-    }
-}
-
-#[test]
-fn emails_match_ts_with_the_real_painter() {
-    let host = LiveHost::new();
-    let r = OcRenderer::new(&host);
-    for (file, g) in golden_dir("email") {
-        let doc = design(g["name"].as_str().unwrap());
-        let pages: Vec<String> = g["pages"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|p| p.as_str().unwrap().to_string())
-            .collect();
-        let out = block_on(export_email(
-            &r,
-            &host,
-            &doc,
-            &pages,
-            &Numbered(Mutex::new(0)),
-        ))
-        .unwrap();
-        if let Some(d) = str_diff(&out.html, g["html"].as_str().unwrap()) {
-            panic!("{file}: {d}");
-        }
-        assert_eq!(out.text, g["text"].as_str().unwrap(), "{file}");
-    }
 }
 
 struct LayoutRefs(serde_json::Map<String, Value>);

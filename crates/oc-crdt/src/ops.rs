@@ -17,7 +17,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use yrs::{Doc, Map as _, MapRef, Origin, Out, ReadTxn, Transact, TransactionMut, XmlFragmentRef};
 
-use crate::brandlock::{BrandAction, brand_lock_error, is_brand_lock};
 use crate::codec::{
     Roots, apply_update, element_map, encode_state, is_deleted, new_doc_with_client, page_map, props_of, read_element,
     read_page, roots, text_of, tombstone, write_element, write_page,
@@ -180,9 +179,6 @@ pub struct ApplyOptions<'a> {
     pub now: Option<f64>,
     /// Apply what can be applied instead of all-or-nothing.
     pub partial: bool,
-    /// Brand-template locks (A8): `Some(false)` holds the writer to `lock.by === 'brand'` masks (team members /
-    /// designers); `Some(true)` or unset = brand admin (team owner/admin, server-side tools).
-    pub brand_admin: Option<bool>,
     /// Random source for new ids and jittered z keys (default: the OS RNG).
     pub rng: Option<&'a mut dyn RandomSource>,
 }
@@ -268,7 +264,6 @@ struct Ctx<'a, 'r> {
     result: DocOpResult,
     now: f64,
     actor: String,
-    brand_admin: Option<bool>,
     rng: &'r mut (dyn RandomSource + 'a),
 }
 
@@ -311,33 +306,15 @@ impl Ctx<'_, '_> {
         text_of(txn, &m).map_or_else(|| err(DocOpErrorCode::Invalid, format!("element {id} has no text")), Ok)
     }
 
+    /// Locks with `by: 'brand'` come from documents of the retired brand-template locks and hold nobody.
     fn lock_of(txn: &TransactionMut, m: &MapRef) -> Option<Value> {
-        json_of(txn, m, "lock")
+        json_of(txn, m, "lock").filter(|l| l.get("by").and_then(Value::as_str) != Some("brand"))
     }
 
-    /// User locks pin position; brand locks are checked separately (by mask) and only for non-admins.
+    /// User locks pin position.
     fn is_locked(txn: &TransactionMut, m: &MapRef) -> bool {
         let l = Self::lock_of(txn, m);
-        truthy_opt(l.as_ref().and_then(|l| l.get("move"))) && !is_brand_lock(l.as_ref())
-    }
-
-    fn brand_check(&self, txn: &TransactionMut, id: &str, m: &MapRef, action: &BrandAction<'_>) -> Result<(), OpError> {
-        if self.brand_admin != Some(false) {
-            return Ok(());
-        }
-        let lock = Self::lock_of(txn, m);
-        match brand_lock_error(lock.as_ref(), action) {
-            Some(e) => err(DocOpErrorCode::Locked, format!("element {id} can’t be changed: {e}")),
-            None => Ok(()),
-        }
-    }
-
-    /// Text ops target the element itself (or, for a table/shape label, still the element id).
-    fn brand_text(&self, txn: &TransactionMut, id: &str, action: BrandAction<'_>) -> Result<(), OpError> {
-        match element_map(txn, &self.r, id) {
-            Some(m) => self.brand_check(txn, id, &m, &action),
-            None => Ok(()),
-        }
+        truthy_opt(l.as_ref().and_then(|l| l.get("move")))
     }
 
     fn parent_exists(&self, txn: &TransactionMut, id: &str) -> bool {
@@ -504,16 +481,6 @@ impl Ctx<'_, '_> {
                 if Self::is_locked(txn, &m) && patch.keys().any(|k| !LOCK_EXEMPT.contains(&k.as_str())) {
                     return err(Locked, format!("element {id} is locked"));
                 }
-                let keys: Vec<String> = patch.keys().cloned().collect();
-                let cur_xf = json_of(txn, &m, "xf");
-                let cur_body = if patch.contains_key("body") && self.brand_admin == Some(false) {
-                    Some(read_element(txn, &m).get("body").cloned())
-                } else {
-                    None
-                };
-                let xf_pair = patch.get("xf").filter(|v| crate::value::truthy(v)).map(|to| (cur_xf.as_ref(), Some(to)));
-                let body_pair = cur_body.as_ref().map(|from| (from.as_ref(), patch.get("body")));
-                self.brand_check(txn, id, &m, &BrandAction::Patch { keys, xf: xf_pair, body: body_pair })?;
                 for k in patch.keys() {
                     if matches!(k.as_str(), "id" | "type" | "parentId" | "z") {
                         return err(Invalid, format!("use reparent/reorder to change {k}"));
@@ -559,8 +526,6 @@ impl Ctx<'_, '_> {
                 if Self::is_locked(txn, &m) {
                     return err(Locked, format!("element {id} is locked"));
                 }
-                let from = json_of(txn, &m, "xf");
-                self.brand_check(txn, id, &m, &BrandAction::Xf { from: from.as_ref(), to: Some(xf) })?;
                 let mut next = read_element(txn, &m);
                 next.insert("xf".into(), xf.clone());
                 check_element(&Value::Object(next)).or_else(|e| err(Schema, e))?;
@@ -575,7 +540,6 @@ impl Ctx<'_, '_> {
                 if self.would_cycle(txn, id, parent) {
                     return err(Cycle, format!("cannot move {id} into its own descendant"));
                 }
-                self.brand_check(txn, id, &m, &BrandAction::Move)?;
                 let z = self.z_for(txn, parent, after.as_deref(), Some(id))?;
                 m.insert(txn, "z", z);
                 m.insert(txn, "parentId", parent.clone());
@@ -586,7 +550,6 @@ impl Ctx<'_, '_> {
             }
             DocOp::Reorder { id, after } => {
                 let m = self.el_map(txn, id)?;
-                self.brand_check(txn, id, &m, &BrandAction::Move)?;
                 let parent = str_of(txn, &m, "parentId").unwrap_or_default();
                 let z = self.z_for(txn, &parent, Some(after), Some(id))?;
                 m.insert(txn, "z", z);
@@ -595,16 +558,10 @@ impl Ctx<'_, '_> {
             DocOp::Delete { id } => {
                 let m = self.el_map(txn, id)?;
                 let lock = Self::lock_of(txn, &m);
-                if truthy_opt(lock.as_ref().and_then(|l| l.get("delete"))) && (!is_brand_lock(lock.as_ref()) || self.brand_admin == Some(false)) {
+                if truthy_opt(lock.as_ref().and_then(|l| l.get("delete"))) {
                     return err(Locked, format!("element {id} cannot be deleted"));
                 }
-                self.brand_check(txn, id, &m, &BrandAction::Delete)?;
                 let desc = self.descendants(txn, id);
-                for d in &desc {
-                    if let Some(dm) = element_map(txn, &self.r, d) {
-                        self.brand_check(txn, d, &dm, &BrandAction::Delete)?;
-                    }
-                }
                 let stamp = json_to_any(&tombstone(self.now, &self.actor));
                 m.insert(txn, "deleted", stamp.clone());
                 // Tombstone descendants too, so a later undo restores the whole subtree.
@@ -617,7 +574,6 @@ impl Ctx<'_, '_> {
             }
             DocOp::SetText { id, body } => {
                 let m = self.el_map(txn, id)?;
-                self.brand_check(txn, id, &m, &BrandAction::Content)?;
                 let frag = self.text_frag(txn, id)?;
                 let props = props_of(txn, &m);
                 let body = match body {
@@ -637,20 +593,17 @@ impl Ctx<'_, '_> {
                 Ok(())
             }
             DocOp::TextInsert { id, offset, text, marks } => {
-                self.brand_text(txn, id, BrandAction::Content)?;
                 check_links(marks.as_ref(), "marks.")?;
                 let frag = self.text_frag(txn, id)?;
                 insert_text(txn, &frag, *offset as i64, text, marks.as_ref());
                 Ok(())
             }
             DocOp::TextDelete { id, offset, len } => {
-                self.brand_text(txn, id, BrandAction::Content)?;
                 let frag = self.text_frag(txn, id)?;
                 delete_text(txn, &frag, *offset as i64, *len as i64);
                 Ok(())
             }
             DocOp::TextFormat { id, marks, offset, len } => {
-                self.brand_text(txn, id, BrandAction::Style)?;
                 check_links(Some(marks), "marks.")?;
                 let frag = self.text_frag(txn, id)?;
                 match (offset, len) {
@@ -675,7 +628,6 @@ impl Ctx<'_, '_> {
                 Ok(())
             }
             DocOp::TextParagraph { id, attrs, offset, len } => {
-                self.brand_text(txn, id, BrandAction::Style)?;
                 let frag = self.text_frag(txn, id)?;
                 let range = offset.map(|o| (o as i64, len.unwrap_or(0.0) as i64));
                 set_paragraphs(txn, &frag, attrs, range);
@@ -724,11 +676,6 @@ impl Ctx<'_, '_> {
                     return err(Invalid, "a design needs at least one page");
                 }
                 let desc = self.descendants(txn, page_id);
-                for d in &desc {
-                    if let Some(dm) = element_map(txn, &self.r, d) {
-                        self.brand_check(txn, d, &dm, &BrandAction::Delete)?;
-                    }
-                }
                 let stamp = json_to_any(&tombstone(self.now, &self.actor));
                 for d in &desc {
                     if let Some(dm) = element_map(txn, &self.r, d) {
@@ -839,7 +786,7 @@ fn run_all(ydoc: &Doc, ops: &[DocOp], origin: Option<Origin>, ctx: &mut Ctx<'_, 
 /// nothing is written if any op fails.
 pub fn apply_ops(ydoc: &Doc, ops: &[DocOp], origin: Option<Origin>, opts: ApplyOptions<'_>) -> DocOpResult {
     let mut os = OsRandom;
-    let ApplyOptions { actor, now, partial, brand_admin, rng } = opts;
+    let ApplyOptions { actor, now, partial, rng } = opts;
     let rng: &mut dyn RandomSource = match rng {
         Some(r) => r,
         None => &mut os,
@@ -857,7 +804,6 @@ pub fn apply_ops(ydoc: &Doc, ops: &[DocOp], origin: Option<Origin>, opts: ApplyO
             result: DocOpResult { ok: true, ..Default::default() },
             now,
             actor: actor.clone(),
-            brand_admin,
             rng: &mut *rng,
         };
         run_all(&scratch, ops, None, &mut ctx);
@@ -866,7 +812,7 @@ pub fn apply_ops(ydoc: &Doc, ops: &[DocOp], origin: Option<Origin>, opts: ApplyO
         }
     }
 
-    let mut ctx = Ctx { r: roots(ydoc), result: DocOpResult { ok: true, ..Default::default() }, now, actor, brand_admin, rng };
+    let mut ctx = Ctx { r: roots(ydoc), result: DocOpResult { ok: true, ..Default::default() }, now, actor, rng };
     run_all(ydoc, ops, origin, &mut ctx);
     ctx.result
 }

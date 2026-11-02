@@ -1876,71 +1876,6 @@
   },
   {
    "capture": {
-    "sheet": "body.id"
-   },
-   "checks": [
-    {
-     "name": "sheet state",
-     "sql": "SELECT d.surface, d.page_count, length(s.state) > 0 AS has_state FROM designs d JOIN doc_state s ON s.design_id = d.id WHERE d.title = 'Budget'"
-    }
-   ],
-   "db": [
-    {
-     "name": "sheet state",
-     "rows": [
-      {
-       "has_state": true,
-       "page_count": 1,
-       "surface": "sheet"
-      }
-     ]
-    }
-   ],
-   "fake": [
-    {
-     "body": {
-      "designId": "{{sheet}}"
-     },
-     "headers": {
-      "content-type": "application/json",
-      "x-oc-internal": "<token:1>"
-     },
-     "method": "POST",
-     "path": "/internal/thumbnail"
-    }
-   ],
-   "headers": {
-    "cookie": "oc_session=tok-ada",
-    "x-forwarded-for": "198.51.100.32"
-   },
-   "json": {
-    "preset": "sheet",
-    "title": "Budget"
-   },
-   "method": "POST",
-   "name": "create a sheet",
-   "response": {
-    "body": {
-     "id": "{{sheet}}"
-    },
-    "headers": {
-     "cache-control": "no-store",
-     "content-type": "application/json; charset=utf-8",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 200
-   },
-   "url": "/api/designs"
-  },
-  {
-   "capture": {
     "fromTpl": "body.id"
    },
    "checks": [
@@ -2493,23 +2428,6 @@
       {
        "brand_workspace_id": null,
        "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
-      },
-      {
-       "brand_workspace_id": null,
-       "folder_id": null,
        "height": 1080,
        "id": "{{fallback}}",
        "link_access": "restricted",
@@ -2780,7 +2698,7 @@
     "cookie": "oc_session=tok-bob",
     "x-forwarded-for": "198.51.100.45"
    },
-   "name": "brand design doc (locks re-applied)",
+   "name": "brand design doc (the template snapshot as stored)",
    "response": {
     "body": {
      "doc": {
@@ -2802,9 +2720,8 @@
         "id": "<id:2>",
         "kind": "rect",
         "lock": {
-         "by": "brand",
-         "move": true,
-         "style": true
+         "by": "user",
+         "content": true
         },
         "opacity": 1,
         "params": {},
@@ -3590,23 +3507,6 @@
       {
        "brand_workspace_id": null,
        "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
-      },
-      {
-       "brand_workspace_id": null,
-       "folder_id": null,
        "height": 1080,
        "id": "{{fallback}}",
        "link_access": "restricted",
@@ -4226,23 +4126,6 @@
       },
       {
        "brand_workspace_id": null,
-       "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
-      },
-      {
-       "brand_workspace_id": null,
        "folder_id": "00000000-0000-4000-8000-000000006000",
        "height": 297.5,
        "id": "{{custom}}",
@@ -4745,23 +4628,6 @@
       },
       {
        "brand_workspace_id": null,
-       "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
-      },
-      {
-       "brand_workspace_id": null,
        "folder_id": "00000000-0000-4000-8000-000000006000",
        "height": 297.5,
        "id": "{{custom}}",
@@ -5240,23 +5106,6 @@
       },
       {
        "brand_workspace_id": null,
-       "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
-      },
-      {
-       "brand_workspace_id": null,
        "folder_id": "00000000-0000-4000-8000-000000006000",
        "height": 297.5,
        "id": "{{custom}}",
@@ -5675,23 +5524,6 @@
        "unit": "px",
        "width": 1080,
        "workspace_id": "00000000-0000-4000-8000-000000001002"
-      },
-      {
-       "brand_workspace_id": null,
-       "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
       },
       {
        "brand_workspace_id": null,
@@ -6192,23 +6024,6 @@
        "workspace_id": "00000000-0000-4000-8000-000000001002"
       },
       {
-       "brand_workspace_id": null,
-       "folder_id": null,
-       "height": 794,
-       "id": "{{sheet}}",
-       "link_access": "restricted",
-       "owner_id": "00000000-0000-4000-8000-000000000001",
-       "page_count": 1,
-       "surface": "sheet",
-       "template_id": null,
-       "template_version": null,
-       "title": "Budget",
-       "trashed": false,
-       "unit": "px",
-       "width": 1123,
-       "workspace_id": "00000000-0000-4000-8000-000000001001"
-      },
-      {
        "brand_workspace_id": "00000000-0000-4000-8000-000000005000",
        "folder_id": null,
        "height": 1080,
@@ -6540,7 +6355,6 @@
    "name": "ticket",
    "response": {
     "body": {
-     "brandAdmin": true,
      "role": "owner",
      "token": "eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDAwMDEiLCJuYW1lIjoiQWRhIiwiY29sb3IiOiIjN2MzYWVkIiwiYXVkIjoiY29sbGFiIiwiZGVzaWduIjoiU3Bvc3RlcjAwMDAwMDAwMCIsInJvbGUiOiJvd25lciIsImlhdCI6MTczNTczMjgwMDAwMCwiZXhwIjoxNzM1NzMzMTAwfQ.<token:2>"
     },
@@ -6568,7 +6382,6 @@
    "name": "ticket (comment)",
    "response": {
     "body": {
-     "brandAdmin": true,
      "role": "comment",
      "token": "eyJzdWIiOiIwMDAwMDAwMC0wMDAwLTQwMDAtODAwMC0wMDAwMDAwMDAwMDEiLCJuYW1lIjoiQWRhIiwiY29sb3IiOiIjN2MzYWVkIiwiYXVkIjoiY29sbGFiIiwiZGVzaWduIjoiU3NoYXJlZDAwMDAwMDAwMCIsInJvbGUiOiJjb21tZW50IiwiaWF0IjoxNzM1NzMyODAwMDAwLCJleHAiOjE3MzU3MzMxMDB9.<token:3>"
     },
@@ -6596,7 +6409,6 @@
    "name": "ticket for a brand-locked design",
    "response": {
     "body": {
-     "brandAdmin": false,
      "role": "owner",
      "token": "<volatile>"
     },
@@ -7345,8 +7157,6 @@
    "name": "versions",
    "response": {
     "body": {
-     "hiddenOlder": 0,
-     "limitDays": null,
      "versions": [
       {
        "author": "Ada",
@@ -7649,8 +7459,6 @@
    "name": "versions after saving",
    "response": {
     "body": {
-     "hiddenOlder": 0,
-     "limitDays": null,
      "versions": [
       {
        "author": "Ada",
@@ -7705,7 +7513,7 @@
      "issues": [
       {
        "code": "invalid_value",
-       "message": "Invalid option: expected one of \"png\"|\"jpg\"|\"pdf\"|\"pdf-print\"|\"pdf-flat\"|\"pptx\"|\"html-email\"|\"zip\"|\"svg\"|\"mp4\"|\"gif\"|\"docx\"|\"md\"",
+       "message": "Invalid option: expected one of \"png\"|\"jpg\"|\"pdf\"|\"pdf-print\"|\"pdf-flat\"|\"pptx\"|\"zip\"|\"svg\"|\"mp4\"|\"gif\"|\"docx\"|\"md\"",
        "path": [
         "format"
        ],
@@ -7716,7 +7524,6 @@
         "pdf-print",
         "pdf-flat",
         "pptx",
-        "html-email",
         "zip",
         "svg",
         "mp4",
@@ -7963,16 +7770,19 @@
     "format": "png"
    },
    "method": "POST",
-   "name": "export waits for approval",
+   "name": "a stored requireApproval no longer blocks an export",
    "response": {
     "body": {
-     "error": "approval_required",
-     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
-     "status": "none"
+     "$binary": {
+      "dims": null,
+      "sha256": "<sha:3>",
+      "size": 27
+     }
     },
     "headers": {
      "cache-control": "no-store",
-     "content-type": "application/json; charset=utf-8",
+     "content-disposition": "attachment; filename=\"design.png\"",
+     "content-type": "image/png",
      "cross-origin-opener-policy": "same-origin",
      "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
      "referrer-policy": "strict-origin-when-cross-origin",
@@ -7982,9 +7792,27 @@
      "x-ratelimit-remaining": "599",
      "x-ratelimit-reset": "60"
     },
-    "status": 403
+    "status": 200
    },
-   "url": "/api/designs/Sagency000000000/export"
+   "url": "/api/designs/Sagency000000000/export",
+   "fake": [
+    {
+     "body": {
+      "designId": "Sagency000000000",
+      "embeds": [],
+      "format": "png",
+      "quality": 90,
+      "scale": 1,
+      "transparent": false
+     },
+     "headers": {
+      "content-type": "application/json",
+      "x-oc-internal": "<token:1>"
+     },
+     "method": "POST",
+     "path": "/internal/export"
+    }
+   ]
   },
   {
    "fake": [
@@ -8018,7 +7846,7 @@
     "body": {
      "$binary": {
       "dims": null,
-      "sha256": "<sha:3>",
+      "sha256": "<sha:4>",
       "size": 27
      }
     },
@@ -8179,23 +8007,6 @@
      "unit": "px",
      "width": 1080,
      "workspace_id": "00000000-0000-4000-8000-000000001002"
-    },
-    {
-     "brand_workspace_id": null,
-     "folder_id": null,
-     "height": 794,
-     "id": "{{sheet}}",
-     "link_access": "restricted",
-     "owner_id": "00000000-0000-4000-8000-000000000001",
-     "page_count": 1,
-     "surface": "sheet",
-     "template_id": null,
-     "template_version": null,
-     "title": "Budget",
-     "trashed": false,
-     "unit": "px",
-     "width": 1123,
-     "workspace_id": "00000000-0000-4000-8000-000000001001"
     },
     {
      "brand_workspace_id": "00000000-0000-4000-8000-000000005000",

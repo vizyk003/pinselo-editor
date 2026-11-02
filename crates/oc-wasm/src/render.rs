@@ -7,7 +7,7 @@
 //!   page resolved per drag frame never crosses the boundary as data.
 //! * [`RenderTarget`]: a tile (or any rectangle) of a device being painted — a tiny-skia region canvas
 //!   (`Canvas::new_region`) with the Skia-style save/restore/transform/clip/layer calls the editor's scene needs,
-//!   plus the scene primitives (workspace fill, page shadow, whiteboard dots). `end()` hands back unpremultiplied
+//!   plus the scene primitives (workspace fill, page shadow). `end()` hands back unpremultiplied
 //!   RGBA for `putImageData`.
 //! * [`Painter`]: oc-render's `Renderer` sharing the editor's oc-text engine (one font registry and one layout
 //!   cache for measuring, caret geometry and drawing), the asset bytes fed from JS, video frames fed from JS, and
@@ -466,32 +466,6 @@ impl RenderTarget {
         }
         Ok(())
     }
-
-    /// Round dots of `radius` (local units) at `points` (`[x0, y0, x1, y1, …]`), only those in the clip.
-    #[allow(clippy::too_many_arguments)]
-    pub fn dots(&mut self, points: &[f32], radius: f32, r: f32, g: f32, b: f32, a: f32) -> Result<(), JsError> {
-        let c = self.c()?;
-        let m = c.transform();
-        let inv = m.invert().unwrap_or_default();
-        let clip = c.clip_bounds();
-        // The clip in local units (axis-aligned scene transform), widened by the radius.
-        let mut lo = tiny_skia::Point::from_xy(clip.left() as f32, clip.top() as f32);
-        let mut hi = tiny_skia::Point::from_xy(clip.right() as f32, clip.bottom() as f32);
-        inv.map_point(&mut lo);
-        inv.map_point(&mut hi);
-        let (lx, hx) = (lo.x.min(hi.x) - radius, lo.x.max(hi.x) + radius);
-        let (ly, hy) = (lo.y.min(hi.y) - radius, lo.y.max(hi.y) + radius);
-        let mut pb = PathBuilder::new();
-        for &[x, y] in points.as_chunks::<2>().0 {
-            if x >= lx && x <= hx && y >= ly && y <= hy {
-                pb.push_circle(x, y, radius);
-            }
-        }
-        if let Some(path) = pb.finish() {
-            c.fill_path(&path, &solid(rgba(r, g, b, a)));
-        }
-        Ok(())
-    }
 }
 
 /// Premultiplied pixels kept for compositing (a cached tile layer).
@@ -608,7 +582,7 @@ impl Painter {
     }
 
     /// Draw a display list onto a target (its current transform maps page space to device pixels). `background`
-    /// / `items` choose the parts (the whiteboard grid goes between them). Groups outside the clip are skipped.
+    /// / `items` choose the parts. Groups outside the clip are skipped.
     pub fn draw(&mut self, target: &mut RenderTarget, dl: &DisplayList, background: bool, items: bool) -> Result<(), JsError> {
         let groups = self.groups_of(dl);
         let c = target.c()?;

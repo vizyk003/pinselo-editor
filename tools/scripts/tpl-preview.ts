@@ -26,7 +26,7 @@ for (const t of all) {
     console.log(`  ⚠ ${t.id}: ${i.code} ${JSON.stringify(i.data)} “${txt}”`);
   }
 }
-const bundle = writeBundle(join(paths.data, 'preview-bundle'), all.map((t) => ({ id: t.id, title: t.title, category: t.category, preset: t.preset, tags: t.tags, premium: false, doc: t.doc })));
+const bundle = writeBundle(join(paths.data, 'preview-bundle'), all.map((t) => ({ id: t.id, title: t.title, category: t.category, preset: t.preset, tags: t.tags, doc: t.doc })));
 const code = runRust('oc-templates', ['preview', bundle, out, '--width', '900', ...(process.argv.includes('--pages') ? ['--pages'] : [])]);
 if (code !== 0) process.exitCode = code;
 

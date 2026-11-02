@@ -84,7 +84,7 @@ for (const file of process.argv.slice(2).length ? process.argv.slice(2) : ['vd-d
       cache.set(id, { doc, dl });
       return dl;
     });
-    const more = scene.frame({ view: doc, port, dpr: DPR, workspace: [0.91, 0.91, 0.93, 1], whiteboard: false, pages, layout });
+    const more = scene.frame({ view: doc, port, dpr: DPR, workspace: [0.91, 0.91, 0.93, 1], pages, layout });
     return { ms: performance.now() - t0, more };
   };
   const drain = () => {

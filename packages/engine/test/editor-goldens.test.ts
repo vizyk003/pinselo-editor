@@ -73,12 +73,6 @@ function invoke(ed: Editor, ydoc: Y.Doc, m: string, a: any[]): unknown {
       return null;
     case '$template':
       return applyTemplate(ed, a[0]);
-    case 'user=':
-      ed.user = a[0] ?? null;
-      return null;
-    case 'brandAdmin=':
-      ed.brandAdmin = Boolean(a[0]);
-      return null;
     case 'checkpoint':
     case 'store.checkpoint':
       ed.store.checkpoint();
@@ -98,8 +92,6 @@ function invoke(ed: Editor, ydoc: Y.Doc, m: string, a: any[]): unknown {
     case 'view':
     case 'version':
     case 'editingTableText':
-    case 'brandAdmin':
-    case 'user':
       return (ed as any)[m];
     case 'overrides':
       return Object.fromEntries(ed.overrides);
@@ -116,8 +108,6 @@ function invoke(ed: Editor, ydoc: Y.Doc, m: string, a: any[]): unknown {
     }
     case 'bulkCreate':
       return ed.bulkCreate(a[0], a[1], a[2] ? new Map(Object.entries(a[2])) : undefined);
-    case 'isBrandLocked':
-      return ed.isBrandLocked(typeof a[0] === 'string' ? (ed.doc.elements as any)[a[0]] : a[0]);
     default: {
       const f = (ed as any)[m];
       if (typeof f === 'function') return f.apply(ed, a);
@@ -136,8 +126,6 @@ describe('editor goldens through the facade', () => {
     Y.applyUpdate(ydoc, unb64(g.update));
     const ed = new Editor(ydoc, g.viewport, { clock: 'manual', now: g.clock, seed: g.seed, clientId: 2 });
     if (g.text === 'gold') ed.textService = goldText;
-    ed.brandAdmin = g.brandAdmin;
-    ed.user = g.user;
     let notified = 0;
     ed.subscribe(() => notified++);
     const expected = json(g.doc);

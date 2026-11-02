@@ -28,7 +28,6 @@ import { DrawPanel, ElementsPanel, LayersPanel, TemplatesPanel, TextPanel, Uploa
 import { AiPanel } from './AiPanel';
 import { useEditWithAi } from './EditWithAi';
 import { BrandPanel } from './BrandPanel';
-import { ApprovalBadge } from './Approval';
 import { Present } from './Present';
 import { Timeline } from './Timeline';
 import { VideoPanel } from './VideoPanel';
@@ -36,7 +35,6 @@ import { StylesPanel } from './StylesPanel';
 import { CommandPalette } from './CommandPalette';
 import { NotificationsBell } from '../components/Notifications';
 import { Toolbar } from './Toolbar';
-import { WhiteboardBar } from './Whiteboard';
 import { FindReplaceDialog } from './FindReplace';
 import { LibraryPanel } from './LibraryPanel';
 import { EditorScheduleDialog } from '../social/EditorSchedule';
@@ -48,7 +46,6 @@ import { contentApi } from '../api';
 import { PageGridView } from './PageGrid';
 import { getViewPrefs, setViewPrefs, useViewPrefs } from './viewPrefs';
 import { t, tk, tn } from '../i18n';
-import { useLinkedCharts } from '../sheet/linkedCharts';
 import { CreateDialog } from '../pages/home/CreateDialog';
 import { FolderPicker } from '../components/FolderPicker';
 import { ProjectsPanel } from './panels/ProjectsPanel';
@@ -80,7 +77,7 @@ const READ_ONLY_PANELS: ReadonlySet<PanelId> = new Set(['layers', 'projects']);
 
 const SURFACE_LABEL: Record<string, string> = {
   graphic: tk('Graphic'), presentation: tk('Presentation'), print: tk('Print'), video: tk('Video'), whiteboard: tk('Whiteboard'),
-  doc: tk('Doc'), sheet: tk('Sheet'), website: tk('Website'), email: tk('Email'),
+  doc: tk('Doc'), website: tk('Website'), email: tk('Email'),
 };
 
 /** Same file types as the Uploads panel. */
@@ -101,8 +98,6 @@ export function EditorShell({ editor, engine, provider, design, intent }: {
   const [presenting, setPresenting] = useState(false);
   const role = design.role;
   const readOnly = role === 'view' || role === 'comment';
-  // Linked charts (A15): refresh from their sheets on open; insert a chart handed over from a sheet.
-  useLinkedCharts(editor, readOnly);
 
   // Text geometry for the editor comes from the engine's font registry: the same oc-text engine (and layout
   // cache) the canvas draws with, so measured heights and the caret match the drawn text.
@@ -407,7 +402,6 @@ function ShellInner({ presenting, setPresenting, dialog, setDialog }: {
           <div className="ctx-slot"><Toolbar /></div>
           <CanvasMirror />
           <Canvas presence={presence} commentPins={commentPins} />
-          {editor.doc.meta.surface === 'whiteboard' && <WhiteboardBar />}
           <Announcer />
           <div>
             {notesOpen && <NotesBar />}
@@ -607,7 +601,6 @@ function Header({ status, unsynced, presence, openComments, commentCount, setDia
         {status === 'connected' ? <Cloud size={15} /> : <CloudOff size={15} />}
         {status === 'connected' ? (unsynced ? t('Saving…') : t('Saved')) : t('Offline')}
       </span>
-      <ApprovalBadge />
       <AiPill presence={presence} />
       <div className="grow" />
       <input className="title-input" value={title} disabled={readOnly} onChange={(e) => setTitle(e.target.value)} onBlur={saveTitle}

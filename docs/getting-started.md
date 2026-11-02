@@ -126,9 +126,7 @@ OC_STAFF_EMAILS=you@example.com pnpm dev
 | Stock media keys | Openverse still works without a key. Unsplash, Pexels, Pixabay and GIPHY stay off |
 | Sign-in providers | Passwords, magic links, passkeys and the development sign-in remain |
 | Social network credentials | Those networks stay unavailable in the Content Planner. Bluesky needs no server credentials |
-| Stripe | A local stand-in handles payments with no charge, outside production only |
 | Supabase | Not used. See [supabase.md](supabase.md) if you want it |
-| `OC_WHISPER_CMD`, `OC_WHISPER_MODEL` | Auto captions report that they are unavailable |
 
 Local state lives in the database and in `.data/`. Both can be recreated with `pnpm db:migrate` and `pnpm seed`, but anything you made locally is lost.
 

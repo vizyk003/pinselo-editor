@@ -5,7 +5,7 @@
  */
 import { sortedPages, videoSlots, type DesignDoc } from '@oc/engine';
 import {
-  Check, ChevronDown, Download, FileArchive, FileImage, FileText, FileType, Film, Image as ImageIcon, ImagePlay, Mail, Music,
+  Check, ChevronDown, Download, FileArchive, FileImage, FileText, FileType, Film, Image as ImageIcon, ImagePlay, Music,
   PenTool, Presentation, Printer, Trash2, Upload, X,
 } from 'lucide-react';
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react';
@@ -26,7 +26,7 @@ import { PageThumb } from './PageStrip';
 import { useWatermark, WatermarkOptions } from './WatermarkOptions';
 import './download.css';
 
-export type ExportFormat = 'png' | 'jpg' | 'pdf' | 'pdf-print' | 'pdf-flat' | 'pptx' | 'html-email' | 'zip' | 'svg' | 'mp4' | 'gif' | 'm4a' | 'docx' | 'md';
+export type ExportFormat = 'png' | 'jpg' | 'pdf' | 'pdf-print' | 'pdf-flat' | 'pptx' | 'zip' | 'svg' | 'mp4' | 'gif' | 'm4a' | 'docx' | 'md';
 
 interface FormatInfo { id: ExportFormat; name: string; desc: string; icon: ComponentType<{ size?: number }>; more?: boolean; docOnly?: boolean }
 
@@ -41,7 +41,6 @@ const FORMATS: FormatInfo[] = [
   { id: 'svg', name: tk('SVG'), desc: tk('Scalable vector, editable text'), icon: PenTool, more: true },
   { id: 'pdf-flat', name: tk('PDF Flattened'), desc: tk('Every page as an image'), icon: FileText, more: true },
   { id: 'zip', name: tk('ZIP'), desc: tk('Every page as PNG'), icon: FileArchive, more: true },
-  { id: 'html-email', name: tk('Email (HTML)'), desc: tk('Paste into your email tool'), icon: Mail, more: true },
   { id: 'm4a', name: tk('Audio (M4A)'), desc: tk('Soundtrack only'), icon: Music, more: true },
   { id: 'docx', name: tk('Word (DOCX)'), desc: tk('Editable document'), icon: FileType, more: true, docOnly: true },
   { id: 'md', name: tk('Markdown (MD)'), desc: tk('Plain text'), icon: FileType, more: true, docOnly: true },
@@ -51,7 +50,7 @@ const VIDEO_FORMATS: ExportFormat[] = ['mp4', 'gif', 'm4a'];
 /** Formats the export watermark applies to (g64). */
 const WATERMARK_FORMATS: ExportFormat[] = ['png', 'jpg', 'pdf', 'pdf-print', 'pdf-flat', 'zip', 'svg'];
 /** Formats that export the whole design (no page choice). */
-const WHOLE_DESIGN: ExportFormat[] = ['zip', 'pptx', 'html-email', 'docx', 'md', ...VIDEO_FORMATS];
+const WHOLE_DESIGN: ExportFormat[] = ['zip', 'pptx', 'docx', 'md', ...VIDEO_FORMATS];
 
 const STANDARD_HELP: Record<PdfStandard, string> = {
   none: tk('A regular PDF with no print standard.'),
@@ -66,12 +65,11 @@ export function suggestedFormat(doc: DesignDoc, printProduct: boolean): ExportFo
   if (s === 'video' || Object.values(doc.elements).some((e) => !e.deleted && videoSlots(e).length > 0)) return 'mp4';
   if (printProduct) return 'pdf-print';
   if (s === 'presentation') return 'pptx';
-  if (s === 'email') return 'html-email';
-  if (s === 'doc' || s === 'sheet') return 'pdf';
+  if (s === 'doc') return 'pdf';
   return 'png';
 }
 
-const NON_PRINT_SURFACES = ['doc', 'sheet', 'website', 'email', 'video', 'presentation'];
+const NON_PRINT_SURFACES = ['doc', 'website', 'email', 'video', 'presentation'];
 
 export function DownloadPanel({ onClose }: { onClose: () => void }) {
   const { design, editor } = useEd();
@@ -156,7 +154,7 @@ export function DownloadPanel({ onClose }: { onClose: () => void }) {
         const blob = await api.exportDesign(design.id, { format, pages: selPages, scale, quality, transparent, ...(print ? { print } : {}), ...(wm ? { watermark: wm } : {}) });
         const many = (selPages?.length ?? pages.length) > 1;
         const ext = blob.type.includes('zip') ? 'zip'
-          : format.startsWith('pdf') ? 'pdf' : format === 'pptx' || format === 'docx' || format === 'md' ? format : format === 'html-email' ? 'html'
+          : format.startsWith('pdf') ? 'pdf' : format === 'pptx' || format === 'docx' || format === 'md' ? format
           : format === 'zip' || many ? 'zip' : format;
         download(blob, `${base}.${ext}`);
       }

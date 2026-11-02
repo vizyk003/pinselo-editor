@@ -6,4 +6,3 @@ export * from './editor';
 export * from './templates';
 export * from './a11y';
 export * from './styles';
-export * from './whiteboard';

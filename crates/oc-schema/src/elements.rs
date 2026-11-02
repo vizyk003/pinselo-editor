@@ -34,7 +34,7 @@ string_enum! {
     pub enum LockBy { User = "user", Brand = "brand" }
 }
 
-/// Element lock. `by: 'user'` locks are a convenience; `by: 'brand'` locks come from a brand template (A8).
+/// Element lock. `by: 'user'` locks are a convenience; `by: 'brand'` locks are left in old documents and hold nobody.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LockMask {
@@ -376,7 +376,7 @@ pub struct MindMeta {
     pub extra: Extra,
 }
 
-/// Whiteboard metadata (WB-020..): sticky notes, sections and mind-map nodes.
+/// Board metadata of older documents (still parsed): sticky notes, whiteboard sections and mind-map nodes.
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct BoardMeta {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -849,21 +849,6 @@ pub struct ChartSeries {
     pub extra: Extra,
 }
 
-/// Linked data (A15): the chart mirrors a range of a sheet design.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ChartSource {
-    pub design_id: String,
-    pub sheet: String,
-    pub range: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sheet_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub refreshed_at: Option<f64>,
-    #[serde(flatten)]
-    pub extra: Extra,
-}
-
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ChartStyle {
@@ -893,8 +878,6 @@ pub struct ChartEl {
     pub kind: ChartKind,
     pub labels: Vec<String>,
     pub series: Vec<ChartSeries>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<ChartSource>,
     pub style: ChartStyle,
 }
 

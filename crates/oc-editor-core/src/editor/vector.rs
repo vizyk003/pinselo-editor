@@ -286,7 +286,7 @@ impl Editor {
     pub fn start_path_edit(&mut self, id: &str) -> bool {
         let doc = self.doc();
         let Some(el) = doc.live(id) else { return false };
-        if !matches!(el, Element::Shape(_)) || locked_content(el) || self.is_brand_locked(Some(el)) {
+        if !matches!(el, Element::Shape(_)) || locked_content(el) {
             return false;
         }
         let id = id.to_string();
@@ -577,7 +577,7 @@ impl Editor {
     pub fn boolean_op(&mut self, op: BoolOp) -> Option<String> {
         let doc = self.doc();
         let sel = self.selected();
-        if sel.len() < 2 || sel.iter().any(|e| !matches!(e, Element::Shape(_)) || locked_content(e) || self.is_brand_locked(Some(e))) {
+        if sel.len() < 2 || sel.iter().any(|e| !matches!(e, Element::Shape(_)) || locked_content(e)) {
             return None;
         }
         let parent = sel[0].parent_id().unwrap_or("").to_string();
@@ -623,7 +623,7 @@ impl Editor {
     pub fn replace_with_path(&mut self, id: &str, d: &str, fill: Option<Paint>) -> Option<String> {
         let doc = self.doc();
         let el = doc.live(id)?.clone();
-        if locked_content(&el) || self.is_brand_locked(Some(&el)) {
+        if locked_content(&el) {
             return None;
         }
         let path = VectorPath::parse(d);
@@ -655,7 +655,7 @@ impl Editor {
     pub fn replace_with_elements(&mut self, id: &str, els: Vec<Map<String, Value>>) -> Option<String> {
         let doc = self.doc();
         let el = doc.live(id)?.clone();
-        if locked_content(&el) || self.is_brand_locked(Some(&el)) || els.is_empty() {
+        if locked_content(&el) || els.is_empty() {
             return None;
         }
         let parent = el.parent_id().unwrap_or("").to_string();

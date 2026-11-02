@@ -72,7 +72,6 @@ pub struct User {
     pub name: String,
     pub color: String,
     pub role: oc_auth::Role,
-    pub brand_locked: bool,
 }
 
 impl User {
@@ -339,7 +338,7 @@ impl Server {
         // Read-only at the transport layer: document updates from read-only connections are dropped.
         let read_only = !oc_auth::at_least(Some(t.claims.role), oc_auth::Role::Edit);
         let c = t.claims;
-        Ok((User { id: c.sub, name: c.name, color: c.color, role: c.role, brand_locked: c.brand_locked.unwrap_or(false) }, read_only))
+        Ok((User { id: c.sub, name: c.name, color: c.color, role: c.role }, read_only))
     }
 
     // ------------------------------------------------------------------ documents
@@ -638,13 +637,6 @@ impl Server {
                 eprintln!("closing connection {} (while handling {}) because of exception {e}", conn.socket_id, doc.name);
                 return Err(CloseEvent::reset_connection());
             }
-        }
-        // Brand-template locks (A8): members/designers can't change locked elements, whatever their client sends.
-        if conn.user.brand_locked
-            && let Some(v) = ydoc::brand_violations(&doc.ydoc, &update)
-        {
-            eprintln!("[beforeHandleMessage] {v}");
-            return Err(CloseEvent::new(4409, "brand lock"));
         }
         let actor = match conn.user.actor() {
             Ok(a) => Some(a),

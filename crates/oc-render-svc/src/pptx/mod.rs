@@ -32,7 +32,7 @@ use oc_schema::table::{
 use oc_schema::text::{CaseTransform, ListKind, TextAlign, TextBody, resolve_run_style};
 use oc_schema::tree::{children_of, sorted_pages};
 
-use crate::renderer::{PathCmd, RasterOptions, RenderError, RenderHost, Renderer};
+use crate::renderer::{PathCmd, RasterOptions, RenderError, RenderHost, Renderer, Rgba};
 
 /// Why asset bytes are missing.
 #[derive(Debug)]
@@ -338,7 +338,7 @@ impl<'a> Deck<'a> {
         let ch = (f64::from(rgba.height) - y0)
             .min((xf.h * scale).ceil())
             .max(1.0);
-        let cut = crate::email::crop_like_ts(&rgba, x0, y0, cw, ch);
+        let cut = crop_like_ts(&rgba, x0, y0, cw, ch);
         Ok(Some(self.r.encode_png(&cut).await?))
     }
 
@@ -1279,6 +1279,27 @@ pub async fn export_pptx(
     pptx_package(r, host, doc, page_ids, deps, chrono::Utc::now())
         .await?
         .to_zip()
+}
+
+/// Copy a `cw × ch` region starting at `(x, y)` of a raster: row `yy` is the `cw * 4` bytes at flat offset
+/// `((y + yy) * width + x) * 4` (cut short at the end of the buffer, zeros beyond).
+fn crop_like_ts(src: &Rgba, x: f64, y: f64, cw: f64, ch: f64) -> Rgba {
+    let (cw, ch) = (cw.max(1.0) as usize, ch.max(1.0) as usize);
+    let width = src.width as usize;
+    let mut out = vec![0u8; cw * ch * 4];
+    for yy in 0..ch {
+        let start = ((y as usize + yy) * width + x as usize) * 4;
+        if start >= src.pixels.len() {
+            break;
+        }
+        let end = (start + cw * 4).min(src.pixels.len());
+        out[yy * cw * 4..yy * cw * 4 + (end - start)].copy_from_slice(&src.pixels[start..end]);
+    }
+    Rgba {
+        width: cw as u32,
+        height: ch as u32,
+        pixels: out,
+    }
 }
 
 #[cfg(test)]

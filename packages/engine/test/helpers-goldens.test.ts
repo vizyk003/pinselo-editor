@@ -75,7 +75,6 @@ function sameColors(actual: any, want: any): string | null {
 
 describe('@oc/editor-core helpers (modules.json)', () => {
   test('modules', () => {
-    let timer: any = null;
     const { cases } = golden('editor', 'modules.json');
     replay('editor/modules', cases, (fn, a) => {
       const doc = () => fixture(a[0]);
@@ -89,13 +88,6 @@ describe('@oc/editor-core helpers (modules.json)', () => {
         case 'fontSetOps': return E.fontSetOps(doc(), a[1]);
         case 'pageSlots': return E.pageSlots(doc());
         case 'screenToScene': return E.screenToScene(a[0], a[1]);
-        case 'sectionsOf': return E.sectionsOf(doc(), a[1]).map((e) => e.id);
-        case 'voteScope': return E.voteScope(doc(), a[1], a[2]);
-        case 'mind': {
-          const d = doc();
-          const el = d.elements[a[1]];
-          return { isSticky: E.isSticky(el), isSection: E.isSection(el), isMindNode: E.isMindNode(el), node: E.mindNodeOf(d, a[1])?.id };
-        }
         case 'templatePages': {
           // The golden draws ids from Mulberry32(seed): an editor seeded the same way supplies that stream.
           const ed = new E.Editor(new Y.Doc(), undefined, { seed: a[2], clock: 'manual' });
@@ -103,29 +95,12 @@ describe('@oc/editor-core helpers (modules.json)', () => {
           ed.destroy();
           return r;
         }
-        case 'makeTimer': return E.makeTimer(a[0], a[1]);
-        case 'timer': {
-          let t = timer ?? E.makeTimer(5 * 60_000, true);
-          const [op, at, arg] = a as [string, number, number];
-          t = op === 'start' ? E.timerStart(t, at) : op === 'pause' ? E.timerPause(t, at) : op === 'add' ? E.timerAdd(t, arg, at) : op === 'reset' ? E.timerReset(t) : t;
-          timer = t;
-          return { t, remaining: E.timerRemaining(t, at), running: E.timerRunning(t, at) };
-        }
-        case 'formatClock': return E.formatClock(a[0]);
-        case 'tallyVotes': return E.tallyVotes(a[0], a[1]);
-        case 'topVoted': return E.topVoted(a[0], a[1]);
-        case 'voteAllowance': return E.voteAllowance(a[0], a[1], a[2]);
-        case 'STICKY_COLORS': return E.STICKY_COLORS;
         case 'coverCrop': return [[1, 2], [2, 1], [1, 1], [0.5, 0.25]].map(([x, y]) => E.coverCrop(x!, y!));
         case 'refitCrop': return E.refitCrop(a[0], a[1], a[2]);
         default: return SKIP;
       }
     }, (fn, actual, want) => {
       if (fn === 'designColors') return sameColors(actual, want);
-      if (fn === 'mind') {
-        const w = want as Record<string, unknown>;
-        return diff(actual, { isSticky: w.isSticky, isSection: w.isSection, isMindNode: w.isMindNode, node: w.node ?? undefined });
-      }
       return diff(actual, want);
     });
   });
@@ -292,15 +267,9 @@ describe('@oc/schema helpers', () => {
 
   test('print', () => {
     const g = golden('schema', 'print');
-    const cat = E.DEFAULT_PRINT_CATALOG;
-    const product = (id: string) => cat.products.find((p) => p.id === id)!;
     const docOf = (n: string) => g.docs[n] ?? fixture(n);
     replay('schema/print', g.cases, (fn, a) => {
       switch (fn) {
-        case 'expectedPages': return E.expectedPages(product(a[0]), a[1]);
-        case 'preflightTargetFor': return E.preflightTargetFor(product(a[0]), a[1], a[2]);
-        case 'quotePrint': return E.quotePrint(cat, a[0], a[1], a[2] ?? undefined, a[3] ?? undefined);
-        case 'validateAddress': return E.validateAddress(a[0], a[1] ?? undefined);
         case 'standalonePrintTarget': return E.standalonePrintTarget(docOf(a[0]));
         case 'preflightPrint': {
           const fonts: string[] | null = a[2];

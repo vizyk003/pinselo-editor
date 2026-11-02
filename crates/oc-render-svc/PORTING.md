@@ -37,7 +37,6 @@ OC_DATABASE_URL=postgres://localhost:5432/opencanvas CARGO_TARGET_DIR=target/wf-
 | `siteMobile.ts` | `site_mobile.rs` | done | phone layout HTML, reading order, text mirror, `textHtml`, `paintCss`, `textKind`, `maxRunSize` byte-identical on 47 pages |
 | `site.ts` | `site.rs` | done | full `buildSite` HTML identical (inner SVG content masked) with the renderer replayed, and with the real painter (`@font-face` lines aside, see deviations); `scopeSvgIds`, `describe`, `formHtml`, semantic tags |
 | `pptx.ts` | `pptx/` | done | every XML part of 28 decks (15 presentation fixtures, 10 render scenes, 3 hand-made: transitions, hidden slides, image/gradient backgrounds, curved/shrink text, links, frames with and without content/chrome, recoloured SVG, edited images, videos, tables, groups, polylines, CMYK, out-of-range page sizes) identical after id renumbering, both replayed and with the real painter; media identical; the element pictures requested (page, scale, skip set) identical |
-| `email.ts` | `email.rs` | done | HTML and plain text identical on 7 layouts (4 email fixtures, link edge cases, 2 scenes), replayed and with the real painter |
 | `pdfVector.ts`, `exporters.ts` `exportRasterPdf` | `oc_renderer.rs` → `oc_render::pdf::write_pdf` | done (oc-render's writer, not a port) | DB test checks the files; link areas computed as the TS does (`link_areas`) |
 | `exporters.ts` `exportSvg` | `oc_renderer.rs` → `oc_render::svg` | done | fonts embedded (picked faces), assets inlined |
 | `exporters.ts` `frames` (timeline frame loop) | `video.rs` `frames` | done | `tests/video.rs` plans: the renderer calls in order (page, page time, caption time, scale, the bytes of every video frame handed to the painter) identical on 3 template decks given timing, transitions of all 14 kinds and directions, entrance/emphasis/keyframe/exit/click animations and a hidden page, and on a video design (video elements with trims, speeds 0.25–3, loops, mute, volume; a frame and a grid cell playing video; missing media; hidden elements and pages; captions); every frame written to the encoder identical (8×6 colour grid + checksum of a pixel sample) where rendered, within 1.0 mean / 8 max (of 255) where composed by a transition (measured: worst 0.47 / 2, on the blur/spin pages; the rest ≤ 0.01 / 1); progress calls identical |
@@ -61,7 +60,7 @@ OC_DATABASE_URL=postgres://localhost:5432/opencanvas CARGO_TARGET_DIR=target/wf-
 | `POST /internal/site-build` | done |
 | `POST /internal/template-thumbnail` | done |
 | `POST /internal/export` `md`, `docx` | done |
-| `POST /internal/export` `png`, `jpg`, `zip`, `svg`, `pdf`, `pdf-print`, `pdf-flat`, `pptx`, `html-email` | done |
+| `POST /internal/export` `png`, `jpg`, `zip`, `svg`, `pdf`, `pdf-print`, `pdf-flat`, `pptx` | done |
 | `POST /internal/export` `mp4`, `gif`, `m4a` | done (`m4a` of a silent design: `400 { error: 'no_audio' }`) |
 | `export` job `docx`, `pdf`, `pdf-print` (+ product bleed 0–10 mm), `pdf-flat`, `pptx` | done (`{ sha, type, filename, size }`, `export.completed` webhook) |
 | `export` job `mp4` (`quality` 720p/1080p/4k), `gif`, `m4a` | done (progress written to the job row, throttled to 300 ms and capped at 0.99 like the TS) |

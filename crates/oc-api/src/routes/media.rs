@@ -1,36 +1,20 @@
 //! Port of services/api/src/routes/media.ts — video/audio services: export jobs (Postgres queue → render
-//! worker), beat detection, transcription, capabilities. Every route runs `requireUser` first.
-
-use std::collections::HashMap;
-use std::sync::Mutex;
+//! worker). Every route runs `requireUser` first.
 
 use oc_auth::Role;
 
 use crate::auth::{at_least, design_role};
 use crate::prelude::*;
-use crate::routes::assets::{TempDir, tokio_util_stream};
+use crate::routes::assets::tokio_util_stream;
 use crate::routes::{docs, print_profiles};
-use crate::{billing, brandhub, media};
 
 pub const LIMITS: &[RouteLimit] = &[];
 
 pub fn routes() -> Router<AppState> {
     Router::new()
-        .route("/api/capabilities", get(capabilities))
         .route("/api/designs/{id}/export-jobs", post(export_job))
         .route("/api/export-jobs/{job}", get(job_status))
         .route("/api/export-jobs/{job}/file", get(job_file))
-        .route("/api/assets/{id}/beats", get(beats))
-        .route("/api/assets/{id}/transcribe", post(transcribe))
-}
-
-/// The module-level `beatCache`.
-#[derive(Default)]
-struct BeatCache(Mutex<HashMap<String, Value>>);
-
-async fn capabilities(State(s): State<AppState>, req: Req) -> ApiResult {
-    require_user(&s, &req).await?;
-    Ok(Reply::json(json!({ "video": true, "stt": media::stt_configured(&s) })))
 }
 
 async fn export_job(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
@@ -44,13 +28,7 @@ async fn export_job(State(s): State<AppState>, Path(id): Path<String>, req: Req)
     if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
         return Ok(reply::json(404, json!({ "error": "not_found" })));
     }
-    if let Some(gate) = brandhub::approval_gate(&s, u.id, &id).await? {
-        return Ok(reply::json(403, gate)); // brand approvals (A8)
-    }
     let Some(print) = print_profiles::resolve_print_options(&s, u.id, b.get("print")).await? else { return Ok(print_profiles::profile_not_found()) };
-    if b.get("quality").and_then(Value::as_str) == Some("4k") {
-        billing::require_feature(&s, u.id, billing::Feature::Export4k, "4K video export is part of Pro.").await?;
-    }
     let active: Option<i32> =
         sqlx::query_scalar("SELECT count(*)::int AS n FROM jobs WHERE owner_id = $1 AND queue = 'export' AND status IN ('queued','running')").bind(u.id).fetch_optional(&s.pool).await?;
     if active.unwrap_or(0) >= 3 {
@@ -128,41 +106,4 @@ async fn job_file(State(s): State<AppState>, Path(job): Path<String>, req: Req) 
     Ok(Reply::bytes(&text("type"), axum::body::Body::from_stream(tokio_util_stream(stream)))
         .header("content-length", text("size"))
         .header("content-disposition", format!("attachment; filename=\"{}\"", text("filename").replace('"', ""))))
-}
-
-async fn beats(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    require_user(&s, &req).await?;
-    let cache = s.local::<BeatCache>();
-    if let Some(hit) = cache.0.lock().expect("beat cache").get(&id).cloned() {
-        return Ok(Reply::json(hit));
-    }
-    let a: Option<(Option<String>, String)> = sqlx::query_as("SELECT proxy_sha256, kind FROM assets WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
-    let Some((Some(proxy), kind)) = a.filter(|(_, k)| k == "audio" || k == "video") else {
-        return Ok(reply::json(404, json!({ "error": "not_found" })));
-    };
-    let _ = kind;
-    let file = s.store.file(&proxy).await?;
-    let (bpm, beats) = media::detect_beats(&file).await.map_err(ApiError::internal)?;
-    let r = json!({ "bpm": crate::http::jsjson::number_value(bpm).unwrap_or(Value::Null), "beats": beats });
-    cache.0.lock().expect("beat cache").insert(id, r.clone());
-    Ok(Reply::json(r))
-}
-
-async fn transcribe(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    require_user(&s, &req).await?;
-    let b = z::obj([("language", z::str().max(10.0).default(json!("auto")))]).parse(Some(&req.body_or_empty()))?;
-    if !media::stt_configured(&s) {
-        return Ok(reply::json(
-            501,
-            json!({ "error": "capability_unavailable", "message": "Auto captions need a local speech-to-text model. Install whisper.cpp and set OC_WHISPER_CMD and OC_WHISPER_MODEL for the API service." }),
-        ));
-    }
-    let a: Option<(Option<String>, bool)> = sqlx::query_as("SELECT proxy_sha256, has_audio FROM assets WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
-    let Some((Some(proxy), true)) = a else {
-        return Ok(reply::json(400, json!({ "error": "no_audio", "message": "That clip has no sound to transcribe." })));
-    };
-    let dir = TempDir::new("oc-stt-").await?;
-    let file = s.store.file(&proxy).await?;
-    let segments = media::transcribe(&s, &file, &dir.0, b["language"].as_str().unwrap_or("auto")).await.map_err(ApiError::internal)?;
-    Ok(Reply::json(json!({ "segments": segments })))
 }

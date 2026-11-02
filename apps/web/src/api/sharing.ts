@@ -32,8 +32,6 @@ export interface SharingState {
   role: Role;
   team: { id: string; name: string; access: ShareRole | null } | null;
   groups: GroupShare[];
-  /** Unique visitors of the public view link, all time (owners and editors only). */
-  visitors: number | null;
   slug: string | null;
   /** Owner only. */
   templateLink: { token: string | null; uses: number } | null;

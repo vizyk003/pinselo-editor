@@ -5,12 +5,6 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 
-[features]
-default = ["sheet"]
-# Sheet designs get their first tab server-side (`encodeSheetDesign`). oc-sheet is still being finished, so the
-# dependency is opt-in; without it creating a `sheet` surface design answers 501 (see ROUTES.md, "blocked").
-sheet = ["dep:oc-sheet"]
-
 [dependencies]
 oc-config = { workspace = true }
 oc-db = { workspace = true }
@@ -30,11 +24,9 @@ oc-crdt = { path = "../oc-crdt" }
 oc-geometry = { path = "../oc-geometry" }
 oc-social = { path = "../oc-social" }
 oc-import = { path = "../oc-import" }
-oc-sheet = { path = "../oc-sheet", optional = true }
 axum = { workspace = true, features = ["matched-path", "original-uri"] }
 tokio = { workspace = true, features = ["signal", "process"] }
 sqlx = { workspace = true }
-serde = { workspace = true }
 serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
 uuid = { workspace = true }
 chrono = { workspace = true }
@@ -66,7 +58,6 @@ libm = { workspace = true }
 resvg = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "std"] }
-thiserror = { workspace = true }
 # The AI connector joins the collab server as a Hocuspocus client (mcp/live.rs).
 tokio-tungstenite = { version = "0.29", default-features = false, features = ["connect", "handshake"] }
 

@@ -33,10 +33,7 @@ const TYPE_OPTIONS: Array<{ value: string; label: string }> = [
   { value: 'presentation', label: tk('Presentations') },
   { value: 'video', label: tk('Videos') },
   { value: 'doc', label: tk('Docs') },
-  { value: 'whiteboard', label: tk('Whiteboards') },
-  { value: 'sheet', label: tk('Sheets') },
   { value: 'website', label: tk('Websites') },
-  { value: 'email', label: tk('Emails') },
   { value: 'print', label: tk('Print') },
 ];
 const SORT_OPTIONS: Array<{ value: DesignSort; label: string }> = [

@@ -42,7 +42,6 @@ export interface SceneFrame {
   dpr: number;
   /** Workspace colour, RGBA 0..1. */
   workspace: readonly [number, number, number, number];
-  whiteboard: boolean;
   /** Visible pages. */
   pages: ScenePage[];
   /** Every page slot's id, rectangle and visibility (a change repaints everything). */
@@ -57,7 +56,6 @@ interface Painted {
   h: number;
   margin: number;
   workspace: string;
-  whiteboard: boolean;
   pages: Map<PageId, ScenePage>;
   layout: string;
 }
@@ -171,7 +169,7 @@ export class ScenePainter {
     let full = false;
     let layered: Layered | null = null;
     const changedSomething = { v: false };
-    if (!prev || prev.k !== k || prev.w !== W || prev.h !== H || prev.margin !== margin || prev.workspace !== ws || prev.whiteboard !== f.whiteboard || prev.layout !== layout) {
+    if (!prev || prev.k !== k || prev.w !== W || prev.h !== H || prev.margin !== margin || prev.workspace !== ws || prev.layout !== layout) {
       full = true;
       this.tileLayers.clear();
       this.approx.clear();
@@ -192,7 +190,7 @@ export class ScenePainter {
         const l = !p.hidden && r !== 'full' ? this.engine.painter.layering(old.dl, p.dl) : null;
         const id = l ? `${p.id}|${l.from}|${l.to}|${l.below}|${l.above}` : null;
         if (l && id && !layered) {
-          if (this.lastLayering === id) layered = { page: p.id, from: l.from, to: l.to, tag: `${id}|${k}|${margin}|${ws}|${layout}|${f.whiteboard}`, margin: Math.min(margin, Math.ceil((l.reach * k + 2) / 16) * 16) };
+          if (this.lastLayering === id) layered = { page: p.id, from: l.from, to: l.to, tag: `${id}|${k}|${margin}|${ws}|${layout}`, margin: Math.min(margin, Math.ceil((l.reach * k + 2) / 16) * 16) };
           this.lastLayering = id;
         } else if (!l) this.lastLayering = null;
         const a = r === 'full' ? { x: 0, y: 0, w: p.rect.w, h: p.rect.h } : r;
@@ -234,7 +232,7 @@ export class ScenePainter {
       this.sprite = null;
     }
     if (!this.layered) this.prevMid = null;
-    this.painted = { k, tx, ty, w: W, h: H, margin, workspace: ws, whiteboard: f.whiteboard, pages: new Map(f.pages.map((p) => [p.id, p])), layout };
+    this.painted = { k, tx, ty, w: W, h: H, margin, workspace: ws, pages: new Map(f.pages.map((p) => [p.id, p])), layout };
     // Paint pending tiles, nearest the focus first, within the budget.
     let n = 0;
     let nl = 0;
@@ -452,17 +450,6 @@ export class ScenePainter {
       const [g0, g1] = !target || o.mode === 'all' ? [0, n] : o.mode === 'below' ? [0, o.from!] : o.mode === 'mid' ? [o.from!, o.to!] : [o.from!, n];
       const background = !target || o.mode === 'all' || o.mode === 'below';
       if (background) painter.drawGroups(t, p.dl, 0, 0, true);
-      if (f.whiteboard && background) {
-        // Whiteboards: an editor-only dot grid between the background and the content.
-        const step = zoom < 0.3 ? 80 : 40;
-        const vx0 = Math.max(0, Math.floor((s0x - r.x) / step) * step);
-        const vy0 = Math.max(0, Math.floor((s0y - r.y) / step) * step);
-        const vx1 = Math.min(r.w, s1x - r.x);
-        const vy1 = Math.min(r.h, s1y - r.y);
-        const pts: number[] = [];
-        for (let y = vy0; y <= vy1; y += step) for (let x = vx0; x <= vx1; x += step) pts.push(x, y);
-        if (pts.length) t.dots(pts, Math.max(1.6 / zoom, 1.2) / 2, [0.6, 0.64, 0.7, 0.55]);
-      }
       if (g1 > g0) painter.drawGroups(t, p.dl, g0, g1, false);
       if (p.hidden) t.restore();
       t.restore();

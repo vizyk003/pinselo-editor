@@ -1,16 +1,12 @@
 //! Port of services/api/src/routes/brandhub.ts — Brand Hub (A8): multiple brand kits per workspace, brand
-//! controls (team settings), brand-template info for the editor, "update designs from template", and the design
-//! approval workflow. Every route runs `requireUser` first (the plugin's `preHandler`).
+//! controls (team settings), brand-template info for the editor. Every route runs `requireUser` first (the plugin's `preHandler`).
 //!
 //! Also exported for other modules: [`KIT_COLS`], [`default_kit`], [`save_kit`], [`accessible_kits`].
 
-use serde_json::Map;
-
 use crate::auth::{at_least, design_role, personal_workspace};
-use crate::billing;
-use crate::brandhub::{self, approval_current, approval_gate, brand_controls, control_on, governing_workspace, is_admin_role, is_brand_admin, role_in, team_entitlements, CONTROL_KEYS};
+use crate::brandhub::{brand_controls, governing_workspace, is_admin_role, role_in, CONTROL_KEYS};
 use crate::prelude::*;
-use crate::routes::{brand, designs, teams};
+use crate::routes::{designs, teams};
 use oc_auth::Role;
 
 /// Routes with their own `config.rateLimit`.
@@ -24,11 +20,6 @@ pub fn routes() -> Router<AppState> {
         .route("/api/workspaces/{id}/brand-controls", get(get_controls).put(put_controls))
         .route("/api/designs/{id}/brand", get(design_brand))
         .route("/api/templates/{id}/republish", post(republish))
-        .route("/api/templates/{id}/push", post(push))
-        .route("/api/designs/{id}/approval", get(get_approval).post(request_approval).delete(cancel_approval))
-        .route("/api/designs/{id}/approval/decision", post(decide))
-        .route("/api/approvals", get(queue))
-        .route("/api/designs/{id}/approval/gate", get(gate))
 }
 
 // ---------------------------------------------------------------- shared helpers
@@ -134,10 +125,8 @@ async fn kit_role(s: &AppState, user_id: Uuid, workspace_id: Uuid) -> Result<Opt
     Ok(r.map(|(role, personal)| if personal || role != "member" { "edit" } else { "view" }))
 }
 
-async fn kit_limit(s: &AppState, user_id: Uuid, workspace_id: Uuid) -> Result<i64, ApiError> {
-    let personal: Option<bool> = sqlx::query_scalar("SELECT personal FROM workspaces WHERE id = $1").bind(workspace_id).fetch_optional(&s.pool).await?;
-    Ok(if personal == Some(true) { billing::entitlements_of(s, user_id).await?.0.brand_kits } else { team_entitlements(s, workspace_id).await?.brand_kits.max(1) })
-}
+/// Fair-use cap on brand kits per workspace.
+const MAX_BRAND_KITS: i32 = 1000;
 
 struct OwnKit {
     workspace_id: Uuid,
@@ -184,8 +173,11 @@ async fn list_kits(State(s): State<AppState>, req: Req) -> ApiResult {
     let kits = accessible_kits(&s, u.id).await?;
     let ws: Vec<Value> = workspaces
         .into_iter()
-        .map(|(id, name, personal, role, controls)| {
+        .map(|(id, name, personal, role, mut controls)| {
             let can = personal || role != "member";
+            if let Value::Object(m) = &mut controls.0 {
+                m.retain(|k, _| CONTROL_KEYS.contains(&k.as_str()));
+            }
             json!({ "id": id.to_string(), "name": name, "personal": personal, "role": role, "canEdit": can, "controls": if personal { json!({}) } else { controls.0 } })
         })
         .collect();
@@ -203,10 +195,8 @@ async fn create_kit(State(s): State<AppState>, req: Req) -> ApiResult {
         return Ok(reply::json(403, json!({ "error": "forbidden", "message": "Only owners, admins and designers can create brand kits." })));
     }
     let n: i32 = sqlx::query_scalar("SELECT count(*)::int AS n FROM brand_kits WHERE workspace_id = $1").bind(ws).fetch_optional(&s.pool).await?.unwrap_or(0);
-    let limit = kit_limit(&s, u.id, ws).await?;
-    if i64::from(n) >= limit {
-        let message = if limit == 1 { "The Free plan includes one brand kit. Upgrade to Pro or Teams for more.".to_owned() } else { format!("This plan includes up to {limit} brand kits.") };
-        return Err(ApiError::Upgrade { feature: "brandKits".into(), message });
+    if n >= MAX_BRAND_KITS {
+        return Ok(reply::json(402, json!({ "error": "upgrade_required", "feature": "brandKits", "message": format!("You can have up to {MAX_BRAND_KITS} brand kits.") })));
     }
     let mut kit = b.as_object().cloned().unwrap_or_default();
     kit.remove("workspaceId");
@@ -282,12 +272,10 @@ async fn get_controls(State(s): State<AppState>, Path(id): Path<String>, req: Re
     let u = require_user(&s, &req).await?;
     let Some(role) = teams::team_role_str(&s, &u.id.to_string(), &id).await? else { return Ok(not_found()) };
     let ws = Uuid::parse_str(&id).map_err(ApiError::internal)?;
-    let e = team_entitlements(&s, ws).await?;
     Ok(Reply::json(json!({
         "controls": brand_controls(&s, Some(ws)).await?,
         "canEdit": is_admin_role(Some(&role)),
         "role": role,
-        "entitled": { "brandControls": e.brand_controls, "approvals": e.approvals },
     })))
 }
 
@@ -312,13 +300,6 @@ async fn put_controls(State(s): State<AppState>, Path(id): Path<String>, req: Re
             next.insert(k, v);
         }
     }
-    let e = team_entitlements(&s, ws).await?;
-    if ["colors", "fonts", "requireTemplate", "restrictUploads"].iter().any(|k| control_on(&next, k)) && !e.brand_controls {
-        return Err(ApiError::Upgrade { feature: "brandControls".into(), message: "Brand controls are part of the Teams plan.".into() });
-    }
-    if control_on(&next, "requireApproval") && !e.approvals {
-        return Err(ApiError::Upgrade { feature: "approvals".into(), message: "Required approvals are part of the Teams plan.".into() });
-    }
     let next = Value::Object(next);
     pg::exec(&s.pool, "UPDATE workspaces SET brand_controls = $2::jsonb WHERE id = $1", &[pg::uuid(ws), pg::text(crate::http::jsjson::stringify(&next))]).await?;
     audit(&s, &req, u.id, Some(ws), "brand.controls_changed", None, Some(next.clone())).await?;
@@ -338,326 +319,39 @@ async fn design_brand(State(s): State<AppState>, Path(id): Path<String>, req: Re
         .bind(&id)
         .fetch_optional(&s.pool)
         .await?;
-    let a = brandhub::latest_approval(&s, &id).await?;
     let role = role_in(&s, u.id, ws).await?;
-    let brand_admin = is_brand_admin(&s, u.id, &id).await?;
     let controls = brand_controls(&s, ws).await?;
     let template = match d {
         Some((Some(tid), tv, brand, version, title)) => json!({ "id": tid, "title": title, "brand": brand == Some(true), "version": tv.unwrap_or(1), "latest": version.unwrap_or(1) }),
         _ => Value::Null,
     };
-    let approval = match &a {
-        Some(a) => json!({ "status": a.status, "current": approval_current(&s, Some(a)).await? }),
-        None => Value::Null,
-    };
     let published = pg::json_rows(&s.pool, "SELECT id, title, version, brand FROM templates WHERE source_design_id = $1 ORDER BY created_at", &[pg::text(&id)]).await?;
     Ok(Reply::json(json!({
-        "workspaceId": opt_uuid(ws), "role": role, "brandAdmin": brand_admin, "controls": controls, "template": template, "approval": approval, "published": published,
+        "workspaceId": opt_uuid(ws), "role": role, "controls": controls, "template": template, "published": published,
     })))
 }
 
-// ---------------------------------------------------------------- brand templates: republish + push updates
+// ---------------------------------------------------------------- brand templates: republish
 
 /// Re-snapshot the template from its source design (admins/designers); bumps the version.
 async fn republish(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
-    let t: Option<(Option<Uuid>, Option<String>, bool)> = sqlx::query_as("SELECT workspace_id, source_design_id, brand FROM templates WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
-    let Some((Some(ws), Some(source), brand)) = t else { return Ok(not_found()) };
+    let t: Option<(Option<Uuid>, Option<String>)> = sqlx::query_as("SELECT workspace_id, source_design_id FROM templates WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
+    let Some((Some(ws), Some(source))) = t else { return Ok(not_found()) };
     let role = role_in(&s, u.id, Some(ws)).await?;
     if role.as_deref().is_none_or(|r| r == "member") {
         return Ok(forbidden());
     }
     let Some(doc) = designs::load_doc(&s, &source).await? else { return Ok(reply::json(400, json!({ "error": "empty" }))) };
-    let locks = if brand { Value::Object(brandhub::brand_locks_of(&doc)) } else { json!({}) };
     let dims = doc.pointer("/meta/dims");
     let dim = |k: &str| dims.and_then(|d| d.get(k)).and_then(Value::as_f64);
-    sqlx::query("UPDATE templates SET doc = $2::jsonb, locks = $3::jsonb, width = $4, height = $5, version = version + 1, updated_at = now() WHERE id = $1")
+    sqlx::query("UPDATE templates SET doc = $2::jsonb, width = $3, height = $4, version = version + 1, updated_at = now() WHERE id = $1")
         .bind(&id)
         .bind(crate::http::jsjson::stringify(&doc))
-        .bind(crate::http::jsjson::stringify(&locks))
         .bind(dim("w"))
         .bind(dim("h"))
         .execute(&s.pool)
         .await?;
     let version: i32 = sqlx::query_scalar("SELECT version FROM templates WHERE id = $1").bind(&id).fetch_one(&s.pool).await?;
     Ok(Reply::json(json!({ "ok": true, "version": version })))
-}
-
-/// "Update designs from template" (admins): re-applies the template's brand-locked elements (geometry, content
-/// and style as locked) to every design created from it that is on an older version. Unlocked elements and
-/// members' own additions are left alone.
-async fn push(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    type Tpl = (Option<Uuid>, sqlx::types::Json<Value>, sqlx::types::Json<Value>, i32, bool);
-    let t: Option<Tpl> = sqlx::query_as("SELECT workspace_id, doc, locks, version, brand FROM templates WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
-    let Some((Some(ws), tdoc, locks, version, true)) = t else { return Ok(not_found()) };
-    if !is_admin_role(role_in(&s, u.id, Some(ws)).await?.as_deref()) {
-        return Ok(reply::json(403, json!({ "error": "forbidden", "message": "Only team owners and admins can update designs from a template." })));
-    }
-    let locks = locks.0.as_object().cloned().unwrap_or_default();
-    let ids: Vec<String> = sqlx::query_scalar("SELECT id FROM designs WHERE template_id = $1 AND trashed_at IS NULL AND COALESCE(template_version, 1) < $2").bind(&id).bind(version).fetch_all(&s.pool).await?;
-    let mut updated = 0;
-    let mut failed: Vec<String> = Vec::new();
-    for did in &ids {
-        // Current state = snapshot + op-log tail (what the collab server holds).
-        let Some(y) = brandhub::load_ydoc(&s, did).await? else { continue };
-        let ops = {
-            let cur = oc_crdt::from_y_value(&y);
-            drop(y);
-            brandhub::template_update_ops(&tdoc.0, &cur, &locks)
-        };
-        let ok = if ops.is_empty() { true } else { brandhub::apply_server_ops(&s, did, &ops).await?.is_ok() };
-        if ok {
-            updated += 1;
-            pg::exec(&s.pool, "UPDATE designs SET template_version = $2 WHERE id = $1", &[pg::text(did), Arg::Int4(Some(version))]).await?;
-        } else {
-            failed.push(did.clone());
-        }
-    }
-    audit(&s, &req, u.id, Some(ws), "template.pushed", Some(id.clone()), Some(json!({ "updated": updated, "failed": failed.len() }))).await?;
-    Ok(Reply::json(json!({ "updated": updated, "failed": failed, "total": ids.len() })))
-}
-
-// ---------------------------------------------------------------- approvals
-
-/// A whole `design_approvals` row (`latestApproval`).
-#[derive(sqlx::FromRow)]
-struct Approval {
-    id: Uuid,
-    requested_by: Option<Uuid>,
-    reviewers: Vec<Uuid>,
-    message: String,
-    status: String,
-    decided_by: Option<Uuid>,
-    decision_note: Option<String>,
-    decided_at: Option<chrono::DateTime<chrono::Utc>>,
-    created_at: chrono::DateTime<chrono::Utc>,
-}
-
-async fn latest(s: &AppState, design_id: &str) -> Result<Option<(Approval, brandhub::ApprovalRow)>, ApiError> {
-    let full: Option<Approval> = sqlx::query_as("SELECT * FROM design_approvals WHERE design_id = $1 AND status <> 'cancelled' ORDER BY created_at DESC LIMIT 1").bind(design_id).fetch_optional(&s.pool).await?;
-    let Some(full) = full else { return Ok(None) };
-    let row = brandhub::latest_approval(s, design_id).await?;
-    Ok(row.map(|r| (full, r)))
-}
-
-async fn people(s: &AppState, ids: &[Uuid]) -> Result<Vec<Value>, sqlx::Error> {
-    sqlx::query("SELECT id, name, email, color FROM users WHERE id = ANY($1::uuid[])").bind(ids).fetch_all(&s.pool).await?.iter().map(pg::row).collect()
-}
-
-async fn admins_of(s: &AppState, ws: Uuid) -> Result<Vec<Value>, sqlx::Error> {
-    pg::json_rows(
-        &s.pool,
-        "SELECT u.id, u.name, u.email, u.color FROM memberships m JOIN users u ON u.id = m.user_id WHERE m.workspace_id = $1 AND m.role IN ('owner','admin') ORDER BY u.name",
-        &[pg::uuid(ws)],
-    )
-    .await
-}
-
-async fn can_review(s: &AppState, user_id: Uuid, reviewers: &[Uuid], ws: Option<Uuid>) -> Result<bool, ApiError> {
-    Ok(reviewers.contains(&user_id) || is_admin_role(role_in(s, user_id, ws).await?.as_deref()))
-}
-
-fn iso(t: Option<chrono::DateTime<chrono::Utc>>) -> Value {
-    t.map_or(Value::Null, |t| json!(oc_js::iso_string(&t)))
-}
-
-async fn get_approval(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
-        return Ok(not_found());
-    }
-    let ws = governing_workspace(&s, &id).await?;
-    let a = latest(&s, &id).await?;
-    let required = control_on(&brand_controls(&s, ws).await?, "requireApproval");
-    let admins = match ws {
-        Some(w) => admins_of(&s, w).await?,
-        None => vec![],
-    };
-    let Some((a, row)) = a else { return Ok(Reply::json(json!({ "approval": null, "required": required, "suggestedReviewers": admins }))) };
-    let mut ids = a.reviewers.clone();
-    ids.extend(a.requested_by);
-    ids.extend(a.decided_by);
-    let who = people(&s, &ids).await?;
-    let by = |uid: Option<Uuid>| -> Value {
-        let Some(uid) = uid else { return Value::Null };
-        let key = uid.to_string();
-        who.iter().find(|p| p.get("id").and_then(Value::as_str) == Some(key.as_str())).cloned().unwrap_or(Value::Null)
-    };
-    let reviewers: Vec<Value> = a.reviewers.iter().map(|r| by(Some(*r))).filter(|v| !v.is_null()).collect();
-    let current = approval_current(&s, Some(&row)).await?;
-    let can = can_review(&s, u.id, &a.reviewers, ws).await?;
-    Ok(Reply::json(json!({
-        "required": required, "suggestedReviewers": admins,
-        "approval": {
-            "id": a.id.to_string(), "status": a.status, "message": a.message, "createdAt": iso(Some(a.created_at)), "decidedAt": iso(a.decided_at), "note": a.decision_note,
-            "requestedBy": by(a.requested_by), "decidedBy": by(a.decided_by), "reviewers": reviewers,
-            "current": current, "canReview": can,
-        },
-    })))
-}
-
-async fn design_title(s: &AppState, id: &str) -> Result<String, sqlx::Error> {
-    let t: Option<String> = sqlx::query_scalar("SELECT title FROM designs WHERE id = $1").bind(id).fetch_optional(&s.pool).await?;
-    Ok(t.unwrap_or_else(|| "a design".into()))
-}
-
-async fn add_comment(s: &AppState, design_id: &str, author: Uuid, body: &str) -> Result<(), sqlx::Error> {
-    sqlx::query("INSERT INTO comments(id, design_id, author_id, body) VALUES ($1,$2,$3,$4)").bind(oc_db::uuid()).bind(design_id).bind(author).bind(body).execute(&s.pool).await.map(|_| ())
-}
-
-async fn request_approval(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    let b = z::obj([("message", z::str().max(2000.0).default(json!(""))), ("reviewerIds", z::array(z::str().uuid()).max(20.0).optional())]).parse(Some(&req.body_or_empty()))?;
-    if !at_least(design_role(&s, Some(u.id), &id).await?, Role::Edit) {
-        return Ok(forbidden());
-    }
-    let message = b["message"].as_str().unwrap_or("").to_owned();
-    let ws = governing_workspace(&s, &id).await?;
-    let given: Vec<String> = b.get("reviewerIds").and_then(Value::as_array).map(|a| a.iter().filter_map(Value::as_str).map(str::to_owned).collect()).unwrap_or_default();
-    let mut reviewers = if !given.is_empty() {
-        given
-    } else if let Some(w) = ws {
-        let r: Vec<Uuid> = sqlx::query_scalar("SELECT user_id FROM memberships WHERE workspace_id = $1 AND role IN ('owner','admin')").bind(w).fetch_all(&s.pool).await?;
-        r.into_iter().map(|u| u.to_string()).collect()
-    } else {
-        vec![]
-    };
-    let me = u.id.to_string();
-    reviewers.retain(|r| *r != me);
-    // Reviewers must be able to open the design (or be admins of the governing team).
-    let mut ok: Vec<Uuid> = Vec::new();
-    for r in &reviewers {
-        let rid = Uuid::parse_str(r).map_err(ApiError::internal)?;
-        if at_least(design_role(&s, Some(rid), &id).await?, Role::View) || is_admin_role(role_in(&s, rid, ws).await?.as_deref()) {
-            ok.push(rid);
-        }
-    }
-    if ok.is_empty() {
-        return Ok(reply::json(400, json!({ "error": "no_reviewers", "message": "Choose at least one reviewer who can open this design." })));
-    }
-    let aid = oc_db::uuid();
-    let mut t = s.pool.begin().await?;
-    sqlx::query("UPDATE design_approvals SET status = 'cancelled', updated_at = now() WHERE design_id = $1 AND status = 'pending'").bind(&id).execute(&mut *t).await?;
-    sqlx::query("INSERT INTO design_approvals(id, design_id, workspace_id, requested_by, reviewers, message) VALUES ($1,$2,$3,$4,$5,$6)")
-        .bind(aid)
-        .bind(&id)
-        .bind(ws)
-        .bind(u.id)
-        .bind(&ok)
-        .bind(&message)
-        .execute(&mut *t)
-        .await?;
-    t.commit().await?;
-    // Reuse comments: the request is posted on the design so the conversation stays in one place.
-    let suffix = if message.is_empty() { String::new() } else { format!(": {message}") };
-    add_comment(&s, &id, u.id, &format!("Sent for approval{suffix}")).await?;
-    let title = design_title(&s, &id).await?;
-    let url = format!("{}/design/{id}?approval=1", s.cfg.web_origin);
-    for p in people(&s, &ok).await? {
-        let pid = p.get("id").and_then(Value::as_str).and_then(|x| Uuid::parse_str(x).ok()).unwrap_or_default();
-        brand::notify(&s, pid, "approval", &id, u.id, &format!("{} asked you to approve “{title}”{suffix}", u.name)).await?;
-        let email = p.get("email").and_then(Value::as_str).unwrap_or("");
-        oc_mail::send_email(
-            &s.pool,
-            email,
-            &oc_mail::Template::ApprovalRequest { actor: u.name.clone(), title: title.clone(), message: crate::js::take(&message, 500), url: url.clone() },
-            Some(pid),
-        )
-        .await?;
-    }
-    audit(&s, &req, u.id, ws, "design.approval_requested", Some(id.clone()), Some(json!({ "reviewers": ok.len() }))).await?;
-    Ok(Reply::json(json!({ "id": aid.to_string() })))
-}
-
-async fn decide(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    let b = z::obj([("decision", z::enumeration(&["approve", "changes"])), ("note", z::str().max(2000.0).default(json!("")))]).parse(req.body())?;
-    if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
-        return Ok(not_found());
-    }
-    let Some((a, _)) = latest(&s, &id).await?.filter(|(a, _)| a.status == "pending") else {
-        return Ok(reply::json(409, json!({ "error": "no_request", "message": "There is no pending approval request for this design." })));
-    };
-    let ws = governing_workspace(&s, &id).await?;
-    if !can_review(&s, u.id, &a.reviewers, ws).await? {
-        return Ok(reply::json(403, json!({ "error": "forbidden", "message": "You are not a reviewer of this design." })));
-    }
-    let approved = b["decision"].as_str() == Some("approve");
-    let note = b["note"].as_str().unwrap_or("").to_owned();
-    let snap = if approved { brandhub::doc_snapshot(&s, &id).await? } else { None };
-    sqlx::query(
-        "UPDATE design_approvals SET status = $2, decided_by = $3, decision_note = $4, decided_at = now(), approved_snapshot = $5,
-         approved_doc_at = (SELECT updated_at FROM doc_state WHERE design_id = $6), updated_at = now() WHERE id = $1",
-    )
-    .bind(a.id)
-    .bind(if approved { "approved" } else { "changes_requested" })
-    .bind(u.id)
-    .bind(if note.is_empty() { None } else { Some(note.as_str()) })
-    .bind(snap)
-    .bind(&id)
-    .execute(&s.pool)
-    .await?;
-    let suffix = if note.is_empty() { String::new() } else { format!(": {note}") };
-    add_comment(&s, &id, u.id, &format!("{}{suffix}", if approved { "Approved" } else { "Requested changes" })).await?;
-    let title = design_title(&s, &id).await?;
-    if let Some(rb) = a.requested_by {
-        let verb = if approved { "approved" } else { "requested changes on" };
-        brand::notify(&s, rb, "approval", &id, u.id, &format!("{} {verb} “{title}”{suffix}", u.name)).await?;
-        let email: Option<String> = sqlx::query_scalar("SELECT email FROM users WHERE id = $1").bind(rb).fetch_optional(&s.pool).await?;
-        if let Some(email) = email
-            && rb != u.id
-        {
-            oc_mail::send_email(
-                &s.pool,
-                &email,
-                &oc_mail::Template::ApprovalDecision { actor: u.name.clone(), title, approved, note: crate::js::take(&note, 500), url: format!("{}/design/{id}", s.cfg.web_origin) },
-                Some(rb),
-            )
-            .await?;
-        }
-    }
-    audit(&s, &req, u.id, ws, if approved { "design.approved" } else { "design.changes_requested" }, Some(id.clone()), None).await?;
-    Ok(Reply::json(json!({ "ok": true, "status": if approved { "approved" } else { "changes_requested" } })))
-}
-
-async fn cancel_approval(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    let Some((a, _)) = latest(&s, &id).await?.filter(|(a, _)| a.status == "pending") else { return Ok(not_found()) };
-    if a.requested_by != Some(u.id) && design_role(&s, Some(u.id), &id).await? != Some(Role::Owner) {
-        return Ok(forbidden());
-    }
-    sqlx::query("UPDATE design_approvals SET status = 'cancelled', updated_at = now() WHERE id = $1").bind(a.id).execute(&s.pool).await?;
-    Ok(Reply::json(json!({ "ok": true })))
-}
-
-/// Review queue: pending requests where I'm a reviewer.
-async fn queue(State(s): State<AppState>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    let rows = pg::json_rows(
-        &s.pool,
-        r#"SELECT a.id, a.design_id AS "designId", d.title, a.message, a.created_at AS "createdAt", u.name AS "requestedBy" FROM design_approvals a
-       JOIN designs d ON d.id = a.design_id LEFT JOIN users u ON u.id = a.requested_by
-       WHERE a.status = 'pending' AND $1 = ANY(a.reviewers) AND d.trashed_at IS NULL ORDER BY a.created_at DESC LIMIT 100"#,
-        &[pg::uuid(u.id)],
-    )
-    .await?;
-    Ok(Reply::json(json!({ "approvals": rows })))
-}
-
-/// Lets clients ask before offering download/share/publish.
-async fn gate(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let u = require_user(&s, &req).await?;
-    if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
-        return Ok(not_found());
-    }
-    Ok(Reply::json(match approval_gate(&s, u.id, &id).await? {
-        Some(Value::Object(g)) => {
-            let mut m = Map::new();
-            m.insert("allowed".into(), json!(false));
-            m.extend(g);
-            Value::Object(m)
-        }
-        _ => json!({ "allowed": true }),
-    }))
 }

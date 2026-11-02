@@ -323,10 +323,10 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
         if el.get("visible") == Some(&Value::Bool(false)) {
             n.insert("hidden".into(), json!(true));
         }
-        if let Some(lock) = el.get("lock").filter(|l| truthy(Some(l)))
+        if let Some(lock) = el.get("lock").filter(|l| truthy(Some(l)) && l["by"] != "brand")
             && lock.as_object().is_some_and(|m| m.values().any(oc_schema::tree::truthy))
         {
-            n.insert("locked".into(), if lock["by"] == "brand" { json!("brand") } else { json!(true) });
+            n.insert("locked".into(), json!(true));
         }
         for (k, v) in detail(el, max_text) {
             n.insert(k, v);

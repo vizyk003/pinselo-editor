@@ -22,45 +22,39 @@
 //! `slotOf`, `pageAtScene`, `zoomAt`, `fitRect`, `clampZoom`, `pageGap`, `MIN_ZOOM`/`MAX_ZOOM`, `Viewport`;
 //! `Handle`, `CORNERS`, `EDGES`, `resizeBox`, `scaleAbout`, `rotateAbout`, `scaleBody`, `scalePatches`,
 //! `cropResize`; `designColors`, `recolorOps`, `paletteMap`, `fontSetOps`, `FontSet`; `auditDesign`,
-//! `describeElement`, `minTextPx`, `A11yIssue`, `ElementKindLabel`; `templatePages`; `STICKY_COLORS`,
-//! `isSticky`, `isSection`, `isMindNode`, `clusterLayout`, `sectionMembers`, `sectionsOf`,
-//! `withSectionMembers`, `mindNodeOf`, `mindChildren`, `mindRoot`, `mindChildPosition`, `mindLayout`,
-//! `makeTimer`, `timerRemaining`, `timerRunning`, `timerStart`, `timerPause`, `timerReset`, `timerAdd`,
-//! `formatClock`, `tallyVotes`, `topVoted`, `votesUsed`, `voteAllowance`, `voteScope`; `coverCrop`,
+//! `describeElement`, `minTextPx`, `A11yIssue`, `ElementKindLabel`; `templatePages`; `coverCrop`,
 //! `withKeyframe`; types `Mods`, `HitTarget`, `EditorState`, `ClipboardPayload`, `FindMatch`, `CopiedStyle`,
 //! `TextService` (a trait here).
 //!
 //! `Editor` members used by `apps/web` (all implemented; snake_case in Rust, camelCase via `dispatch`):
 //! state/doc/view/version/subscribe/store (`store.ydoc` → [`Editor::store`], `store.checkpoint`,
 //! `store.apply`, `store.actor`, `undo.undoStack/redoStack.length` → [`Editor::can_undo`]/[`Editor::can_redo`]),
-//! textService (→ [`Editor::set_text_service`]), brandAdmin, user, apply, insert, select, selectAll,
+//! textService (→ [`Editor::set_text_service`]), apply, insert, select, selectAll,
 //! clearSelection, selected, selectedDeep, selectionBox, setActivePage, setHover, pageOrigin,
 //! setViewport, setViewportSize, zoomTo, zoomBy, panBy, zoomToFit, zoomToElement, updateActivePageFromScroll,
 //! pointerDown, pointerMove, pointerUp, cancelGesture, doubleClick, handleKey, textShortcut, typeText,
 //! deleteText, moveCaret, selectedText, startTextEdit, setTextStyle, setParagraphStyle, currentTextStyle,
 //! currentParagraph, editingTableText, editingTextFrame, updateSelected (closure → `update_selected_with`,
 //! or per-element patches via `update_selected_map`), copy, cut, paste, duplicate, deleteSelection, align,
-//! distribute, tidy, arrange, reorderTo, flip, group, ungroup, toggleLock, setBrandLock, setBrandAdmin,
+//! distribute, tidy, arrange, reorderTo, flip, group, ungroup, toggleLock,
 //! copyStyle, cancelStyleBrush, find, replace, revealMatch, setGeometry, setGuides, startCrop, stopCrop,
 //! setCropZoom, cropZoom, replaceImage, dropIntoContainer, addPage, duplicatePage, deletePage, movePage,
 //! updatePage, resizeDesign, setLanguage, replaceColors, applyPalette, applyFonts, addPageNumbers,
-//! bindableElements, setDataBinding, bulkCreate, undo, redo, remeasureText, setTool, setBrush, addSticky,
-//! setStickyColor, clusterStickies, createSection, renameSection, toggleSection, moveSection, mindMapAdd,
-//! editGroupText, layoutMindMap, cellTab, setCells, setCellAlign, setCellBorders, setColumnWidth,
+//! bindableElements, setDataBinding, bulkCreate, undo, redo, remeasureText, setTool, setBrush,
+//! cellTab, setCells, setCellAlign, setCellBorders, setColumnWidth,
 //! tableStructure, tableTargetRange, mergeCellRange, unmergeCellRange, setTableStyle, previewAnimation,
 //! stopPreview, currentTime, play/pause/togglePlay, seek, tick, pageStart, setPageDuration, setTiming,
 //! insertVideo, splitAtPlayhead, audioClips, addAudio, updateAudio, removeAudio, splitAudio,
-//! syncPagesToBeats, captions, setCaptions, upsertCue, setRecordKeyframes, setKeyframe, removeKeyframe,
+//! captions, setCaptions, upsertCue, setRecordKeyframes, setKeyframe, removeKeyframe,
 //! moveKeyframe, clearKeyframes.
 //! Also ported (not used by apps/web today): addGuide, cellAt, cellTextEl, clearCells, editShapeLabel,
-//! expandWhiteboard, fillFrame, gridCellAt, setGridCell, isBrandLocked, keyframeTime, nudge, pasteStyle,
+//! fillFrame, gridCellAt, setGridCell, keyframeTime, nudge, pasteStyle,
 //! plainText, play, scrollToPage, selectCellRange, selectionFrame, setCell, setPresenting, startCellEdit,
 //! stopCellEdit, stopTextEdit, tableTargets, toPage, viewCenter, overrides, CLIPBOARD_MIME.
 //! New for the WASM bridge: [`Editor::apply_remote_update`], [`Editor::drain_local_updates`],
 //! [`Editor::reload`], [`Editor::flush`], [`Editor::store_apply_with`], [`Editor::rng_mut`] (the id stream for
 //! host-built elements such as [`template_pages`]), [`Editor::doc_json`], [`Editor::view_json`],
-//! [`Editor::dispatch`] (see [`dispatch`] for the argument conventions). `brandAdmin` is the public field
-//! [`Editor::brand_admin`] (writing it does not notify, like TS; [`Editor::set_brand_admin`] does).
+//! [`Editor::dispatch`] (see [`dispatch`] for the argument conventions).
 //!
 //! # Parity
 //!
@@ -68,7 +62,7 @@
 //! tests replay them through [`Editor::dispatch`] and compare state, document, overrides, undo availability,
 //! notification count and random draws after every step. Known deviations from TS:
 //!
-//! * **Reactions to undo/redo are untracked.** Auto-height, connector and whiteboard fix-ups caused by an undo or
+//! * **Reactions to undo/redo are untracked.** Auto-height and connector fix-ups caused by an undo or
 //!   redo are written with an origin the undo manager ignores. yjs runs them inside the undo transaction's
 //!   cleanup (its `undoing` flag still set), so they become an extra redo/undo step; yrs resets that flag before
 //!   observers may write, and a tracked write would clear the redo stack instead. Rust keeps exactly the undone
@@ -93,12 +87,11 @@ pub mod text_service;
 pub mod transform;
 pub mod util;
 pub mod viewport;
-pub mod whiteboard;
 
 pub use a11y::{A11yIssue, A11yIssueCode, ElementDescription, ElementKindLabel, Severity, audit_design, describe_element, min_text_px};
 pub use dispatch::DispatchError;
 pub use doc::DocView;
-pub use editor::commands::{Arrange, BrandLockLevels, FindOpts, GeometryPatch, PageNumberPosition, ResolvedImage, cover_crop};
+pub use editor::commands::{Arrange, FindOpts, GeometryPatch, PageNumberPosition, ResolvedImage, cover_crop};
 pub use editor::text::{CaretKey, EditingTextFrame};
 pub use editor::timeline::{MediaAsset, with_keyframe};
 pub use editor::{CellTextFrame, Editor, EditorOptions};
@@ -113,4 +106,3 @@ pub use viewport::{
     MAX_ZOOM, MIN_ZOOM, PageSlot, Viewport, clamp_zoom, fit_rect, page_at_scene, page_gap, page_slots, scene_to_screen, screen_to_scene,
     slot_of, zoom_at,
 };
-pub use whiteboard::*;

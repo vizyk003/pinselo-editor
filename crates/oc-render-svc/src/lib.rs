@@ -12,7 +12,7 @@
 //! - Pure ports with golden parity: [`doc_markdown`], [`docx`], [`site_reflow`], [`site_mobile`],
 //!   [`doc_layout::blocks_of`].
 //! - Writers over the renderer, verified against the TS twice (with the renderer's answers replayed, and with the
-//!   real painter where the output is structural): [`site`], [`pptx`], [`email`], [`doc_layout::doc_to_design`].
+//!   real painter where the output is structural): [`site`], [`pptx`], [`doc_layout::doc_to_design`].
 //! - Video: [`video`] (the timeline frame loop, MP4/GIF/M4A exports), [`media`] (ffmpeg decoding and the audio
 //!   mix), [`gif`] (a port of the gifenc quantiser and encoder).
 //! - The service: [`service`] (data access, document loading, Docs exports), [`app`] (routes, export job).
@@ -22,7 +22,6 @@ pub mod app;
 pub mod doc_layout;
 pub mod doc_markdown;
 pub mod docx;
-pub mod email;
 pub mod geom;
 pub mod gif;
 pub mod lint;

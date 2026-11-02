@@ -25,6 +25,24 @@ fn page_ids(ed: &Editor) -> Vec<String> {
 }
 
 #[test]
+fn an_old_brand_lock_holds_nobody() {
+    let (mut ed, page) = setup();
+    let el = json!({ "id": "oldbrandlock0000", "type": "shape", "parentId": page, "z": "a0", "opacity": 1, "xf": { "x": 10, "y": 10, "w": 50, "h": 50, "rot": 0 }, "kind": "rect", "params": {}, "fills": [], "strokes": [],
+        "lock": { "by": "brand", "move": true, "resize": true, "rotate": true, "delete": true, "content": true, "style": true } });
+    let r = call(&mut ed, "apply", json!([[{ "op": "add", "el": el, "parent": page }]]));
+    assert_eq!(r["ok"], json!(true));
+    call(&mut ed, "select", json!([["oldbrandlock0000"]]));
+    call(&mut ed, "nudge", json!([5, 0]));
+    assert_eq!(ed.doc_json()["elements"]["oldbrandlock0000"]["xf"]["x"], json!(15));
+    // The lock button sees an unlocked element and sets a real lock.
+    call(&mut ed, "toggleLock", json!([]));
+    assert_eq!(ed.doc_json()["elements"]["oldbrandlock0000"]["lock"]["by"], json!("user"));
+    call(&mut ed, "toggleLock", json!([]));
+    call(&mut ed, "deleteSelection", json!([]));
+    assert!(ed.doc().live("oldbrandlock0000").is_none());
+}
+
+#[test]
 fn dispatch_reports_unknown_methods_and_bad_arguments() {
     let (mut ed, _) = setup();
     assert_eq!(ed.dispatch("teleport", &json!([])), Err(DispatchError::Unknown("teleport".into())));
@@ -57,24 +75,6 @@ fn dispatch_keeps_the_ts_difference_between_undefined_and_null() {
     assert_ne!(fills(&ed, &blue), fills(&ed, &red));
     call(&mut ed, "pasteStyle", json!([[blue]]));
     assert_eq!(fills(&ed, &blue), fills(&ed, &red));
-
-    // addSticky: a missing author is the editor's user, `null` is anonymous.
-    call(&mut ed, "user=", json!([{ "id": "u1", "name": "Ada" }]));
-    let s1 = call(&mut ed, "addSticky", json!(["#fef08a", {}])).as_str().unwrap().to_string();
-    let s2 = call(&mut ed, "addSticky", json!(["#fef08a", { "author": null }])).as_str().unwrap().to_string();
-    let doc = ed.doc_json();
-    assert_eq!(doc["elements"][&s1]["board"]["sticky"]["author"], json!({ "id": "u1", "name": "Ada" }));
-    assert!(doc["elements"][&s2]["board"]["sticky"].get("author").is_none());
-}
-
-#[test]
-fn brand_admin_field_writes_do_not_notify_but_set_brand_admin_does() {
-    let (mut ed, _) = setup();
-    let v = ed.version();
-    call(&mut ed, "brandAdmin=", json!([false]));
-    assert_eq!((ed.version(), ed.brand_admin), (v, false));
-    call(&mut ed, "setBrandAdmin", json!([true]));
-    assert_eq!((ed.version(), ed.brand_admin), (v + 1, true));
 }
 
 #[test]

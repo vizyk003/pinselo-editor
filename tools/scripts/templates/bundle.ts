@@ -7,7 +7,7 @@ import { readFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node
 import { join } from 'node:path';
 import { LIB_ASSETS, type TemplateDef } from './builder';
 
-export interface BundledTemplate { id: string; title: string; category: string; preset: string; tags: string[]; premium: boolean; doc: TemplateDef['doc'] }
+export interface BundledTemplate { id: string; title: string; category: string; preset: string; tags: string[]; doc: TemplateDef['doc'] }
 
 /** Write a bundle into `dir` (replacing it) and return `dir`. */
 export function writeBundle(dir: string, templates: BundledTemplate[]): string {

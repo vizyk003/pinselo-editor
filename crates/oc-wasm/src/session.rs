@@ -161,7 +161,7 @@ impl Session {
         std::mem::take(&mut self.pending)
     }
 
-    /// Apply an update from the browser's yjs doc (local UI writes such as TipTap or the board, or peers via the
+    /// Apply an update from the browser's yjs doc (local UI writes such as TipTap, or peers via the
     /// provider). The editor's reactions to it may produce local updates of their own.
     pub fn apply_remote_update(&mut self, update: &[u8]) -> Result<f64, String> {
         self.editor.apply_remote_update(update).map_err(|e| e.to_string())?;

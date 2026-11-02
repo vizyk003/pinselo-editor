@@ -6,7 +6,7 @@ import { childrenOf, resolvePage, sortedPages, type DesignDoc, type Editor, type
 import { coverCrop } from '../lib/contentRules';
 import {
   AlignCenter, Accessibility, ArrowDown, ArrowDownToLine, ArrowUp, ArrowUpToLine, ClipboardPaste, Copy, Crop, Download, FlipHorizontal, FlipVertical,
-  Group, ImageIcon, Info, Layers, Link2, Lock, MessageSquarePlus, Paintbrush, Plus, Scissors, Trash2, Ungroup, Unlock,
+  Group, ImageIcon, Info, Layers, Link2, Lock, MessageSquarePlus, Paintbrush, Plus, Trash2, Ungroup, Unlock,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { MenuItem, Modal, useToast } from '../components/ui';
@@ -15,8 +15,8 @@ import { paintCanvas } from '../lib/engine';
 import type { Engine } from '../lib/engine';
 import { describe } from './A11y';
 import { useEd } from './context';
-import { openImageEraser } from './ImageEraser';
 import { VectorMenuItems } from './VectorTools';
+import { userLock } from './dropTarget';
 
 // ---------------------------------------------------------------- dialogs opened from menus and the quick bar
 
@@ -207,7 +207,7 @@ export function ElementMenu({ close }: { close: () => void }) {
       </div>
     );
   }
-  const locked = sel.some((e) => e.lock?.move);
+  const locked = sel.some((e) => userLock(e)?.move);
   const single = sel.length === 1 ? sel[0]! : null;
   const image = single?.type === 'image' ? single : null;
   return (
@@ -238,7 +238,6 @@ export function ElementMenu({ close }: { close: () => void }) {
         <MenuItem icon={<Crop size={16} />} label={t('Crop')} onClick={run(() => editor.startCrop(single.id))} />
       )}
       {image && <MenuItem icon={<ImageIcon size={16} />} label={t('Set image as background')} onClick={run(() => setImageAsBackground(editor, image))} disabled={locked} />}
-      {image && <MenuItem icon={<Scissors size={16} />} label={t('Erase parts of the image')} onClick={run(() => openImageEraser(image.id))} disabled={Boolean(image.lock?.content)} />}
       <VectorMenuItems sel={sel} run={run} />
       <div className="hsep" />
       <MenuItem icon={<Download size={16} />} label={t('Download selection (PNG)')} onClick={run(() => void downloadSelection(editor, engine).then((ok) => !ok && toast(t('Nothing to download'))))} />

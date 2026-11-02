@@ -1,7 +1,7 @@
 import {
   formatDims, lockedSide, PRESET_CATEGORIES, presetsInCategory, pxToUnit, searchPresets, SIZE_PRESETS, sortedPages, unitToPx, videoSlots, type PresetCategoryId, type Unit,
 } from '@oc/engine';
-import { Building2, Download, Eye, Globe, Link as LinkIcon, Lock, Printer, Share2, Trash2, Unlock, UserX } from 'lucide-react';
+import { Building2, Download, Globe, Link as LinkIcon, Lock, Printer, Share2, Trash2, Unlock, UserX } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 import { tabPanelProps, tabProps } from '../components/tabs';
 import { ResizeCopies } from './ResizeCopies';
@@ -11,10 +11,7 @@ import { fmtDate, t, tk, tn } from '../i18n';
 import { track } from '../lib/analytics';
 import { sharingApi, type ShareRole, type SharingState } from '../api/sharing';
 import { useDoc, useEd, useEditorState } from './context';
-import { ViewInsightsLine } from './SiteInsights';
-import { ApprovalSection } from './Approval';
 import { canShareNatively, shareLink } from '../native';
-import { PrintDialog } from '../print/PrintDialog';
 import { StandalonePreflight } from '../print/Preflight';
 import {
   AddPeople, EmbedPane, GroupIcon, PaneHead, QrPane, QuickActions, RemoveEveryoneConfirm, ROLE_LABEL, RoleSelect, SlugEditor, TemplateLinkPane, type SharePane,
@@ -80,12 +77,6 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal title={t('Share this design')} onClose={onClose} size="md">
-      {extra?.visitors != null && (pub || extra.visitors > 0) && (
-        <div className="share-head">
-          <span className="grow" />
-          <span className="visitors" title={t('Unique visitors of the public view link')}><Eye size={14} /> {tn(extra.visitors, '{n} visitor', '{n} visitors')}</span>
-        </div>
-      )}
       {owner && <AddPeople designId={design.id} onShared={() => void reload()} />}
       {requests.length > 0 && (
         <div className="col" style={{ gap: 6 }}>
@@ -191,7 +182,6 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
         </div>
       )}
       {pub && owner && extra && <SlugEditor designId={design.id} slug={extra?.slug ?? null} onSaved={(slug) => setExtra((x) => (x ? { ...x, slug } : x))} />}
-      {pub && (owner || role === 'edit') && <ViewInsightsLine designId={design.id} />}
       {pub && owner && (
         <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
           <label className="row" style={{ gap: 6, fontSize: 13 }}>{t('Expires')}
@@ -219,7 +209,6 @@ export function ShareDialog({ onClose }: { onClose: () => void }) {
         onPane={setPane}
         focusTile={lastPane}
       />
-      <ApprovalSection />
     </Modal>
   );
 }

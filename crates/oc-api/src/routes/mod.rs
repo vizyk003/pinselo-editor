@@ -3,7 +3,6 @@
 
 pub mod account;
 pub mod assets;
-pub mod billing;
 pub mod brand;
 pub mod brandhub;
 pub mod content;
@@ -20,12 +19,10 @@ pub mod media;
 pub mod misc;
 pub mod oauth;
 pub mod openapi;
-pub mod print;
 pub mod print_profiles;
 pub mod safety;
 pub mod search;
 pub mod sharing;
-pub mod sheets;
 pub mod sites;
 pub mod social;
 pub mod supabase;

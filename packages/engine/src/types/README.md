@@ -1,7 +1,7 @@
 # `@oc/engine` types: the document and editor contract
 
 These declarations are the TypeScript face of the Rust core. They describe the JSON the crates read and write
-(serde shapes of `oc-schema`, `oc-geometry`, `oc-editor-core`, `oc-sheet`, `oc-crdt`) and the signatures of the
+(serde shapes of `oc-schema`, `oc-geometry`, `oc-editor-core`, `oc-crdt`) and the signatures of the
 functions and classes the facade exposes (`src/schema.ts` and friends type every export as `typeof S.fn` against
 them, so a signature drift fails the build).
 
@@ -10,7 +10,6 @@ them, so a signature drift fails the build).
 | `schema/` | `crates/oc-schema` | document model (`DesignDoc`, `Element`, `Page`, …), factories, presets, print, tables |
 | `geometry/` | `crates/oc-geometry` | matrices, shapes, hit testing, snapping, connectors |
 | `editor-core/` | `crates/oc-editor-core` | `EditorState`, `Viewport`, clipboard, whiteboard, a11y, the `Editor` API |
-| `sheet/` | `crates/oc-sheet` | sheet model, formats, CSV, charts, the `SheetEngine` API |
 | `crdt/` | `crates/oc-crdt` | `DocOp`, brand locks, Y.Doc layout; `board` points at `../board.ts` (TS on the browser's Y.Doc) |
 
 They started as the declarations of the TypeScript core packages that the Rust crates replaced (plan 13, stage 4.1:

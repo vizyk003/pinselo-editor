@@ -4,7 +4,7 @@ import { BRAND } from '@oc/config';
 import { CheckCircle2, AlertTriangle, XCircle, Wrench, Search } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate, useParams } from 'react-router';
-import { ApiError, plansEnabled, statusApi, supportApi, type StatusInfo, type SupportTicket } from '../api';
+import { ApiError, statusApi, supportApi, type StatusInfo, type SupportTicket } from '../api';
 import { useAuth } from '../App';
 import { ConsentSettingsLink } from '../components/ConsentBanner';
 import { interp, timeAgo } from '../components/ui';
@@ -14,18 +14,16 @@ import { track } from '../lib/analytics';
 import { fmtDate, t, tk } from '../i18n';
 
 /** Help articles; the plans article only while paid plans exist. */
-const articles = () => (plansEnabled() ? HELP : HELP.filter((a) => a.slug !== 'plans'));
 
 function PublicShell({ children, wide }: { children: ReactNode; wide?: boolean }) {
   const { user } = useAuth();
   const { openAuth } = useAuthGate();
   return (
     <div className="public">
-      <header className="pricing-head">
+      <header className="public-head">
         <Link to="/" className="logo"><img src="/favicon.svg" alt="" />{BRAND.name}</Link>
         <nav className="row" style={{ gap: 4 }}>
           <NavLink className="btn ghost sm" to="/help">{t('Help')}</NavLink>
-          {plansEnabled() && <NavLink className="btn ghost sm" to="/pricing">{t('Pricing')}</NavLink>}
           <NavLink className="btn ghost sm" to="/status">{t('Status')}</NavLink>
         </nav>
         <span className="grow" />
@@ -71,7 +69,7 @@ export function HelpHome() {
     const term = q.trim().toLowerCase();
     if (!term) return null;
     const words = term.split(/\s+/);
-    return articles().map((a) => ({ a, score: words.filter((w) => `${a.title} ${a.summary} ${a.body.join(' ')}`.toLowerCase().includes(w)).length }))
+    return HELP.map((a) => ({ a, score: words.filter((w) => `${a.title} ${a.summary} ${a.body.join(' ')}`.toLowerCase().includes(w)).length }))
       .filter((r) => r.score > 0).sort((x, y) => y.score - x.score).map((r) => r.a);
   }, [q]);
   useEffect(() => {
@@ -92,7 +90,7 @@ export function HelpHome() {
         HELP_CATEGORIES.map((c) => (
           <section key={c} className="box">
             <h2>{c}</h2>
-            <div className="list">{articles().filter((a) => a.category === c).map((a) => <ArticleRow key={a.slug} a={a} />)}</div>
+            <div className="list">{HELP.filter((a) => a.category === c).map((a) => <ArticleRow key={a.slug} a={a} />)}</div>
           </section>
         ))
       )}
@@ -114,12 +112,12 @@ function ArticleRow({ a }: { a: (typeof HELP)[number] }) {
 
 export function HelpArticlePage() {
   const { slug } = useParams();
-  const a = articles().find((x) => x.slug === slug);
+  const a = HELP.find((x) => x.slug === slug);
   useEffect(() => {
     if (a) track('help_view', { slug: a.slug });
   }, [a]);
   if (!a) return <PublicShell><div className="empty">{t('Article not found.')} <Link className="linkish" to="/help">{t('Back to help')}</Link></div></PublicShell>;
-  const related = articles().filter((x) => x.category === a.category && x.slug !== a.slug);
+  const related = HELP.filter((x) => x.category === a.category && x.slug !== a.slug);
   return (
     <PublicShell>
       <Link className="linkish" to="/help">← {t('Help centre')}</Link>
@@ -134,7 +132,7 @@ export function HelpArticlePage() {
 }
 
 const TOPICS: Array<[string, string]> = [
-  ['account', tk('Account and sign-in')], ['billing', tk('Billing and plans')], ['editor', tk('Using the editor')], ['export', tk('Exporting and printing')],
+  ['account', tk('Account and sign-in')], ['editor', tk('Using the editor')], ['export', tk('Exporting and printing')],
   ['collaboration', tk('Sharing and teams')], ['bug', tk('Something is broken')], ['feature', tk('Feature request')], ['other', tk('Something else')],
 ];
 
@@ -146,7 +144,7 @@ export function HelpContact() {
   const [done, setDone] = useState<string | null>(null);
   const suggestions = useMemo(() => {
     const words = f.subject.toLowerCase().split(/\s+/).filter((w) => w.length > 3);
-    return words.length ? articles().filter((a) => words.some((w) => a.title.toLowerCase().includes(w) || a.summary.toLowerCase().includes(w))).slice(0, 3) : [];
+    return words.length ? HELP.filter((a) => words.some((w) => a.title.toLowerCase().includes(w) || a.summary.toLowerCase().includes(w))).slice(0, 3) : [];
   }, [f.subject]);
   if (done) {
     return (

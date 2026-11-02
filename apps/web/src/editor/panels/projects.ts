@@ -8,7 +8,7 @@ import {
   type LineAttach, type Page, type PageId, type Rect,
 } from '@oc/engine';
 
-/** Docs and sheets keep their content outside the page/element model: they can be opened, not inserted from. */
+/** Docs and older sheets keep their content outside the page/element model: they can be opened, not inserted from. */
 export function canInsertFrom(surface: string): boolean {
   return surface !== 'doc' && surface !== 'sheet';
 }

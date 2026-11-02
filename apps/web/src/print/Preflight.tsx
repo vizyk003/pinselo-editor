@@ -1,11 +1,10 @@
-/** Print preflight results with one-click fixes (A18). Used by Download → PDF Print and the print order flow. */
+/** Print preflight results with one-click fixes (A18). Used by Download → PDF Print. */
 import type { ColorValue, ElementId, PageId, PreflightFix, PreflightIssue, PreflightResult } from '@oc/engine';
 import { preflightPrint, printColorKey, printColors, sortedPages, standalonePrintTarget } from '@oc/engine';
 import { AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { t, tk, tn } from '../i18n';
 import { useDoc, useEd } from '../editor/context';
-import type { OrderStatus } from './api';
 import { printColorApi } from './printExport';
 
 export function preflightMessage(i: PreflightIssue): string {
@@ -32,11 +31,6 @@ const FIX_LABEL: Record<PreflightFix['kind'], string> = {
   'extend-to-bleed': tk('Extend to bleed'),
   'thicken-line': tk('Make line thicker'),
   'add-page': tk('Add a back page'),
-};
-
-export const STATUS_LABEL: Record<OrderStatus, string> = {
-  pending_payment: tk('Awaiting payment'), paid: tk('Paid'), rendering: tk('Preparing print file'), submitted: tk('Sent to printer'),
-  in_production: tk('Printing'), shipped: tk('Shipped'), delivered: tk('Delivered'), returned: tk('Returned'), failed: tk('Needs attention'), cancelled: tk('Cancelled'),
 };
 
 /** Applies preflight fixes through the editor (undoable like any other edit). */

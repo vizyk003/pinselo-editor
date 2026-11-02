@@ -15,7 +15,7 @@ An empty value is not always the same as an unset one. `VAR=` in a Compose `env_
 | Behaviour | Variables |
 |---|---|
 | Empty means the **default** | `OC_DATABASE_POOL_MAX`, `OC_API_PORT`, `OC_COLLAB_PORT`, `OC_RENDER_PORT`, `OC_UPLOAD_QUOTA`, `OC_MAX_UPLOAD_BYTES`, `OC_MAX_MEDIA_BYTES`, `OC_SIGNUP` |
-| Empty means **off** | Credentials and keys for sign-in, Stripe, stock media, print providers and speech-to-text, `OC_SUPPORT_EMAIL`, `OC_COLLAB_URL`, `OC_ICC_DIR` for api and render |
+| Empty means **off** | Credentials and keys for sign-in, stock media and speech-to-text, `OC_SUPPORT_EMAIL`, `OC_COLLAB_URL`, `OC_ICC_DIR` for api and render |
 | Empty is **taken literally** | All other variables on this page, unless noted. Delete the line rather than leaving it empty |
 
 The literal case causes real problems with these variables:
@@ -77,7 +77,7 @@ Non-numeric values for the integer variables stop the service with `invalid conf
 | `OC_S3_ENDPOINT` | For non-AWS stores | Not set | Same | Custom endpoint. Also switches to path-style addressing |
 | `OC_S3_CHECKSUMS` | No | On | Same | `off` stops SHA-256 upload checksums. Needed for Supabase Storage |
 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | With S3 | None | Same | Read by the AWS SDK's standard credential chain, which also accepts its other usual sources |
-| `OC_UPLOAD_QUOTA` | No | `5368709120` (5 GiB) | api | Storage quota per user, in bytes. See [Paid plans](#paid-plans-and-payments) |
+| `OC_UPLOAD_QUOTA` | No | `5368709120` (5 GiB) | api | Fair-use storage quota per user, in bytes. Uploads and restores over it fail with 402 `upgrade_required` |
 | `OC_MAX_UPLOAD_BYTES` | No | `52428800` (50 MiB) | api | Largest upload |
 | `OC_MAX_MEDIA_BYTES` | No | `1073741824` (1 GiB) | api | Largest video or audio upload |
 | `OC_GC_GRACE_HOURS` | No | `48` | worker | Age an unreferenced object must reach before removal. Must be a number |
@@ -112,56 +112,6 @@ All optional. See [supabase.md](supabase.md).
 | `OC_SUPABASE_SECRET_KEY` | Empty | api | Server-only. Required in production with Supabase Auth; used to delete Supabase users |
 | `OC_SUPABASE_JWT_SECRET` | Empty | api | Legacy HS256 secret |
 | `OC_SUPABASE_JWT_ISSUER` | `<OC_SUPABASE_URL>/auth/v1` | api | Expected token issuer, for custom auth domains |
-
-## Paid plans and payments
-
-**Paid plans are off unless `OC_BILLING` is exactly `1`.** By default, everything is free.
-
-| | `OC_BILLING` unset or any other value | `OC_BILLING=1` |
-|---|---|---|
-| Features | All on, for everyone | From the user's or workspace's plan |
-| Team members | Unlimited | From the plan; Teams uses its seat count |
-| Storage per user | `OC_UPLOAD_QUOTA` | From the plan. Free is 5 GiB, or `OC_UPLOAD_QUOTA` if set |
-| Premium templates | Usable by everyone | Need a plan that includes them |
-| Web app | No pricing, plan or upgrade screens; `/pricing` redirects home | Pricing and billing screens shown |
-| `GET /api/billing/plans` | `enabled: false` and no plans | `enabled: true` and the plan list |
-| Checkout | 404 | Available |
-| Stripe webhook | Stays on, for print orders | On |
-
-`/api/config` reports the state to the web app as `plans`.
-
-| Name | Required | Default | Service | Purpose |
-|---|---|---|---|---|
-| `OC_BILLING` | No | Off | api | `1` turns on paid plans |
-| `OC_STRIPE_SECRET_KEY` | For real payments | Empty | api | Selects Stripe. Without it, the local stand-in provider is used |
-| `OC_STRIPE_WEBHOOK_SECRET` | With Stripe | Empty | api | Verifies `POST /api/billing/stripe/webhook`. Without it, all events are rejected |
-| `OC_STRIPE_PRICE_PRO_MONTH`, `OC_STRIPE_PRICE_PRO_YEAR`, `OC_STRIPE_PRICE_TEAMS_MONTH`, `OC_STRIPE_PRICE_TEAMS_YEAR` | With Stripe and `OC_BILLING=1` | Empty | api | Stripe price IDs. Checkout for a plan fails if its price is not set |
-| `OC_STRIPE_TAX` | No | Off | api | `1` turns on Stripe automatic tax |
-| `OC_STRIPE_API_URL` | No | `https://api.stripe.com/v1` | api | Stripe base URL for print order payments |
-| `OC_BILLING_CURRENCY` | No | `usd` | api | Currency for one-time charges (print orders) |
-| `OC_LOCAL_BILLING` | No | Off | api | `1` allows the no-charge local provider in production. It is always allowed outside production when Stripe is not set, and never next to Stripe. Anyone can then get paid features or print orders without paying, so use it for testing only |
-
-## Print orders
-
-All optional, all read by api.
-
-| Name | Default | Purpose |
-|---|---|---|
-| `OC_PRINT_PROVIDER` | `auto` | `auto` and `gelato` try Gelato then Printful; `printful` tries Printful then Gelato; `local` or any other value uses the local operator |
-| `OC_PRINT_CATALOG` | Built-in catalogue | Catalogue as a JSON string starting with `{`, or a file path |
-| `OC_PRINT_OPERATOR_EMAIL` | Empty | Email of the person who handles local print orders |
-| `OC_GELATO_API_KEY` | Empty | Turns on Gelato |
-| `OC_GELATO_ORDERS_URL` | `https://order.gelatoapis.com/v4/orders` | Gelato orders URL |
-| `OC_GELATO_ORDER_TYPE` | `order` | `draft` creates draft orders |
-| `OC_GELATO_SHIPMENT_STANDARD` | `normal` | Gelato shipment method for standard shipping |
-| `OC_GELATO_SHIPMENT_EXPRESS` | `express` | Gelato shipment method for express shipping |
-| `OC_GELATO_WEBHOOK_SECRET` | Empty | Verifies `POST /api/print/webhooks/gelato`. Without it, events are rejected |
-| `OC_GELATO_WEBHOOK_HEADER` | `x-oc-webhook-secret` | Header that carries that secret |
-| `OC_PRINTFUL_API_KEY` | Empty | Turns on Printful |
-| `OC_PRINTFUL_API_URL` | `https://api.printful.com` | Printful base URL |
-| `OC_PRINTFUL_STORE_ID` | Empty | Printful store |
-| `OC_PRINTFUL_CONFIRM` | On | `0` leaves orders unconfirmed |
-| `OC_PRINTFUL_WEBHOOK_SECRET` | Empty | Verifies `POST /api/print/webhooks/printful` |
 
 ## Stock media
 
@@ -209,7 +159,6 @@ All optional.
 | Name | Default | Service | Purpose |
 |---|---|---|---|
 | `OC_FFMPEG` | `ffmpeg` | worker | The ffmpeg command for social publishing. api and render always run `ffmpeg` from `PATH` |
-| `OC_WHISPER_CMD`, `OC_WHISPER_MODEL` | Empty | api | Path to a whisper.cpp binary and its model. Both are needed for auto captions. The `runtime` image does not include them |
 | `OC_PHOTODNA_KEY` | Empty | api | Turns on PhotoDNA hash matching of uploads. Without it, no check is made |
 | `OC_PHOTODNA_URL` | `https://api.microsoftmoderator.com/photodna/v1.0/Match?enhance=false` | api | PhotoDNA endpoint |
 | `OC_PHOTODNA_FAIL_CLOSED` | Off | api | `1` reports the check as unavailable when it errors. Otherwise the upload passes |
@@ -278,12 +227,11 @@ See [testing.md](testing.md).
 | `SERVER_CMD`, `OC_SECRET`, `OC_COLLAB_PORT` | `tests/collab/provider-client.ts` | Required by that client |
 | `OC_COLLAB_SERVER_CMD` | `crates/oc-collab/tests/provider.rs` | Server command to test instead of the built binary |
 | `OC_TEST_PG_BIN` | `oc-db` test cluster helper | Directory of Postgres binaries |
-| `OC_SKIP_TS_VERIFY` | `oc-crdt`, `oc-editor-core`, `oc-render-svc` and `oc-sheet` tests | When set, skips their TypeScript verification step |
+| `OC_SKIP_TS_VERIFY` | `oc-crdt`, `oc-editor-core` and `oc-render-svc` tests | When set, skips their TypeScript verification step |
 | `OC_GOLDEN_CASE` | `oc-editor-core` golden tests, `packages/engine/test/editor-goldens.test.ts` | Run only this case |
 | `OC_GOLDEN_TRACE`, `OC_GOLDEN_EL` | `oc-editor-core` golden tests | Debug tracing for a golden session |
 | `OC_PS1_UPDATE` | `crates/oc-render/tests/ps1.rs` | `1` rewrites the pixel baselines |
 | `OC_PS1_FILTER` | `packages/engine/test/ps1.test.ts` | Limit that test to matching cases |
-| `OC_SHEET_ALL_DIFFS` | `oc-sheet` tests | When set, prints all differences instead of the first 60 |
 | `OC_TEMPLATE_PHOTOS` | `packages/engine/scripts/bench-render.mts` | Directory of template photos for the benchmark |
 | `OC_ENGINE_WASM` | `packages/engine/scripts/bench-wasm.mts` | Path to another `.wasm` build for the benchmark |
 

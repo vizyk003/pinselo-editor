@@ -9,7 +9,7 @@
 //! | `POST /internal/page-png` | one page as PNG at a pixel width |
 //! | `POST /internal/site-build` | the website HTML |
 //! | `POST /internal/template-thumbnail` | template catalogue thumbnail → `templates.thumbnail` |
-//! | `POST /internal/export` | png/jpg/zip/svg/pdf/pdf-print/pdf-flat/pptx/html-email/docx/md/mp4/gif/m4a |
+//! | `POST /internal/export` | png/jpg/zip/svg/pdf/pdf-print/pdf-flat/pptx/docx/md/mp4/gif/m4a |
 //! | `POST /internal/icc/inspect`, `POST /internal/print/gamut` | colour profiles ([`crate::print`]) |
 //!
 //! `/internal/*` requires the internal service token (`x-oc-internal`), else 403 `{ error: 'forbidden' }`.
@@ -33,7 +33,6 @@ use oc_schema::tree::sorted_pages;
 use serde::Deserialize;
 use serde_json::{Value, json};
 
-use crate::email::{EmailDeps, export_email};
 use crate::renderer::{
     ImageFormat, PrintSetup, RasterOptions, RasterPdfOptions, RenderError, SvgOptions,
     VectorPdfOptions,
@@ -74,6 +73,10 @@ pub fn error_response(e: &SvcError) -> Response {
         SvcError::Renderer(RenderError::NotImplemented(_)) => json_response(
             StatusCode::NOT_IMPLEMENTED,
             json!({ "error": "not_implemented", "message": e.to_string() }),
+        ),
+        SvcError::SheetUnsupported => json_response(
+            StatusCode::UNPROCESSABLE_ENTITY,
+            json!({ "error": "sheet_unsupported", "message": e.to_string() }),
         ),
         _ => json_response(
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -356,35 +359,6 @@ async fn template_thumbnail(
     }
 }
 
-/// Email slices hosted content-addressed (`/api/email-images/<sha>.png`).
-struct EmailHost<'a>(&'a Service);
-
-impl EmailDeps for EmailHost<'_> {
-    fn host<'a>(
-        &'a self,
-        png: Vec<u8>,
-    ) -> futures::future::BoxFuture<'a, Result<String, RenderError>> {
-        Box::pin(async move {
-            let sha = self
-                .0
-                .put(&png, "image/png")
-                .await
-                .map_err(|e| RenderError::Failed(e.to_string()))?;
-            sqlx::query("INSERT INTO email_images(sha256) VALUES ($1) ON CONFLICT DO NOTHING")
-                .bind(&sha)
-                .execute(&self.0.pool)
-                .await
-                .map_err(|e| RenderError::Failed(e.to_string()))?;
-            let origin = if self.0.settings.usercontent_origin.is_empty() {
-                &self.0.settings.web_origin
-            } else {
-                &self.0.settings.usercontent_origin
-            };
-            Ok(format!("{origin}/api/email-images/{sha}.png"))
-        })
-    }
-}
-
 const DOCX: &str = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 const PPTX: &str = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 
@@ -620,15 +594,6 @@ async fn export_inner(svc: &Service, b: &ExportBody) -> Result<Response, SvcErro
                     json!({ "error": "no_audio", "message": "This design has no audio." }),
                 ),
             });
-        }
-        "html-email" => {
-            let out =
-                export_email(svc.renderer.as_ref(), svc, &doc, &pages, &EmailHost(svc)).await?;
-            return Ok(file(
-                out.html.into_bytes(),
-                "text/html; charset=utf-8",
-                &format!("{name}.html"),
-            ));
         }
         "pptx" => {
             return Ok(file(

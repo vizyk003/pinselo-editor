@@ -15,7 +15,6 @@ use oc_social::{AuthKind, AuthorizeParams, ExchangeParams, Http};
 use serde_json::Map;
 
 use crate::auth::{at_least, design_role};
-use crate::brandhub::approval_gate;
 use crate::prelude::*;
 use oc_auth::Role;
 
@@ -153,21 +152,18 @@ fn problems(rows: &[AccountRow], caption: &str, hashtags: &[String], format: &st
 }
 
 /// The checks of a post about to be scheduled; `Some(reply)` refuses it.
-async fn schedule_checks(s: &AppState, user: Uuid, design_id: &str, rows: &[AccountRow], scheduled: bool, text: (&str, &[String], &str)) -> Result<Option<Reply>, ApiError> {
-    if let Some(gate) = approval_gate(s, user, design_id).await? {
-        return Ok(Some(reply::json(403, gate))); // brand approvals (A8)
-    }
+fn schedule_checks(rows: &[AccountRow], scheduled: bool, text: (&str, &[String], &str)) -> Option<Reply> {
     if rows.is_empty() {
-        return Ok(Some(reply::json(400, json!({ "error": "no_accounts", "message": "Pick at least one account." }))));
+        return Some(reply::json(400, json!({ "error": "no_accounts", "message": "Pick at least one account." })));
     }
     if !scheduled {
-        return Ok(Some(reply::json(400, json!({ "error": "no_time", "message": "Pick a date and time." }))));
+        return Some(reply::json(400, json!({ "error": "no_time", "message": "Pick a date and time." })));
     }
     let p = problems(rows, text.0, text.1, text.2);
     if !p.is_empty() {
-        return Ok(Some(reply::json(400, json!({ "error": "invalid_post", "message": p.join("; ") }))));
+        return Some(reply::json(400, json!({ "error": "invalid_post", "message": p.join("; ") })));
     }
-    Ok(None)
+    None
 }
 
 fn post_body(partial: bool) -> z::Schema {
@@ -431,7 +427,7 @@ async fn create_post(State(s): State<AppState>, req: Req) -> ApiResult {
     let scheduled_at = b.get("scheduledAt").and_then(Value::as_str).map(str::to_owned);
     let status = bs("status");
     if status == "scheduled"
-        && let Some(r) = schedule_checks(&s, u.id, &design_id, &rows, scheduled_at.is_some(), (&bs("caption"), &hashtags, &bs("format"))).await?
+        && let Some(r) = schedule_checks(&rows, scheduled_at.is_some(), (&bs("caption"), &hashtags, &bs("format")))
     {
         return Ok(r);
     }
@@ -493,7 +489,7 @@ async fn update_post(State(s): State<AppState>, Path(id): Path<String>, req: Req
     let status = bs("status").unwrap_or_else(|| if post.status == "failed" { "scheduled".into() } else { post.status.clone() });
     let rows = check_accounts(&s, u.id, &accounts).await?;
     if status == "scheduled"
-        && let Some(r) = schedule_checks(&s, u.id, &post.design_id, &rows, scheduled_at.is_some(), (&caption, &hashtags, &format)).await?
+        && let Some(r) = schedule_checks(&rows, scheduled_at.is_some(), (&caption, &hashtags, &format))
     {
         return Ok(r);
     }
@@ -538,9 +534,6 @@ async fn publish_now(State(s): State<AppState>, Path(id): Path<String>, req: Req
     let Some(post) = post_for(&s, u.id, &id).await? else { return Ok(not_found()) };
     if post.status == "publishing" || post.status == "published" {
         return Ok(locked());
-    }
-    if let Some(gate) = approval_gate(&s, u.id, &post.design_id).await? {
-        return Ok(reply::json(403, gate));
     }
     let accounts: Vec<String> = post.accounts.iter().map(Uuid::to_string).collect();
     let rows = check_accounts(&s, u.id, &accounts).await?;

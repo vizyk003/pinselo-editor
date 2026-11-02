@@ -243,10 +243,6 @@ export class RenderTarget implements TransitionCanvas {
     this.raw.shadowRect(x, y, w, h, sigma, r, g, b, a, hole?.x ?? 0, hole?.y ?? 0, hole?.w ?? 0, hole?.h ?? 0);
   }
 
-  /** Round dots (`[x0, y0, x1, y1, …]`), radius in local units. */
-  dots(points: Float32Array | number[], radius: number, [r, g, b, a]: readonly [number, number, number, number]): void {
-    this.raw.dots(points instanceof Float32Array ? points : new Float32Array(points), radius, r, g, b, a);
-  }
 }
 
 function imageData(px: Uint8ClampedArray, w: number, h: number): ImageData {
@@ -370,7 +366,7 @@ export class Painter {
 
   /**
    * Draw `dl` on `c` (its transform maps page space to device pixels). `parts` draws only the background or
-   * only the items (the whiteboard grid goes between them).
+   * only the items.
    */
   draw(c: RenderTarget, dl: DisplayList, parts: { background?: boolean; items?: boolean } = {}): void {
     if (this.videoFrames) this.feedVideo(dl);

@@ -14,14 +14,11 @@ publish = false
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["console_error_panic_hook", "complex-scripts", "sheet", "render"]
+default = ["console_error_panic_hook", "complex-scripts", "render"]
 # Log Rust panics to the browser console (adds a few KB).
 console_error_panic_hook = ["dep:console_error_panic_hook"]
 # Dictionary line breaking for Thai/Lao/Khmer/Myanmar, as on the server (oc-text). Adds the ICU4X dictionaries.
 complex-scripts = ["oc-text/complex-scripts", "oc-render?/complex-scripts"]
-# Sheets (oc-sheet: formula engine, model writes, CSV, XLSX). oc-sheet is AGPL-3.0-only, like @oc/sheet: so is
-# a binary built with this feature. rust_xlsxwriter's `wasm` clock is target-gated, so this is fine natively.
-sheet = ["dep:oc-sheet", "oc-sheet/xlsx-wasm"]
 # The renderer (oc-render: display lists, tiny-skia painter) that replaces CanvasKit in the browser.
 render = ["dep:oc-render"]
 
@@ -31,7 +28,6 @@ oc-geometry = { path = "../oc-geometry" }
 oc-crdt = { path = "../oc-crdt" }
 oc-editor-core = { path = "../oc-editor-core" }
 oc-text = { path = "../oc-text", default-features = false }
-oc-sheet = { path = "../oc-sheet", default-features = false, optional = true }
 oc-render = { path = "../oc-render", default-features = false, optional = true }
 serde = { workspace = true }
 serde_json = { workspace = true, features = ["preserve_order", "float_roundtrip"] }
@@ -49,4 +45,3 @@ getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [dev-dependencies]
 wasm-bindgen-test = { workspace = true }
-base64 = { workspace = true }

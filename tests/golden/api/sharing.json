@@ -1611,8 +1611,7 @@
      "templateLink": {
       "token": null,
       "uses": 0
-     },
-     "visitors": 7
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -1650,8 +1649,7 @@
      "role": "edit",
      "slug": null,
      "team": null,
-     "templateLink": null,
-     "visitors": 7
+     "templateLink": null
     },
     "headers": {
      "cache-control": "no-store",
@@ -1681,8 +1679,7 @@
      "role": "view",
      "slug": null,
      "team": null,
-     "templateLink": null,
-     "visitors": null
+     "templateLink": null
     },
     "headers": {
      "cache-control": "no-store",
@@ -2376,8 +2373,7 @@
       "id": "00000000-0000-4000-8000-000000005000",
       "name": "Studio"
      },
-     "templateLink": null,
-     "visitors": null
+     "templateLink": null
     },
     "headers": {
      "cache-control": "no-store",
@@ -2986,8 +2982,7 @@
      "templateLink": {
       "token": null,
       "uses": 0
-     },
-     "visitors": 0
+     }
     },
     "headers": {
      "cache-control": "no-store",
@@ -3021,8 +3016,7 @@
       "id": "00000000-0000-4000-8000-000000005000",
       "name": "Studio"
      },
-     "templateLink": null,
-     "visitors": null
+     "templateLink": null
     },
     "headers": {
      "cache-control": "no-store",

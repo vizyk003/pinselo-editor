@@ -3,9 +3,8 @@
  * the panel no longer applies a template on the first click.
  */
 import { formatDims } from '@oc/engine';
-import { Crown } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { plansEnabled, templateThumbUrl, type TemplateSummary } from '../api';
+import { templateThumbUrl, type TemplateSummary } from '../api';
 import { Popover } from '../components/ui';
 import { t, tn } from '../i18n';
 import { fetchTemplatePreview, presetOf, type TemplatePreviewData } from '../lib/templates';
@@ -25,8 +24,7 @@ export function TemplateDetailsPopover({ tpl, anchor, onClose, onApply }: { tpl:
       <div className="tpl-pop" role="dialog" aria-label={tpl.title}>
         <div className="tpl-pop-img">
           <img src={templateThumbUrl(tpl.id)} alt="" />
-          {tpl.premium && plansEnabled() && <span className="premium-badge"><Crown size={11} /> {t('PRO')}</span>}
-          {tpl.team && <span className="premium-badge team">{t('TEAM')}</span>}
+          {tpl.team && <span className="tile-badge team">{t('TEAM')}</span>}
         </div>
         <strong>{tpl.title}</strong>
         <div className="faint">

@@ -46,12 +46,10 @@ pub fn routes() -> Router<AppState> {
         .route("/api/templates", post(template_publish))
         .route("/api/templates/{id}", patch(template_update).delete(template_delete))
         .route("/api/admin/templates", get(admin_templates))
-        .route("/api/email-images/{file}", get(email_image))
         .route("/api/fonts/files/custom/{file}", get(custom_font_file))
 }
 
 static EMOJI_HEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[0-9A-F-]{2,60}$").expect("regex"));
-static SHA_HEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[0-9a-f]{64}$").expect("regex"));
 static FONT_FILE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^([A-Za-z0-9_-]+)\.(ttf|otf)$").expect("regex"));
 
 const IMMUTABLE: &str = "public, max-age=31536000, immutable";
@@ -593,8 +591,7 @@ async fn template_publish(State(s): State<AppState>, req: Req) -> ApiResult {
         ("tags", z::array(z::str().max(30.0)).max(20.0).default(json!([]))),
         ("description", z::str().max(500.0).optional()),
         ("scope", z::enumeration(&["public", "team"])),
-        ("premium", z::bool().optional()),
-        // Brand template (A8): elements locked `by: 'brand'` stay locked for members who start from it.
+        // Brand template (A8): designs started from it stay governed by the team's brand controls.
         ("brand", z::bool().optional()),
     ])
     .parse(req.body())?;
@@ -633,10 +630,9 @@ async fn template_publish(State(s): State<AppState>, req: Req) -> ApiResult {
     let mut search = vec![title.to_owned(), category.to_owned()];
     search.extend(tags.iter().cloned());
     search.push(description.unwrap_or("").to_owned());
-    let locks = if brand { Value::Object(crate::brandhub::brand_locks_of(&doc)) } else { json!({}) };
     sqlx::query(
-        "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id, created_by, description, brand, locks, source_design_id)
-         VALUES ($1,$2,$3,'custom',$4,$5,$6,$7,$8,true,$9,$10,$11,$12,$13,$14,$15)",
+        "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, workspace_id, created_by, description, brand, source_design_id)
+         VALUES ($1,$2,$3,'custom',$4,$5,$6,$7,$8,true,$9,$10,$11,$12,$13)",
     )
     .bind(&id)
     .bind(title)
@@ -646,12 +642,10 @@ async fn template_publish(State(s): State<AppState>, req: Req) -> ApiResult {
     .bind(doc["meta"]["dims"]["w"].as_f64())
     .bind(doc["meta"]["dims"]["h"].as_f64())
     .bind(sqlx::types::Json(&doc))
-    .bind(scope == "public" && b.get("premium").and_then(Value::as_bool) == Some(true))
     .bind(if scope == "team" { Some(dws) } else { None })
     .bind(u.id)
     .bind(description)
     .bind(brand)
-    .bind(sqlx::types::Json(&locks))
     .bind(if scope == "team" { Some(design_id.as_str()) } else { None })
     .execute(&s.pool)
     .await?;
@@ -691,7 +685,6 @@ async fn template_update(State(s): State<AppState>, Path(id): Path<String>, req:
         ("category", z::str().max(60.0).optional()),
         ("tags", z::array(z::str().max(30.0)).max(20.0).optional()),
         ("published", z::bool().optional()),
-        ("premium", z::bool().optional()),
         ("description", z::str().max(500.0).optional()),
     ])
     .parse(req.body())?;
@@ -713,7 +706,7 @@ async fn template_update(State(s): State<AppState>, Path(id): Path<String>, req:
     search.push(bs("description").or(tdescription).unwrap_or_default());
     sqlx::query(
         "UPDATE templates SET title = $2, category = $3, tags = $4, search_text = $5, published = COALESCE($6, published),
-           premium = CASE WHEN workspace_id IS NULL THEN COALESCE($7, premium) ELSE false END, description = COALESCE($8, description), updated_at = now() WHERE id = $1",
+           description = COALESCE($7, description), updated_at = now() WHERE id = $1",
     )
     .bind(&id)
     .bind(&title)
@@ -721,7 +714,6 @@ async fn template_update(State(s): State<AppState>, Path(id): Path<String>, req:
     .bind(&tags)
     .bind(search.join(" "))
     .bind(b.get("published").and_then(Value::as_bool))
-    .bind(b.get("premium").and_then(Value::as_bool))
     .bind(bs("description"))
     .execute(&s.pool)
     .await?;
@@ -750,7 +742,7 @@ async fn admin_templates(State(s): State<AppState>, req: Req) -> ApiResult {
     }
     let templates = pg::json_rows(
         &s.pool,
-        "SELECT id, title, category, tags, published, premium, uses, workspace_id, created_at, updated_at FROM templates WHERE workspace_id IS NULL ORDER BY updated_at DESC LIMIT 500",
+        "SELECT id, title, category, tags, published, uses, workspace_id, created_at, updated_at FROM templates WHERE workspace_id IS NULL ORDER BY updated_at DESC LIMIT 500",
         &[],
     )
     .await?;
@@ -758,15 +750,6 @@ async fn admin_templates(State(s): State<AppState>, req: Req) -> ApiResult {
 }
 
 // ---------------------------------------------------------------- public files
-
-/// Email export slices: content-addressed, public and immutable (email clients fetch them anonymously).
-async fn email_image(State(s): State<AppState>, Path(file): Path<String>, _req: Req) -> ApiResult {
-    let sha = file.strip_suffix(".png").unwrap_or(&file);
-    if !SHA_HEX.is_match(sha) || pg::one(&s.pool, "SELECT 1 FROM email_images WHERE sha256 = $1", &[pg::text(sha)]).await?.is_none() {
-        return Ok(Reply::empty(404));
-    }
-    Ok(Reply::bytes("image/png", s.store.get(sha).await?).header("cache-control", IMMUTABLE).header("access-control-allow-origin", "*"))
-}
 
 /// Uploaded font files: unguessable ids, public like asset bytes (viewers of shared designs need them).
 async fn custom_font_file(State(s): State<AppState>, Path(file): Path<String>, _req: Req) -> ApiResult {

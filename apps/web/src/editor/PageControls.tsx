@@ -10,6 +10,7 @@ import { t } from '../i18n';
 import { useEd } from './context';
 import { togglePageLock } from './ElementMenu';
 import './editorDepth.css';
+import { userLock } from './dropTarget';
 
 /** Keep pointer and menu events on this chrome away from the canvas below (no marquee, no deselect). */
 const shield = {
@@ -118,7 +119,7 @@ export function QuickBar({ box, wrapWidth, onMore }: {
 }) {
   const { editor, setDrawer } = useEd();
   const sel = editor.selected();
-  const locked = sel.some((e) => e.lock?.move);
+  const locked = sel.some((e) => userLock(e)?.move);
   const W = 196;
   const left = Math.max(8, Math.min((box.x0 + box.x1) / 2 - W / 2, wrapWidth - W - 8));
   // Above the selection; below it (past the rotate handle) when there is no room above.

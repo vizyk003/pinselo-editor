@@ -4,7 +4,7 @@
 import { track } from '../lib/analytics';
 import { HocuspocusProvider } from '@hocuspocus/provider';
 import { Editor } from '@oc/engine';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { IndexeddbPersistence } from 'y-indexeddb';
 import * as Y from 'yjs';
@@ -12,8 +12,6 @@ import { accessApi, api, ApiError, type DesignSummary, type Role } from '../api'
 import { useAuth } from '../App';
 import { EditorShell } from '../editor/EditorShell';
 import { DocEditor } from '../doc/DocEditor';
-// Sheets pull in the formula engine: loaded only when a sheet opens.
-const SheetEditor = lazy(() => import('../sheet/SheetEditor'));
 import { loadEngine, type Engine } from '../lib/engine';
 import { brandStore } from '../editor/brandStore';
 import { runPlaceIntent } from '../editor/placeIntent';
@@ -38,8 +36,6 @@ export default function EditorPage() {
     let provider: HocuspocusProvider | null = null;
     let idb: IndexeddbPersistence | null = null;
     const ydoc = new Y.Doc();
-    /** Brand-template locks (A8): the ticket says whether this user may change them. */
-    let brandAdmin = true;
     (async () => {
       try {
         const [{ design }, engine] = await Promise.all([api.design(id), loadEngine()]);
@@ -56,7 +52,6 @@ export default function EditorPage() {
             try {
               const tkt = await api.ticket(id);
               if (tkt.role !== design.role && !cancelled) setEpoch((n) => n + 1);
-              brandAdmin = tkt.brandAdmin !== false;
               return tkt.token;
             } catch (e) {
               if (e instanceof ApiError && (e.status === 403 || e.status === 404) && !cancelled) {
@@ -78,9 +73,8 @@ export default function EditorPage() {
         });
         if (cancelled) return;
         const editor = new Editor({ ydoc, actor: user.id });
-        editor.brandAdmin = brandAdmin;
         void brandStore.loadKits();
-        void brandStore.loadDesign(id).then((b) => b && editor.setBrandAdmin(b.brandAdmin));
+        void brandStore.loadDesign(id);
         provider.awareness?.setLocalStateField('user', { id: user.id, name: user.name, color: user.color });
         // The designs row owns the title (renames from Home); mirror it into the doc if they differ.
         if (design.role !== 'view' && design.role !== 'comment' && editor.doc.meta.title !== design.title) {
@@ -135,7 +129,15 @@ export default function EditorPage() {
         <style>{'@keyframes pulse{50%{transform:scale(.88);opacity:.6}}'}</style>
       </div>
     );
-  if (loaded.editor.doc.meta.surface === 'sheet') return <Suspense fallback={null}><SheetEditor key={`${id}:${epoch}`} ydoc={loaded.editor.store.ydoc} provider={loaded.provider} design={loaded.design} user={user!} /></Suspense>;
+  if (loaded.editor.doc.meta.surface === 'sheet')
+    return (
+      <div className="auth">
+        <div className="auth-card">
+          <p className="muted">{t('Sheets are no longer supported. This design’s data has not been deleted.')}</p>
+          <button className="btn" onClick={() => nav('/')}>{t('Back to home')}</button>
+        </div>
+      </div>
+    );
   if (loaded.editor.doc.meta.surface === 'doc') return <DocEditor key={`${id}:${epoch}`} ydoc={loaded.editor.store.ydoc} provider={loaded.provider} design={loaded.design} user={user!} />;
   return <EditorShell key={`${id}:${epoch}`} {...loaded} />;
 }

@@ -1,24 +1,23 @@
-/** Publish as a website (WS-001..006): address, SEO, password, custom domain; phone preview; insights (WS-010). */
+/** Publish as a website (WS-001..006): address, SEO, password, custom domain; phone preview. */
 import { sortedPages } from '@oc/engine';
 import { Copy, ExternalLink, Globe, Monitor, RefreshCw, Smartphone } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { ApiError, siteApi, type SiteInfo } from '../api';
 import { interp, Modal, useToast } from '../components/ui';
 import { useDoc, useEd } from './context';
-import { SiteInsightsPanel } from './SiteInsights';
-import { t, tn } from '../i18n';
+import { t } from '../i18n';
 
 const slugify = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[^\w\s-]/g, '').trim().replace(/[\s_]+/g, '-').replace(/-+/g, '-').slice(0, 48) || 'my-site';
 
 export function PublishSiteDialog({ onClose }: { onClose: () => void }) {
   const { design, editor } = useEd();
-  const [tab, setTab] = useState<'publish' | 'preview' | 'insights'>('publish');
+  const [tab, setTab] = useState<'publish' | 'preview'>('publish');
   const [preview, setPreview] = useState<{ html: string; device: 'mobile' | 'desktop' } | null>(null);
   const [previewBusy, setPreviewBusy] = useState(false);
   const doc = useDoc();
   const toast = useToast();
   const [info, setInfo] = useState<SiteInfo | null>(null);
-  const [f, setF] = useState({ slug: '', title: '', description: '', noindex: false, analytics: true, password: '', usePassword: false });
+  const [f, setF] = useState({ slug: '', title: '', description: '', noindex: false, password: '', usePassword: false });
   const [domain, setDomain] = useState('');
   const [dns, setDns] = useState<{ txt: { name: string; value: string }; cname: { name: string; value: string } } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -31,7 +30,6 @@ export function PublishSiteDialog({ onClose }: { onClose: () => void }) {
       title: r.site?.title ?? doc.meta.title,
       description: r.site?.description ?? '',
       noindex: r.site?.noindex ?? false,
-      analytics: r.site?.analytics ?? true,
       usePassword: r.site?.hasPassword ?? false,
     }));
   });
@@ -46,7 +44,7 @@ export function PublishSiteDialog({ onClose }: { onClose: () => void }) {
     setErr('');
     try {
       await siteApi.save(design.id, {
-        slug: f.slug, title: f.title, description: f.description || undefined, noindex: f.noindex, analytics: f.analytics,
+        slug: f.slug, title: f.title, description: f.description || undefined, noindex: f.noindex,
         password: f.usePassword ? (f.password ? f.password : undefined) : null,
       });
       const r = await siteApi.publish(design.id);
@@ -71,29 +69,16 @@ export function PublishSiteDialog({ onClose }: { onClose: () => void }) {
       setPreviewBusy(false);
     }
   };
-  const setAnalytics = async (on: boolean) => {
-    setF((c) => ({ ...c, analytics: on }));
-    if (!info?.site) return;
-    try {
-      await siteApi.save(design.id, { slug: info.site.slug, title: info.site.title, description: info.site.description ?? undefined, noindex: info.site.noindex, analytics: on });
-      await load();
-    } catch (e) {
-      setErr(msg(e));
-    }
-  };
   const pages = sortedPages(doc);
 
   if (!info) return <Modal title={t('Publish website')} onClose={onClose}><div className="spinner" /></Modal>;
   const live = info.site?.published;
-  const totalViews = info.views.reduce((a, v) => a + v.views, 0);
   return (
     <Modal title={t('Publish website')} onClose={onClose} size="lg">
       <nav className="tabs" aria-label={t('Website')}>
         <button className={tab === 'publish' ? 'active' : ''} onClick={() => setTab('publish')}>{t('Publish')}</button>
         <button className={tab === 'preview' ? 'active' : ''} onClick={() => { setTab('preview'); if (!preview) void loadPreview('mobile'); }}>{t('Preview')}</button>
-        {info.site && <button className={tab === 'insights' ? 'active' : ''} onClick={() => setTab('insights')}>{t('Insights')}</button>}
       </nav>
-      {tab === 'insights' && info.site && <SiteInsightsPanel designId={design.id} analytics={info.site.analytics} onAnalytics={(on) => void setAnalytics(on)} />}
       {tab === 'preview' && (
         <div style={{ display: 'grid', gap: 12 }}>
           <div className="row" style={{ gap: 6, flexWrap: 'wrap' }}>
@@ -145,7 +130,6 @@ export function PublishSiteDialog({ onClose }: { onClose: () => void }) {
       <label className="check"><input type="checkbox" checked={f.usePassword} onChange={(e) => setF({ ...f, usePassword: e.target.checked })} /> {t('Password protect')}</label>
       {f.usePassword && <input className="input" type="password" placeholder={info.site?.hasPassword ? t('Leave empty to keep the current password') : t('Password')} value={f.password} onChange={(e) => setF({ ...f, password: e.target.value })} />}
       <label className="check"><input type="checkbox" checked={f.noindex} onChange={(e) => setF({ ...f, noindex: e.target.checked })} /> {t('Hide from search engines')}</label>
-      <label className="check"><input type="checkbox" checked={f.analytics} onChange={(e) => setF({ ...f, analytics: e.target.checked })} /> {t('Collect insights (cookie-free, honours Do Not Track)')}</label>
       {err && <div className="form-error">{err}</div>}
       <div className="row">
         {live && <button className="btn" onClick={() => siteApi.unpublish(design.id).then(load).then(() => toast(t('Site unpublished')))}>{t('Unpublish')}</button>}
@@ -170,7 +154,6 @@ export function PublishSiteDialog({ onClose }: { onClose: () => void }) {
           {dns && <p className="faint" style={{ margin: 0, fontSize: 12 }}>{t('Now add the DNS records above, then press Verify.')}</p>}
         </section>
       )}
-      {live && <p className="faint" style={{ margin: 0, fontSize: 12 }}>{tn(totalViews, '{n} view in the last 30 days.', '{n} views in the last 30 days.')}</p>}
       </>}
     </Modal>
   );

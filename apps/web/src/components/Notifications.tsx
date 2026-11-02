@@ -1,11 +1,11 @@
-import { BadgeCheck, CheckSquare, AtSign, Bell, CalendarClock, MessageSquare, Reply, Share2 } from 'lucide-react';
+import { CheckSquare, AtSign, Bell, CalendarClock, MessageSquare, Reply, Share2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { notifications, type Notification } from '../api';
 import { PopoverButton, timeAgo } from './ui';
 import { t } from '../i18n';
 
-const ICON: Partial<Record<Notification['kind'], typeof Bell>> = { mention: AtSign, comment: MessageSquare, share: Share2, reply: Reply, assign: CheckSquare, publish: CalendarClock, approval: BadgeCheck };
+const ICON: Partial<Record<Notification['kind'], typeof Bell>> = { mention: AtSign, comment: MessageSquare, share: Share2, reply: Reply, assign: CheckSquare, publish: CalendarClock };
 
 /** In-app notifications (CO-070): polled every 30 s. */
 export function NotificationsBell({ variant = 'side' }: { variant?: 'side' | 'header' }) {

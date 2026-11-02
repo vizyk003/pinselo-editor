@@ -10,7 +10,7 @@ import { EmbedOverlay } from '../components/EmbedOverlay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router';
-import { ApiError, siteApi } from '../api';
+import type { ApiError } from '../api';
 import { sharingApi } from '../api/sharing';
 import { ReportButton } from '../components/ReportDialog';
 import { loadEngine, paintCanvas, WHITE, type Engine } from '../lib/engine';
@@ -67,8 +67,6 @@ export function PublicView() {
     setData(d);
     setEngine(e);
     document.title = `${d.title} – ${BRAND.name}`;
-    // View insights for the owner (cookie-free; the server ignores DNT/GPC requests).
-    if (navigator.doNotTrack !== '1') void siteApi.viewBeacon(d.id).catch(() => {});
   }).catch((x: unknown) => {
     const status = (x as ApiError).status;
     if (status === 401) setNeedPw((p) => ({ title: p?.title ?? '', wrong: Boolean(password) }));

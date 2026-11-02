@@ -5,7 +5,7 @@
 //! half-finished moves. Port of `editor.ts`.
 //!
 //! Change handling: the TS editor reacts to every DocStore transaction (sanitise the selection, fit auto-height
-//! text, re-route glued connectors, grow whiteboards) from inside the store listener. A transaction opened by
+//! text, re-route glued connectors) from inside the store listener. A transaction opened by
 //! such a reaction writes to the Y.Doc at once, but yjs defers its cleanup (observers, the store's snapshot
 //! rebuild, listeners) until the current one finishes, in FIFO order; the rebuild then re-reads the keys that
 //! transaction touched from the Y.Doc *as it is at that moment* (later writes included) over the previous
@@ -14,7 +14,7 @@
 //! intermediate snapshots (previous one ⊕ the change's keys read from the current store), which `doc()` reports
 //! while a reaction runs.
 
-mod board;
+pub mod board;
 pub mod commands;
 mod keys;
 mod pointer;
@@ -29,11 +29,10 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 
 use indexmap::IndexMap;
-use oc_crdt::{ApplyOptions, Change, DocOp, DocOpError, DocOpErrorCode, DocOpResult, DocSnapshot, DocStore, OcOrigin, PageOp};
+use oc_crdt::{ApplyOptions, Change, DocOp, DocOpResult, DocSnapshot, DocStore, OcOrigin, PageOp};
 use oc_geometry::{
     connector_geometry, connectors_of, selection_bounds, world_bounds, world_matrix,
 };
-use oc_schema::design::Surface;
 use oc_schema::elements::{Element, TextEl};
 use oc_schema::factory::form_layout_of;
 use oc_schema::primitives::{Mat2D, Rect, Vec2, Xf};
@@ -46,7 +45,7 @@ use crate::env::{Clock, RandomSource, undo_clock};
 use crate::state::*;
 use crate::text_service::TextService;
 use crate::transform::Handle;
-use crate::util::{jv, max, min};
+use crate::util::jv;
 use crate::viewport::{Viewport, fit_rect, page_at_scene, slot_of, zoom_at};
 
 pub use table::CellTextFrame;
@@ -100,12 +99,6 @@ pub struct Editor {
     store: DocStore,
     pub state: EditorState,
     pub(crate) text_service: Option<Box<dyn TextService>>,
-    /// Brand-template locks (A8): false for members working on a design started from a brand template —
-    /// `lock.by === 'brand'` masks are then enforced on every write. Writing the field does not notify
-    /// (like the TS field); [`Editor::set_brand_admin`] does.
-    pub brand_admin: bool,
-    /// The local user (sticky-note authors, mind-map nodes).
-    pub user: Option<User>,
     /// Transient overrides merged over the document while a gesture is running (insertion ordered).
     pub(crate) overrides: IndexMap<String, Map<String, Value>>,
     overrides_rev: u64,
@@ -166,8 +159,9 @@ pub(crate) fn el_id(el: &Element) -> String {
     el.id().unwrap_or("").to_string()
 }
 
+/// Locks with `by: 'brand'` come from documents of the retired brand-template locks and hold nobody.
 pub(crate) fn lock_of(el: &Element) -> Option<&oc_schema::elements::LockMask> {
-    el.base().and_then(|b| b.lock.as_ref())
+    el.base().and_then(|b| b.lock.as_ref()).filter(|l| l.by != oc_schema::elements::LockBy::Brand)
 }
 
 pub(crate) fn locked_move(el: &Element) -> bool {
@@ -237,8 +231,6 @@ impl Editor {
                 path_edit: None,
             },
             text_service: None,
-            brand_admin: true,
-            user: None,
             overrides: IndexMap::new(),
             overrides_rev: 0,
             gesture: None,
@@ -399,9 +391,9 @@ impl Editor {
     }
 
 
-    /// `store.apply(ops, LocalOrigin.I, { brandAdmin })` + change reactions.
+    /// `store.apply(ops, LocalOrigin.I)` + change reactions.
     ///
-    /// Deviation from TS: change reactions (auto-height text, glued connectors, whiteboard growth) to an undo or
+    /// Deviation from TS: change reactions (auto-height text, glued connectors) to an undo or
     /// redo are written with an origin the undo manager does not track. In yjs they run inside the undo
     /// transaction's cleanup, while `UndoManager.undoing` is still set, so they land on the redo (undo) stack as
     /// an extra step; yrs resets its undo/redo flags before observers can write, so a tracked write would clear
@@ -411,7 +403,6 @@ impl Editor {
             actor: None,
             now: Some(self.clock.now()),
             partial: false,
-            brand_admin: Some(self.brand_admin),
             rng: Some(self.rng.as_mut()),
         };
         let origin = if self.in_history { OcOrigin::Repair } else { OcOrigin::Local };
@@ -423,21 +414,6 @@ impl Editor {
     /// Apply ops as the local user. Discrete commands are their own undo step; `merge` lets rapid repeats
     /// (typing, nudges, colour-picker drags) coalesce within the undo capture window.
     pub fn apply(&mut self, ops: Vec<DocOp>, merge: bool) -> DocOpResult {
-        let mut ops = ops;
-        // Brand-template locks (A8): batch commands skip the locked elements instead of failing as a whole;
-        // a batch made only of locked edits is reported as rejected.
-        if !self.brand_admin {
-            let allowed: Vec<DocOp> = ops.iter().filter(|op| self.brand_violation(op).is_none()).cloned().collect();
-            if allowed.is_empty() && !ops.is_empty() {
-                return DocOpResult {
-                    ok: false,
-                    applied: 0,
-                    created: vec![],
-                    errors: vec![DocOpError { index: 0, code: DocOpErrorCode::Locked, message: "locked by the brand template".into() }],
-                };
-            }
-            ops = allowed;
-        }
         if !merge {
             self.store.checkpoint();
         }
@@ -512,13 +488,12 @@ impl Editor {
     }
 
     /// `editor.store.apply(ops, origin)`: a store write with an explicit origin (e.g. `Migration`, which undo does
-    /// not track), followed by the usual change reactions. Like the TS store call it is not held to brand locks.
+    /// not track), followed by the usual change reactions.
     pub fn store_apply_with(&mut self, ops: &[DocOp], origin: OcOrigin) -> DocOpResult {
         let opts = ApplyOptions {
             actor: None,
             now: Some(self.clock.now()),
             partial: false,
-            brand_admin: None,
             rng: Some(self.rng.as_mut()),
         };
         let r = self.store.apply(ops, Some(origin), opts);
@@ -559,9 +534,6 @@ impl Editor {
         if change.local {
             self.fix_text_heights(&doc, &change.elements);
             self.fix_connectors(&doc, &change.elements);
-            if doc.doc.meta.surface == Surface::Whiteboard && !change.elements.is_empty() {
-                self.expand_whiteboard(600.0);
-            }
         }
         self.emit();
     }
@@ -697,63 +669,6 @@ impl Editor {
         }
         if !ops.is_empty() {
             self.store_apply(&ops);
-        }
-    }
-
-    /// Infinite whiteboard (WB-001): the board grows whenever content comes within a margin of an edge.
-    /// Growing up/left shifts everything (and the viewport) so nothing moves on screen. It never shrinks.
-    /// TS default `margin = 600`.
-    pub fn expand_whiteboard(&mut self, margin: f64) {
-        let doc = self.doc();
-        let (w, h) = (doc.doc.meta.dims.w, doc.doc.meta.dims.h);
-        let (mut x0, mut y0, mut x1, mut y1) = (f64::INFINITY, f64::INFINITY, f64::NEG_INFINITY, f64::NEG_INFINITY);
-        for p in sorted_pages(&doc.doc.pages) {
-            for el in children_of(doc.els(), &p.id) {
-                let b = world_bounds(doc.els(), el.id().unwrap_or("")).unwrap_or_default();
-                x0 = min(x0, b.x);
-                y0 = min(y0, b.y);
-                x1 = max(x1, b.x + b.w);
-                y1 = max(y1, b.y + b.h);
-            }
-        }
-        if !x0.is_finite() {
-            return;
-        }
-        let dx = if x0 < margin { (margin - x0).ceil() } else { 0.0 };
-        let dy = if y0 < margin { (margin - y0).ceil() } else { 0.0 };
-        let nw = max(w + dx, (x1 + dx + margin).ceil());
-        let nh = max(h + dy, (y1 + dy + margin).ceil());
-        if dx == 0.0 && dy == 0.0 && nw == w && nh == h {
-            return;
-        }
-        let mut dims = doc.doc.meta.dims.clone();
-        dims.w = nw;
-        dims.h = nh;
-        let mut ops = vec![op_meta(one("dims", jv(&dims)))];
-        if dx != 0.0 || dy != 0.0 {
-            for p in sorted_pages(&doc.doc.pages) {
-                for el in children_of(doc.els(), &p.id) {
-                    let x = el_xf(el);
-                    ops.push(op_xf(el.id().unwrap_or(""), &Xf { x: x.x + dx, y: x.y + dy, ..x.clone() }));
-                }
-                if let Some(guides) = p.guides.as_ref().filter(|g| !g.is_empty()) {
-                    let next: Vec<oc_schema::design::Guide> = guides
-                        .iter()
-                        .map(|g| {
-                            let mut g = g.clone();
-                            g.pos += if g.axis == oc_schema::design::GuideAxis::X { dx } else { dy };
-                            g
-                        })
-                        .collect();
-                    ops.push(op_page_update(&p.id, one("guides", jv(&next))));
-                }
-            }
-        }
-        self.store_apply(&ops);
-        if dx != 0.0 || dy != 0.0 {
-            self.state.viewport.x += dx;
-            self.state.viewport.y += dy;
-            self.emit();
         }
     }
 

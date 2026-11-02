@@ -5,7 +5,7 @@
  * page, gets a new element. Pure (document in, target and ops out) so the hover highlight and the drop agree.
  */
 import {
-  apply, brandLockError, childrenOf, coverCrop, frameOutline, gridCellBox, hitElement, invert, makeImage, shapePath, solid, worldMatrix, type AssetId, type AssetRef,
+  apply, childrenOf, coverCrop, frameOutline, gridCellBox, hitElement, invert, makeImage, shapePath, solid, worldMatrix, type AssetId, type AssetRef,
   type DesignDoc, type DocOp, type Element, type ElementId, type FrameEl, type GridEl, type MediaClip, type PageId, type Paint, type Rect, type ShapeEl, type Vec2,
 } from '@oc/engine';
 
@@ -68,8 +68,6 @@ export function accepts(kind: DropTarget['kind'], media: DropMedia): boolean {
 }
 
 export interface DropTargetOptions {
-  /** Brand-template locks bind this user (`Editor.isBrandLocked`). */
-  isBrandLocked?: (el: Element) => boolean;
   /** Page-space point-in-element test; defaults to the geometry hit test (bounding box for curved outlines). */
   inside?: (el: Element, p: Vec2) => boolean;
 }
@@ -77,28 +75,28 @@ export interface DropTargetOptions {
 /** A drop passes through these to whatever is under them (a shape's label, lines, pen strokes). */
 const SEE_THROUGH = new Set<Element['type']>(['text', 'line', 'draw']);
 
-const userLocked = (el: Element) => Boolean(el.lock && el.lock.by !== 'brand');
+/** The lock in force on an element. A `by: 'brand'` lock comes from a document of the retired brand-template locks and holds nobody. */
+export const userLock = (el: Element) => (el.lock?.by === 'brand' ? undefined : el.lock);
+
+export const userLocked = (el: Element) => Boolean(userLock(el));
 
 /**
  * What a drop of `media` at page point `p` fills, or null for "add a new element". The topmost element under the
  * point decides, looking inside groups. Hidden elements are skipped and see-through ones let the drop reach what is
- * below; locked elements (user locks; brand locks on the style of shapes or the content of frames, cells and
- * images), locked groups, sticky notes, whiteboard sections and elements that can't take the media block it.
+ * below; locked elements, locked groups, whiteboard sections and elements that can't take the media block it.
  */
 export function findDropTarget(doc: Doc, pageId: PageId, p: Vec2, media: DropMedia, o: DropTargetOptions = {}): DropTarget | null {
   const inside = o.inside ?? ((el: Element, q: Vec2) => hitElement(doc, el, q));
-  const brand = (el: Element, key: 'style' | 'content') => Boolean(el.lock?.by === 'brand' && el.lock[key] && (o.isBrandLocked?.(el) ?? true));
   const targetOf = (el: Element): DropTarget | null => {
     if (userLocked(el)) return null;
     switch (el.type) {
       case 'shape':
-        return media === 'photo' && !el.board?.section && !brand(el, 'style') ? { kind: 'shape', id: el.id } : null;
+        return media === 'photo' && !el.board?.section ? { kind: 'shape', id: el.id } : null;
       case 'frame':
-        return brand(el, 'content') || el.lock?.content ? null : { kind: 'frame', id: el.id };
+        return { kind: 'frame', id: el.id };
       case 'image':
-        return media === 'video' || brand(el, 'content') || el.lock?.content ? null : { kind: 'image', id: el.id };
+        return media === 'video' ? null : { kind: 'image', id: el.id };
       case 'grid': {
-        if (brand(el, 'content') || el.lock?.content) return null;
         const cell = gridCellAt(doc, el, p);
         return cell < 0 ? null : { kind: 'cell', id: el.id, cell };
       }
@@ -115,7 +113,7 @@ export function findDropTarget(doc: Doc, pageId: PageId, p: Vec2, media: DropMed
       if (el.type === 'group') {
         const r = walk(el.id);
         if (r === undefined) continue;
-        return userLocked(el) || el.board?.sticky ? null : r;
+        return userLocked(el) ? null : r;
       }
       if (SEE_THROUGH.has(el.type) || !inside(el, p)) continue;
       return targetOf(el);
@@ -183,26 +181,6 @@ export function outlineInside(doc: Doc): (el: Element, p: Vec2) => boolean {
 
 export const sameTarget = (a: DropTarget | null, b: DropTarget | null) =>
   a === b || Boolean(a && b && a.id === b.id && a.kind === b.kind && (a.kind !== 'cell' || (b.kind === 'cell' && a.cell === b.cell)));
-
-/**
- * The brand-lock error an op would hit for a user held to brand locks (as `Editor.apply`, which silently drops such
- * ops from a batch), or null. Checked for every op of a batch before applying it, so a batch applies whole or not at all.
- */
-export function brandBlock(doc: Pick<DesignDoc, 'elements'>, op: DocOp, isBrandLocked: (el: Element) => boolean): string | null {
-  if (op.op !== 'update') return null;
-  const el = doc.elements[op.id];
-  return el && isBrandLocked(el) ? brandLockError(el.lock, { kind: 'patch', keys: Object.keys(op.patch) }) : null;
-}
-
-/**
- * Why the photo in a shape or frame can't be changed (replaced, cropped, detached, removed): a user lock (unlock it
- * first) or a brand-template lock on the shape's style (its fills) or the frame's content. Null when it can.
- */
-export function photoLock(el: ShapeEl | FrameEl, isBrandLocked: (el: Element) => boolean): 'user' | 'brand' | null {
-  if (userLocked(el)) return 'user';
-  if (isBrandLocked(el) && brandLockError(el.lock, { kind: 'patch', keys: [el.type === 'shape' ? 'fills' : 'content'] })) return 'brand';
-  return null;
-}
 
 // ------------------------------------------------------------------ filling a target
 

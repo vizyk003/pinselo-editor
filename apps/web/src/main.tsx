@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { setAssetOrigin, setPlansEnabled } from './api';
+import { setAssetOrigin } from './api';
 import { detectLocale, setLocale } from './i18n';
 import { PwaUpdateBanner, registerServiceWorker } from './pwa';
 import { initNative, isNative } from './native';
@@ -14,12 +14,11 @@ applyAppearance();
 // loading them now, alongside the runtime config, and render once both are in.
 const app = import('./App');
 
-// Runtime config (user-content origin, paid plans etc.); the app still boots if it is unavailable.
+// Runtime config (user-content origin); the app still boots if it is unavailable.
 await fetch('/api/config')
   .then((r) => (r.ok ? r.json() : null))
-  .then((c: { assetOrigin?: string; plans?: boolean } | null) => {
+  .then((c: { assetOrigin?: string } | null) => {
     if (c?.assetOrigin) setAssetOrigin(c.assetOrigin);
-    setPlansEnabled(Boolean(c?.plans));
   })
   .catch(() => {});
 

@@ -49,8 +49,7 @@
   "INSERT INTO doc_state(design_id, state) VALUES ('Snopages00000000', decode('0108b4fa93a607002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687d861504756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c650177084e6f2070616765732801046d6574610565706f6368017d0000', 'hex'))",
   "INSERT INTO designs(id, workspace_id, owner_id, title, width, height, created_at, updated_at) VALUES ('Sstaffdoc0000000', '00000000-0000-4000-8000-000000001009', '00000000-0000-4000-8000-000000000009', 'Staff flyer', 1080, 1350, '2025-01-01T00:00:00Z', '2025-01-01T00:00:00Z')",
   "INSERT INTO doc_state(design_id, state) VALUES ('Sstaffdoc0000000', decode('010beed9e5f40a002801046d6574610d736368656d6156657273696f6e017d012801046d6574610f6d696e436c69656e74536368656d61017d012801046d6574610d6c61796f757456657273696f6e017d012801046d6574610773757266616365017707677261706869632801046d6574610464696d7301760401777db81001687d861504756e697477027078036470697da0012801046d657461046c616e67017702656e2801046d657461057469746c6501770b537461666620666c7965722801046d6574610565706f6368017d0027010570616765731053706167653130303030303030303030012800eed9e5f40a08026964017710537061676531303030303030303030302800eed9e5f40a08056f72646572017702613000', 'hex'))",
-  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id) VALUES\n      ('t_seededpublic01', 'Seeded public', 'flyers', 'ig-post', '{sale}', 'Seeded public flyers sale', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1350,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Seeded\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\"}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, NULL)",
-  "INSERT INTO email_images(sha256) VALUES ('cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41')"
+  "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, published, premium, workspace_id) VALUES\n      ('t_seededpublic01', 'Seeded public', 'flyers', 'ig-post', '{sale}', 'Seeded public flyers sale', 1080, 1080, '{\"meta\":{\"schemaVersion\":1,\"minClientSchema\":1,\"layoutVersion\":1,\"surface\":\"graphic\",\"dims\":{\"w\":1080,\"h\":1350,\"unit\":\"px\",\"dpi\":96},\"lang\":\"en\",\"title\":\"Seeded\",\"epoch\":0},\"pages\":{\"Spage10000000000\":{\"id\":\"Spage10000000000\",\"order\":\"a0\"}},\"elements\":{},\"assets\":{}}'::jsonb, true, false, NULL)"
  ],
  "steps": [
   {
@@ -24020,13 +24019,7 @@
        "doc_title": "Team flyer",
        "height": 1350,
        "id": "{{brandTpl}}",
-       "locks": {
-        "<id:1>": {
-         "by": "brand",
-         "move": true,
-         "style": true
-        }
-       },
+       "locks": {},
        "premium": false,
        "preset": "custom",
        "published": true,
@@ -24149,7 +24142,6 @@
     "category": "flyers",
     "description": "Our look",
     "designId": "Steam00000000000",
-    "premium": true,
     "scope": "team",
     "tags": [
      "brand",
@@ -24250,13 +24242,7 @@
        "doc_title": "Team flyer",
        "height": 1350,
        "id": "{{brandTpl}}",
-       "locks": {
-        "<id:1>": {
-         "by": "brand",
-         "move": true,
-         "style": true
-        }
-       },
+       "locks": {},
        "premium": false,
        "preset": "custom",
        "published": true,
@@ -24279,7 +24265,7 @@
        "height": 1350,
        "id": "{{publicTpl}}",
        "locks": {},
-       "premium": true,
+       "premium": false,
        "preset": "custom",
        "published": true,
        "search_text": "Public flyer flyers ",
@@ -24353,13 +24339,12 @@
     "brand": true,
     "category": "flyers",
     "designId": "Sstaffdoc0000000",
-    "premium": true,
     "scope": "public",
     "tags": [],
     "title": "Public flyer"
    },
    "method": "POST",
-   "name": "publish: public premium (staff)",
+   "name": "publish: public (staff)",
    "replies": {
     "/internal/template-thumbnail": [
      {
@@ -24533,7 +24518,6 @@
    },
    "json": {
     "description": "Second take",
-    "premium": true,
     "published": false,
     "tags": [
      "v2"
@@ -24581,13 +24565,7 @@
        "doc_title": "Team flyer",
        "height": 1350,
        "id": "{{brandTpl}}",
-       "locks": {
-        "<id:1>": {
-         "by": "brand",
-         "move": true,
-         "style": true
-        }
-       },
+       "locks": {},
        "premium": false,
        "preset": "custom",
        "published": true,
@@ -24670,8 +24648,7 @@
     "x-forwarded-for": "198.51.100.85"
    },
    "json": {
-    "category": "posters",
-    "premium": false
+    "category": "posters"
    },
    "method": "PATCH",
    "name": "update: public template",
@@ -24731,7 +24708,6 @@
        "category": "posters",
        "created_at": "<ts>",
        "id": "{{publicTpl}}",
-       "premium": false,
        "published": true,
        "tags": [],
        "title": "Public flyer",
@@ -24743,7 +24719,6 @@
        "category": "flyers",
        "created_at": "<ts>",
        "id": "t_seededpublic01",
-       "premium": false,
        "published": true,
        "tags": [
         "sale"
@@ -24899,13 +24874,7 @@
        "doc_title": "Team flyer",
        "height": 1350,
        "id": "{{brandTpl}}",
-       "locks": {
-        "<id:1>": {
-         "by": "brand",
-         "move": true,
-         "style": true
-        }
-       },
+       "locks": {},
        "premium": false,
        "preset": "custom",
        "published": true,
@@ -25065,83 +25034,6 @@
     "status": 200
    },
    "url": "/api/templates/t_seededpublic01"
-  },
-  {
-   "headers": {
-    "x-forwarded-for": "198.51.100.93"
-   },
-   "name": "email image",
-   "response": {
-    "body": {
-     "$binary": {
-      "dims": [
-       2,
-       3
-      ],
-      "sha256": "cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41",
-      "size": 70
-     }
-    },
-    "headers": {
-     "access-control-allow-origin": "*",
-     "cache-control": "public, max-age=31536000, immutable",
-     "content-type": "image/png",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 200
-   },
-   "url": "/api/email-images/cd6bb5fc1eb83fb5ea5d2ffd568b73a7f773b45b11b62b3b654ba0570b4dbe41.png"
-  },
-  {
-   "headers": {
-    "x-forwarded-for": "198.51.100.94"
-   },
-   "name": "email image: unknown",
-   "response": {
-    "body": null,
-    "headers": {
-     "cache-control": "no-store",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 404
-   },
-   "url": "/api/email-images/0000000000000000000000000000000000000000000000000000000000000000.png"
-  },
-  {
-   "headers": {
-    "x-forwarded-for": "198.51.100.95"
-   },
-   "name": "email image: invalid",
-   "response": {
-    "body": null,
-    "headers": {
-     "cache-control": "no-store",
-     "cross-origin-opener-policy": "same-origin",
-     "permissions-policy": "camera=(self), microphone=(self), geolocation=(), payment=()",
-     "referrer-policy": "strict-origin-when-cross-origin",
-     "x-content-type-options": "nosniff",
-     "x-frame-options": "DENY",
-     "x-ratelimit-limit": "600",
-     "x-ratelimit-remaining": "599",
-     "x-ratelimit-reset": "60"
-    },
-    "status": 404
-   },
-   "url": "/api/email-images/nope.png"
   },
   {
    "name": "all assets",

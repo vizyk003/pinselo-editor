@@ -327,7 +327,7 @@ pub struct Purged {
 }
 
 /// Hourly maintenance: purge trash after 30 days, expire tokens/sessions, prune finished jobs, old mail,
-/// notifications and analytics, remove stale OAuth clients; lapse/renew local-provider subscriptions.
+/// notifications and analytics, remove stale OAuth clients.
 pub async fn maintenance(pool: &sqlx::PgPool) -> Result<Purged, JobError> {
     // Held items stay: designs taken down by staff and uploads that are reported ('pending' / 'quarantined') or
     // removed by a moderator are evidence until a moderator decides.
@@ -342,19 +342,6 @@ pub async fn maintenance(pool: &sqlx::PgPool) -> Result<Purged, JobError> {
     let _ = sqlx::query("DELETE FROM notifications WHERE created_at < now() - interval '180 days'").execute(pool).await;
     sqlx::query("DELETE FROM analytics_events WHERE created_at < now() - interval '400 days'").execute(pool).await?;
     let clients = purge_stale_oauth_clients(pool).await?;
-    // Local billing provider: trials convert, cancelled plans lapse at period end (Stripe does this by webhook).
-    sqlx::query(
-        "UPDATE subscriptions SET plan = 'free', status = 'canceled', updated_at = now()
-               WHERE provider = 'local' AND cancel_at_period_end AND current_period_end < now() AND status <> 'canceled'",
-    )
-    .execute(pool)
-    .await?;
-    sqlx::query(
-        "UPDATE subscriptions SET status = 'active', current_period_end = current_period_end + CASE interval WHEN 'year' THEN interval '365 days' ELSE interval '30 days' END, updated_at = now()
-               WHERE provider = 'local' AND NOT cancel_at_period_end AND current_period_end < now() AND status IN ('trialing','active')",
-    )
-    .execute(pool)
-    .await?;
     if !designs.is_empty() || !assets.is_empty() {
         println!("[worker] purged {} designs, {} uploads from trash", designs.len(), assets.len());
     }

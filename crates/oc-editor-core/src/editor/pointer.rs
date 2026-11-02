@@ -11,7 +11,7 @@ use oc_geometry::{
     HitTestOpts, RulerGuide, SnapResult, apply, apply_vector, hit_test, invert, marquee_select, nearest_anchor, normalize_angle,
     parent_inverse, snap_angle, snap_move, world_bounds, world_matrix,
 };
-use oc_schema::design::{GuideAxis, Surface};
+use oc_schema::design::GuideAxis;
 use oc_schema::elements::{Element, LineAttach};
 use oc_schema::keyframes::{keyframe_neutral, keyframe_value};
 use oc_schema::primitives::{Rect, Vec2, Xf};
@@ -24,7 +24,6 @@ use crate::state::*;
 use crate::transform::{Handle, crop_resize, resize_box, rotate_about, scale_about, scale_patches};
 use crate::util::{atan2, cos, hypot, jv, merge, round, sin};
 use crate::viewport::page_at_scene;
-use crate::whiteboard::{is_section, with_section_members};
 
 fn ruler_guides(doc: &Doc, page_id: &str) -> Vec<RulerGuide> {
     doc.doc
@@ -253,12 +252,7 @@ impl Editor {
         if !selection.contains(&hid) {
             return;
         }
-        // Whiteboard sections carry the elements inside them.
-        let moving: Vec<Element> = if doc.doc.meta.surface == Surface::Whiteboard {
-            with_section_members(doc.els(), &selection).iter().filter_map(|i| doc.el(i).cloned()).collect()
-        } else {
-            self.selected()
-        };
+        let moving: Vec<Element> = self.selected();
         let origin: IndexMap<String, Xf> = moving.iter().filter(|e| !locked_move(e)).map(|e| (el_id(e), el_xf(e))).collect();
         // Alt/Option-drag leaves the originals and drops copies (ED-012).
         let start_bounds = self.selection_box().unwrap_or_default();
@@ -411,15 +405,7 @@ impl Editor {
                     h: (local[1] - start[1]).abs(),
                 };
                 let [ox, oy] = self.page_origin(&page_id);
-                // Sections are only marquee-selected when fully enclosed (dragging inside one selects its contents).
-                let hits: Vec<String> = marquee_select(doc.els(), &page_id, &r)
-                    .into_iter()
-                    .filter(|e| {
-                        let x = el_xf(e);
-                        !is_section(Some(e)) || (x.x >= r.x && x.y >= r.y && x.x + x.w <= r.x + r.w && x.y + x.h <= r.y + r.h)
-                    })
-                    .map(el_id)
-                    .collect();
+                let hits: Vec<String> = marquee_select(doc.els(), &page_id, &r).into_iter().map(el_id).collect();
                 let mut sel: indexmap::IndexSet<String> = additive.into_iter().collect();
                 sel.extend(hits);
                 self.set(|s| {
@@ -777,7 +763,7 @@ impl Editor {
             Element::Shape(sh) if sh.kind == oc_schema::elements::ShapeKind::Custom => {
                 self.start_path_edit(&hid);
             }
-            Element::Shape(_) if !is_section(Some(&hit)) => self.edit_shape_label(&hid),
+            Element::Shape(_) => self.edit_shape_label(&hid),
             _ => {}
         }
     }

@@ -3786,12 +3786,12 @@
     "format": "pdf"
    },
    "method": "POST",
-   "name": "export waits for approval",
+   "name": "a stored requireApproval no longer blocks an export",
    "response": {
     "body": {
-     "error": "approval_required",
-     "message": "This design needs to be approved before it can be downloaded, shared or published. Send it for approval from the Share menu.",
-     "status": "none"
+     "id": "<uuid:8>",
+     "status": "queued",
+     "statusUrl": "https://app.example/v1/exports/<uuid:8>"
     },
     "headers": {
      "content-type": "application/json; charset=utf-8",
@@ -3804,7 +3804,7 @@
      "x-ratelimit-remaining": "119",
      "x-ratelimit-reset": "60"
     },
-    "status": 403
+    "status": 202
    },
    "url": "/v1/designs/Sagencyad0000000/exports"
   },
@@ -3827,6 +3827,17 @@
         "format": "mp4",
         "quality": "4k",
         "userId": "00000000-0000-4000-8000-000000000001"
+       },
+       "queue": "export",
+       "status": "queued"
+      },
+      {
+       "max_attempts": 2,
+       "owner_id": "00000000-0000-4000-8000-000000000002",
+       "payload": {
+        "designId": "Sagencyad0000000",
+        "format": "pdf",
+        "userId": "00000000-0000-4000-8000-000000000002"
        },
        "queue": "export",
        "status": "queued"
@@ -3916,12 +3927,12 @@
     "format": "pdf-print"
    },
    "method": "POST",
-   "name": "team owner exports without approval",
+   "name": "team owner exports",
    "response": {
     "body": {
-     "id": "<uuid:8>",
+     "id": "<uuid:9>",
      "status": "queued",
-     "statusUrl": "https://app.example/v1/exports/<uuid:8>"
+     "statusUrl": "https://app.example/v1/exports/<uuid:9>"
     },
     "headers": {
      "content-type": "application/json; charset=utf-8",
@@ -5131,7 +5142,7 @@
    "name": "token without expiry",
    "response": {
     "body": {
-     "id": "<uuid:9>",
+     "id": "<uuid:10>",
      "token": "{{pat2}}"
     },
     "headers": {
@@ -5178,7 +5189,7 @@
       {
        "created_at": "<ts>",
        "expires_at": null,
-       "id": "<uuid:9>",
+       "id": "<uuid:10>",
        "last_used_at": null,
        "name": "Forever",
        "prefix": "{{pat2Prefix}}",
@@ -5718,7 +5729,7 @@
       {
        "created_at": "<ts>",
        "expires_at": null,
-       "id": "<uuid:9>",
+       "id": "<uuid:10>",
        "last_used_at": null,
        "name": "Forever",
        "prefix": "{{pat2Prefix}}",
@@ -5874,7 +5885,7 @@
          "created_at": "<ts>",
          "error": null,
          "event": "ping",
-         "id": "<uuid:10>",
+         "id": "<uuid:11>",
          "response_code": null,
          "status": "pending"
         }
@@ -5965,6 +5976,17 @@
     },
     {
      "max_attempts": 2,
+     "owner_id": "00000000-0000-4000-8000-000000000002",
+     "payload": {
+      "designId": "Sagencyad0000000",
+      "format": "pdf",
+      "userId": "00000000-0000-4000-8000-000000000002"
+     },
+     "queue": "export",
+     "status": "queued"
+    },
+    {
+     "max_attempts": 2,
      "owner_id": "00000000-0000-4000-8000-000000000001",
      "payload": {
       "designId": "Sagencyad0000000",
@@ -6041,7 +6063,7 @@
      "max_attempts": 6,
      "owner_id": null,
      "payload": {
-      "deliveryId": "<uuid:10>"
+      "deliveryId": "<uuid:11>"
      },
      "queue": "webhook",
      "status": "queued"

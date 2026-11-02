@@ -341,6 +341,21 @@ async fn scenario(pool: sqlx::PgPool, dir: &std::path::Path) {
         (r.status, r.json()["error"].clone()),
         (StatusCode::BAD_REQUEST, json!("no_pages"))
     );
+    // A stored sheet is refused with a clear error.
+    let sheet = oc_schema::factory::empty_design(&oc_schema::factory::MetaInit {
+        w: 100.0,
+        h: 100.0,
+        surface: Some(oc_schema::design::Surface::Sheet),
+        ..Default::default()
+    });
+    let state = oc_crdt::encode_doc_value(&oc_schema::js::to_value(&sheet).unwrap());
+    sqlx::query("INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height) VALUES ('rsheet0000000000', $1, $2, 'S', 'sheet', 100, 100)").bind(ws).bind(user).execute(&pool).await.unwrap();
+    sqlx::query("INSERT INTO doc_state(design_id, state) VALUES ('rsheet0000000000', $1)").bind(&state).execute(&pool).await.unwrap();
+    let r = call(&app, "POST", "/internal/export", t, export("rsheet0000000000", "png")).await;
+    assert_eq!(
+        (r.status, r.json()["error"].clone()),
+        (StatusCode::UNPROCESSABLE_ENTITY, json!("sheet_unsupported"))
+    );
 
     // Rasters, vectors, packages.
     let r = call(
@@ -446,21 +461,6 @@ async fn scenario(pool: sqlx::PgPool, dir: &std::path::Path) {
             .iter()
             .any(|p| p.0 == "ppt/slides/slide1.xml")
     );
-    let r = call(
-        &app,
-        "POST",
-        "/internal/export",
-        t,
-        export("rcard00000000000", "html-email"),
-    )
-    .await;
-    let html = String::from_utf8(r.body).unwrap();
-    assert!(html.contains("/api/email-images/"), "{html}");
-    let n: (i64,) = sqlx::query_as("SELECT count(*) FROM email_images")
-        .fetch_one(&pool)
-        .await
-        .unwrap();
-    assert!(n.0 > 0);
     // Video, GIF and audio: a static card as GIF and MP4 (its settled frame reused), no audio in it; the reel (a
     // video element and a soundtrack over stored playback proxies) as GIF and M4A, and as MP4 in the job below.
     let r = call(

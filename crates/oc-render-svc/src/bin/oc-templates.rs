@@ -5,7 +5,7 @@
 //! The documents themselves are built in TypeScript (`tools/scripts/templates/*`, on `@oc/engine`), which writes a
 //! bundle directory:
 //!
-//! - `templates.json`: `[{ id, title, category, preset, tags, premium, doc }]`
+//! - `templates.json`: `[{ id, title, category, preset, tags, doc }]`
 //! - `assets.json`: `[{ id, sha256, mime, w, h, name, source, attribution, file }]` — the library assets (pinned
 //!   photos, emoji art) the templates reference; `file` is the path of the bytes.
 //!
@@ -42,8 +42,6 @@ struct Template {
     category: String,
     preset: String,
     tags: Vec<String>,
-    #[serde(default)]
-    premium: bool,
     doc: Value,
 }
 
@@ -180,11 +178,10 @@ async fn seed(svc: &Service, renderer: &OcRenderer, templates: &[Template], asse
         let mut search = vec![t.title.clone(), t.category.clone()];
         search.extend(t.tags.iter().cloned());
         sqlx::query(
-            "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, thumbnail, premium)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+            "INSERT INTO templates(id, title, category, preset, tags, search_text, width, height, doc, thumbnail)
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
              ON CONFLICT (id) DO UPDATE SET title = EXCLUDED.title, category = EXCLUDED.category, preset = EXCLUDED.preset, tags = EXCLUDED.tags,
-               search_text = EXCLUDED.search_text, width = EXCLUDED.width, height = EXCLUDED.height, doc = EXCLUDED.doc, thumbnail = EXCLUDED.thumbnail,
-               premium = EXCLUDED.premium",
+               search_text = EXCLUDED.search_text, width = EXCLUDED.width, height = EXCLUDED.height, doc = EXCLUDED.doc, thumbnail = EXCLUDED.thumbnail",
         )
         .bind(&t.id)
         .bind(&t.title)
@@ -196,7 +193,6 @@ async fn seed(svc: &Service, renderer: &OcRenderer, templates: &[Template], asse
         .bind(doc.meta.dims.h)
         .bind(sqlx::types::Json(&t.doc))
         .bind(&thumbnail)
-        .bind(t.premium)
         .execute(pool)
         .await?;
         n += 1;

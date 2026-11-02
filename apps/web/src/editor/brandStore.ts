@@ -1,6 +1,6 @@
 /**
  * Brand Hub (A8) client state: the user's brand kits across workspaces and the open design's brand context
- * (governing team, brand-admin flag, brand controls, template link, approval status).
+ * (governing team, brand controls, template link).
  */
 import { useSyncExternalStore } from 'react';
 import { brandHub, type BrandWorkspace, type DesignBrand, type Kit } from '../api';

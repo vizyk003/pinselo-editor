@@ -21,7 +21,7 @@ export interface TemplateDetails extends TemplateSummary {
   unit: string | null;
 }
 
-export interface TemplatePreviewData { template: TemplateDetails; doc: DesignDoc | null; locked: boolean; similar: TemplateSummary[] }
+export interface TemplatePreviewData { template: TemplateDetails; doc: DesignDoc; similar: TemplateSummary[] }
 
 async function getJson<T>(url: string): Promise<T> {
   const r = await fetch(url, { credentials: 'same-origin' });
@@ -88,8 +88,8 @@ export function recentTemplates(uid: string | null | undefined, store: KV | null
 export function recordRecentTemplate(uid: string | null | undefined, tpl: TemplateSummary, store: KV | null = browserStorage()): TemplateSummary[] {
   const key = recentTemplatesKey(uid);
   if (!key) return [];
-  const { id, title, category, preset, tags, width, height, premium, team } = tpl;
-  const entry: TemplateSummary = { id, title, category, preset, tags: tags ?? [], width, height, ...(premium ? { premium } : {}), ...(team ? { team } : {}) };
+  const { id, title, category, preset, tags, width, height, team } = tpl;
+  const entry: TemplateSummary = { id, title, category, preset, tags: tags ?? [], width, height, ...(team ? { team } : {}) };
   const next = [entry, ...recentTemplates(uid, store).filter((x) => x.id !== id)].slice(0, RECENT_MAX);
   try {
     store?.setItem(key, JSON.stringify(next));

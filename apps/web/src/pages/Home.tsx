@@ -1,13 +1,13 @@
 import { BRAND } from '@oc/config';
 import type { PresetCategoryId } from '@oc/engine';
 import {
-  CalendarDays, CheckSquare, Crown, Folder, FolderPlus, HelpCircle, Home as HomeIcon, LogOut, Menu, Pencil, Plus,
+  CalendarDays, CheckSquare, Folder, FolderPlus, HelpCircle, Home as HomeIcon, LogOut, Menu, Pencil, Plus,
   Settings as SettingsIcon, Shield, Star, Trash2, UploadCloud, Users, LayoutTemplate,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'react-router';
 import { PlannerPage } from '../social/Planner';
-import { api, plansEnabled, type DesignSummary, type Folder as FolderT, type Task } from '../api';
+import { api, type DesignSummary, type Folder as FolderT, type Task } from '../api';
 import { projectsApi, type ProjectFolder } from '../api/projects';
 import { useAuth } from '../App';
 import { signOut } from '../auth/session';
@@ -133,7 +133,6 @@ export function Home() {
         ))}
         <button className="navlink" onClick={() => { setNavOpen(false); setNewTeam(true); }}><Plus size={16} /> {t('Create a team')}</button>
         <div className="grow" />
-        {plansEnabled() && <NavLink to="/pricing"><Crown size={18} /> {t('Plans')}</NavLink>}
         <NavLink to="/help"><HelpCircle size={18} /> {t('Help')}</NavLink>
         {user!.staff && <NavLink to="/admin"><Shield size={18} /> {t('Admin')}</NavLink>}
         <NavLink to="/settings"><SettingsIcon size={18} /> {t('Settings')}</NavLink>

@@ -116,18 +116,6 @@ pub fn truthy_out(o: Option<&Out>) -> bool {
     }
 }
 
-/// JS `a === b` for optional (possibly `undefined`) JSON values. Objects/arrays are never identical.
-pub fn strict_eq(a: Option<&Value>, b: Option<&Value>) -> bool {
-    match (a, b) {
-        (None, None) => true,
-        (Some(Value::Null), Some(Value::Null)) => true,
-        (Some(Value::Bool(x)), Some(Value::Bool(y))) => x == y,
-        (Some(Value::Number(x)), Some(Value::Number(y))) => x.as_f64() == y.as_f64(),
-        (Some(Value::String(x)), Some(Value::String(y))) => x == y,
-        _ => false,
-    }
-}
-
 /// A copy of `v` with every object's keys sorted (recursively): order-insensitive comparison of snapshots.
 pub fn canonical(v: &Value) -> Value {
     match v {
@@ -148,15 +136,6 @@ pub fn canonical(v: &Value) -> Value {
 /// `JSON.stringify` of the canonical form: equality of two JSON values regardless of key order.
 pub fn canonical_string(v: &Value) -> String {
     serde_json::to_string(&canonical(v)).unwrap_or_default()
-}
-
-/// Order-insensitive deep equality of two optional JSON values (`undefined` equals only `undefined`).
-pub fn same(a: Option<&Value>, b: Option<&Value>) -> bool {
-    match (a, b) {
-        (None, None) => true,
-        (Some(x), Some(y)) => canonical_string(x) == canonical_string(y),
-        _ => false,
-    }
 }
 
 /// An object's entries as a JSON map (empty for non-objects).

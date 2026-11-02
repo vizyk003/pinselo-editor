@@ -12,7 +12,6 @@ oc-crdt = { path = "../oc-crdt" }
 oc-render = { path = "../oc-render" }
 oc-color = { path = "../oc-color" }
 oc-text = { path = "../oc-text" }
-oc-sheet = { path = "../oc-sheet", default-features = false, features = ["native"] }
 oc-config = { workspace = true }
 oc-db = { workspace = true }
 oc-jobs = { workspace = true }

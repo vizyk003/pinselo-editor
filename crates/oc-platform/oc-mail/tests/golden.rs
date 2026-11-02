@@ -11,7 +11,7 @@ fn golden(name: &str) -> Value {
 fn render_matches_ts() {
     let g = golden("mail.json");
     let cases = g["cases"].as_array().unwrap();
-    assert!(cases.len() > 300);
+    assert!(cases.len() > 200);
     for c in cases {
         let t: Template = serde_json::from_value(c["template"].clone()).unwrap_or_else(|e| panic!("{e}: {}", c["template"]));
         // Round-trips to the TS JSON shape.

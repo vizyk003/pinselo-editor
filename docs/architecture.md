@@ -70,7 +70,7 @@ It serves:
 - `/mcp` and the OAuth endpoints for AI assistants ([mcp-connector.md](mcp-connector.md));
 - `/site/*`, published websites.
 
-The binary also runs two job queues in-process: `import` (PowerPoint and PDF import through `oc-import`) and `print-fulfil`. At start it checks that Postgres is not exposed through the Supabase Data API (`oc_db::startup_checks`). `crates/oc-api/ROUTES.md` lists each route group with its test transcript.
+The binary also runs the `import` job queue in-process (PowerPoint and PDF import through `oc-import`). At start it checks that Postgres is not exposed through the Supabase Data API (`oc_db::startup_checks`). `crates/oc-api/ROUTES.md` lists each route group with its test transcript.
 
 ### oc-collab
 
@@ -113,12 +113,11 @@ Not a long-running service. This binary lives in the `oc-db` crate and applies t
 |---|---|
 | `oc-schema` | Document model: serde types, validation, migrations, pure helpers |
 | `oc-geometry` | Matrices, shape outlines, hit testing, snapping, connectors |
-| `oc-crdt` | `yrs` document layout, DocOps (the write path), snapshots, load-time repair, brand locks |
+| `oc-crdt` | `yrs` document layout, DocOps (the write path), snapshots, load-time repair |
 | `oc-editor-core` | Editor logic with no DOM: selection, gestures, commands |
 | `oc-text` | Font registry, glyph fallback and paragraph layout on parley, HarfRust and skrifa |
 | `oc-color` | ICC output profiles, conversion to CMYK, gamut checks, print profile registry |
 | `oc-render` | Display lists, tiny-skia raster, SVG and PDF output; does no I/O |
-| `oc-sheet` | Spreadsheet model on the Y.Doc, formula engine, CSV and XLSX |
 | `oc-import` | PowerPoint and PDF to `DesignDoc`, Word to HTML |
 | `oc-social` | Social publishing: network adapters, OAuth connection, token encryption, the publish job. Shared by `oc-api` and `oc-worker` |
 | `oc-wasm` | The browser bridge: the core crates behind wasm-bindgen exports |
@@ -154,7 +153,6 @@ flowchart TD
   rsvc[oc-render-svc]
   editor[oc-editor-core]
   render[oc-render]
-  sheet[oc-sheet]
   social[oc-social]
   import[oc-import]
   crdt[oc-crdt]
@@ -163,14 +161,13 @@ flowchart TD
   color[oc-color]
   schema[oc-schema]
 
-  wasm --> editor & render & sheet
-  api --> editor & sheet & social & import & color
+  wasm --> editor & render
+  api --> editor & social & import & color
   collab --> crdt
   worker --> social
-  rsvc --> render & sheet
+  rsvc --> render
   editor --> crdt & geometry
   render --> geometry & text & color
-  sheet --> crdt
   social --> crdt
   crdt --> schema
   geometry --> schema
@@ -179,7 +176,7 @@ flowchart TD
   import --> schema
 ```
 
-The diagram omits some shortcut edges, such as `oc-wasm` to `oc-schema`, and the platform crates. Service crates and `oc-social` use the platform crates; among the core crates, only `oc-text` is used by a platform crate (`oc-gfonts`). `oc-sheet` and `oc-render` compile for both native and WebAssembly targets. `oc-wasm` turns off their default features and selects what it needs in `crates/oc-wasm/Cargo.toml`: XLSX is included, and the vector PDF writer is not.
+The diagram omits some shortcut edges, such as `oc-wasm` to `oc-schema`, and the platform crates. Service crates and `oc-social` use the platform crates; among the core crates, only `oc-text` is used by a platform crate (`oc-gfonts`). `oc-render` compiles for both native and WebAssembly targets. `oc-wasm` turns off its default features and selects what it needs in `crates/oc-wasm/Cargo.toml`: the vector PDF writer is not included.
 
 ## Browser and mobile
 
@@ -191,12 +188,12 @@ Places to start reading:
 
 - `src/pages/EditorPage.tsx` loads a design.
 - `src/editor/` is the editor UI, with `Canvas.tsx` and `scene.ts` as the canvas and tile painter.
-- `src/doc/` is the document editor (TipTap), and `src/sheet/` the spreadsheet.
+- `src/doc/` is the document editor (TipTap).
 - `src/auth/` covers sign-in, including the Supabase mode.
 
 ### packages/engine
 
-`@oc/engine` loads the WebAssembly module and exposes it through TypeScript: `Editor`, `SheetEngine`, `Painter`, `RenderTarget`, schema and geometry helpers. Its document and editor types in `src/types/` are maintained by hand next to the Rust serde types. When a crate gains a field, element type or export, extend the declaration in the same change. `pnpm --filter @oc/engine build` type-checks the facade against the generated bindings.
+`@oc/engine` loads the WebAssembly module and exposes it through TypeScript: `Editor`, `Painter`, `RenderTarget`, schema and geometry helpers. Its document and editor types in `src/types/` are maintained by hand next to the Rust serde types. When a crate gains a field, element type or export, extend the declaration in the same change. `pnpm --filter @oc/engine build` type-checks the facade against the generated bindings.
 
 The build writes to `packages/engine/pkg/`, which is not committed. `apps/web/scripts/engine.mjs` rebuilds it before `dev` and `build` when it is missing or older than the Rust sources. `packages/engine/README.md` covers build flags, the bridge's internals and benchmarks.
 
@@ -237,7 +234,7 @@ Tables most relevant to the flows below:
 | Queue | Drained by |
 |---|---|
 | `export` | `oc-render-svc` |
-| `import`, `print-fulfil` | `oc-api` |
+| `import` | `oc-api` |
 | `webhook`, `email`, `account-export`, `account-delete`, `publish` | `oc-worker` |
 
 Other Postgres channels: `oc_revoke` closes collaborators' connections when access changes, and `oc_doc_update` merges a server-side document change into the live document.
@@ -254,7 +251,7 @@ Other Postgres channels: `oc_revoke` closes collaborators' connections when acce
 DesignDoc { meta, pages, elements, assets }
 ```
 
-- **`meta`**: schema version, `surface`, page size, language, title and so on. The surfaces are `graphic`, `presentation`, `video`, `doc`, `sheet`, `whiteboard`, `print`, `website` and `email`.
+- **`meta`**: schema version, `surface`, page size, language, title and so on. The surfaces are `graphic`, `presentation`, `video`, `doc`, `sheet`, `whiteboard`, `print`, `website` and `email`. `sheet`, `whiteboard` and `email` only exist on older designs: new designs can no longer use them. Whiteboards and emails open in the regular editor; sheets show a notice, and their data stays stored.
 - **`pages`**: keyed by page ID. Order comes from sorting by a fractional key (`order`) and then ID.
 - **`elements`**: a flat map keyed by element ID. Each element has a `parentId` and a `z` key, so the tree is derived from the map (`src/tree.rs`). The element types are `shape`, `line`, `image`, `frame`, `group`, `text`, `qr`, `video`, `draw`, `table`, `embed`, `form`, `grid` and `chart`.
 - **`assets`**: references to stored files, keyed by asset ID.
@@ -287,8 +284,6 @@ Documents use UTF-16 text offsets (`oc_crdt::new_doc`) to match the JavaScript s
 | Root | Used for | Defined in |
 |---|---|---|
 | `docBody` (XmlFragment) | The TipTap body of `doc` designs | `oc-crdt/src/doc_body.rs` |
-| `sheet` (Map) | Spreadsheet data | `oc-sheet/src/model.rs` |
-| `board`, `votes` (Map) | Whiteboard timer and votes, outside undo history | `oc-crdt/src/board.rs` |
 
 ### The validated write path
 
@@ -296,20 +291,19 @@ Documents use UTF-16 text offsets (`oc_crdt::new_doc`) to match the JavaScript s
 
 `apply_ops` works as follows:
 
-1. Each op validates before it writes. Adds and patches are checked through `check_element`, which runs the `oc-schema` validator. Locks and brand locks are checked too.
+1. Each op validates before it writes. Adds and patches are checked through `check_element`, which runs the `oc-schema` validator. Locks are checked too.
 2. Failures are reported per op with a code: `SCHEMA`, `NOT_FOUND`, `LOCKED`, `CYCLE` or `INVALID`.
 3. A batch of more than one op is first dry-run against a scratch copy of the document. If any op fails, nothing is written, unless the caller passes `partial`.
 4. The ops then run in one transaction, so they produce a single update.
 
 Callers include the editor (`DocStore::apply`, through `oc-editor-core`), the MCP edit tool (`oc-api/src/mcp/edit.rs`) and brand template updates (`oc-api/src/brandhub.rs`).
 
-Not everything goes through DocOps. TipTap writes `docBody` directly, the sheet grid writes some `Y.Map`s directly, and the whiteboard helpers write `board` and `votes`.
+Not everything goes through DocOps. TipTap writes `docBody` directly.
 
 **The collab server does not run DocOp validation on client updates.** It receives opaque Yjs updates. Its checks are in `Server::before_handle` and `Server::receive`:
 
 - it drops updates from read-only connections;
 - it refuses updates that do not decode;
-- for brand-locked users, it applies the update to a scratch copy and closes the connection with code 4409 if a locked element would change.
 
 Validation in `apply_ops` protects against bugs and against writes that go through the server's own code, not against a modified client with edit rights. The server also repairs structure when it loads a document (`oc_crdt::repair::upgrade_y`). That pass fixes orphaned elements, parent cycles and invalid transforms, and runs schema migrations. Concurrent edits can produce those states even when every client behaved correctly.
 
@@ -341,7 +335,7 @@ sequenceDiagram
 1. It fetches the design row (`api.design`) and loads the engine.
 2. It creates a `Y.Doc` and attaches `IndexeddbPersistence` under `oc:design:{id}` for local persistence.
 3. It creates a `HocuspocusProvider` on `/collab` with the room name `design:{id}`. The provider's `token` callback runs on every connection and calls `GET /api/designs/{id}/ticket`.
-4. `oc-api` looks up the user's role (`design_role`) and returns a ticket signed with `OC_SECRET`, valid for 300 seconds. The ticket carries the user, design, role and whether brand locks apply (`routes/designs.rs`, `ticket`).
+4. `oc-api` looks up the user's role (`design_role`) and returns a ticket signed with `OC_SECRET`, valid for 300 seconds. The ticket carries the user, design and role (`routes/designs.rs`, `ticket`).
 5. `oc-collab` verifies the ticket's signature, audience, design and revocation watermarks (`Server::authenticate`). Roles below `edit` get a read-only connection.
 6. The first connection to a document loads it (`persistence::load`): the `doc_state` snapshot, then the `doc_updates` rows after its `seq`, then the repair pass. A repair is persisted through the op log.
 7. Client and server exchange sync steps. On `synced` (or after an 8-second timeout, if local data is present), the page creates `new Editor({ ydoc, actor })`.
@@ -382,7 +376,7 @@ There are two paths into the same code in `crates/oc-render-svc/src/app.rs`.
 
 **Synchronous**, used by the Download panel for non-video formats:
 
-1. `POST /api/designs/{id}/export` (`oc-api/src/routes/designs.rs`) validates the body, requires at least the `view` role and applies the brand approval gate.
+1. `POST /api/designs/{id}/export` (`oc-api/src/routes/designs.rs`) validates the body and requires at least the `view` role.
 2. It resolves print options and builds an allow-list of the embedded designs this user may see.
 3. It posts to `oc-render-svc` at `/internal/export` with the internal token, then returns the file. If the render service is unavailable, the API answers 502 `render_unavailable`.
 
@@ -396,8 +390,8 @@ There are two paths into the same code in `crates/oc-render-svc/src/app.rs`.
 In both paths the renderer first loads the document (`Service::load_doc`):
 
 - It decodes the state from `doc_state`, so **edits still inside the debounce window are not included**.
-- `doc` designs are laid out onto pages, and `sheet` designs are paginated into tables.
-- Charts linked to a sheet in the same workspace have their data refreshed.
+- `doc` designs are laid out onto pages.
+- `sheet` designs can't be drawn: exports and thumbnails answer `422 sheet_unsupported`.
 - `docx` and `md` exports are built directly from the document body instead of the paginated layout.
 
 The API's `GET /api/designs/{id}/doc` reads the same `doc_state` snapshot.

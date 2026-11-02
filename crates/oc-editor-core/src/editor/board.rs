@@ -1,32 +1,22 @@
 // SPDX-License-Identifier: Apache-2.0
-//! Whiteboard facilitation (WB-004, WB-020..): shape labels, sticky notes, sections, mind maps; freehand draw.
+//! Shape labels (WB-004) and freehand draw.
 
 use oc_crdt::rng::new_id;
 use oc_crdt::DocOp;
-use oc_geometry::{selection_bounds, world_bounds};
-use oc_schema::color::{solid_hex};
-use oc_schema::design::Surface;
-use oc_schema::elements::{
-    BoardMeta, DropShadowEffect, Effect, Element, ElementBase, LineAttach, LineRoute, MindMeta, SectionCollapsed, SectionMeta,
-    ShapeKind, StickyAuthor, StickyMeta,
-};
-use oc_schema::factory::{
-    DrawOpts, LineOpts, ShapeOpts, TextOpts, base_init, make_draw, make_group, make_line, make_shape, make_stroke, make_text,
-};
+use oc_geometry::world_bounds;
+use oc_schema::elements::{BoardMeta, Element, ElementBase, LineAttach};
+use oc_schema::factory::{DrawOpts, TextOpts, base_init, make_draw, make_text};
 use oc_schema::primitives::{ColorValue, Rect, Vec2, Xf};
 use oc_schema::text::{RunStyleOverride, TextAlign};
-use oc_schema::tree::{children_of, descendants};
+use oc_schema::tree::children_of;
 use oc_schema::Extra;
 use serde_json::{Map, Value};
 
-use super::{Editor, el_id, el_xf, locked_content, locked_move, one, op_add, op_update, op_xf};
+use super::{Editor, el_id, locked_content, locked_move, one, op_add, op_update, op_xf};
 use oc_schema::tree::Elements;
 use crate::state::*;
 use crate::util::{jm, jv, max, min, round};
 use crate::viewport::fit_rect;
-use crate::whiteboard::{
-    cluster_layout, is_section, is_sticky, mind_child_position, mind_layout, mind_node_of, mind_root, section_members, sections_of,
-};
 
 fn hexc(s: &str) -> ColorValue {
     oc_schema::color::hex(s).unwrap_or_else(|_| ColorValue::srgb(0.0, 0.0, 0.0, 1.0))
@@ -110,8 +100,8 @@ impl Editor {
         }
     }
 
-    /// A shape that gains a label is wrapped in a group; the group takes over its whiteboard role (mind-map node,
-    /// section, …): the metadata, glued connectors and mind-map children now point at the group.
+    /// A shape that gains a label is wrapped in a group; the group takes over the `board` metadata older documents
+    /// carry (mind-map node, section, …): the metadata, glued connectors and mind-map children now point at the group.
     fn adopt_board_role(&mut self, from_id: &str, to_id: &str) {
         let doc = self.doc();
         let Some(from) = doc.el(from_id) else { return };
@@ -151,248 +141,7 @@ impl Editor {
         self.to_page(&pid, [vp.x + vp.width / vp.zoom / 2.0, vp.y + vp.height / vp.zoom / 2.0])
     }
 
-    /// Add a sticky note: a group of a coloured square and a handwriting text box, tagged with its colour and
-    /// author (`board.sticky`). Placed at `at` (page coords) or the centre of the view. Returns the group id.
-    /// `author`: `None` = the editor's user, `Some(None)` = anonymous.
-    pub fn add_sticky(&mut self, color: &str, text: Option<&str>, at: Option<Vec2>, size: Option<f64>, author: Option<Option<User>>) -> Option<String> {
-        let s = max(40.0, round(size.unwrap_or(240.0)));
-        let author = match author {
-            None => self.user.clone(),
-            Some(a) => a,
-        };
-        let mut gb = self.fresh_base(Xf::new(0.0, 0.0, s, s, 0.0));
-        gb.name = Some("Sticky note".into());
-        gb.board = Some(BoardMeta {
-            sticky: Some(StickyMeta {
-                color: color.to_string(),
-                author: author.map(|a| StickyAuthor { id: a.id, name: a.name, extra: Extra::new() }),
-                extra: Extra::new(),
-            }),
-            ..Default::default()
-        });
-        let g = make_group(gb);
-        let bb = self.fresh_base(Xf::new(0.0, 0.0, s, s, 0.0));
-        let mut params = indexmap::IndexMap::new();
-        params.insert("cornerRadius".to_string(), 4.0);
-        let mut bg = make_shape(bb, ShapeOpts { kind: Some(ShapeKind::Rect), fill: solid_hex(color).ok(), stroke: None, params: Some(params) });
-        bg.base.parent_id = g.base.id.clone();
-        bg.base.effects = Some(vec![Effect::DropShadow(DropShadowEffect {
-            dx: 0.0,
-            dy: s * 0.03,
-            blur: s * 0.08,
-            color: ColorValue::srgb(0.0, 0.0, 0.0, 0.18),
-            extra: Extra::new(),
-        })]);
-        let tb = self.fresh_base(Xf::new(s * 0.1, s * 0.1, s * 0.8, s * 0.2, 0.0));
-        let mut txt = make_text(
-            tb,
-            TextOpts {
-                text: Some(text.unwrap_or("").to_string()),
-                style: Some(RunStyleOverride { family: Some("Caveat".into()), size: Some(round(s * 0.12)), ..Default::default() }),
-                align: None,
-                body: None,
-            },
-        );
-        txt.base.parent_id = g.base.id.clone();
-        let at = at.or_else(|| (self.doc().doc.meta.surface == Surface::Whiteboard).then(|| self.view_center(None)));
-        let ids = self.insert(vec![jm(&Element::Group(g)), jm(&Element::Shape(bg)), jm(&Element::Text(txt))], at, true, false);
-        ids.into_iter().next()
-    }
-
-    /// Recolour sticky notes (the selection by default). Returns how many were recoloured.
-    pub fn set_sticky_color(&mut self, color: &str, ids: Option<&[String]>) -> usize {
-        let ids: Vec<String> = ids.map(<[String]>::to_vec).unwrap_or_else(|| self.state.selection.clone());
-        let doc = self.doc();
-        let mut ops = Vec::new();
-        for id in &ids {
-            let Some(g) = doc.el(id) else { continue };
-            if !is_sticky(Some(g)) {
-                continue;
-            }
-            let mut b = board_of(g).cloned().unwrap_or_default();
-            if let Some(st) = &mut b.sticky {
-                st.color = color.to_string();
-            }
-            ops.push(op_update(id, one("board", jv(&b))));
-            if let Some(bg) = children_of(doc.els(), id).into_iter().find(|e| matches!(e, Element::Shape(_))) {
-                let fill = solid_hex(color).map(|p| jv(&vec![p])).unwrap_or(Value::Array(vec![]));
-                ops.push(op_update(&el_id(bg), one("fills", fill)));
-            }
-        }
-        let n = ops.len();
-        if n > 0 {
-            self.apply(ops, false);
-        }
-        if n > 0 { ids.len() } else { 0 }
-    }
-
-    /// Arrange the selected sticky notes into one tidy grid per colour. Returns how many moved.
-    pub fn cluster_stickies(&mut self, ids: Option<&[String]>) -> usize {
-        let ids: Vec<String> = ids.map(<[String]>::to_vec).unwrap_or_else(|| self.state.selection.clone());
-        let doc = self.doc();
-        let layout = cluster_layout(doc.els(), &ids, 24.0);
-        let mut ops = Vec::new();
-        for (id, (x, y)) in layout {
-            let Some(el) = doc.el(&id) else { continue };
-            if locked_move(el) {
-                continue;
-            }
-            ops.push(op_xf(&id, &Xf { x, y, ..el_xf(el) }));
-        }
-        let n = ops.len();
-        if n > 0 {
-            self.apply(ops, false);
-        }
-        n
-    }
-
-    /// New section: a titled rect at the back that carries the elements inside it. Wraps the selection when
-    /// there is one, otherwise appears in the middle of the view.
-    pub fn create_section(&mut self, title: &str) -> Option<String> {
-        let doc = self.doc();
-        let page_id = self.state.active_page_id.clone();
-        if !doc.has_page(&page_id) {
-            return None;
-        }
-        let sel: Vec<String> =
-            self.state.selection.iter().filter(|id| doc.el(id).and_then(|e| e.parent_id()) == Some(page_id.as_str())).cloned().collect();
-        let b = if sel.is_empty() { None } else { selection_bounds(doc.els(), &sel) };
-        let bar = 56.0;
-        let rect = match b {
-            Some(b) => {
-                let pad = 40.0;
-                Rect::new(b.x - pad, b.y - pad - bar, b.w + pad * 2.0, b.h + pad * 2.0 + bar)
-            }
-            None => {
-                let vp = self.state.viewport;
-                let [cx, cy] = self.view_center(Some(&page_id));
-                let w = round(min(1200.0, (vp.width / vp.zoom) * 0.6));
-                let h = round(w * 0.66);
-                Rect::new(cx - w / 2.0, cy - h / 2.0, w, h)
-            }
-        };
-        let existing = sections_of(doc.els(), &page_id);
-        let order = existing
-            .iter()
-            .filter_map(|s| board_of(s).and_then(|b| b.section.as_ref()).map(|x| x.order))
-            .fold(0.0, max)
-            + 1.0;
-        let base = self.fresh_base(Xf::new(rect.x, rect.y, rect.w, rect.h, 0.0));
-        let mut params = indexmap::IndexMap::new();
-        params.insert("cornerRadius".to_string(), 16.0);
-        let mut el = make_shape(
-            base,
-            ShapeOpts {
-                kind: Some(ShapeKind::Rect),
-                fill: solid_hex("#f1f5f9").ok(),
-                stroke: Some(make_stroke(Some(hexc("#cbd5e1")), Some(2.0), None)),
-                params: Some(params),
-            },
-        );
-        el.base.name = Some(title.to_string());
-        el.base.board = Some(BoardMeta {
-            section: Some(SectionMeta { title: title.to_string(), order, collapsed: None, extra: Extra::new() }),
-            ..Default::default()
-        });
-        // Above any section that encloses it (nested sections stay visible), otherwise at the very back.
-        let holder = children_of(doc.els(), &page_id)
-            .into_iter()
-            .rfind(|e| {
-                let x = el_xf(e);
-                is_section(Some(e)) && x.x <= rect.x && x.y <= rect.y && x.x + x.w >= rect.x + rect.w && x.y + x.h >= rect.y + rect.h
-            })
-            .map(el_id);
-        el.base.parent_id = page_id.clone();
-        let id = el.base.id.clone();
-        let r = self.apply(vec![op_add(jm(&Element::Shape(el)), &page_id, Some(holder.as_deref().unwrap_or("bottom")))], false);
-        if !r.ok {
-            return None;
-        }
-        self.select(std::slice::from_ref(&id), false);
-        Some(id)
-    }
-
-    pub fn rename_section(&mut self, id: &str, title: &str) {
-        let doc = self.doc();
-        let Some(el) = doc.el(id) else { return };
-        let Some(b) = board_of(el).filter(|b| b.section.is_some()) else { return };
-        let mut nb = b.clone();
-        if let Some(s) = &mut nb.section {
-            s.title = title.to_string();
-        }
-        let mut patch = one("name", Value::String(title.into()));
-        patch.insert("board".into(), jv(&nb));
-        self.apply(vec![op_update(id, patch)], false);
-    }
-
-    /// Collapse a section to its title bar (hiding its members) or expand it again.
-    pub fn toggle_section(&mut self, id: &str) {
-        let doc = self.doc();
-        let Some(el) = doc.el(id) else { return };
-        let Some(b) = board_of(el) else { return };
-        let Some(sec) = &b.section else { return };
-        let x = el_xf(el);
-        let mut ops: Vec<DocOp> = Vec::new();
-        if let Some(collapsed) = &sec.collapsed {
-            let mut nb = b.clone();
-            if let Some(s) = &mut nb.section {
-                s.collapsed = None;
-            }
-            ops.push(op_update(id, one("board", jv(&nb))));
-            ops.push(op_xf(id, &Xf { h: collapsed.h, ..x }));
-            for m in &collapsed.hidden {
-                if doc.live(m).is_some() {
-                    ops.push(op_update(m, one("visible", Value::Null)));
-                }
-            }
-        } else {
-            let hidden: Vec<String> = section_members(doc.els(), id)
-                .into_iter()
-                .filter(|m| doc.el(m).is_some_and(|e| super::visible(e) && !locked_move(e)))
-                .collect();
-            let mut nb = b.clone();
-            if let Some(s) = &mut nb.section {
-                s.collapsed = Some(SectionCollapsed { h: x.h, hidden: hidden.clone(), extra: Extra::new() });
-            }
-            ops.push(op_update(id, one("board", jv(&nb))));
-            ops.push(op_xf(id, &Xf { h: min(x.h, 64.0), ..x }));
-            for m in &hidden {
-                ops.push(op_update(m, one("visible", Value::Bool(false))));
-            }
-            self.set(|s| s.selection.retain(|x| !hidden.contains(x)));
-        }
-        self.apply(ops, false);
-    }
-
-    /// Move a section up (-1) or down (+1) in the navigator order.
-    pub fn move_section(&mut self, id: &str, dir: i32) {
-        let doc = self.doc();
-        let Some(page_id) = doc.page_of(id) else { return };
-        let mut list: Vec<Element> = sections_of(doc.els(), &page_id).into_iter().cloned().collect();
-        let Some(i) = list.iter().position(|s| s.id() == Some(id)) else { return };
-        let j = i as i64 + dir as i64;
-        if j < 0 || j >= list.len() as i64 {
-            return;
-        }
-        list.swap(i, j as usize);
-        let mut ops = Vec::new();
-        for (k, s) in list.iter().enumerate() {
-            let Some(b) = board_of(s) else { continue };
-            let Some(sec) = &b.section else { continue };
-            if sec.order != (k + 1) as f64 {
-                let mut nb = b.clone();
-                if let Some(x) = &mut nb.section {
-                    x.order = (k + 1) as f64;
-                }
-                ops.push(op_update(&el_id(s), one("board", jv(&nb))));
-            }
-        }
-        if !ops.is_empty() {
-            self.apply(ops, false);
-        }
-    }
-
-    /// Fit a section (or any element) in the view. TS default `pad = 48`.
+    /// Fit an element in the view. TS default `pad = 48`.
     pub fn zoom_to_element(&mut self, id: &str, pad: f64) {
         let doc = self.doc();
         let Some(page_id) = doc.page_of(id) else { return };
@@ -404,150 +153,6 @@ impl Editor {
         self.set_active_page(&page_id, false);
         let vp = fit_rect(&self.state.viewport, &Rect::new(b.x + ox, b.y + oy, b.w, b.h), pad);
         self.set_viewport(vp);
-    }
-
-    /// Mind map (WB-040): add a child (to the right, glued with a curved connector) or a sibling of the selected
-    /// node. The new node copies the node's look with empty text and starts text editing. Returns its id.
-    pub fn mind_map_add(&mut self, child: bool) -> Option<String> {
-        let doc = self.doc();
-        let from = self
-            .state
-            .editing_text
-            .as_ref()
-            .map(|e| e.id.clone())
-            .or_else(|| (self.state.selection.len() == 1).then(|| self.state.selection[0].clone()))?;
-        let node = mind_node_of(doc.els(), &from)?.clone();
-        if locked_content(&node) || is_section(Some(&node)) || matches!(node, Element::Line(_)) || !doc.has_page(node.parent_id().unwrap_or("")) {
-            return None;
-        }
-        let node_board = board_of(&node).cloned();
-        if self.state.editing_text.is_some() && node_board.as_ref().and_then(|b| b.mind.as_ref()).is_none() {
-            return None;
-        }
-        let node_id = el_id(&node);
-        let parent_id = if child {
-            Some(node_id.clone())
-        } else {
-            node_board.as_ref().and_then(|b| b.mind.as_ref()).and_then(|m| m.parent.clone()).flatten()
-        }?;
-        let parent = doc.el(&parent_id).filter(|p| !p.is_deleted())?.clone();
-        let page_id = node.parent_id().unwrap_or("").to_string();
-        let (elements, roots) = self.clone_subtrees(std::slice::from_ref(&node_id));
-        let root_id = roots.first()?.clone();
-        let (px, py) = mind_child_position(doc.els(), &parent_id, el_xf(&node).h);
-        let user = self.user.clone();
-        let els: Vec<Map<String, Value>> = elements
-            .into_iter()
-            .map(|mut e| {
-                if crate::util::s(e.get("id")) == Some(root_id.as_str()) {
-                    let mut board = e.get("board").and_then(Value::as_object).cloned().unwrap_or_default();
-                    board.insert("mind".into(), Value::Object(one("parent", Value::String(parent_id.clone()))));
-                    if let Some(st) = board.get("sticky").and_then(Value::as_object).cloned() {
-                        let mut ns = one("color", st.get("color").cloned().unwrap_or(Value::Null));
-                        if let Some(u) = &user {
-                            ns.insert("author".into(), jv(&StickyAuthor { id: u.id.clone(), name: u.name.clone(), extra: Extra::new() }));
-                        }
-                        board.insert("sticky".into(), Value::Object(ns));
-                    }
-                    if let Some(Value::Object(xf)) = e.get_mut("xf") {
-                        xf.insert("x".into(), crate::util::num(px));
-                        xf.insert("y".into(), crate::util::num(py));
-                    }
-                    e.insert("board".into(), Value::Object(board));
-                }
-                if crate::util::s(e.get("type")) == Some("text")
-                    && let Some(Value::Object(body)) = e.get_mut("body")
-                    && let Some(Value::Array(ps)) = body.get_mut("paragraphs")
-                    && let Some(Value::Object(p0)) = ps.first().cloned()
-                {
-                    let mut p0 = p0;
-                    p0.insert("runs".into(), Value::Array(vec![]));
-                    *ps = vec![Value::Object(p0)];
-                }
-                e
-            })
-            .collect();
-        let mut ops: Vec<DocOp> = Vec::new();
-        let parent_board = board_of(&parent).cloned();
-        if child && parent_board.as_ref().and_then(|b| b.mind.as_ref()).is_none() {
-            let mut nb = parent_board.unwrap_or_default();
-            nb.mind = Some(MindMeta { parent: Some(None), extra: Extra::new() });
-            ops.push(op_update(&parent_id, one("board", jv(&nb))));
-        }
-        for mut e in els {
-            let is_root = crate::util::s(e.get("id")) == Some(root_id.as_str());
-            if is_root {
-                e.insert("parentId".into(), Value::String(page_id.clone()));
-            }
-            let parent = if is_root { page_id.clone() } else { crate::util::s(e.get("parentId")).unwrap_or("").to_string() };
-            ops.push(op_add(e, &parent, None));
-        }
-        let lb = self.fresh_base(Xf::new(0.0, 0.0, 1.0, 1.0, 0.0));
-        let mut line = make_line(lb, LineOpts { color: Some(hexc("#94a3b8")), width: Some(3.0), ..Default::default() });
-        line.base.parent_id = page_id.clone();
-        line.base.name = Some("Mind map link".into());
-        line.route = Some(LineRoute::Curved);
-        line.start_attach = Some(LineAttach { id: parent_id.clone(), anchor: oc_schema::elements::AnchorSide::Right, extra: Extra::new() });
-        line.end_attach = Some(LineAttach { id: root_id.clone(), anchor: oc_schema::elements::AnchorSide::Left, extra: Extra::new() });
-        ops.push(op_add(jm(&Element::Line(line)), &page_id, None));
-        if self.state.editing_text.is_some() {
-            self.set(|s| s.editing_text = None);
-        }
-        if !self.apply(ops, false).ok {
-            return None;
-        }
-        self.set(|s| s.entered_group = None);
-        self.select(std::slice::from_ref(&root_id), false);
-        let root = self.doc().el(&root_id).cloned();
-        match root {
-            Some(Element::Group(_)) => {
-                self.edit_group_text(&root_id);
-            }
-            Some(Element::Text(_)) => self.start_text_edit(&root_id, None, false),
-            Some(Element::Shape(_)) => self.edit_shape_label(&root_id),
-            _ => {}
-        }
-        // Labelling a bare shape wraps it in a group, which becomes the node.
-        let d = self.doc();
-        Some(mind_node_of(d.els(), &root_id).map_or(root_id.clone(), el_id))
-    }
-
-    /// Enter a group (sticky note, labelled shape) and start editing its first text element.
-    pub fn edit_group_text(&mut self, group_id: &str) -> bool {
-        let doc = self.doc();
-        let Some(label) = descendants(doc.els(), group_id).into_iter().find(|e| matches!(e, Element::Text(_)) && !e.is_deleted()) else {
-            return false;
-        };
-        let parent = label.parent_id().unwrap_or("").to_string();
-        let lid = el_id(label);
-        self.state.entered_group = Some(parent.clone());
-        self.select(std::slice::from_ref(&lid), false);
-        self.state.entered_group = Some(parent);
-        self.start_text_edit(&lid, None, false);
-        true
-    }
-
-    /// Re-layout the mind map containing the element (default: the first selected) as a balanced tree.
-    /// Returns how many nodes moved.
-    pub fn layout_mind_map(&mut self, id: Option<&str>) -> usize {
-        let Some(id) = id.map(str::to_string).or_else(|| self.state.selection.first().cloned()) else { return 0 };
-        let doc = self.doc();
-        let Some(node) = mind_node_of(doc.els(), &id) else { return 0 };
-        let pos = mind_layout(doc.els(), &mind_root(doc.els(), &el_id(node)), None, None);
-        let mut ops = Vec::new();
-        for (nid, (x, y)) in pos {
-            let Some(el) = doc.el(&nid) else { continue };
-            let ex = el_xf(el);
-            if locked_move(el) || ((ex.x - x).abs() < 0.5 && (ex.y - y).abs() < 0.5) {
-                continue;
-            }
-            ops.push(op_xf(&nid, &Xf { x, y, ..ex }));
-        }
-        let n = ops.len();
-        if n > 0 {
-            self.apply(ops, false);
-        }
-        n
     }
 
     // ------------------------------------------------------------------ freehand draw (PT-010)

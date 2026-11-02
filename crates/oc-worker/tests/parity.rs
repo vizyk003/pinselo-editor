@@ -623,18 +623,15 @@ async fn gc_phase() {
 
 /// Wait until no due job is pending or running, maintenance has finished and the heartbeat is written.
 async fn settle(pool: &PgPool) {
-    let sql = format!(
-        "SELECT
+    let sql = "SELECT
         (SELECT count(*)::int FROM jobs WHERE queue <> 'maint-none' AND (status = 'running' OR (status = 'queued' AND run_at <= now()))) AS pending,
-        (SELECT status = 'active' FROM subscriptions WHERE workspace_id = '{}') AS maintained,
-        (SELECT count(*)::int FROM service_heartbeats WHERE service = 'worker') AS beat",
-        uid(1012)
-    );
+        (SELECT count(*) = 0 FROM oauth_clients WHERE id = 'm-oc-stale') AS maintained,
+        (SELECT count(*)::int FROM service_heartbeats WHERE service = 'worker') AS beat";
     let end = tokio::time::Instant::now() + Duration::from_secs(90);
     let mut quiet = 0;
     while quiet < 5 {
         assert!(tokio::time::Instant::now() < end, "worker did not settle");
-        let (pending, maintained, beat): (i32, Option<bool>, i32) = sqlx::query_as(&sql).fetch_one(pool).await.expect("settle query");
+        let (pending, maintained, beat): (i32, Option<bool>, i32) = sqlx::query_as(sql).fetch_one(pool).await.expect("settle query");
         quiet = if pending == 0 && maintained == Some(true) && beat == 1 { quiet + 1 } else { 0 };
         tokio::time::sleep(Duration::from_millis(200)).await;
     }

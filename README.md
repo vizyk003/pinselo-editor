@@ -72,7 +72,7 @@ The backend and the editor engine are Rust ([ADR-0001](docs/adr/0001-rust-core.m
 | `crates/oc-text` | Text engine: pinned font registry, glyph fallback, paragraph layout, caret/selection geometry |
 | `crates/oc-render` | Page → display list; tiny-skia raster, SVG and krilla PDF writers (the same painter in the browser and on the server) |
 | `crates/oc-editor-core` | DOM-free editor engine: selection, gestures with snapping, crop, text editing, clipboard, grouping, pages |
-| `crates/oc-sheet`, `oc-color`, `oc-import` | Sheets (formulas, XLSX); colour management (ICC, CMYK); PowerPoint/PDF/Word import |
+| `crates/oc-color`, `oc-import` | Colour management (ICC, CMYK); PowerPoint/PDF/Word import |
 | `crates/oc-wasm` → `packages/engine` | The core compiled to WebAssembly and its typed TS facade (`@oc/engine`, the document types in `src/types`) |
 | `crates/oc-api` | HTTP API: sessions, designs, sharing/roles, uploads, templates, fonts, comments, versions, exports, `/v1`, the MCP connector |
 | `crates/oc-collab` | Real-time sync: the Hocuspocus 3 protocol over yrs, ticket auth, read-only roles, ack-after-persist, version snapshots |
@@ -94,7 +94,7 @@ Create a design from 28 size presets or a custom size, or from 188 original temp
 - **Pages and history:** multi-page designs with thumbnails, reorder, hide and speaker notes; undo/redo.
 - **Collaborate:** real-time co-editing with live cursors and selections, offline cache, comments with element pins, version history and restore, sharing by person or link (view/comment/edit).
 - **Output:** export to PNG/JPG/PDF/ZIP; resize the design; Present mode.
-- **More content:** 32 shapes, freehand draw (pen, marker, highlighter), tables with inline cell editing, charts (column, bar, line, area, pie, donut) with a data editor, sticky notes.
+- **More content:** 32 shapes, freehand draw (pen, marker, highlighter), tables with inline cell editing, charts (column, bar, line, area, pie, donut) with a data editor.
 - **Motion:** 10 entrance animations per element or per page, page transitions (fade, dissolve, slide, zoom), page durations, live preview. Present mode plays them, and **MP4 / GIF export** renders them on the server through ffmpeg.
 - **Exports:** PDFs carry an invisible, positioned text layer (selectable, searchable) and clickable links. SVG export keeps real `<text>` with embedded fonts.
 - **Brand kit:** colours, heading/subheading/body fonts and logos per workspace. Brand colours appear in every colour picker, plus one-click "apply brand fonts".
@@ -103,8 +103,7 @@ Create a design from 28 size presets or a custom size, or from 188 original temp
   - **Media:** upload video (MP4/MOV/WebM) and audio (MP3/M4A/WAV/OGG). The server makes an H.264/AAC proxy, a poster frame and waveform peaks; phone rotation is handled, and playback can seek.
   - **On the page:** video elements with trim, speed (0.25–3×), volume, mute, loop, rounded corners and "fill page". Elements get visibility windows, exit animations and motion paths.
   - **Timeline:** play/pause (Space), scrub, split the selected video or the whole page at the playhead (S), drag page durations, element timing and trim handles.
-  - **Soundtrack and captions:** soundtrack clips with waveforms, move/trim/split, volume and fades; beat sync that snaps page cuts to detected beats; a caption track (manual editing, styling, SRT/VTT download, auto captions through a local whisper.cpp).
-  - **Recording:** record yourself presenting (camera bubble, one segment per page) or record your screen.
+  - **Soundtrack and captions:** soundtrack clips with waveforms, move/trim/split, volume and fades; a caption track (manual editing, styling, SRT/VTT download).
   - **Export:** MP4 (720p/1080p/4K) with real video frames and the mixed audio, GIF, and audio-only M4A, all as background jobs with progress. Present mode plays video and the soundtrack.
 - **Accounts and security:**
   - **Sign-in:** password (scrypt), magic links, passkeys (WebAuthn), Google/Apple/any OIDC provider (PKCE), and TOTP two-step verification with recovery codes.
@@ -115,13 +114,8 @@ Create a design from 28 size presets or a custom size, or from 188 original temp
   - **Uploads:** a perceptual-hash gate against a blocklist.
   - **Reports:** a report button on public views, with a DMCA/DSA notice form; NCII/CSAM reports hide the public link immediately.
   - **Staff console:** a prioritised queue with takedown/remove/disable/restore actions and statements of reasons emailed to affected users, user enforcement, a job monitor and the audit-chain check.
-- **Plans and billing:**
-  - **Plans:** Free, Pro and Teams (per seat, from 3 people), monthly or yearly, with 30-day trials.
-  - **Limits enforced on the server:** premium templates (a third of the catalogue), storage quota, 4K export, version-history window and team seat caps. Hitting one shows an upgrade prompt.
-  - **Payments:** Stripe Checkout, the Customer Portal and signed, idempotent webhooks when `OC_STRIPE_SECRET_KEY` (and `OC_STRIPE_PRICE_*`, `OC_STRIPE_WEBHOOK_SECRET`) are set. Without them, a local provider activates plans with no charge (development only).
-  - **Billing pages:** a pricing page, Settings → Billing (usage, invoices, cancel/resume, seats).
 - **Legal and consent:** Terms, Privacy, Cookies, Acceptable Use, IP notices and Subprocessors pages (templates — have counsel review them), and a cookie banner with equal-weight choices that you can change any time.
-- **Analytics:** first-party and consent-gated: client events are batched to `/api/events` and checked against an allowlist; server-side events are anonymous without consent. Staff see a dashboard with daily actives, sign-ups, designs, exports, the activation funnel and paid plans.
+- **Analytics:** first-party and consent-gated: client events are batched to `/api/events` and checked against an allowlist; server-side events are anonymous without consent. Staff see a dashboard with daily actives, sign-ups, designs, exports and the activation funnel.
 - **Help and status:**
   - **Help centre:** searchable articles at `/help`, a contact form that suggests articles, and ticket threads at `/help/requests`. Staff reply from the console, and replies are emailed.
   - **Status page:** a public page at `/status` built from service heartbeats and the database check, with staff-published incidents and updates.
@@ -130,8 +124,8 @@ Create a design from 28 size presets or a custom size, or from 188 original temp
 
 - **Editor power tools:** shrink-to-fit and curved text, a position panel, rulers and guides, spacing guides, Alt-drag duplicate, copy/paste style, find & replace, connectors that follow their shapes, photo grids, an eyedropper, 20 filters plus duotone, blend modes, alt text and a page grid view.
 - **Content:** a template studio (publish team templates), Noto emoji and stickers, a searchable graphics & icon library (~12k open-licence icons from Lucide, Tabler and Phosphor plus illustrations and original decorative graphics; `pnpm graphics:sync`) with non-destructive SVG recolouring, animated GIFs (stored as looping video), custom font upload, 185 bundled font families, and stock media from Openverse by default (Unsplash, Pexels, Pixabay and GIPHY with keys) with automatic credits.
-- **Exports and imports:** vector PDF with embedded fonts, print PDF with bleed and crop marks, PPTX export and import, PDF import (editable text over a background), and HTML email export.
-- **Design types:** whiteboards that grow as you draw, Docs (rich text, real-time, convert to a paginated design), websites (publish to a URL or a custom domain with automatic TLS), forms that collect responses (CSV export), and bulk create from CSV.
+- **Exports and imports:** vector PDF with embedded fonts, print PDF with bleed and crop marks, PPTX export and import, and PDF import (editable text over a background).
+- **Design types:** Docs (rich text, real-time, convert to a paginated design), websites (publish to a URL or a custom domain with automatic TLS), forms that collect responses (CSV export), and bulk create from CSV.
 - **Public API and webhooks:** personal access tokens with scopes (Settings → Developers), `/v1` REST endpoints for designs, autofill, exports and assets, an OpenAPI document at `/v1/openapi.json`, and signed webhooks (`OC-Signature`) with retries and delivery logs.
 - **Languages:** the whole UI and the emails are available in English, Spanish, French, German, Brazilian Portuguese, Italian, Japanese, Simplified Chinese and Arabic (right-to-left). The account language is used in emails. `pnpm i18n:check` reports missing strings.
 - **Accessibility:** a screen-reader outline of the canvas, live announcements of selection and edits, full keyboard editing, and an accessibility checker (alt text, contrast, small text, link names, document language).
@@ -154,14 +148,13 @@ Create a design from 28 size presets or a custom size, or from 188 original temp
 - **Templates and fonts:** 188 original templates across all 27 size categories (CC0/Unsplash-licensed photos, Google Fonts, Noto art), the full Google Fonts catalogue (1,950 families, fetched on demand and pinned so every service renders identically) and automatic glyph fallback for emoji and every script, in the editor and in PDFs.
 - **Graphics:** 12,000+ searchable icons and graphics (Lucide, Tabler, Phosphor, Gravity UI, originals) with per-colour recolouring; 66 shapes, 12 line ends, 72 frames (devices, letters, polaroid…) that also hold video.
 - **Motion and presenting:** 18 entrance presets with direction/intensity, text by line/word/letter, looping emphasis, keyframes (position, scale, rotation, opacity, blur) with a record mode, 14 page transitions; click builds, autoplay/loop, laser pointer and blank screen in Present mode.
-- **Data:** 16 chart types with number formats and CSV paste; Sheets (formulas, formatting, real-time, XLSX/CSV) with charts linked to sheet ranges; tables with merged and rich-text cells.
-- **Workflow:** comments as tasks with due dates and reactions, team folders, access requests, ownership transfer, expiring/password view links, brand kits/templates/controls and approvals, a content planner that publishes to 9 networks (or emails a reminder), and print ordering (Gelato/Printful or a local print-ready file).
-- **More surfaces:** whiteboard facilitation (timer, voting, sections, mind maps, follow/spotlight, reactions), Docs with design/chart blocks and DOCX/Markdown export and import, websites with mobile reflow, link-in-bio and privacy-friendly insights, and embeds (YouTube, Vimeo, Spotify, SoundCloud, Maps, Loom, Figma, CodePen).
+- **Data:** 16 chart types with number formats and CSV paste; tables with merged and rich-text cells.
+- **Workflow:** comments as tasks with due dates and reactions, team folders, access requests, ownership transfer, expiring/password view links, brand kits/templates/controls, and a content planner that publishes to 9 networks (or emails a reminder).
+- **More surfaces:** Docs with design/chart blocks and DOCX/Markdown export and import, websites with mobile reflow and link-in-bio, and embeds (YouTube, Vimeo, Spotify, SoundCloud, Maps, Loom, Figma, CodePen).
 - **Editing comfort:** Styles panel (palettes, font sets, replace colour everywhere), "/" command palette, familiar keyboard shortcuts, photo tone/detail controls and auto-enhance, video filters.
 
 ## Limitations
 
-- **Auto captions** need whisper.cpp installed locally (`OC_WHISPER_CMD`, `OC_WHISPER_MODEL`); without it, captions are manual.
 - **Not built yet:** image and video AI (background removal, text-to-image/video, video background removal), stock video and music, automated image classifiers, and a desktop app. Native iOS/Android projects are generated from `apps/mobile` with `pnpm --filter @oc/mobile add:ios`/`add:android`.
 
 ## Contributing
@@ -174,7 +167,7 @@ Pinselo contains code under two licenses. Each source file's SPDX header says wh
 
 | Code | License |
 |---|---|
-| `apps/web`, `apps/mobile`, `packages/*`, `crates/oc-sheet` and the sheet code in `crates/oc-wasm` | [AGPL-3.0-only](LICENSE) |
+| `apps/web`, `apps/mobile` and `packages/*` | [AGPL-3.0-only](LICENSE) |
 | The other Rust crates | [Apache-2.0](LICENSE-APACHE) |
 | `crates/vendor/krilla`, a patched third-party library | MIT or Apache-2.0; see its [notice](crates/vendor/krilla/NOTICE.md) and [patch list](crates/vendor/krilla/PATCHES.md) |
 

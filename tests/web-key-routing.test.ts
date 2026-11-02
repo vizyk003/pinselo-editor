@@ -61,20 +61,19 @@ describe('canvas Tab / Enter (A11Y-01: no keyboard trap)', async () => {
   const k = (key: string, shiftKey = false, m: { meta?: boolean } = {}) => ({ key, shiftKey, metaKey: Boolean(m.meta), ctrlKey: false, altKey: false });
   const sib = ['a', 'b', 'c'];
   it('nothing selected: Tab and Shift+Tab leave the canvas, Enter enters', () => {
-    expect(canvasTabAction(k('Tab'), { selection: [], siblings: sib, whiteboard: false })).toBe('native');
-    expect(canvasTabAction(k('Tab', true), { selection: [], siblings: sib, whiteboard: false })).toBe('native');
-    expect(canvasTabAction(k('Enter'), { selection: [], siblings: sib, whiteboard: false })).toBe('enter');
-    expect(canvasTabAction(k('Enter'), { selection: [], siblings: [], whiteboard: false })).toBeNull();
+    expect(canvasTabAction(k('Tab'), { selection: [], siblings: sib })).toBe('native');
+    expect(canvasTabAction(k('Tab', true), { selection: [], siblings: sib })).toBe('native');
+    expect(canvasTabAction(k('Enter'), { selection: [], siblings: sib })).toBe('enter');
+    expect(canvasTabAction(k('Enter'), { selection: [], siblings: [] })).toBeNull();
   });
   it('a selection: Tab cycles, past either end it leaves instead of wrapping', () => {
-    expect(canvasTabAction(k('Tab'), { selection: ['a'], siblings: sib, whiteboard: false })).toBe('editor');
-    expect(canvasTabAction(k('Tab'), { selection: ['c'], siblings: sib, whiteboard: false })).toBe('leave');
-    expect(canvasTabAction(k('Tab', true), { selection: ['b'], siblings: sib, whiteboard: false })).toBe('editor');
-    expect(canvasTabAction(k('Tab', true), { selection: ['a'], siblings: sib, whiteboard: false })).toBe('leave');
-    expect(canvasTabAction(k('Enter'), { selection: ['a'], siblings: sib, whiteboard: false })).toBeNull();
+    expect(canvasTabAction(k('Tab'), { selection: ['a'], siblings: sib })).toBe('editor');
+    expect(canvasTabAction(k('Tab'), { selection: ['c'], siblings: sib })).toBe('leave');
+    expect(canvasTabAction(k('Tab', true), { selection: ['b'], siblings: sib })).toBe('editor');
+    expect(canvasTabAction(k('Tab', true), { selection: ['a'], siblings: sib })).toBe('leave');
+    expect(canvasTabAction(k('Enter'), { selection: ['a'], siblings: sib })).toBeNull();
   });
-  it('whiteboards keep Tab = mind-map child; modified keys are not handled here', () => {
-    expect(canvasTabAction(k('Tab'), { selection: ['c'], siblings: sib, whiteboard: true })).toBe('editor');
-    expect(canvasTabAction(k('Tab', false, { meta: true }), { selection: ['a'], siblings: sib, whiteboard: false })).toBeNull();
+  it('modified keys are not handled here', () => {
+    expect(canvasTabAction(k('Tab', false, { meta: true }), { selection: ['a'], siblings: sib })).toBeNull();
   });
 });

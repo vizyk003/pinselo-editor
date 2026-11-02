@@ -8,7 +8,7 @@ import {
   pxToUnit, searchPresets, tryNewPresets, unitToPx, type PresetCategoryId, type SizePreset, type Unit,
 } from '@oc/engine';
 import {
-  ArrowLeftRight, Clapperboard, FileText, Globe, LayoutTemplate, Lightbulb, Lock, Megaphone, PenLine, Presentation, Printer, Ruler, Smartphone, Unlock,
+  ArrowLeftRight, Clapperboard, FileText, Globe, LayoutTemplate, Lightbulb, Lock, Megaphone, Presentation, Printer, Ruler, Smartphone, Unlock,
 } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router';
@@ -20,13 +20,12 @@ import { t } from '../../i18n';
 const CATEGORY_ICONS: Record<PresetCategoryId, ReactNode> = {
   suggestions: <Lightbulb size={16} />, social: <Smartphone size={16} />, video: <Clapperboard size={16} />, presentations: <Presentation size={16} />,
   print: <Printer size={16} />, documents: <FileText size={16} />, web: <Globe size={16} />, marketing: <Megaphone size={16} />,
-  whiteboard: <PenLine size={16} />, custom: <Ruler size={16} />,
+  custom: <Ruler size={16} />,
 };
 
 /** Quick actions under Suggestions: one-click starts of each kind of design. */
 const QUICK_ACTIONS: Array<{ preset: string; icon: ReactNode }> = [
   { preset: 'doc', icon: <FileText size={18} /> },
-  { preset: 'whiteboard', icon: <PenLine size={18} /> },
   { preset: 'presentation', icon: <Presentation size={18} /> },
   { preset: 'video', icon: <Clapperboard size={18} /> },
   { preset: 'ig-post', icon: <Smartphone size={18} /> },

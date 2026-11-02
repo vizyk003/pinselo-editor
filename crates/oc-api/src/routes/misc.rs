@@ -9,7 +9,6 @@ use axum::response::{IntoResponse, Response};
 use oc_auth::Role;
 
 use crate::auth::{at_least, current_user, design_role, parse_role, personal_workspace};
-use crate::billing::{self, Feature};
 use crate::js;
 use crate::prelude::*;
 use crate::routes::brand::notify;
@@ -162,7 +161,7 @@ async fn font_file(State(s): State<AppState>, Path(rel): Path<String>, _req: Req
 
 /// Public catalogue plus team (brand) templates of the viewer's workspaces (`$1` = viewer id or null).
 const VISIBLE: &str = "(workspace_id IS NULL OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))";
-const SUMMARY_COLS: &str = r#"id, title, category, preset, tags, width, height, premium, workspace_id IS NOT NULL AS team, brand, workspace_id AS "workspaceId", version"#;
+const SUMMARY_COLS: &str = r#"id, title, category, preset, tags, width, height, workspace_id IS NOT NULL AS team, brand, workspace_id AS "workspaceId", version"#;
 
 async fn templates(State(s): State<AppState>, req: Req) -> ApiResult {
     let q = z::obj([
@@ -216,7 +215,7 @@ async fn template_preview(State(s): State<AppState>, Path(id): Path<String>, req
     let viewer = current_user(&s, &req).await?.map(|u| u.id);
     let t = pg::json_one(
         &s.pool,
-        r#"SELECT t.id, t.title, t.category, t.preset, t.tags, t.width, t.height, t.premium, t.workspace_id IS NOT NULL AS team, t.brand, t.workspace_id AS "workspaceId",
+        r#"SELECT t.id, t.title, t.category, t.preset, t.tags, t.width, t.height, t.workspace_id IS NOT NULL AS team, t.brand, t.workspace_id AS "workspaceId",
               t.description, t.uses, u.name AS creator, CASE WHEN w.personal THEN NULL ELSE w.name END AS "teamName", t.doc,
               (t.workspace_id IS NULL OR t.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2)) AS visible
        FROM templates t LEFT JOIN users u ON u.id = t.created_by LEFT JOIN workspaces w ON w.id = t.workspace_id
@@ -225,15 +224,6 @@ async fn template_preview(State(s): State<AppState>, Path(id): Path<String>, req
     )
     .await?;
     let Some(Value::Object(mut t)) = t.filter(|t| t["visible"] == json!(true)) else { return Ok(not_found()) };
-    // The page designs are only sent when the viewer may use the template; otherwise the dialog shows the
-    // catalogue thumbnail.
-    let premium = t["premium"] == json!(true);
-    let usable = !premium
-        || !billing::plans_enabled(&s)
-        || match viewer {
-            Some(v) => billing::entitlements_of(&s, v).await?.0.premium_templates,
-            None => false,
-        };
     let doc = t.remove("doc").unwrap_or(Value::Null);
     t.remove("visible");
     let pages_obj = doc.get("pages").and_then(Value::as_object).ok_or_else(|| ApiError::internal("TypeError: Cannot convert undefined or null to object"))?;
@@ -254,11 +244,11 @@ async fn template_preview(State(s): State<AppState>, Path(id): Path<String>, req
     t.insert("pages".into(), json!(pages));
     t.insert("surface".into(), doc.pointer("/meta/surface").cloned().unwrap_or(Value::Null));
     t.insert("unit".into(), doc.pointer("/meta/dims/unit").cloned().unwrap_or(Value::Null));
-    Ok(Reply::json(json!({ "template": Value::Object(t), "doc": if usable { doc } else { Value::Null }, "locked": !usable, "similar": similar })))
+    Ok(Reply::json(json!({ "template": Value::Object(t), "doc": doc, "similar": similar })))
 }
 
 async fn template(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
-    let t = pg::json_one(&s.pool, "SELECT id, title, category, preset, doc, premium, workspace_id FROM templates WHERE id = $1 AND published", &[pg::text(&id)]).await?;
+    let t = pg::json_one(&s.pool, "SELECT id, title, category, preset, doc, workspace_id FROM templates WHERE id = $1 AND published", &[pg::text(&id)]).await?;
     let Some(t) = t else { return Ok(not_found()) };
     if let Some(ws) = t["workspace_id"].as_str() {
         let u = current_user(&s, &req).await?;
@@ -269,12 +259,6 @@ async fn template(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
         if !member {
             return Ok(not_found());
         }
-    }
-    if t["premium"] == json!(true) && billing::plans_enabled(&s) {
-        let Some(u) = current_user(&s, &req).await? else {
-            return Ok(reply::json(401, json!({ "error": "unauthenticated" })));
-        };
-        billing::require_feature(&s, u.id, Feature::PremiumTemplates, "This is a premium template. Upgrade to Pro to use it.").await?;
     }
     Ok(Reply::json(json!({ "template": t })))
 }

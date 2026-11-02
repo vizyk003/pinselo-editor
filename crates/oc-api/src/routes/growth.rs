@@ -33,7 +33,7 @@ const COMPONENTS: [(&str, &str); 6] = [
     ("database", "Storage"),
 ];
 
-const TOPICS: [&str; 8] = ["account", "billing", "editor", "export", "collaboration", "bug", "feature", "other"];
+const TOPICS: [&str; 7] = ["account", "editor", "export", "collaboration", "bug", "feature", "other"];
 
 async fn decision(s: &AppState, to: &str, subject: String, body: String) -> Result<(), ApiError> {
     oc_mail::send_email(&s.pool, to, &oc_mail::Template::Decision { subject, body }, None).await?;
@@ -253,18 +253,16 @@ async fn admin_analytics(State(s): State<AppState>, req: Req) -> ApiResult {
         std::slice::from_ref(&d),
     )
     .await?;
-    let plans = pg::json_rows(&s.pool, "SELECT plan, status, count(*)::int AS n, sum(seats)::int AS seats FROM subscriptions WHERE status IN ('active','trialing','past_due') GROUP BY plan, status", &[]).await?;
     let funnel = pg::json_one(
         &s.pool,
         "SELECT
            (SELECT count(*)::int FROM users WHERE created_at > now() - make_interval(days => $1::int)) AS signed_up,
            (SELECT count(DISTINCT owner_id)::int FROM designs WHERE created_at > now() - make_interval(days => $1::int)) AS created_design,
-           (SELECT count(DISTINCT owner_id)::int FROM jobs WHERE queue = 'export' AND created_at > now() - make_interval(days => $1::int)) AS exported,
-           (SELECT count(*)::int FROM subscriptions WHERE plan <> 'free' AND updated_at > now() - make_interval(days => $1::int)) AS upgraded",
+           (SELECT count(DISTINCT owner_id)::int FROM jobs WHERE queue = 'export' AND created_at > now() - make_interval(days => $1::int)) AS exported",
         &[d],
     )
     .await?;
-    Ok(Reply::json(json!({ "daily": daily, "events": events, "plans": plans, "funnel": funnel })))
+    Ok(Reply::json(json!({ "daily": daily, "events": events, "funnel": funnel })))
 }
 
 async fn admin_support(State(s): State<AppState>, req: Req) -> ApiResult {

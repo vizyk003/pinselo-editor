@@ -17,7 +17,6 @@ use axum::response::Response;
 use regex::Regex;
 use serde_json::Map;
 
-use crate::billing;
 use crate::hash_match::{self, HashVerdict};
 use crate::http::multipart;
 use crate::js;
@@ -252,10 +251,9 @@ pub async fn ingest_file(s: &AppState, src: &FsPath, dir: &FsPath, o: IngestOpts
     }
     if !o.skip_quota {
         let used: String = sqlx::query_scalar("SELECT coalesce(sum(bytes),0)::text AS total FROM assets WHERE owner_id = $1 AND trashed_at IS NULL").bind(o.owner_id).fetch_one(&s.pool).await?;
-        let quota = billing::entitlements_of(s, o.owner_id).await?.0.storage_bytes;
+        let quota = s.cfg.upload_quota;
         if used.parse::<f64>().unwrap_or(0.0) + size as f64 > quota as f64 {
-            let tail = if billing::plans_enabled(s) { " or upgrade for more" } else { " to make room" };
-            return err(402, "upgrade_required", Some(format!("You’ve used all {} GB of your storage. Delete uploads{tail}.", js::num(js::round(quota as f64 / 1024f64.powi(3))))));
+            return err(402, "upgrade_required", Some(format!("You’ve used all {} GB of your storage. Delete uploads to make room.", js::num(js::round(quota as f64 / 1024f64.powi(3))))));
         }
     }
     let id = oc_schema::ids::new_id();
@@ -531,7 +529,7 @@ async fn list(State(s): State<AppState>, req: Req) -> ApiResult {
     let rows = pg::json_rows(&s.pool, &l.sql, &l.params).await?;
     let c = upload_counts(&s, &uploads::upload_counts_sql(u.id, &p, false)).await?;
     let used = used_bytes(&s, u.id).await?;
-    let quota = billing::entitlements_of(&s, u.id).await?.0.storage_bytes;
+    let quota = s.cfg.upload_quota;
     let used = crate::http::jsjson::number_value(used).unwrap_or(json!(0));
     let total = c.get(p["type"].as_str().unwrap_or("all")).cloned().unwrap_or(Value::Null);
     Ok(Reply::json(json!({ "assets": rows, "usedBytes": used, "quotaBytes": quota, "total": total, "counts": c })))
@@ -586,10 +584,9 @@ async fn run_batch(s: &AppState, uid: Uuid, action: &str, ids: &[String]) -> Res
         let adding: Option<String> = pg::one(&s.pool, &format!("SELECT total::text FROM ({}) t", add.sql), &add.params).await?.map(|r| sqlx::Row::get(&r, 0));
         let extra = adding.and_then(|a| a.parse::<f64>().ok()).unwrap_or(0.0);
         let used = used_bytes(s, uid).await?;
-        let quota = billing::entitlements_of(s, uid).await?.0.storage_bytes;
+        let quota = s.cfg.upload_quota;
         if extra > 0.0 && used + extra > quota as f64 {
-            let tail = if billing::plans_enabled(s) { " or upgrade for more" } else { " to make room" };
-            let message = format!("Restoring would go over your {} GB of storage. Delete uploads{tail}.", js::num(js::round(quota as f64 / 1024f64.powi(3))));
+            let message = format!("Restoring would go over your {} GB of storage. Delete uploads to make room.", js::num(js::round(quota as f64 / 1024f64.powi(3))));
             return Ok(Err(reply::json(402, json!({ "error": "upgrade_required", "message": message }))));
         }
     }

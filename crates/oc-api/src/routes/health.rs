@@ -17,6 +17,5 @@ async fn config(State(s): State<AppState>, _req: Req) -> ApiResult {
         "assetOrigin": s.cfg.usercontent_origin,
         "brand": s.cfg.brand.name,
         "env": if s.prod() { "production" } else { "development" },
-        "plans": crate::billing::plans_enabled(&s),
     })))
 }

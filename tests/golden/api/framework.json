@@ -39,8 +39,7 @@
     "body": {
      "assetOrigin": "",
      "brand": "Pinselo",
-     "env": "development",
-     "plans": false
+     "env": "development"
     },
     "headers": {
      "cache-control": "no-store",

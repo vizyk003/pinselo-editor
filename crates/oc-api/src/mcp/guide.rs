@@ -11,7 +11,7 @@ const GUIDE: &str = r#"# Designing in {brand}
 - A design has pages of one size (get_design → size). Every element has a page-space box x, y, w, h in px (96 dpi), measured from the page's top-left. Rotation is in degrees around the box centre.
 - Elements are stacked bottom to top in the order get_design lists them; new elements go on top. Use reorder to change it.
 - Types: text, shape, line, image, frame (a photo placeholder with a clip shape), group, table, chart, qr, video, embed.
-- Locked elements ("locked": "brand") belong to a brand template; you cannot move or change them.
+- Locked elements ("locked": true) were locked by the user; you cannot move or change them.
 
 ## Editing (edit_design)
 - Send all the changes for a step in one call; they apply in order as one change. Give new elements a "ref" and use "$ref" later in the same call (for example to group, arrange or align what you just added).

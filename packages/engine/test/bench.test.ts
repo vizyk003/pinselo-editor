@@ -18,7 +18,7 @@
 import * as Y from 'yjs';
 import { describe, expect, test } from 'vitest';
 import {
-  Editor, SheetEngine, displayRows, encodeDesign, fmtAt, formatValue, initSheet, makeShape, setRaw, sheetRoot, sortedPages, type DesignDoc, type Mods, type Vec2,
+  Editor, encodeDesign, makeShape, sortedPages, type DesignDoc, type Mods, type Vec2,
 } from '../src/index';
 import { fixture } from './helpers';
 
@@ -109,28 +109,5 @@ describe('boundary micro-benchmarks', () => {
       ed.destroy();
     }
     expect(Math.min(...frames)).toBeGreaterThan(120);
-  });
-
-  test('sheet grid read and cell edits', () => {
-    const d = new Y.Doc();
-    initSheet(d, { rows: 200, cols: 26 });
-    const e = new SheetEngine(sheetRoot(d));
-    const t = () => e.tabs[0]!;
-    d.transact(() => {
-      for (let r = 0; r < 200; r++) for (let c = 0; c < 10; c++) setRaw(t(), r, c, c === 9 ? `=SUM(A${r + 1}:I${r + 1})` : String(r * c));
-    });
-    const view = { r0: 0, c0: 0, r1: 49, c1: 19 }; // a 50 × 20 viewport = 1,000 cells
-    const rows = best(3, {
-      'grid 1,000 cells: value + kind + formatValue per cell': () => rate(20, () => {
-        for (let r = view.r0; r <= view.r1; r++) for (let c = view.c0; c <= view.c1; c++) {
-          const v = e.value(t().id, r, c);
-          formatValue(v, fmtAt(t(), r, c), typeof v === 'number' ? e.kind(t().id, r, c) : 'other');
-        }
-      }, 5),
-      'grid 1,000 cells: displayRows (one call)': () => rate(200, () => displayRows(e, t(), view), 20),
-      'cell edit (setRaw + recalc + yjs update)': () => rate(500, (i) => d.transact(() => setRaw(t(), i % 200, 0, String(i)))),
-    });
-    print('sheet (200 × 10 values, a SUM per row):', rows);
-    e.destroy();
   });
 });

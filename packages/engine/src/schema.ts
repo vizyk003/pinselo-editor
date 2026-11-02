@@ -145,16 +145,11 @@ export const formatDims: typeof S.formatDims = (w, h, unit) => raw.formatDims(w,
 
 // ------------------------------------------------------------------ print
 
-export const expectedPages: typeof S.expectedPages = (p, picked) => raw.expectedPages(p, picked);
-export const preflightTargetFor: typeof S.preflightTargetFor = (p, sizeId, options = {}) => raw.preflightTargetFor(p, sizeId, options);
 export const standalonePrintTarget: typeof S.standalonePrintTarget = (doc) => raw.standalonePrintTarget(docRef(doc));
 export const preflightPrint: typeof S.preflightPrint = (doc, target, opts = {}) =>
   raw.preflightPrint(docRef(doc), target, opts.availableFonts, opts.outOfGamut);
 export const printColors: typeof S.printColors = (doc, max = 512) => raw.printColors(docRef(doc), max);
 export const printColorKey: typeof S.printColorKey = (c) => raw.printColorKey(c);
-export const quotePrint: typeof S.quotePrint = (catalog, sel, dest = {}, shippingMethod, currency) =>
-  raw.quotePrint(catalog, sel, dest, shippingMethod, currency ?? (catalog.currency || 'usd'));
-export const validateAddress: typeof S.validateAddress = (a, countries) => raw.validateAddress(a, countries ? [...countries] : undefined);
 
 // ------------------------------------------------------------------ docs, embeds, svg, keyframes
 

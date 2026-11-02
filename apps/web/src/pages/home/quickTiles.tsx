@@ -4,8 +4,8 @@
  */
 import { formatDims, PRESET_CATEGORIES, SIZE_PRESETS, type PresetCategoryId, type SizePreset } from '@oc/engine';
 import {
-  ChevronDown, Clapperboard, FileText, Globe, Image as ImageIcon, Mail, MoreHorizontal, PenLine, Plus, Presentation, Printer,
-  Sheet, Smartphone, Upload,
+  ChevronDown, Clapperboard, FileText, Globe, Image as ImageIcon, MoreHorizontal, Plus, Presentation, Printer,
+  Smartphone, Upload,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { PopoverButton, useScrollFade } from '../../components/ui';
@@ -29,10 +29,7 @@ export const QUICK_TILES: QuickTile[] = [
   { id: 'social', label: tk('Social media'), preset: 'ig-post', group: 'Social media', icon: <Smartphone size={22} /> },
   { id: 'video', label: tk('Video'), preset: 'video', group: 'Video', icon: <Clapperboard size={22} /> },
   { id: 'doc', label: tk('Doc'), preset: 'doc', group: 'Documents', icon: <FileText size={22} /> },
-  { id: 'whiteboard', label: tk('Whiteboard'), preset: 'whiteboard', icon: <PenLine size={22} /> },
-  { id: 'sheet', label: tk('Sheet'), preset: 'sheet', icon: <Sheet size={22} /> },
   { id: 'website', label: tk('Website'), preset: 'website', group: 'Web', icon: <Globe size={22} /> },
-  { id: 'email', label: tk('Email'), preset: 'email', icon: <Mail size={22} /> },
   { id: 'print', label: tk('Print'), preset: 'poster', group: 'Print', icon: <Printer size={22} /> },
   { id: 'photo', label: tk('Photo editor'), action: 'photo', icon: <ImageIcon size={22} /> },
   { id: 'custom', label: tk('Custom size'), action: 'custom', icon: <Plus size={22} /> },

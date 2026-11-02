@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! The service's state and data access — port of the non-route half of `services/render/src/main.ts` and of
 //! `docExport.ts`: asset bytes (with the sha cache, posters, recoloured SVGs and pictures generated during an
-//! export), uploaded fonts, document loading (Yjs state via oc-crdt; Docs laid out onto pages, Sheets paginated,
-//! linked charts refreshed), and the Docs embeds/charts/Word/Markdown wiring.
+//! export), uploaded fonts, document loading (Yjs state via oc-crdt; Docs laid out onto pages), and the Docs embeds/charts/Word/Markdown wiring.
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -73,6 +72,8 @@ pub enum SvcError {
     Storage(String),
     #[error("{0}")]
     Other(String),
+    #[error("Sheets are no longer supported, so this design can't be exported.")]
+    SheetUnsupported,
 }
 
 impl From<LayoutError> for SvcError {
@@ -457,8 +458,8 @@ impl Service {
         Ok(row.filter(|r| r.2 == "doc").map(|r| (r.0, r.1)))
     }
 
-    /// `loadDoc(designId, { embeds, generated })`: the design to draw. Docs are laid out onto pages, Sheets
-    /// paginated into table pages, linked charts re-resolved from their source sheet.
+    /// `loadDoc(designId, { embeds, generated })`: the design to draw. Docs are laid out onto pages; sheets can no
+    /// longer be drawn.
     pub fn load_doc<'a>(
         &'a self,
         design_id: &'a str,
@@ -469,7 +470,7 @@ impl Service {
             let Some(state) = self.state(design_id).await? else {
                 return Ok(None);
             };
-            let mut doc =
+            let doc =
                 oc_crdt::decode_doc(&state).map_err(|e| SvcError::Other(e.to_string()))?;
             match doc.meta.surface.as_str() {
                 "doc" => {
@@ -491,51 +492,9 @@ impl Service {
                     .await?;
                     return Ok(Some(d));
                 }
-                "sheet" => {
-                    let engine = oc_sheet::linked::open_sheet_state(
-                        &state,
-                        Box::new(oc_sheet::formula::workbook::SystemHost),
-                    );
-                    let opts = oc_sheet::table::SheetLayoutOpts {
-                        title: doc.meta.title.clone(),
-                        w: doc.meta.dims.w,
-                        h: doc.meta.dims.h,
-                        margin: None,
-                        max_pages: None,
-                        tabs: None,
-                    };
-                    return Ok(Some(oc_sheet::table::sheet_to_design(&engine, &opts)));
-                }
+                "sheet" => return Err(SvcError::SheetUnsupported),
                 _ => {}
             }
-            // Linked charts (A15): re-resolve their data from the source sheet (same workspace only).
-            let mut sources: Vec<String> = Vec::new();
-            for e in doc.elements.values() {
-                if let Element::Chart(c) = e
-                    && let Some(s) = &c.source
-                    && !sources.contains(&s.design_id)
-                {
-                    sources.push(s.design_id.clone());
-                }
-            }
-            let mut states: HashMap<String, Vec<u8>> = HashMap::new();
-            for src in sources {
-                let row: Result<Option<(Vec<u8>,)>, _> = sqlx::query_as(
-                    "SELECT s.state FROM doc_state s JOIN designs src ON src.id = s.design_id JOIN designs d ON d.id = $2 WHERE s.design_id = $1 AND src.workspace_id = d.workspace_id AND src.surface = 'sheet'",
-                )
-                .bind(&src)
-                .bind(design_id)
-                .fetch_optional(&self.pool)
-                .await;
-                if let Ok(Some((s,))) = row {
-                    states.insert(src, s);
-                }
-            }
-            oc_sheet::linked::resolve_linked_charts(
-                &mut doc,
-                |id| states.get(id).cloned(),
-                || Box::new(oc_sheet::formula::workbook::SystemHost),
-            );
             Ok(Some(doc))
         })
     }

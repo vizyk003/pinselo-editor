@@ -8,7 +8,6 @@ use oc_auth::Role;
 use serde_json::Map;
 
 use crate::auth::{design_role, hash_password, personal_workspace, verify_password};
-use crate::brandhub;
 use crate::prelude::*;
 use crate::routes::{brandhub as brandhub_routes, designs};
 
@@ -169,9 +168,6 @@ async fn set_public(State(s): State<AppState>, Path(id): Path<String>, req: Req)
         return Ok(reply::json(403, json!({ "error": "forbidden" })));
     }
     let enabled = b["enabled"].as_bool().unwrap_or(false);
-    if enabled && let Some(gate) = brandhub::approval_gate(&s, u.id, &id).await? {
-        return Ok(reply::json(403, gate)); // brand approvals (A8)
-    }
     sqlx::query("UPDATE designs SET public_view = $2 WHERE id = $1").bind(&id).bind(enabled).execute(&s.pool).await?;
     if let Some(e) = b.get("expiresAt") {
         sqlx::query("UPDATE designs SET public_expires_at = $2::timestamptz WHERE id = $1").bind(&id).bind(e.as_str()).execute(&s.pool).await?;

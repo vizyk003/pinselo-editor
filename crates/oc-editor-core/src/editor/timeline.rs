@@ -369,33 +369,6 @@ impl Editor {
         self.set_audio(next, false);
     }
 
-    /// Beat sync: snap page boundaries to the nearest detected beats (MV-032). Returns the number of pages set.
-    pub fn sync_pages_to_beats(&mut self, beats_ms: &[f64]) -> usize {
-        let doc = self.doc();
-        let spans = timeline_of(&doc.doc, false).spans;
-        if spans.len() < 2 || beats_ms.len() < 2 {
-            return 0;
-        }
-        let mut ops = Vec::new();
-        let mut prev_end = 0.0;
-        let n = spans.len();
-        for (i, sp) in spans.iter().enumerate() {
-            let end = sp.start_ms + sp.duration_ms;
-            let nearest = beats_ms.iter().copied().filter(|x| *x > prev_end + 500.0).fold(None, |b: Option<f64>, x| match b {
-                None => Some(x),
-                Some(b) if (x - end).abs() < (b - end).abs() => Some(x),
-                b => b,
-            });
-            let target = if i == n - 1 { end } else { nearest.unwrap_or(end) };
-            let d = max(500.0, round(target - prev_end));
-            ops.push(op_page_update(&sp.page.id, one("durationMs", num(d))));
-            prev_end += d;
-        }
-        let k = ops.len();
-        self.apply(ops, false);
-        k
-    }
-
     // ---- captions (meta.captions)
 
     /// The caption track (JSON `CaptionTrack`; a default one when the design has none).

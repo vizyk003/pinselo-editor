@@ -210,7 +210,7 @@ function TrashList({ items, view, onRestore, onDelete, onEmpty, emptyConfirm, mo
       await fn();
       if (!keepSelection) setSelected(new Set());
     } catch (e) {
-      // A plan limit already shows the upgrade prompt.
+      // The storage limit already shows its notice.
       if (!(e instanceof ApiError && e.status === 402)) toast(t('Couldn’t complete that. Try again.'));
     } finally {
       setBusy(false);
