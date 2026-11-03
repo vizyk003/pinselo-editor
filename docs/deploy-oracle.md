@@ -1,12 +1,13 @@
 # Deploying on Oracle Cloud's free server
 
-Pinselo on one **Oracle Cloud "Always Free" ARM server**, with **Supabase** for the database and file storage.
-The server runs the Rust services and the Caddy gateway from prebuilt ARM64 images; it never compiles anything.
+Pinselo on one **Oracle Cloud "Always Free" ARM server**, with its own Postgres and **Supabase** for file storage.
+The server runs the Rust services, the database and the Caddy gateway from prebuilt ARM64 images; it never compiles
+anything.
 
 | Part | Where | Cost |
 |---|---|---|
-| api, collab, render, worker, gateway | Oracle Always Free Ampere A1 VM (2 OCPU, 12 GB) | free |
-| Database, file storage | Supabase free plan ([supabase.md](supabase.md)) | free |
+| api, collab, render, worker, gateway, database | Oracle Always Free Ampere A1 VM (2 OCPU, 12 GB) | free |
+| File storage | Supabase free plan ([supabase.md](supabase.md)) | free |
 | Images | GitHub container registry, built by `.github/workflows/images.yml` | free (plan minutes) |
 | A domain name | any registrar | about €1–12 a year |
 | Email (sign-in links, invites) | an SMTP provider with a free tier | free |
@@ -181,21 +182,80 @@ Bans cover the whole address, so one abusive client can also block others behind
 
 ## Backups and monitoring
 
-`backup.sh` dumps the database to `~/opencanvas/backups`, keeps the last 7, and copies the Supabase file bucket there. The live data is in Supabase, so this copy is on a different provider. With `OC_BACKUP_S3_*` set in `.env` it also copies everything to a bucket off this server, which protects against losing Supabase and this server together. The backups hold user data; `backups/` is private to this account.
+On its schedule `backup.sh` puts a copy of everything in three places besides the live data:
+
+| Location | Holds | Protects against |
+|---|---|---|
+| This server, `~/opencanvas/backups` | Last 7 dumps, all files | Losing the live data; the fastest restore |
+| Bucket 1 (`OC_BACKUP_S3_*`), e.g. Cloudflare R2, EU | Encrypted dumps and `.env`, all files | Losing this server or the Oracle account |
+| Bucket 2 (`OC_BACKUP2_S3_*`), e.g. Oracle Object Storage (free) | The same | Losing this server's disk, or the first backup provider |
+
+Oracle Object Storage shares an account with this server, so if you lose that account, bucket 1 is the only copy left. Use a paid or non-Oracle bucket instead if that isn't enough for you.
+
+Each run:
+
+- restores the dump into a throwaway database, and checks that it holds migrations and users;
+- encrypts the dump and `.env` with [age](https://age-encryption.org). `.env` is included because connected social accounts can't be decrypted without its `OC_SECRET`;
+- sends them to both buckets, and reads the database copy back from each;
+- fails unless both buckets hold the backup, and reports the result to `OC_BACKUP_PING_URL`. A problem with one step or bucket doesn't stop the others.
+
+Uploaded files go to the buckets unencrypted, so keep the buckets private. They are never deleted from the buckets, even after a user deletes them. If you must erase someone's files, remove those objects from both buckets as well.
+
+### Setting up
+
+1. **The key.** On your computer, not the server: `age-keygen -o pinselo-backup.key`. Put the public key it prints in `OC_BACKUP_AGE_RECIPIENT`. Store the key file in your password manager and in one more place. Without it, the off-site database backups can't be read.
+2. **The buckets.** Create one private bucket at each provider, and put their settings in `.env` (`env.example` shows the format).
+3. **Limit the damage if the server is broken into.** The server should not be able to destroy its own backups:
+   - Backblaze, if you use it: use a key without the `deleteFiles` capability.
+   - Oracle: a customer secret key has its user's permissions, so it can delete. Bucket 1's lock rules are what protect the dumps.
+   - Cloudflare R2: its keys can delete, so add a bucket lock rule that keeps objects for at least 30 days on `db/` and `env/`, and 365 days on `monthly/`.
+4. **Retention.** Add lifecycle rules to both buckets: delete `db/` and `env/` after 35 days, and `monthly/` after 400 days. The script never deletes anything from a bucket.
+5. **The monitor.** Create a daily check with a free monitor such as healthchecks.io, with a grace period of a few hours, and put its URL in `OC_BACKUP_PING_URL`.
+6. **The server.**
+
+   ```bash
+   scp deploy/oracle/backup.sh ubuntu@<public IP>:opencanvas/     # from your computer
+   sudo apt-get install -y age
+   cd ~/opencanvas && ./backup.sh                                 # the first run; it must end with "backup: ok"
+   crontab -e   # 17 3 * * * cd ~/opencanvas && ./backup.sh >> backups/backup.log 2>&1
+   ```
+
+### Restoring
+
+Practise this every three months, on your computer, from each bucket in turn. It is the only test that covers the private key.
 
 ```bash
-crontab -e   # 17 3 * * * cd ~/opencanvas && ./backup.sh >> backups/backup.log 2>&1
-```
-
-Restore into a throwaway database to test:
-
-```bash
-docker run -d --name restore-test -e POSTGRES_PASSWORD=test postgres:17
-docker exec -i restore-test sh -c 'until pg_isready -q; do sleep 1; done; pg_restore -U postgres -d postgres --no-owner' < backups/db-<stamp>.dump
+age -d -i pinselo-backup.key -o db.dump db-<stamp>.dump.age
+age -d -i pinselo-backup.key -o restored.env env-<stamp>.env.age
+docker run -d --name restore-test -e POSTGRES_HOST_AUTH_METHOD=trust postgres:17
+docker exec restore-test sh -c 'until pg_isready -q -h 127.0.0.1; do sleep 1; done'
+docker exec -i restore-test pg_restore -h 127.0.0.1 -U postgres -d postgres --no-owner --clean --if-exists --exit-on-error < db.dump
+docker exec restore-test psql -h 127.0.0.1 -U postgres -c 'select count(*) from users'
 docker rm -f restore-test
 ```
 
+Delete `db.dump` and `restored.env` afterwards: they hold user data and secrets.
+
 `.github/workflows/uptime.yml` checks `/api/status` hourly and fails, which emails you, when the site is down. For faster alerts, add a free external monitor on `https://example.com/api/status`.
+
+## Moving the database from Supabase to this server
+
+The database then shares this server's fate, so schedule `backup.sh` hourly first (`17 * * * *`) and set the monitor's period to match: a lost server costs at most the work since the last run. Keep the Supabase database untouched until the new one has run for a while. Going back later loses whatever was written after the move.
+
+Supabase can pause a free project that gets too little database activity, and file storage goes with it. If the files stay on Supabase, keep the project active. A failed file copy in `backup.sh` alerts the monitor.
+
+1. In `.env`, set `POSTGRES_PASSWORD` (hex only) and `OC_DATABASE_SSL_CA=/run/secrets/supabase-ca.crt`, which keeps the Supabase connection working for now. Start the database alone: `docker compose up -d --no-deps db`.
+2. Stop the app, and dump and restore. Restore as `oc`, so that `oc` owns the tables:
+   ```bash
+   docker compose stop api collab render worker
+   ./backup.sh
+   docker compose exec -T db pg_restore -U oc -d opencanvas --no-owner --clean --if-exists --exit-on-error < backups/db-<stamp>.dump
+   ```
+3. Compare row counts for every table in both databases.
+4. In `.env`, set `OC_DATABASE_URL=postgres://oc:<POSTGRES_PASSWORD>@db:5432/opencanvas`, `OC_DATABASE_POOL_MAX=10` and an empty `OC_DATABASE_SSL_CA=`, keeping the old values to go back. Then `docker compose up -d`.
+5. Test password and Google sign-in, uploads and live editing.
+
+To go back, restore the old values in `.env` and run `docker compose up -d`.
 
 ## Troubleshooting
 

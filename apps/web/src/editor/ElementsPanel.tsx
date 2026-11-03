@@ -550,7 +550,7 @@ function TableIcon({ r, c }: { r: number; c: number }) {
 }
 
 function ChartIcon({ kind }: { kind: ChartKind }) {
-  const c = ['#0c7a80', '#22a6a0', '#f59e0b'];
+  const c = ['#c93316', '#ff8a75', '#f59e0b'];
   const small = { width: '55%', height: '55%' };
   if (kind === 'progress-ring' || kind === 'gauge')
     return (

@@ -1,6 +1,7 @@
 # The Oracle Cloud free server (docs/deploy-oracle.md): deploy/docker-compose.yml with prebuilt ARM64 images from
-# GitHub's container registry (.github/workflows/images.yml) and Supabase for the database and storage, so the server
-# never builds anything and runs no Postgres. Keep the services and environment in step with deploy/docker-compose.yml.
+# GitHub's container registry (.github/workflows/images.yml), its own Postgres, and Supabase for file storage. The
+# services use whichever database OC_DATABASE_URL names. Keep the services and environment in step with
+# deploy/docker-compose.yml.
 #
 # On the server, next to this file: .env (from env.example), Caddyfile and supabase-ca.crt. Then: ./update.sh
 x-service: &service
@@ -14,13 +15,24 @@ x-service: &service
     OC_API_URL: https://${OC_APP_HOST}
     OC_DATA_DIR: /data
     OC_RENDER_HOST: 0.0.0.0
-    OC_DATABASE_SSL_CA: /run/secrets/supabase-ca.crt
+    # Only for a Supabase database. The server's own database (db below) has no TLS and must leave this empty.
+    OC_DATABASE_SSL_CA: ${OC_DATABASE_SSL_CA:-}
   volumes:
     - data:/data
     - ./supabase-ca.crt:/run/secrets/supabase-ca.crt:ro
+  depends_on:
+    db: { condition: service_healthy }
   restart: unless-stopped
 
 services:
+  # Publishes no port: only the services here reach it.
+  db:
+    image: postgres:17
+    environment: { POSTGRES_USER: oc, POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}', POSTGRES_DB: opencanvas }
+    command: ['postgres', '-c', 'shared_buffers=1GB', '-c', 'effective_cache_size=4GB']
+    volumes: [pg:/var/lib/postgresql/data]
+    healthcheck: { test: ['CMD', 'pg_isready', '-U', 'oc', '-d', 'opencanvas'], interval: 5s, retries: 20 }
+    restart: unless-stopped
   migrate:
     <<: *service
     command: ['oc-migrate']
@@ -28,19 +40,19 @@ services:
   api:
     <<: *service
     command: ['oc-api']
-    depends_on: { migrate: { condition: service_completed_successfully } }
+    depends_on: { db: { condition: service_healthy }, migrate: { condition: service_completed_successfully } }
   collab:
     <<: *service
     command: ['oc-collab']
-    depends_on: { migrate: { condition: service_completed_successfully } }
+    depends_on: { db: { condition: service_healthy }, migrate: { condition: service_completed_successfully } }
   render:
     <<: *service
     command: ['oc-render-svc']
-    depends_on: { migrate: { condition: service_completed_successfully } }
+    depends_on: { db: { condition: service_healthy }, migrate: { condition: service_completed_successfully } }
   worker:
     <<: *service
     command: ['oc-worker']
-    depends_on: { migrate: { condition: service_completed_successfully } }
+    depends_on: { db: { condition: service_healthy }, migrate: { condition: service_completed_successfully } }
   gateway:
     image: ${OC_GATEWAY_IMAGE:-ghcr.io/vizyk003/pinselo-gateway:latest}
     env_file: .env
@@ -52,4 +64,4 @@ services:
     depends_on: [api, collab]
     restart: unless-stopped
 
-volumes: { data: {}, caddy: {} }
+volumes: { pg: {}, data: {}, caddy: {} }

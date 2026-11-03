@@ -5,5 +5,5 @@ export const BRAND = {
   name: 'Pinselo',
   short: 'OC',
   tagline: 'Design anything, together.',
-  accent: '#0c7a80',
+  accent: '#c93316',
 } as const;

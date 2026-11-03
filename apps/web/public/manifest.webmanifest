@@ -9,7 +9,7 @@
   "display_override": ["window-controls-overlay", "standalone"],
   "orientation": "any",
   "background_color": "#ffffff",
-  "theme_color": "#0c7a80",
+  "theme_color": "#080e2a",
   "categories": ["design", "productivity", "graphics"],
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },

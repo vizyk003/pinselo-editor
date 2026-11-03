@@ -1,5 +1,5 @@
 /** Print order history and detail (customers), the local checkout page and the staff print console (A18). */
-import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import { Printer } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { Link, Route, Routes, useNavigate, useParams, useSearchParams } from 'react-router';
@@ -162,7 +162,7 @@ export function PrintCheckout() {
   return (
     <div className="auth">
       <div className="auth-card">
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" />{BRAND.name}</Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <h1 className="auth-title">{t('Confirm your print order')}</h1>
         {o && <p style={{ margin: 0 }}><b>{o.product_name} × {o.quantity}</b> — {money(o.total_cents, o.currency)}</p>}
         <p className="muted" style={{ margin: 0 }}>{t('This server has no payment provider configured, so the order is confirmed without a charge. In production this step is Stripe Checkout.')}</p>

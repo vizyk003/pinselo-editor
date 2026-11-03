@@ -1,6 +1,6 @@
 /** Pricing page, billing settings, local checkout and the global upgrade prompt (PL-020..026). */
 import { useAuthGate } from '../auth/AuthGate';
-import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import { Check, Crown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router';
@@ -101,7 +101,7 @@ export function Pricing() {
   return (
     <div className="pricing">
       <header className="pricing-head">
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" />{BRAND.name}</Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <span className="grow" />
         {user ? <Link className="btn" to="/">{t('Back to designs')}</Link> : <><button className="btn ghost" onClick={() => openAuth('login', '/pricing')}>{t('Log in')}</button><button className="btn primary" onClick={() => openAuth('signup', '/pricing')}>{t('Sign up')}</button></>}
       </header>
@@ -255,7 +255,7 @@ export function LocalCheckout() {
   return (
     <div className="auth">
       <div className="auth-card">
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" />{BRAND.name}</Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <h1 className="auth-title">{t('Confirm your plan')}</h1>
         <p className="muted" style={{ margin: 0 }}>{t('This server has no payment provider configured, so the plan is activated without a charge. In production this step is Stripe Checkout.')}</p>
         {err && <div className="form-error">{err}</div>}

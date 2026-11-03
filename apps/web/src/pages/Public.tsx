@@ -1,6 +1,7 @@
 /** Public pages: legal documents, help centre (articles, contact, your requests) and the status page. */
 import { useAuthGate } from '../auth/AuthGate';
 import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import { CheckCircle2, AlertTriangle, XCircle, Wrench, Search } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link, NavLink, useNavigate, useParams } from 'react-router';
@@ -22,7 +23,7 @@ function PublicShell({ children, wide }: { children: ReactNode; wide?: boolean }
   return (
     <div className="public">
       <header className="pricing-head">
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" />{BRAND.name}</Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <nav className="row" style={{ gap: 4 }}>
           <NavLink className="btn ghost sm" to="/help">{t('Help')}</NavLink>
           {plansEnabled() && <NavLink className="btn ghost sm" to="/pricing">{t('Pricing')}</NavLink>}

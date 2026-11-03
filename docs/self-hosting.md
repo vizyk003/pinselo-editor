@@ -214,7 +214,7 @@ To check a dump, restore it into a throwaway container:
 
 ```bash
 docker run -d --name restore-test -e POSTGRES_PASSWORD=test postgres:17
-docker exec -i restore-test sh -c 'until pg_isready -q; do sleep 1; done; pg_restore -U postgres -d postgres --no-owner' < backups/db-<date>.dump
+docker exec -i restore-test sh -c 'until pg_isready -q; do sleep 1; done; pg_restore -U postgres -d postgres --no-owner --clean --if-exists' < backups/db-<date>.dump
 docker rm -f restore-test
 ```
 
@@ -238,7 +238,7 @@ The scripts:
 
 - **`update.sh`** pulls the images, stops the services so the migrator can get a connection, then starts everything. `./update.sh web` replaces only the gateway.
 - **`build-on-server.sh`** sends the committed `HEAD` to the server over SSH and builds there. `OC_SERVER=user@host` is required. With `--deploy`, it updates `OC_RUNTIME_IMAGE` and `OC_GATEWAY_IMAGE` by replacing existing lines in `.env`, so add those lines first.
-- **`backup.sh`** dumps the `public` schema with `pg_dump`, keeps the last seven dumps, and syncs the file bucket to `backups/files`. If `OC_BACKUP_S3_BUCKET` is set, it also copies everything to another S3-compatible bucket. It reads its settings from `.env` and expects `supabase-ca.crt` next to it.
+- **`backup.sh`** dumps the `public` schema with `pg_dump`, keeps the last seven dumps, test-restores the latest, and syncs the file bucket to `backups/files`. It then sends the encrypted dump, the encrypted `.env` and the files to two S3-compatible buckets (`OC_BACKUP_S3_*` and `OC_BACKUP2_S3_*`), and fails unless both hold them. It reads its settings from `.env`, needs `age` installed, and expects `supabase-ca.crt` next to it.
 
 Schedule the backup with cron, for example:
 

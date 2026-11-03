@@ -18,7 +18,7 @@ import { api, ApiError, assetUrl } from '../api';
 /** File-name prefix that marks an upload as a saved signature. */
 export const SIGNATURE_PREFIX = 'signature-';
 const SCRIPT_FONTS = ['Great Vibes', 'Dancing Script', 'Allura', 'Homemade Apple', 'Sacramento', 'Caveat'];
-const INKS = ['#1f2328', '#1d3f9e', '#0c7a80'];
+const INKS = ['#1f2328', '#1d3f9e', '#c93316'];
 
 export function EraserTile({ active, onClick }: { active: boolean; onClick: () => void }) {
   return (

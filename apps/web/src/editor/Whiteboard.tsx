@@ -117,9 +117,9 @@ const CSS = `
 .wb-section-title button { pointer-events: auto; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 2px; display: grid; place-items: center; border-radius: 4px; }
 .wb-section-title button:hover { background: rgba(15,23,42,.08); }
 .wb-author { position: absolute; font: 500 10px Inter, sans-serif; color: rgba(15,23,42,.55); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.wb-vote-target { position: absolute; pointer-events: auto; cursor: copy; border-radius: 6px; outline: 2px dashed rgba(12,122,128,.45); outline-offset: 2px; }
-.wb-vote-target:hover { background: rgba(12,122,128,.08); }
-.wb-badge { position: absolute; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #0c7a80; color: #fff; font: 700 12px/22px Inter, sans-serif; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); transform: translate(-50%, -50%); }
+.wb-vote-target { position: absolute; pointer-events: auto; cursor: copy; border-radius: 6px; outline: 2px dashed rgba(201,51,22,.45); outline-offset: 2px; }
+.wb-vote-target:hover { background: rgba(201,51,22,.08); }
+.wb-badge { position: absolute; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #c93316; color: #fff; font: 700 12px/22px Inter, sans-serif; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.25); transform: translate(-50%, -50%); }
 .wb-dots { position: absolute; display: flex; gap: 3px; transform: translateY(-50%); }
 .wb-dots i { width: 10px; height: 10px; border-radius: 50%; background: #ec4899; border: 1.5px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
 .wb-highlight { position: absolute; border-radius: 10px; border: 3px solid #f59e0b; box-shadow: 0 0 0 6px rgba(245,158,11,.25); }
@@ -143,8 +143,8 @@ const CSS = `
 .wb-list .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; cursor: pointer; }
 .wb-people { display: flex; align-items: center; }
 .wb-people button { border: 0; background: none; padding: 0; margin-left: -4px; cursor: pointer; border-radius: 50%; }
-.wb-people button.following { outline: 2px solid #0c7a80; outline-offset: 1px; }
-.wb-banner { pointer-events: auto; display: flex; align-items: center; gap: 8px; background: #0c7a80; color: #fff; border-radius: 10px; padding: 6px 10px; font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+.wb-people button.following { outline: 2px solid #c93316; outline-offset: 1px; }
+.wb-banner { pointer-events: auto; display: flex; align-items: center; gap: 8px; background: #c93316; color: #fff; border-radius: 10px; padding: 6px 10px; font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
 .wb-banner button { color: #fff; }
 `;
 
