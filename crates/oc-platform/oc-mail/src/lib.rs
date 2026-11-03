@@ -324,7 +324,7 @@ pub fn render_email(t: &Template, locale: &str) -> RenderedEmail {
     html.push_str("<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"><tr><td align=\"center\" style=\"padding:32px 12px\">\n");
     html.push_str("<table width=\"560\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:560px;background:#fff;border-radius:14px;overflow:hidden\">\n");
     html.push_str(&format!(
-        "<tr><td style=\"background:linear-gradient(90deg,#0b4a55,#0d7f86);padding:18px 28px;color:#fff;font-weight:800;font-size:18px\">{}</td></tr>\n",
+        "<tr><td style=\"background:linear-gradient(90deg,#080e2a,#c93316);padding:18px 28px;color:#fff;font-weight:800;font-size:18px\">{}</td></tr>\n",
         esc(BRAND.name)
     ));
     html.push_str("<tr><td style=\"padding:28px\">\n");
@@ -335,7 +335,7 @@ pub fn render_email(t: &Template, locale: &str) -> RenderedEmail {
     html.push('\n');
     if let Some(c) = &r.cta {
         html.push_str(&format!(
-            "<p style=\"margin:22px 0 6px\"><a href=\"{}\" style=\"background:#0c7a80;color:#fff;text-decoration:none;padding:12px 20px;border-radius:9px;font-weight:700;display:inline-block\">{}</a></p><p style=\"font-size:12px;color:#8a8aa0;word-break:break-all\">{}</p>",
+            "<p style=\"margin:22px 0 6px\"><a href=\"{}\" style=\"background:#c93316;color:#fff;text-decoration:none;padding:12px 20px;border-radius:9px;font-weight:700;display:inline-block\">{}</a></p><p style=\"font-size:12px;color:#8a8aa0;word-break:break-all\">{}</p>",
             esc(&c.url),
             esc(&c.label),
             esc(&c.url)

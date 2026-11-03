@@ -1,4 +1,4 @@
-import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import type { PresetCategoryId } from '@oc/engine';
 import {
   CalendarDays, CheckSquare, Folder, FolderPlus, HelpCircle, Home as HomeIcon, LogOut, Menu, Pencil, Plus,
@@ -99,7 +99,7 @@ export function Home() {
         <button ref={menuBtn} className="btn ghost icon" aria-label={t('Open menu')} title={t('Open menu')} aria-expanded={navOpen} aria-controls="home-side" onClick={() => setNavOpen(true)}>
           <Menu size={20} />
         </button>
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" /><span>{BRAND.name}</span></Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <div className="grow" />
         <button className="btn primary sm" onClick={() => openCreate()}><Plus size={16} /> {t('Create a design')}</button>
       </div>
@@ -107,7 +107,7 @@ export function Home() {
       <nav ref={sideRef} id="home-side" className={`side${navOpen ? ' open' : ''}`} aria-label={t('Main')}
         onClick={(e) => (e.target as HTMLElement).closest('a') && setNavOpen(false)}>
         <div className="logo" style={{ padding: '4px 4px 14px 12px' }}>
-          <Link to="/" className="logo"><img src="/favicon.svg" alt="" /><span>{BRAND.name}</span></Link>
+          <Link to="/" className="logo"><BrandLogo /></Link>
           <NotificationsBell />
         </div>
         <button className="btn primary" style={{ margin: '0 4px 12px' }} onClick={() => { setNavOpen(false); openCreate(); }}>

@@ -20,13 +20,13 @@ export interface Appearance {
 }
 
 const KEY = 'oc:appearance';
-export const APPEARANCE_DEFAULTS: Appearance = { theme: 'system', contrast: false, motion: 'system', shortcutsNeedModifier: false, longerMessages: false };
+export const APPEARANCE_DEFAULTS: Appearance = { theme: 'light', contrast: false, motion: 'system', shortcutsNeedModifier: false, longerMessages: false };
 
 function load(): Appearance {
   try {
     const v = JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Appearance>;
     return {
-      theme: v.theme === 'light' || v.theme === 'dark' ? v.theme : 'system',
+      theme: v.theme === 'system' || v.theme === 'dark' ? v.theme : 'light',
       contrast: v.contrast === true,
       motion: v.motion === 'reduce' ? 'reduce' : 'system',
       shortcutsNeedModifier: v.shortcutsNeedModifier === true,

@@ -5,6 +5,7 @@
  * variants in auth/SupabaseAuth.tsx instead; a spinner shows until the mode is known.
  */
 import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import { startAuthentication } from '@simplewebauthn/browser';
 import { KeyRound, Mail } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
@@ -40,8 +41,7 @@ export function Shell({ title, sub, children, embedded }: { title: ReactNode; su
     <div className="auth">
       <div className="auth-card">
         <Link to="/" className="logo">
-          <img src="/favicon.svg" alt="" />
-          {BRAND.name}
+          <BrandLogo />
         </Link>
         <div>
           <h1 className="auth-title">{title}</h1>

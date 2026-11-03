@@ -18,7 +18,7 @@ const config: CapacitorConfig = {
   ios: { contentInset: 'never', limitsNavigationsToAppBoundDomains: Boolean(url) },
   android: { allowMixedContent: false },
   plugins: {
-    StatusBar: { overlaysWebView: false, style: 'DARK', backgroundColor: '#4c1d95' },
+    StatusBar: { overlaysWebView: false, style: 'DARK', backgroundColor: '#080e2a' },
   },
 };
 

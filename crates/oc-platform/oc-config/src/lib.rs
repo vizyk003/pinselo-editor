@@ -17,7 +17,7 @@ pub struct Brand {
     pub accent: &'static str,
 }
 
-pub const BRAND: Brand = Brand { name: "Pinselo", short: "OC", tagline: "Design anything, together.", accent: "#0c7a80" };
+pub const BRAND: Brand = Brand { name: "Pinselo", short: "OC", tagline: "Design anything, together.", accent: "#c93316" };
 
 pub const DEV_SECRET: &str = "dev-only-secret-change-me";
 
