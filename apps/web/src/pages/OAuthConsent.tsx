@@ -5,6 +5,7 @@
  * Allow or Cancel returns to the app's registered redirect URI with a code or `access_denied`.
  */
 import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import { AlertTriangle, ArrowLeftRight, BadgeCheck, Check } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router';
@@ -86,7 +87,7 @@ export function OAuthConsent() {
     const text = view.code === 'network' ? t('Something went wrong. Try again.') : t(ERROR_TEXT[view.code] ?? ERROR_TEXT.invalid_request!, { brand: BRAND.name });
     return (
       <Card>
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" />{BRAND.name}</Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <div>
           <h1 className="auth-title">{t('This connection request isn’t valid')}</h1>
           <p className="muted" style={{ margin: 0 }}>{text}</p>

@@ -7,7 +7,7 @@
  *   it is private, and the server is the source of truth).
  * A new version waits until the page asks it to take over (the app shows "Update available").
  */
-const VERSION = 'oc-v1';
+const VERSION = 'oc-v2';
 const SHELL = `${VERSION}-shell`;
 const STATIC = `${VERSION}-static`;
 const FONTS = 'oc-fonts';

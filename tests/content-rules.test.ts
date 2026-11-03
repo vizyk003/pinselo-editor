@@ -47,7 +47,7 @@ describe('display preferences', () => {
     const root = { setAttribute: (k: string, v: string) => void attrs.set(k, v), removeAttribute: (k: string) => void attrs.delete(k) };
     applyAppearance({ ...APPEARANCE_DEFAULTS, theme: 'dark', contrast: true, motion: 'reduce' }, root);
     expect(Object.fromEntries(attrs)).toEqual({ 'data-theme': 'dark', 'data-contrast': 'more', 'data-motion': 'reduce' });
-    applyAppearance(APPEARANCE_DEFAULTS, root);
+    applyAppearance({ ...APPEARANCE_DEFAULTS, theme: 'system' }, root);
     expect(attrs.size).toBe(0);
   });
 
