@@ -330,6 +330,8 @@ pre code { padding: 0; background: none; font-size: inherit; }
 /* ---------------------------------------------------------------- home */
 .home { --gutter: 28px; display: grid; grid-template-columns: 248px 1fr; height: 100%; }
 .home nav.side { background: var(--surface); border-right: 1px solid var(--border); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; overflow: auto; }
+/* Nothing in the sidebar shrinks: on a short window it scrolls instead of squashing the Create button. */
+.home nav.side > * { flex-shrink: 0; }
 .side a, .side button.navlink {
   display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 12px; border-radius: 9px; color: var(--text-2);
   font: inherit; font-weight: 600; border: 0; background: none; cursor: pointer; text-align: start; width: 100%; flex: none;
