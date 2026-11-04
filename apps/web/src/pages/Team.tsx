@@ -1,7 +1,8 @@
-/** Team workspaces (CO-060/061): team designs, members and roles, email invites, member groups (g149). */
-import { Pencil, Plus, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-react';
+/** Team workspaces (CO-060/061): team designs, brand kits, members and roles, email invites, member groups (g149). */
+import { Palette, Pencil, Plus, ShieldCheck, Trash2, UserPlus, Users } from 'lucide-react';
 import { brandHub } from '../api';
 import { BrandControlsDialog } from './BrandControls';
+import { TeamBrandKitsDialog } from './TeamBrandKits';
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { ApiError, teamApi, type Folder, type Invite, type Member, type TeamRole, type Workspace } from '../api';
@@ -54,6 +55,7 @@ export function TeamPage({ folders, workspaces, reloadWorkspaces }: { folders: F
   const [members, setMembers] = useState<false | 'people' | 'groups'>(false);
   const [creating, setCreating] = useState(false);
   const [controls, setControls] = useState(false);
+  const [kits, setKits] = useState(false);
   const [requireTemplate, setRequireTemplate] = useState(false);
   useEffect(() => {
     if (ws) void brandHub.controls(ws.id).then((r) => setRequireTemplate(Boolean(r.controls.requireTemplate))).catch(() => {});
@@ -73,12 +75,14 @@ export function TeamPage({ folders, workspaces, reloadWorkspaces }: { folders: F
           <>
             <button className="btn" onClick={() => setMembers('people')}><Users size={16} /> {tn(ws.members, '{n} member', '{n} members')}</button>
             <button className="btn" onClick={() => setMembers('groups')}>{t('Groups')}</button>
+            <button className="btn" onClick={() => setKits(true)}><Palette size={16} /> {t('Brand kits')}</button>
             {RANK[ws.role] >= RANK.admin && <button className="btn" onClick={() => setControls(true)}><ShieldCheck size={16} /> {t('Brand controls')}</button>}
             {canCreate && <button className="btn primary" onClick={() => setCreating(true)}><Plus size={16} /> {t('Create design')}</button>}
           </>
         }
       />
       {creating && <CreateDialog onClose={() => setCreating(false)} workspaceId={id} templatesOnly={templatesOnly} />}
+      {kits && <TeamBrandKitsDialog workspaceId={id} teamName={ws.name} onClose={() => setKits(false)} />}
       {controls && <BrandControlsDialog workspaceId={id} onClose={() => setControls(false)} />}
       {members && <MembersDialog ws={ws} initialTab={members} onClose={() => { setMembers(false); reloadWorkspaces(); }} />}
     </>

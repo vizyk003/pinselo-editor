@@ -3223,5 +3223,21 @@
  },
  "⌘ + drag": "⌘ + Ziehen",
  "⌥ + drag": "⌥ + Ziehen",
- "✓ In {folder}": "✓ In {folder}"
+ "✓ In {folder}": "✓ In {folder}",
+ "Brand kits": "Markenkits",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "Alle im Team können diese Kits in Team-Designs verwenden. Um ein Kit zu ändern, öffne ein Design und nutze das Marken-Panel.",
+ "This team has no brand kits yet.": "Dieses Team hat noch keine Markenkits.",
+ "{n} graphic|{n} graphics": {
+  "one": "{n} Grafik",
+  "other": "{n} Grafiken"
+ },
+ "{n} logo|{n} logos": {
+  "one": "{n} Logo",
+  "other": "{n} Logos"
+ },
+ "{n} photo|{n} photos": {
+  "one": "{n} Foto",
+  "other": "{n} Fotos"
+ },
+ "{team} · brand kits": "{team} · Markenkits"
 }

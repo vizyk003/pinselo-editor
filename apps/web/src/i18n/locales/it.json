@@ -3277,5 +3277,24 @@
  },
  "⌘ + drag": "⌘ + trascina",
  "⌥ + drag": "⌥ + trascina",
- "✓ In {folder}": "✓ In {folder}"
+ "✓ In {folder}": "✓ In {folder}",
+ "Brand kits": "Brand kit",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "Tutti nel team possono usare questi kit nei design del team. Per modificare un kit, apri un design e usa il pannello Brand.",
+ "This team has no brand kits yet.": "Questo team non ha ancora brand kit.",
+ "{n} graphic|{n} graphics": {
+  "one": "{n} grafica",
+  "many": "{n} grafiche",
+  "other": "{n} grafiche"
+ },
+ "{n} logo|{n} logos": {
+  "one": "{n} logo",
+  "many": "{n} loghi",
+  "other": "{n} loghi"
+ },
+ "{n} photo|{n} photos": {
+  "one": "{n} foto",
+  "many": "{n} foto",
+  "other": "{n} foto"
+ },
+ "{team} · brand kits": "{team} · brand kit"
 }

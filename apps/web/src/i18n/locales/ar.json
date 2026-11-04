@@ -3447,5 +3447,33 @@
  },
  "⌘ + drag": "⌘ + سحب",
  "⌥ + drag": "⌥ + سحب",
- "✓ In {folder}": "✓ في {folder}"
+ "✓ In {folder}": "✓ في {folder}",
+ "Brand kits": "حزم العلامة التجارية",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "يمكن لكل أعضاء الفريق استخدام هذه الحزم في تصاميم الفريق. لتغيير حزمة، افتح تصميمًا واستخدم لوحة العلامة التجارية.",
+ "This team has no brand kits yet.": "لا توجد لدى هذا الفريق حزم علامة تجارية بعد.",
+ "{n} graphic|{n} graphics": {
+  "zero": "{n} رسم",
+  "one": "رسم واحد",
+  "two": "رسمان",
+  "few": "{n} رسومات",
+  "many": "{n} رسمًا",
+  "other": "{n} رسم"
+ },
+ "{n} logo|{n} logos": {
+  "zero": "{n} شعار",
+  "one": "شعار واحد",
+  "two": "شعاران",
+  "few": "{n} شعارات",
+  "many": "{n} شعارًا",
+  "other": "{n} شعار"
+ },
+ "{n} photo|{n} photos": {
+  "zero": "{n} صورة",
+  "one": "صورة واحدة",
+  "two": "صورتان",
+  "few": "{n} صور",
+  "many": "{n} صورة",
+  "other": "{n} صورة"
+ },
+ "{team} · brand kits": "{team} · حزم العلامة التجارية"
 }

@@ -3167,5 +3167,18 @@
  },
  "⌘ + drag": "⌘ + ドラッグ",
  "⌥ + drag": "⌥ + ドラッグ",
- "✓ In {folder}": "✓ {folder}に保存済み"
+ "✓ In {folder}": "✓ {folder}に保存済み",
+ "Brand kits": "ブランドキット",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "チームの全員が、チームのデザインでこれらのキットを使えます。キットを変更するには、デザインを開いてブランドパネルを使ってください。",
+ "This team has no brand kits yet.": "このチームにはまだブランドキットがありません。",
+ "{n} graphic|{n} graphics": {
+  "other": "{n}個のグラフィック"
+ },
+ "{n} logo|{n} logos": {
+  "other": "{n}個のロゴ"
+ },
+ "{n} photo|{n} photos": {
+  "other": "{n}枚の写真"
+ },
+ "{team} · brand kits": "{team} · ブランドキット"
 }

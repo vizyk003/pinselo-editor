@@ -3167,5 +3167,18 @@
  },
  "⌘ + drag": "⌘ + 拖动",
  "⌥ + drag": "⌥ + 拖动",
- "✓ In {folder}": "✓ 在{folder}中"
+ "✓ In {folder}": "✓ 在{folder}中",
+ "Brand kits": "品牌套件",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "团队中的每个人都可以在团队设计中使用这些套件。要修改套件，请打开一个设计并使用品牌面板。",
+ "This team has no brand kits yet.": "该团队还没有品牌套件。",
+ "{n} graphic|{n} graphics": {
+  "other": "{n} 个图形"
+ },
+ "{n} logo|{n} logos": {
+  "other": "{n} 个标志"
+ },
+ "{n} photo|{n} photos": {
+  "other": "{n} 张照片"
+ },
+ "{team} · brand kits": "{team} · 品牌套件"
 }
