@@ -2776,5 +2776,6 @@
   "one": "{n} Foto",
   "other": "{n} Fotos"
  },
- "{team} · brand kits": "{team} · Markenkits"
+ "{team} · brand kits": "{team} · Markenkits",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Noch nicht hochgeladen, daher wird stattdessen eine Ersatzschrift angezeigt: {fonts}. Lade die Schriftdateien unter Markenschriften hoch."
 }

@@ -2823,5 +2823,6 @@
   "many": "{n} foto",
   "other": "{n} foto"
  },
- "{team} · brand kits": "{team} · brand kit"
+ "{team} · brand kits": "{team} · brand kit",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Non ancora caricato, quindi viene mostrato un font sostitutivo: {fonts}. Carica i file dei font in Font del brand."
 }

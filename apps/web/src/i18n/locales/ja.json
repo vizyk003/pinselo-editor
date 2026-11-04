@@ -2727,5 +2727,6 @@
  "{n} photo|{n} photos": {
   "other": "{n}枚の写真"
  },
- "{team} · brand kits": "{team} · ブランドキット"
+ "{team} · brand kits": "{team} · ブランドキット",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "まだアップロードされていないため、代替フォントで表示されています: {fonts}。ブランドフォントからフォントファイルをアップロードしてください。"
 }

@@ -472,6 +472,13 @@ pub async fn create_design_for_user(s: &AppState, user_id: Uuid, b: &Value, via:
             oc_schema::js::to_value(&oc_schema::factory::empty_design(&init.meta_init()))?
         }
     };
+    // The brand kit an assistant made the design with (create_design { brand_kit }), so get_design can show it later.
+    let mut doc = doc;
+    if let Some(kit) = b.get("brandKit").filter(|k| k.is_object())
+        && let Some(meta) = doc.get_mut("meta").and_then(Value::as_object_mut)
+    {
+        meta.insert("brandKit".into(), kit.clone());
+    }
     let folder_id = bs("folderId").and_then(|f| Uuid::parse_str(&f).ok());
     let id = create_design_from_doc(&s, u.id, &doc, CreateOpts { template_id: template_id.clone(), folder_id, workspace_id, brand_workspace_id, template_version }).await?;
     let title = doc.pointer("/meta/title").cloned().unwrap_or(Value::Null);

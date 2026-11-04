@@ -2823,5 +2823,6 @@
   "many": "{n} fotos",
   "other": "{n} fotos"
  },
- "{team} · brand kits": "{team} · kits de marca"
+ "{team} · brand kits": "{team} · kits de marca",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Ainda não enviada, então uma fonte substituta aparece no lugar: {fonts}. Envie os arquivos de fonte em Fontes da marca."
 }
