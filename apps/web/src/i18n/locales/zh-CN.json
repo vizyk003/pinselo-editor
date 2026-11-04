@@ -2714,5 +2714,18 @@
  "Full control, including deleting the team.": "完全控制权限，包括删除团队。",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "关键帧动画、1,950 种 Google Fonts 字体、图表、矢量 PDF 和 PPTX 导出。",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "社交帖子、演示文稿、视频、印刷品、网站和文档 — 全部原创，完全免费。",
- "{name} — designs started from it follow this team’s brand controls": "{name} — 由此创建的设计遵循此团队的品牌管控"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — 由此创建的设计遵循此团队的品牌管控",
+ "Brand kits": "品牌套件",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "团队中的每个人都可以在团队设计中使用这些套件。要修改套件，请打开一个设计并使用品牌面板。",
+ "This team has no brand kits yet.": "该团队还没有品牌套件。",
+ "{n} graphic|{n} graphics": {
+  "other": "{n} 个图形"
+ },
+ "{n} logo|{n} logos": {
+  "other": "{n} 个标志"
+ },
+ "{n} photo|{n} photos": {
+  "other": "{n} 张照片"
+ },
+ "{team} · brand kits": "{team} · 品牌套件"
 }

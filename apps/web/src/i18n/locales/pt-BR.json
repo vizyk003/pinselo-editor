@@ -2804,5 +2804,24 @@
  "Full control, including deleting the team.": "Controle total, incluindo a exclusão da equipe.",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "Animação por quadros-chave, 1.950 Google Fonts, gráficos, exportação em PDF vetorial e PPTX.",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "Posts para redes sociais, apresentações, vídeo, impressão, sites e documentos — tudo original e gratuito.",
- "{name} — designs started from it follow this team’s brand controls": "{name} — os designs criados a partir dele seguem os controles de marca desta equipe"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — os designs criados a partir dele seguem os controles de marca desta equipe",
+ "Brand kits": "Kits de marca",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "Todos da equipe podem usar esses kits nos designs da equipe. Para alterar um kit, abra um design e use o painel Marca.",
+ "This team has no brand kits yet.": "Esta equipe ainda não tem kits de marca.",
+ "{n} graphic|{n} graphics": {
+  "one": "{n} gráfico",
+  "many": "{n} gráficos",
+  "other": "{n} gráficos"
+ },
+ "{n} logo|{n} logos": {
+  "one": "{n} logo",
+  "many": "{n} logos",
+  "other": "{n} logos"
+ },
+ "{n} photo|{n} photos": {
+  "one": "{n} foto",
+  "many": "{n} fotos",
+  "other": "{n} fotos"
+ },
+ "{team} · brand kits": "{team} · kits de marca"
 }
