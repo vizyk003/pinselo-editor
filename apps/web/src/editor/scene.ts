@@ -132,7 +132,20 @@ export class ScenePainter {
   private prevMid: { page: PageId; dl: DisplayList; from: number; to: number } | null = null;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly engine: Engine) {
-    this.ctx = canvas.getContext('2d', { alpha: false, desynchronized: true }) as CanvasRenderingContext2D;
+    // Low latency (desynchronized) except on Windows: Chrome there reads a stale buffer when the canvas is drawn
+    // from (the scroll shift, the zoom preview), so a scroll left the page doubled and cut off until a full repaint.
+    this.ctx = canvas.getContext('2d', { alpha: false, desynchronized: !isWindows() }) as CanvasRenderingContext2D;
+  }
+
+  /** The canvas's current pixels copied into the scratch canvas (never draw the canvas into itself). */
+  private snapshotCanvas(W: number, H: number): HTMLCanvasElement {
+    this.copy ??= document.createElement('canvas');
+    if (this.copy.width !== W || this.copy.height !== H) {
+      this.copy.width = W;
+      this.copy.height = H;
+    }
+    this.copy.getContext('2d')!.drawImage(this.canvas, 0, 0);
+    return this.copy;
   }
 
   /** Repaint everything on the next frame (images or fonts arrived). */
@@ -290,7 +303,8 @@ export class ScenePainter {
       this.markDevice(0, 0, W, H, tx, ty);
       return;
     }
-    this.ctx.drawImage(this.canvas, dx, dy);
+    // Through the scratch canvas: drawing a canvas into itself is not reliable on every GPU path.
+    this.ctx.drawImage(this.snapshotCanvas(W, H), dx, dy);
     if (dx > 0) this.markDevice(0, 0, dx, H, tx, ty);
     if (dx < 0) this.markDevice(W + dx, 0, -dx, H, tx, ty);
     if (dy > 0) this.markDevice(0, 0, W, dy, tx, ty);
@@ -301,13 +315,7 @@ export class ScenePainter {
   private showScaled(prev: Painted, k: number, tx: number, ty: number) {
     const W = this.canvas.width;
     const H = this.canvas.height;
-    this.copy ??= document.createElement('canvas');
-    if (this.copy.width !== W || this.copy.height !== H) {
-      this.copy.width = W;
-      this.copy.height = H;
-    }
-    const cc = this.copy.getContext('2d')!;
-    cc.drawImage(this.canvas, 0, 0);
+    const copy = this.snapshotCanvas(W, H);
     const s = k / prev.k;
     // Scene point p is at prev.t + p·prev.k before and at t + p·k now.
     this.ctx.save();
@@ -315,7 +323,7 @@ export class ScenePainter {
     this.ctx.fillRect(0, 0, W, H);
     this.ctx.setTransform(s, 0, 0, s, tx - prev.tx * s, ty - prev.ty * s);
     this.ctx.imageSmoothingQuality = 'low';
-    this.ctx.drawImage(this.copy, 0, 0);
+    this.ctx.drawImage(copy, 0, 0);
     this.ctx.restore();
   }
 
@@ -467,6 +475,11 @@ export class ScenePainter {
     const px = t.end().data;
     return `#${[px[0]!, px[1]!, px[2]!].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
   }
+}
+
+function isWindows(): boolean {
+  const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
+  return /^win/i.test(nav.userAgentData?.platform || nav.platform || '');
 }
 
 /** The visible page slots of a view as scene pages (display lists from `dlFor`), and the layout key of all slots. */
