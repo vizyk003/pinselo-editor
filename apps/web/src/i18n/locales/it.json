@@ -2804,5 +2804,53 @@
  "Full control, including deleting the team.": "Controllo completo, inclusa l’eliminazione del team.",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "Animazione a fotogrammi chiave, 1.950 Google Fonts, grafici, esportazione in PDF vettoriale e PPTX.",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "Post social, presentazioni, video, stampa, siti web e documenti: tutti originali e gratuiti.",
- "{name} — designs started from it follow this team’s brand controls": "{name}: i design creati da questo modello seguono i controlli del brand di questo team"
+ "{name} — designs started from it follow this team’s brand controls": "{name}: i design creati da questo modello seguono i controlli del brand di questo team",
+ "Brand kits": "Brand kit",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "Tutti nel team possono usare questi kit nei design del team. Per modificare un kit, apri un design e usa il pannello Brand.",
+ "This team has no brand kits yet.": "Questo team non ha ancora brand kit.",
+ "{n} graphic|{n} graphics": {
+  "one": "{n} grafica",
+  "many": "{n} grafiche",
+  "other": "{n} grafiche"
+ },
+ "{n} logo|{n} logos": {
+  "one": "{n} logo",
+  "many": "{n} loghi",
+  "other": "{n} loghi"
+ },
+ "{n} photo|{n} photos": {
+  "one": "{n} foto",
+  "many": "{n} foto",
+  "other": "{n} foto"
+ },
+ "{team} · brand kits": "{team} · brand kit",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Non ancora caricato, quindi viene mostrato un font sostitutivo: {fonts}. Carica i file dei font in Font del brand.",
+ "Add section": "Aggiungi sezione",
+ "Brand guidelines": "Linee guida del brand",
+ "Collapse": "Comprimi",
+ "Edit guidelines": "Modifica linee guida",
+ "Expand": "Espandi",
+ "Give every section a title.": "Dai un titolo a ogni sezione.",
+ "Guidelines saved": "Linee guida salvate",
+ "Import Markdown": "Importa Markdown",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "Importa file Markdown (il README di un design system, pagine di un brand book): ogni intestazione «##» diventa una sezione e una sezione con lo stesso titolo viene sostituita. Puoi anche scrivere le sezioni qui.",
+ "Imported {n} section|Imported {n} sections": {
+  "one": "{n} sezione importata",
+  "many": "{n} sezioni importate",
+  "other": "{n} sezioni importate"
+ },
+ "No guidelines yet.": "Nessuna linea guida.",
+ "Read guidelines": "Leggi linee guida",
+ "Remove section": "Rimuovi sezione",
+ "Section text": "Testo della sezione",
+ "Section title": "Titolo della sezione",
+ "Section title, e.g. Colour": "Titolo della sezione, ad es. Colore",
+ "Up to {n} sections. Merge or remove some.": "Al massimo {n} sezioni. Uniscine o rimuovine alcune.",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "Il tuo brand book o la documentazione del design system. Gli assistenti IA che usano il connettore {brand} la leggono prima di progettare con questo kit.",
+ "{n} section|{n} sections": {
+  "one": "{n} sezione",
+  "many": "{n} sezioni",
+  "other": "{n} sezioni"
+ },
+ "{used} of {max} characters": "{used} di {max} caratteri"
 }

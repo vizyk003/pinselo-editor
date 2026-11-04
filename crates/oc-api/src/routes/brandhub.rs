@@ -17,6 +17,7 @@ pub fn routes() -> Router<AppState> {
         .route("/api/brand-kits", get(list_kits).post(create_kit))
         .route("/api/brand-kits/{id}", get(read_kit).patch(patch_kit).delete(delete_kit))
         .route("/api/brand-kits/{id}/default", post(default_kit_route))
+        .route("/api/brand-kits/{id}/guidelines", get(get_guidelines).put(put_guidelines))
         .route("/api/workspaces/{id}/brand-controls", get(get_controls).put(put_controls))
         .route("/api/designs/{id}/brand", get(design_brand))
         .route("/api/templates/{id}/republish", post(republish))
@@ -242,6 +243,76 @@ async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) 
         audit(&s, &req, u.id, Some(k.workspace_id), "brand.kit_updated", Some(id.clone()), Some(json!({ "changed": changed }))).await?;
     }
     Ok(Reply::json(json!({ "ok": true })))
+}
+
+// ---------------------------------------------------------------- guidelines
+
+/// Caps on a kit's written guidelines: enough for a full brand book, small enough to hand to an assistant in parts.
+pub const MAX_GUIDELINE_SECTIONS: usize = 60;
+const MAX_GUIDELINE_TITLE: f64 = 120.0;
+const MAX_GUIDELINE_BODY: f64 = 60_000.0;
+const MAX_GUIDELINES_TOTAL: usize = 300_000;
+
+fn guidelines_body() -> z::Schema {
+    z::obj([(
+        "sections",
+        z::array(z::obj([("title", z::str().min(1.0).max(MAX_GUIDELINE_TITLE)), ("body", z::str().max(MAX_GUIDELINE_BODY))])).max(MAX_GUIDELINE_SECTIONS as f64),
+    )])
+}
+
+/// A kit's guideline sections, `[{ title, body }]` (empty when it has none or doesn't exist).
+pub async fn kit_guidelines(s: &AppState, kit_id: &str) -> Result<Vec<Value>, sqlx::Error> {
+    let g: Option<sqlx::types::Json<Value>> = sqlx::query_scalar("SELECT guidelines FROM brand_kits WHERE id = $1::uuid").bind(kit_id).fetch_optional(&s.pool).await?;
+    Ok(g.and_then(|g| g.0.as_array().cloned()).unwrap_or_default())
+}
+
+/// Each kit's guideline outline, `kit id → [{ title, chars }]`, for kits that have guidelines.
+pub async fn guideline_outlines(s: &AppState, kit_ids: &[String]) -> Result<std::collections::HashMap<String, Vec<Value>>, sqlx::Error> {
+    let rows: Vec<(String, sqlx::types::Json<Value>)> = sqlx::query_as(
+        "SELECT id::text, COALESCE(jsonb_agg(jsonb_build_object('title', g->>'title', 'chars', char_length(g->>'body')) ORDER BY n), '[]')
+         FROM brand_kits, jsonb_array_elements(guidelines) WITH ORDINALITY AS e(g, n) WHERE id::text = ANY($1) GROUP BY id",
+    )
+    .bind(kit_ids)
+    .fetch_all(&s.pool)
+    .await?;
+    Ok(rows.into_iter().filter_map(|(id, o)| o.0.as_array().cloned().map(|a| (id, a))).collect())
+}
+
+async fn get_guidelines(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
+    let u = require_user(&s, &req).await?;
+    let Some(k) = own_kit(&s, u.id, &id).await?.filter(|k| k.role.is_some()) else { return Ok(not_found()) };
+    Ok(Reply::json(json!({ "sections": kit_guidelines(&s, &id).await?, "canEdit": k.role == Some("edit") })))
+}
+
+async fn put_guidelines(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
+    let u = require_user(&s, &req).await?;
+    let b = guidelines_body().parse(req.body())?;
+    let Some(k) = own_kit(&s, u.id, &id).await?.filter(|k| k.role.is_some()) else { return Ok(not_found()) };
+    if k.role != Some("edit") {
+        return Ok(forbidden());
+    }
+    let sections: Vec<Value> = b["sections"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|x| json!({ "title": x["title"].as_str().unwrap_or("").trim(), "body": x["body"].as_str().unwrap_or("") }))
+        .collect();
+    let total: usize = sections.iter().map(|x| x["body"].as_str().map_or(0, |b| b.chars().count())).sum();
+    if total > MAX_GUIDELINES_TOTAL {
+        return Ok(reply::json(
+            400,
+            json!({ "error": "too_long", "message": format!("Guidelines can hold up to {MAX_GUIDELINES_TOTAL} characters in all; these have {total}.") }),
+        ));
+    }
+    let old = kit_guidelines(&s, &id).await?;
+    pg::exec(&s.pool, "UPDATE brand_kits SET guidelines = $2::jsonb, updated_at = now() WHERE id = $1::uuid", &[pg::text(&id), pg::text(serde_json::to_string(&sections).map_err(ApiError::internal)?)]).await?;
+    // The audit log records the outline (titles and sizes), not the text: a brand book would swamp it.
+    let after: Vec<Value> = sections.iter().map(|x| json!({ "title": x["title"], "chars": x["body"].as_str().map_or(0, |b| b.chars().count()) })).collect();
+    if old != sections {
+        let before: Vec<Value> = old.iter().map(|x| json!({ "title": x["title"], "chars": x["body"].as_str().map_or(0, |b| b.chars().count()) })).collect();
+        audit(&s, &req, u.id, Some(k.workspace_id), "brand.kit_guidelines_updated", Some(id.clone()), Some(json!({ "from": before, "to": after }))).await?;
+    }
+    Ok(Reply::json(json!({ "ok": true, "sections": after })))
 }
 
 async fn default_kit_route(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {

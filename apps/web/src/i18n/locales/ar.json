@@ -2944,5 +2944,68 @@
  "Full control, including deleting the team.": "تحكّم كامل، بما في ذلك حذف الفريق.",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "رسوم متحركة بالإطارات المفتاحية، و1,950 خط Google Fonts، ومخططات، وتصدير PDF متجهي وPPTX.",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "منشورات التواصل الاجتماعي، والعروض التقديمية، والفيديو، والمطبوعات، والمواقع الإلكترونية، والمستندات — كلها أصلية ومجانية.",
- "{name} — designs started from it follow this team’s brand controls": "{name} — التصاميم التي تبدأ منه تتبع عناصر تحكم العلامة التجارية لهذا الفريق"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — التصاميم التي تبدأ منه تتبع عناصر تحكم العلامة التجارية لهذا الفريق",
+ "Brand kits": "حزم العلامة التجارية",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "يمكن لكل أعضاء الفريق استخدام هذه الحزم في تصاميم الفريق. لتغيير حزمة، افتح تصميمًا واستخدم لوحة العلامة التجارية.",
+ "This team has no brand kits yet.": "لا توجد لدى هذا الفريق حزم علامة تجارية بعد.",
+ "{n} graphic|{n} graphics": {
+  "zero": "{n} رسم",
+  "one": "رسم واحد",
+  "two": "رسمان",
+  "few": "{n} رسومات",
+  "many": "{n} رسمًا",
+  "other": "{n} رسم"
+ },
+ "{n} logo|{n} logos": {
+  "zero": "{n} شعار",
+  "one": "شعار واحد",
+  "two": "شعاران",
+  "few": "{n} شعارات",
+  "many": "{n} شعارًا",
+  "other": "{n} شعار"
+ },
+ "{n} photo|{n} photos": {
+  "zero": "{n} صورة",
+  "one": "صورة واحدة",
+  "two": "صورتان",
+  "few": "{n} صور",
+  "many": "{n} صورة",
+  "other": "{n} صورة"
+ },
+ "{team} · brand kits": "{team} · حزم العلامة التجارية",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "لم يُرفع بعد، لذا يظهر خط بديل بدلًا منه: {fonts}. ارفع ملفات الخطوط ضمن خطوط العلامة التجارية.",
+ "Add section": "إضافة قسم",
+ "Brand guidelines": "إرشادات العلامة التجارية",
+ "Collapse": "طيّ",
+ "Edit guidelines": "تعديل الإرشادات",
+ "Expand": "توسيع",
+ "Give every section a title.": "أعطِ كل قسم عنوانًا.",
+ "Guidelines saved": "تم حفظ الإرشادات",
+ "Import Markdown": "استيراد Markdown",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "استورد ملفات Markdown (ملف README لنظام تصميم، أو صفحات دليل العلامة التجارية): يصبح كل عنوان «##» قسمًا، ويُستبدل القسم الذي يحمل العنوان نفسه. يمكنك أيضًا كتابة الأقسام هنا.",
+ "Imported {n} section|Imported {n} sections": {
+  "zero": "تم استيراد {n} قسم",
+  "one": "تم استيراد قسم واحد",
+  "two": "تم استيراد قسمين",
+  "few": "تم استيراد {n} أقسام",
+  "many": "تم استيراد {n} قسمًا",
+  "other": "تم استيراد {n} قسم"
+ },
+ "No guidelines yet.": "لا توجد إرشادات بعد.",
+ "Read guidelines": "قراءة الإرشادات",
+ "Remove section": "إزالة القسم",
+ "Section text": "نص القسم",
+ "Section title": "عنوان القسم",
+ "Section title, e.g. Colour": "عنوان القسم، مثل: الألوان",
+ "Up to {n} sections. Merge or remove some.": "حتى {n} قسمًا. ادمج بعضها أو أزلها.",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "دليل علامتك التجارية أو توثيق نظام التصميم. يقرؤه مساعدو الذكاء الاصطناعي الذين يستخدمون موصل {brand} قبل التصميم بهذه الحزمة.",
+ "{n} section|{n} sections": {
+  "zero": "{n} قسم",
+  "one": "قسم واحد",
+  "two": "قسمان",
+  "few": "{n} أقسام",
+  "many": "{n} قسمًا",
+  "other": "{n} قسم"
+ },
+ "{used} of {max} characters": "{used} من {max} حرف"
 }

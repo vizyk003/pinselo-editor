@@ -2714,5 +2714,43 @@
  "Full control, including deleting the team.": "チームの削除を含む、すべての操作が可能です。",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "キーフレームアニメーション、1,950種類のGoogle Fonts、グラフ、ベクターPDFとPPTXのエクスポートに対応しています。",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "SNS投稿、プレゼンテーション、動画、印刷物、ウェブサイト、ドキュメントまで、すべてオリジナルで無料です。",
- "{name} — designs started from it follow this team’s brand controls": "{name} — ここから作成したデザインにはこのチームのブランドコントロールが適用されます"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — ここから作成したデザインにはこのチームのブランドコントロールが適用されます",
+ "Brand kits": "ブランドキット",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "チームの全員が、チームのデザインでこれらのキットを使えます。キットを変更するには、デザインを開いてブランドパネルを使ってください。",
+ "This team has no brand kits yet.": "このチームにはまだブランドキットがありません。",
+ "{n} graphic|{n} graphics": {
+  "other": "{n}個のグラフィック"
+ },
+ "{n} logo|{n} logos": {
+  "other": "{n}個のロゴ"
+ },
+ "{n} photo|{n} photos": {
+  "other": "{n}枚の写真"
+ },
+ "{team} · brand kits": "{team} · ブランドキット",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "まだアップロードされていないため、代替フォントで表示されています: {fonts}。ブランドフォントからフォントファイルをアップロードしてください。",
+ "Add section": "セクションを追加",
+ "Brand guidelines": "ブランドガイドライン",
+ "Collapse": "折りたたむ",
+ "Edit guidelines": "ガイドラインを編集",
+ "Expand": "展開",
+ "Give every section a title.": "すべてのセクションにタイトルを付けてください。",
+ "Guidelines saved": "ガイドラインを保存しました",
+ "Import Markdown": "Markdownをインポート",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "Markdownファイル（デザインシステムのREADME、ブランドブックのページ）をインポートします。「##」見出しごとにセクションになり、同じタイトルのセクションは置き換えられます。ここでセクションを書くこともできます。",
+ "Imported {n} section|Imported {n} sections": {
+  "other": "{n}個のセクションをインポートしました"
+ },
+ "No guidelines yet.": "ガイドラインはまだありません。",
+ "Read guidelines": "ガイドラインを読む",
+ "Remove section": "セクションを削除",
+ "Section text": "セクションのテキスト",
+ "Section title": "セクションのタイトル",
+ "Section title, e.g. Colour": "セクションのタイトル（例：カラー）",
+ "Up to {n} sections. Merge or remove some.": "セクションは最大{n}個です。いくつかを統合するか削除してください。",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "ブランドブックまたはデザインシステムのドキュメントです。{brand}コネクタを使うAIアシスタントは、このキットでデザインする前にこれを読みます。",
+ "{n} section|{n} sections": {
+  "other": "{n}個のセクション"
+ },
+ "{used} of {max} characters": "{used} / {max} 文字"
 }

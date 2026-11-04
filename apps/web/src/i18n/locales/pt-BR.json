@@ -2804,5 +2804,53 @@
  "Full control, including deleting the team.": "Controle total, incluindo a exclusão da equipe.",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "Animação por quadros-chave, 1.950 Google Fonts, gráficos, exportação em PDF vetorial e PPTX.",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "Posts para redes sociais, apresentações, vídeo, impressão, sites e documentos — tudo original e gratuito.",
- "{name} — designs started from it follow this team’s brand controls": "{name} — os designs criados a partir dele seguem os controles de marca desta equipe"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — os designs criados a partir dele seguem os controles de marca desta equipe",
+ "Brand kits": "Kits de marca",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "Todos da equipe podem usar esses kits nos designs da equipe. Para alterar um kit, abra um design e use o painel Marca.",
+ "This team has no brand kits yet.": "Esta equipe ainda não tem kits de marca.",
+ "{n} graphic|{n} graphics": {
+  "one": "{n} gráfico",
+  "many": "{n} gráficos",
+  "other": "{n} gráficos"
+ },
+ "{n} logo|{n} logos": {
+  "one": "{n} logo",
+  "many": "{n} logos",
+  "other": "{n} logos"
+ },
+ "{n} photo|{n} photos": {
+  "one": "{n} foto",
+  "many": "{n} fotos",
+  "other": "{n} fotos"
+ },
+ "{team} · brand kits": "{team} · kits de marca",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Ainda não enviada, então uma fonte substituta aparece no lugar: {fonts}. Envie os arquivos de fonte em Fontes da marca.",
+ "Add section": "Adicionar seção",
+ "Brand guidelines": "Diretrizes da marca",
+ "Collapse": "Recolher",
+ "Edit guidelines": "Editar diretrizes",
+ "Expand": "Expandir",
+ "Give every section a title.": "Dê um título a cada seção.",
+ "Guidelines saved": "Diretrizes salvas",
+ "Import Markdown": "Importar Markdown",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "Importe arquivos Markdown (o README de um design system, páginas de um manual da marca): cada título “##” vira uma seção, e uma seção com o mesmo título é substituída. Você também pode escrever seções aqui.",
+ "Imported {n} section|Imported {n} sections": {
+  "one": "{n} seção importada",
+  "many": "{n} seções importadas",
+  "other": "{n} seções importadas"
+ },
+ "No guidelines yet.": "Ainda não há diretrizes.",
+ "Read guidelines": "Ler diretrizes",
+ "Remove section": "Remover seção",
+ "Section text": "Texto da seção",
+ "Section title": "Título da seção",
+ "Section title, e.g. Colour": "Título da seção, por ex. Cor",
+ "Up to {n} sections. Merge or remove some.": "Até {n} seções. Junte ou remova algumas.",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "Seu manual da marca ou a documentação do seu design system. Assistentes de IA que usam o conector do {brand} a leem antes de criar com este kit.",
+ "{n} section|{n} sections": {
+  "one": "{n} seção",
+  "many": "{n} seções",
+  "other": "{n} seções"
+ },
+ "{used} of {max} characters": "{used} de {max} caracteres"
 }

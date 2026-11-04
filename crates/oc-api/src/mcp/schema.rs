@@ -291,6 +291,7 @@ fn tool_schema(name: &str) -> Option<Schema> {
     let page = || z::union(vec![z::str(), z::num().int().min(1.0)]).optional();
     Some(match name {
         "get_design_guide" | "get_brand_kit" => z::obj([]),
+        "get_brand_guidelines" => z::obj([("brand_kit", z::str().min(1.0).max(80.0)), ("sections", z::array(z::str().max(120.0)).max(60.0).optional())]),
         "list_designs" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(50.0).optional())]),
         "list_size_presets" => z::obj([("query", z::str().max(80.0).optional())]),
         "search_templates" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(40.0).optional())]),
@@ -328,6 +329,7 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ("height", z::num().min(16.0).max(20000.0).optional()),
             ("unit", z::enumeration(&["px", "mm", "cm", "in", "pt"]).optional()),
             ("template_id", z::str().optional()),
+            ("brand_kit", z::str().max(80.0).optional()),
         ]),
         "get_design" => z::obj([("design_id", z::str()), ("page", page())]),
         "screenshot_page" => z::obj([("design_id", z::str()), ("page", page()), ("width", z::num().int().min(200.0).max(2000.0).optional())]),
@@ -356,9 +358,9 @@ fn tool_schema(name: &str) -> Option<Schema> {
     })
 }
 
-pub const TOOLS: [&str; 19] = [
+pub const TOOLS: [&str; 20] = [
     "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link",
-    "get_brand_kit", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
+    "get_brand_kit", "get_brand_guidelines", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
 ];
 
 /// `getDotPath(path)` of the SDK.

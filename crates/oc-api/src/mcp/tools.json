@@ -283,11 +283,48 @@
   {
    "name": "get_brand_kit",
    "title": "Brand kit",
-   "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name) and brand voice. Check this before designing for a brand.",
+   "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name) brand voice, and the outline of the kit's written guidelines (its brand book; read them with get_brand_guidelines). missingFonts lists kit fonts that aren't uploaded yet. Check this before designing for a brand, and pass the kit's name to create_design as brand_kit.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {}
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "get_brand_guidelines",
+   "title": "Brand guidelines",
+   "description": "A brand kit's written guidelines: its brand book or design system documentation (voice and copy, colour, typography, logo use, layout, imagery, motifs, dos and don'ts), in sections. Read them before designing with a kit that lists guidelines in get_brand_kit, and follow them throughout. Give the kit's name; optionally name sections to read only those (long guidelines come in parts and list the sections left).",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "brand_kit": {
+      "description": "The kit's name, as get_brand_kit lists it",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+     },
+     "sections": {
+      "description": "Section titles to read (matched loosely); omit for all",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "maxLength": 120
+      },
+      "maxItems": 60
+     }
+    },
+    "required": [
+     "brand_kit"
+    ]
    },
    "annotations": {
     "readOnlyHint": true,
@@ -339,7 +376,7 @@
   {
    "name": "create_design",
    "title": "Create design",
-   "description": "Create a new design from a size preset, a custom size, or a template. Returns its id, editUrl and contents.",
+   "description": "Create a new design from a size preset, a custom size, or a template. When it's for a brand or a design system the user selected, pass that brand kit's name as brand_kit (see get_brand_kit): a team's kit puts the design in the team, and the reply and get_design then carry the kit's fonts, colours, logos, graphics and voice. Returns its id, editUrl and contents.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -377,6 +414,11 @@
      "template_id": {
       "description": "Start from this template (search_templates)",
       "type": "string"
+     },
+     "brand_kit": {
+      "description": "Name of the brand kit to design with (get_brand_kit), e.g. the design system the user selected",
+      "type": "string",
+      "maxLength": 80
      }
     },
     "required": [

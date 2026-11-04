@@ -2714,5 +2714,43 @@
  "Full control, including deleting the team.": "完全控制权限，包括删除团队。",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "关键帧动画、1,950 种 Google Fonts 字体、图表、矢量 PDF 和 PPTX 导出。",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "社交帖子、演示文稿、视频、印刷品、网站和文档 — 全部原创，完全免费。",
- "{name} — designs started from it follow this team’s brand controls": "{name} — 由此创建的设计遵循此团队的品牌管控"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — 由此创建的设计遵循此团队的品牌管控",
+ "Brand kits": "品牌套件",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "团队中的每个人都可以在团队设计中使用这些套件。要修改套件，请打开一个设计并使用品牌面板。",
+ "This team has no brand kits yet.": "该团队还没有品牌套件。",
+ "{n} graphic|{n} graphics": {
+  "other": "{n} 个图形"
+ },
+ "{n} logo|{n} logos": {
+  "other": "{n} 个标志"
+ },
+ "{n} photo|{n} photos": {
+  "other": "{n} 张照片"
+ },
+ "{team} · brand kits": "{team} · 品牌套件",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "尚未上传，因此显示的是替代字体：{fonts}。请在“品牌字体”中上传字体文件。",
+ "Add section": "添加章节",
+ "Brand guidelines": "品牌规范",
+ "Collapse": "收起",
+ "Edit guidelines": "编辑规范",
+ "Expand": "展开",
+ "Give every section a title.": "请为每个章节添加标题。",
+ "Guidelines saved": "规范已保存",
+ "Import Markdown": "导入 Markdown",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "导入 Markdown 文件（设计系统的 README、品牌手册页面）：每个“##”标题会成为一个章节，标题相同的章节会被替换。你也可以在这里编写章节。",
+ "Imported {n} section|Imported {n} sections": {
+  "other": "已导入 {n} 个章节"
+ },
+ "No guidelines yet.": "还没有规范。",
+ "Read guidelines": "阅读规范",
+ "Remove section": "删除章节",
+ "Section text": "章节正文",
+ "Section title": "章节标题",
+ "Section title, e.g. Colour": "章节标题，例如“颜色”",
+ "Up to {n} sections. Merge or remove some.": "最多 {n} 个章节。请合并或删除一些。",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "你的品牌手册或设计系统文档。使用 {brand} 连接器的 AI 助手会在用此套件设计前阅读它。",
+ "{n} section|{n} sections": {
+  "other": "{n} 个章节"
+ },
+ "{used} of {max} characters": "{used} / {max} 个字符"
 }
