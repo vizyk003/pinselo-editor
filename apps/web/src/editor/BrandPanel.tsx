@@ -1,6 +1,6 @@
 /**
  * Brand panel (Brand Hub, A8): every brand kit the user can see (personal and team), a kit switcher, kit editing
- * (colours with names, palettes, fonts by role, logos, photos, graphics, brand voice) and "Apply kit", which
+ * (colours with names, palettes, fonts by role, logos, photos, graphics, brand voice, written guidelines) and "Apply kit", which
  * re-maps the design's colours (nearest hue/luminance) and fonts (by role) to the kit.
  */
 import { designColors, fontSetOps, hex, solid, type AssetRef, type Editor, type TextEl } from '@oc/engine';
@@ -15,6 +15,7 @@ import { useDoc, useEd } from './context';
 import { addText, assetRef, insertAssetAt } from './insert';
 import { setAssetDrag, withFillColor } from './dropTarget';
 import { SwatchInput } from './ColorPicker';
+import { BrandGuidelines } from './BrandGuidelines';
 
 const FONT_ROLES: Array<[KitFontRole, string, number, number]> = [
   ['heading', tk('Heading'), 64, 800], ['subheading', tk('Subheading'), 40, 600], ['body', tk('Body text'), 24, 400],
@@ -254,6 +255,8 @@ export function BrandPanel() {
         <textarea className="input" rows={4} key={`voice-${kit.id}`} defaultValue={kit.voice} maxLength={4000} placeholder={t('How your brand sounds: tone, words to use and avoid…')}
           onBlur={(e) => e.target.value !== kit.voice && save({ voice: e.target.value })} aria-label={t('Brand voice')} />
       ) : <p className="muted" style={{ margin: 0, fontSize: 13, whiteSpace: 'pre-wrap' }}>{kit.voice || t('No brand voice notes yet.')}</p>}
+
+      <BrandGuidelines kitId={kit.id} canEdit={canEdit} />
     </>
   );
 }

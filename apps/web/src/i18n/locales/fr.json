@@ -2824,5 +2824,33 @@
   "other": "{n} photos"
  },
  "{team} · brand kits": "{team} · kits de marque",
- "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Pas encore importée : une police de remplacement s’affiche à la place : {fonts}. Importez les fichiers de police dans Polices de la marque."
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Pas encore importée : une police de remplacement s’affiche à la place : {fonts}. Importez les fichiers de police dans Polices de la marque.",
+ "Add section": "Ajouter une section",
+ "Brand guidelines": "Charte de marque",
+ "Collapse": "Réduire",
+ "Edit guidelines": "Modifier la charte",
+ "Expand": "Développer",
+ "Give every section a title.": "Donnez un titre à chaque section.",
+ "Guidelines saved": "Charte enregistrée",
+ "Import Markdown": "Importer du Markdown",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "Importez des fichiers Markdown (le README d’un design system, les pages d’une charte) : chaque titre « ## » devient une section, et une section portant le même titre est remplacée. Vous pouvez aussi écrire des sections ici.",
+ "Imported {n} section|Imported {n} sections": {
+  "one": "{n} section importée",
+  "many": "{n} sections importées",
+  "other": "{n} sections importées"
+ },
+ "No guidelines yet.": "Pas encore de charte.",
+ "Read guidelines": "Lire la charte",
+ "Remove section": "Supprimer la section",
+ "Section text": "Texte de la section",
+ "Section title": "Titre de la section",
+ "Section title, e.g. Colour": "Titre de la section, par ex. Couleur",
+ "Up to {n} sections. Merge or remove some.": "Jusqu’à {n} sections. Fusionnez-en ou supprimez-en.",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "Votre charte de marque ou la documentation de votre design system. Les assistants IA qui utilisent le connecteur {brand} la lisent avant de concevoir avec ce kit.",
+ "{n} section|{n} sections": {
+  "one": "{n} section",
+  "many": "{n} sections",
+  "other": "{n} sections"
+ },
+ "{used} of {max} characters": "{used} sur {max} caractères"
 }

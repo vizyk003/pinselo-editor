@@ -2777,5 +2777,31 @@
   "other": "{n} Fotos"
  },
  "{team} · brand kits": "{team} · Markenkits",
- "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Noch nicht hochgeladen, daher wird stattdessen eine Ersatzschrift angezeigt: {fonts}. Lade die Schriftdateien unter Markenschriften hoch."
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Noch nicht hochgeladen, daher wird stattdessen eine Ersatzschrift angezeigt: {fonts}. Lade die Schriftdateien unter Markenschriften hoch.",
+ "Add section": "Abschnitt hinzufügen",
+ "Brand guidelines": "Markenrichtlinien",
+ "Collapse": "Einklappen",
+ "Edit guidelines": "Richtlinien bearbeiten",
+ "Expand": "Ausklappen",
+ "Give every section a title.": "Gib jedem Abschnitt einen Titel.",
+ "Guidelines saved": "Richtlinien gespeichert",
+ "Import Markdown": "Markdown importieren",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "Importiere Markdown-Dateien (die README eines Designsystems, Seiten eines Markenhandbuchs): Jede „##“-Überschrift wird zu einem Abschnitt, und ein Abschnitt mit demselben Titel wird ersetzt. Du kannst Abschnitte auch hier schreiben.",
+ "Imported {n} section|Imported {n} sections": {
+  "one": "{n} Abschnitt importiert",
+  "other": "{n} Abschnitte importiert"
+ },
+ "No guidelines yet.": "Noch keine Richtlinien.",
+ "Read guidelines": "Richtlinien lesen",
+ "Remove section": "Abschnitt entfernen",
+ "Section text": "Abschnittstext",
+ "Section title": "Abschnittstitel",
+ "Section title, e.g. Colour": "Abschnittstitel, z. B. Farbe",
+ "Up to {n} sections. Merge or remove some.": "Höchstens {n} Abschnitte. Fasse einige zusammen oder entferne sie.",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "Dein Markenhandbuch oder die Dokumentation deines Designsystems. KI-Assistenten, die den {brand}-Connector nutzen, lesen sie, bevor sie mit diesem Kit gestalten.",
+ "{n} section|{n} sections": {
+  "one": "{n} Abschnitt",
+  "other": "{n} Abschnitte"
+ },
+ "{used} of {max} characters": "{used} von {max} Zeichen"
 }

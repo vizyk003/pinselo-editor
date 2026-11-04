@@ -2824,5 +2824,33 @@
   "other": "{n} fotos"
  },
  "{team} · brand kits": "{team} · kits de marca",
- "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Aún no se ha subido, así que se muestra una fuente alternativa: {fonts}. Sube los archivos de fuente en Fuentes de marca."
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Aún no se ha subido, así que se muestra una fuente alternativa: {fonts}. Sube los archivos de fuente en Fuentes de marca.",
+ "Add section": "Añadir sección",
+ "Brand guidelines": "Guía de marca",
+ "Collapse": "Contraer",
+ "Edit guidelines": "Editar guía",
+ "Expand": "Expandir",
+ "Give every section a title.": "Ponle un título a cada sección.",
+ "Guidelines saved": "Guía guardada",
+ "Import Markdown": "Importar Markdown",
+ "Import Markdown files (a design system README, brand book pages): each “##” heading becomes a section, and a section with the same title is replaced. You can also write sections here.": "Importa archivos Markdown (el README de un sistema de diseño, páginas de un manual de marca): cada encabezado «##» se convierte en una sección, y una sección con el mismo título se reemplaza. También puedes escribir secciones aquí.",
+ "Imported {n} section|Imported {n} sections": {
+  "one": "{n} sección importada",
+  "many": "{n} secciones importadas",
+  "other": "{n} secciones importadas"
+ },
+ "No guidelines yet.": "Aún no hay guía.",
+ "Read guidelines": "Leer guía",
+ "Remove section": "Quitar sección",
+ "Section text": "Texto de la sección",
+ "Section title": "Título de la sección",
+ "Section title, e.g. Colour": "Título de la sección, p. ej. Color",
+ "Up to {n} sections. Merge or remove some.": "Hasta {n} secciones. Combina o quita algunas.",
+ "Your brand book or design system documentation. AI assistants using the {brand} connector read it before designing with this kit.": "Tu manual de marca o la documentación de tu sistema de diseño. Los asistentes de IA que usan el conector de {brand} la leen antes de diseñar con este kit.",
+ "{n} section|{n} sections": {
+  "one": "{n} sección",
+  "many": "{n} secciones",
+  "other": "{n} secciones"
+ },
+ "{used} of {max} characters": "{used} de {max} caracteres"
 }
