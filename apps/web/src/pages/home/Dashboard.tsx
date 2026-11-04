@@ -12,6 +12,7 @@ import { CategoryTiles, PopularSizes } from './HomeSections';
 import { QuickTiles, type QuickAction } from './quickTiles';
 import { FileDropArea, IMPORT_ACCEPT, MEDIA_ACCEPT, useFilePicker, useStartFromFile } from './StartFromUpload';
 import { TemplateCard } from './Templates';
+import { keepIfSame, useLiveRefresh } from '../../lib/liveRefresh';
 
 export { QUICK } from './quickTiles';
 
@@ -28,7 +29,9 @@ export function Dashboard({ onCreate, folders }: { onCreate: (category?: PresetC
   const [designs, setDesigns] = useState<DesignSummary[] | null>(null);
   const [shown, setShown] = useState(PAGE);
   const [tpl, setTpl] = useState<{ templates: TemplateSummary[]; categories: Array<{ category: string; n: number }> }>({ templates: [], categories: [] });
-  const load = useCallback(() => api.designs({ filter: 'recent', ...(q ? { q } : {}) }).then((r) => setDesigns(r.designs)), [q]);
+  const load = useCallback(() => api.designs({ filter: 'recent', ...(q ? { q } : {}) }).then((r) => setDesigns((prev) => keepIfSame(prev, r.designs))), [q]);
+  // Designs an AI assistant makes through the connector appear without a reload.
+  useLiveRefresh(load);
   useEffect(() => {
     setShown(PAGE);
     void load();

@@ -25,6 +25,7 @@ import {
 } from './projectsModel';
 import { MEDIA_ACCEPT, IMPORT_ACCEPT, useStartFromFile } from './StartFromUpload';
 import './projects.css';
+import { keepIfSame, useLiveRefresh } from '../../lib/liveRefresh';
 
 const TYPE_OPTIONS: Array<{ value: string; label: string }> = [
   { value: '', label: tk('All types') },
@@ -448,13 +449,15 @@ export function ProjectsPage({ folders, reload }: { folders: FolderT[]; reload: 
   const deep = searching || (!folderId && list.owner !== 'anyone');
   const upload = useUploadHere(folderId);
 
-  const load = useCallback(async () => {
+  // `quiet`: a background refresh (useLiveRefresh), which leaves the list as it is when the request fails.
+  const load = useCallback(async (quiet = false) => {
     if (list.type === 'folder') return setDesigns([]);
     try {
       const r = await projectsApi.designs({ filter: 'folder', folder: folderId ?? undefined, q: list.q, surface: list.type, sort: list.sort, owner: list.owner, deep });
       setMissing(false);
-      setDesigns(r.designs);
+      setDesigns((prev) => keepIfSame(prev, r.designs));
     } catch (e) {
+      if (quiet) return;
       // A folder that's gone, isn't the user's, or isn't a folder id at all.
       setMissing(e instanceof ApiError && (e.status === 404 || e.status === 400));
       setDesigns([]);
@@ -465,10 +468,12 @@ export function ProjectsPage({ folders, reload }: { folders: FolderT[]; reload: 
     void load();
   }, [load]);
   const showRecents = !folderId && !filtered;
-  const loadRecent = useCallback(() => api.designs({ filter: 'recent' }).then((r) => setRecent(r.designs.slice(0, RECENTS))).catch(() => setRecent([])), []);
+  const loadRecent = useCallback((quiet = false) => api.designs({ filter: 'recent' }).then((r) => setRecent((prev) => keepIfSame(prev, r.designs.slice(0, RECENTS)))).catch(() => { if (!quiet) setRecent([]); }), []);
   useEffect(() => {
     if (showRecents) void loadRecent();
   }, [showRecents, loadRecent]);
+  // Designs an AI assistant makes through the connector appear without a reload.
+  useLiveRefresh(() => Promise.all([load(true), showRecents ? loadRecent(true) : null]));
   const refresh = useCallback(() => {
     void reload();
     void load();
@@ -639,11 +644,14 @@ export function DesignList({ title, filter, folders, hint, params, actions, relo
   const trash = filter === 'trash';
   // Starred also lists starred folders (g20); the other lists hold designs only.
   const withFolders = filter === 'starred';
-  const load = useCallback(() => {
+  // `quiet`: a background refresh (useLiveRefresh), which leaves the list as it is when the request fails.
+  const load = useCallback((quiet = false) => {
     if (list.type === 'folder') return Promise.resolve(setDesigns([]));
     return projectsApi.designs({ filter, ...(JSON.parse(key) as Record<string, string>), q: list.q, surface: list.type, sort: list.sort, owner: list.owner })
-      .then((r) => setDesigns(r.designs), () => setDesigns([]));
+      .then((r) => setDesigns((prev) => keepIfSame(prev, r.designs)), () => { if (!quiet) setDesigns([]); });
   }, [filter, key, list.q, list.type, list.sort, list.owner]);
+  // Designs an AI assistant makes through the connector (or a teammate) appear without a reload.
+  useLiveRefresh(() => load(true));
   useEffect(() => {
     setDesigns(null);
     void load();
