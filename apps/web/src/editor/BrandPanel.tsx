@@ -233,6 +233,16 @@ export function BrandPanel() {
           </div>
         );
       })}
+      {(() => {
+        // Kit fonts that are neither Google fonts nor uploaded draw in a fallback until someone uploads them.
+        const known = new Set(engine.fonts.families().map((x) => x.family.toLowerCase()));
+        const missing = [...new Set(Object.values(kit.fonts).filter((f): f is string => Boolean(f) && !known.has(f!.toLowerCase())))];
+        return missing.length ? (
+          <p className="faint" role="status" style={{ margin: 0, fontSize: 12 }}>
+            {t('Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.', { fonts: missing.join(', ') })}
+          </p>
+        ) : null;
+      })()}
       <BrandFonts canUpload={!controls.restrictUploads} />
 
       <AssetGroup title={t('Logos')} icon={<ImageIcon size={13} />} ids={kit.logos} canEdit={canEdit} onChange={(logos) => save({ logos })} />

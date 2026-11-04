@@ -2823,5 +2823,6 @@
   "many": "{n} photos",
   "other": "{n} photos"
  },
- "{team} · brand kits": "{team} · kits de marque"
+ "{team} · brand kits": "{team} · kits de marque",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "Pas encore importée : une police de remplacement s’affiche à la place : {fonts}. Importez les fichiers de police dans Polices de la marque."
 }

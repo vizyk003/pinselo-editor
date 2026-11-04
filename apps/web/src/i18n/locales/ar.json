@@ -2972,5 +2972,6 @@
   "many": "{n} صورة",
   "other": "{n} صورة"
  },
- "{team} · brand kits": "{team} · حزم العلامة التجارية"
+ "{team} · brand kits": "{team} · حزم العلامة التجارية",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "لم يُرفع بعد، لذا يظهر خط بديل بدلًا منه: {fonts}. ارفع ملفات الخطوط ضمن خطوط العلامة التجارية."
 }

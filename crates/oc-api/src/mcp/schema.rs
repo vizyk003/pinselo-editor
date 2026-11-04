@@ -328,6 +328,7 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ("height", z::num().min(16.0).max(20000.0).optional()),
             ("unit", z::enumeration(&["px", "mm", "cm", "in", "pt"]).optional()),
             ("template_id", z::str().optional()),
+            ("brand_kit", z::str().max(80.0).optional()),
         ]),
         "get_design" => z::obj([("design_id", z::str()), ("page", page())]),
         "screenshot_page" => z::obj([("design_id", z::str()), ("page", page()), ("width", z::num().int().min(200.0).max(2000.0).optional())]),

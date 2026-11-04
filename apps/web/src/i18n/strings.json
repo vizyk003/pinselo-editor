@@ -1372,6 +1372,7 @@
  "Not configured on this server. An admin sets {vars}.": "social/ConnectedAccounts.tsx",
  "Not connected": "components/ConnectAi.tsx",
  "Not now": "pages/Auth.tsx",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "editor/BrandPanel.tsx",
  "Not used yet": "components/ConnectAi.tsx",
  "Note": "pages/EditorPage.tsx",
  "Notes": "editor/PageStrip.tsx",

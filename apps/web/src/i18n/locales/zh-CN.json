@@ -2727,5 +2727,6 @@
  "{n} photo|{n} photos": {
   "other": "{n} 张照片"
  },
- "{team} · brand kits": "{team} · 品牌套件"
+ "{team} · brand kits": "{team} · 品牌套件",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "尚未上传，因此显示的是替代字体：{fonts}。请在“品牌字体”中上传字体文件。"
 }

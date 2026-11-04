@@ -352,6 +352,97 @@ fn trimmed_query(a: &Value) -> Option<String> {
 #[derive(Default)]
 struct Fonts(OnceLock<oc_gfonts::GoogleFonts>);
 
+/// What to do with a design's brand kit (create_design and get_design).
+const KIT_NEXT: &str = "Design with this kit: its fonts for each role, only its colours, its logo, and its graphics and photos via add_image { asset } (or { brand: { kit, name } }). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
+
+fn gfonts(s: &AppState) -> oc_gfonts::GoogleFonts {
+    s.local::<Fonts>().0.get_or_init(|| oc_gfonts::GoogleFonts::new(s.paths.fonts.clone(), s.pool.clone(), s.store.clone())).clone()
+}
+
+/// Lower-case names of every family the editor can draw for this user: bundled, Google and the fonts uploaded to
+/// their workspaces (what `/api/fonts/manifest.json` gives the editor).
+async fn usable_families(s: &AppState, user_id: uuid::Uuid) -> Result<std::collections::HashSet<String>, Fail> {
+    let manifest = gfonts(s).full_manifest().await.map_err(|e| Fail::Other(e.to_string()))?;
+    let mut set: std::collections::HashSet<String> = manifest.families.iter().map(|f| f.family.to_lowercase()).collect();
+    let uploaded: Vec<String> = sqlx::query_scalar("SELECT DISTINCT f.family FROM custom_fonts f JOIN memberships m ON m.workspace_id = f.workspace_id WHERE m.user_id = $1")
+        .bind(user_id)
+        .fetch_all(&s.pool)
+        .await?;
+    set.extend(uploaded.into_iter().map(|f| f.to_lowercase()));
+    Ok(set)
+}
+
+/// Kit fonts (by role) that are neither a Google or bundled font nor uploaded where this user can use them. The
+/// editor would draw a fallback for them, so the assistant must say so instead of using them silently.
+fn missing_fonts(kit: &Value, usable: &std::collections::HashSet<String>) -> Vec<String> {
+    let mut out: Vec<String> = Vec::new();
+    for family in kit["fonts"].as_object().into_iter().flat_map(|f| f.values()).filter_map(Value::as_str) {
+        let f = family.trim();
+        if !f.is_empty() && !usable.contains(&f.to_lowercase()) && !out.iter().any(|o| o.eq_ignore_ascii_case(f)) {
+            out.push(f.to_owned());
+        }
+    }
+    out
+}
+
+/// What the assistant sees of brand kits (`get_brand_kit`, and the chosen kit in `create_design` and `get_design`):
+/// colours, fonts by role, logos, graphics and photos with their file names, voice, and fonts that won't render.
+async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result<Vec<Value>, Fail> {
+    // File names let the assistant choose without opening every image.
+    let ids: Vec<String> = kits
+        .iter()
+        .flat_map(|k| ["logos", "graphics", "photos"].map(|key| &k[key]))
+        .filter_map(Value::as_array)
+        .flatten()
+        .filter_map(Value::as_str)
+        .map(str::to_owned)
+        .collect();
+    let names: HashMap<String, String> = sqlx::query_as::<_, (String, Option<String>)>("SELECT id, name FROM assets WHERE id = ANY($1) AND trashed_at IS NULL")
+        .bind(&ids)
+        .fetch_all(&s.pool)
+        .await?
+        .into_iter()
+        .map(|(id, name)| (id, name.unwrap_or_default()))
+        .collect();
+    let usable = usable_families(s, user_id).await?;
+    Ok(kits
+        .iter()
+        .map(|k| {
+            let mut m = Map::new();
+            m.insert("name".into(), k["name"].clone());
+            if !view::truthy(k.get("personal")) {
+                m.insert("team".into(), k["workspace"].clone());
+            }
+            if view::truthy(k.get("isDefault")) {
+                m.insert("default".into(), k["isDefault"].clone());
+            }
+            for key in ["colors", "palettes", "fonts"] {
+                if let Some(v) = k.get(key) {
+                    m.insert(key.into(), v.clone());
+                }
+            }
+            let missing = missing_fonts(k, &usable);
+            if !missing.is_empty() {
+                m.insert(
+                    "missingFonts".into(),
+                    json!({
+                        "families": missing,
+                        "note": "These kit fonts aren't uploaded, so the editor shows a fallback font in their place. Still use them for their roles (the design switches to them once they're uploaded), and tell the user plainly that the font files must be uploaded in Brand Hub (the kit's Fonts) before the design looks right.",
+                    }),
+                );
+            }
+            for (key, cap) in [("logos", 30), ("graphics", 60), ("photos", 30)] {
+                let items = k[key].as_array().map(|ids| ids.iter().take(cap).map(|id| named_asset(id, &names)).collect()).unwrap_or_default();
+                m.insert(key.into(), Value::Array(items));
+            }
+            if view::truthy(k.get("voice")) {
+                m.insert("voice".into(), k["voice"].clone());
+            }
+            Value::Object(m)
+        })
+        .collect())
+}
+
 /// `JSON.stringify(page)` in messages (`No page ${page}.`).
 fn page_label(p: &Value) -> String {
     match p {
@@ -503,52 +594,14 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             if kits.is_empty() {
                 return Ok(text(&json!("No brand kit yet. Follow the design system the user selected or named, if you can read it; otherwise pick colours and fonts that suit the request. Check list_uploads for their logo and images.")));
             }
-            // File names let the assistant choose without opening every image.
-            let ids: Vec<String> = kits
-                .iter()
-                .flat_map(|k| ["logos", "graphics", "photos"].map(|key| &k[key]))
-                .filter_map(Value::as_array)
-                .flatten()
-                .filter_map(Value::as_str)
-                .map(str::to_owned)
-                .collect();
-            let names: HashMap<String, String> = sqlx::query_as::<_, (String, Option<String>)>("SELECT id, name FROM assets WHERE id = ANY($1) AND trashed_at IS NULL")
-                .bind(&ids)
-                .fetch_all(&s.pool)
-                .await?
-                .into_iter()
-                .map(|(id, name)| (id, name.unwrap_or_default()))
-                .collect();
-            let list: Vec<Value> = kits
-                .iter()
-                .map(|k| {
-                    let mut m = Map::new();
-                    m.insert("name".into(), k["name"].clone());
-                    if !view::truthy(k.get("personal")) {
-                        m.insert("team".into(), k["workspace"].clone());
-                    }
-                    if view::truthy(k.get("isDefault")) {
-                        m.insert("default".into(), k["isDefault"].clone());
-                    }
-                    for key in ["colors", "palettes", "fonts"] {
-                        if let Some(v) = k.get(key) {
-                            m.insert(key.into(), v.clone());
-                        }
-                    }
-                    for (key, cap) in [("logos", 30), ("graphics", 60), ("photos", 30)] {
-                        let items = k[key].as_array().map(|ids| ids.iter().take(cap).map(|id| named_asset(id, &names)).collect()).unwrap_or_default();
-                        m.insert(key.into(), Value::Array(items));
-                    }
-                    if view::truthy(k.get("voice")) {
-                        m.insert("voice".into(), k["voice"].clone());
-                    }
-                    Value::Object(m)
-                })
-                .collect();
-            Ok(text(&json!({ "kits": list })))
+            let list = kit_views(s, u.id, &kits.iter().collect::<Vec<_>>()).await?;
+            Ok(text(&json!({
+                "kits": list,
+                "next": "Pass the kit's name as brand_kit to create_design, so the design is made where the kit and its fonts live.",
+            })))
         }
         "search_fonts" => {
-            let g = s.local::<Fonts>().0.get_or_init(|| oc_gfonts::GoogleFonts::new(s.paths.fonts.clone(), s.pool.clone(), s.store.clone())).clone();
+            let g = gfonts(s);
             let manifest = serde_json::to_value(g.full_manifest().await.map_err(|e| Fail::Other(e.to_string()))?).map_err(|e| Fail::Other(e.to_string()))?;
             let pop: HashMap<String, f64> = g.catalog().iter().map(|f| (f.family.clone(), f.popularity.as_f64().unwrap_or(f64::NAN))).collect();
             let q = opt_str(a, "query").map(|q| crate::js::trim(&q.to_lowercase()).to_owned());
@@ -587,6 +640,21 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                     b.insert(to.into(), v.clone());
                 }
             }
+            // A team's kit puts the design in that team, where the kit's fonts, templates and brand rules apply.
+            let want = opt_str(a, "brand_kit").filter(|k| !k.trim().is_empty());
+            let kits = if want.is_some() { crate::routes::brandhub::accessible_kits(s, u.id).await? } else { Vec::new() };
+            let kit = match &want {
+                Some(w) => Some(find_kit(&kits, w).map_err(Fail::Tool)?),
+                None => None,
+            };
+            if let Some(k) = kit {
+                if !view::truthy(k.get("personal"))
+                    && let Some(ws) = k["workspaceId"].as_str()
+                {
+                    b.insert("workspaceId".into(), json!(ws));
+                }
+                b.insert("brandKit".into(), json!({ "id": k["id"], "name": k["name"] }));
+            }
             let id = match crate::routes::designs::create_design_for_user(s, u.id, &Value::Object(b), "ai").await? {
                 Ok(id) => id,
                 Err((_, body)) => {
@@ -603,7 +671,22 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                 }
                 None => Value::Null,
             };
-            Ok(text(&json!({ "id": id, "editUrl": edit_url(s, &id), "design": view })))
+            let mut out = json!({ "id": id, "editUrl": edit_url(s, &id), "design": view });
+            match kit {
+                Some(k) => {
+                    out["brandKit"] = kit_views(s, u.id, &[k]).await?.pop().unwrap_or(Value::Null);
+                    out["next"] = json!(KIT_NEXT);
+                }
+                None => {
+                    // Assistants that skipped get_brand_kit learn here that the user has kits to design with.
+                    let names: Vec<Value> = crate::routes::brandhub::accessible_kits(s, u.id).await?.iter().map(|k| k["name"].clone()).collect();
+                    if !names.is_empty() {
+                        out["brandKits"] = json!(names);
+                        out["next"] = json!("No brand kit was named. If this design is for one of these brands, or for a design system the user selected, call get_brand_kit and use that kit's fonts, colours, logo and graphics (create_design with brand_kit links the design to it).");
+                    }
+                }
+            }
+            Ok(text(&out))
         }
         "copy_design" => {
             need(u, "designs:write")?;
@@ -728,6 +811,14 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             }
             if let Some(r) = super::brand::rules(s, u.id, &id).await? {
                 out.insert("brand".into(), r.view());
+            }
+            // The kit the design was made with (create_design { brand_kit }), while the user can still use it.
+            if let Some(kit_id) = json.pointer("/meta/brandKit/id").and_then(Value::as_str) {
+                let kits = crate::routes::brandhub::accessible_kits(s, u.id).await?;
+                if let Some(k) = kits.iter().find(|k| k["id"].as_str() == Some(kit_id)) {
+                    out.insert("brandKit".into(), kit_views(s, u.id, &[k]).await?.pop().unwrap_or(Value::Null));
+                    out.insert("next".into(), json!(KIT_NEXT));
+                }
             }
             Ok(text(&Value::Object(out)))
         }
@@ -984,6 +1075,14 @@ mod kit_lookup_tests {
         assert_eq!(find_kit(&kits, "amigos").unwrap()["name"], "Amigos");
         assert_eq!(find_kit(&kits, "alt green").unwrap()["name"], "Amigos alt green");
         assert_eq!(find_kit(&kits, "HORROR").unwrap()["name"], "Horror Weeks");
+    }
+
+    #[test]
+    fn kit_fonts_the_editor_cannot_draw_are_missing() {
+        let usable: std::collections::HashSet<String> = ["hanken grotesk", "inter"].map(str::to_owned).into();
+        let kit = json!({ "fonts": { "heading": "Canter", "subheading": "canter", "body": "Hanken Grotesk", "quote": "", "caption": "INTER" } });
+        assert_eq!(missing_fonts(&kit, &usable), vec!["Canter".to_owned()]);
+        assert!(missing_fonts(&json!({ "fonts": {} }), &usable).is_empty());
     }
 
     #[test]
