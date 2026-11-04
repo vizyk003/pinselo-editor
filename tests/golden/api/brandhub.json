@@ -1553,6 +1553,50 @@
        "workspace_id": "00000000-0000-4000-8000-000000005000"
       },
       {
+       "action": "brand.kit_updated",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.18",
+       "meta": {
+        "changed": {
+         "name": {
+          "from": "Second",
+          "to": "Renamed"
+         }
+        }
+       },
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_updated",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.19",
+       "meta": {
+        "changed": {
+         "colors": {
+          "from": [
+           {
+            "hex": "#7c3aed",
+            "name": "Primary"
+           }
+          ],
+          "to": [
+           {
+            "hex": "#00aaaa",
+            "name": "Teal"
+           }
+          ]
+         },
+         "voice": {
+          "from": "Friendly",
+          "to": "Calm"
+         }
+        }
+       },
+       "target": "00000000-0000-4000-8000-000000006000",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
        "action": "brand.kit_deleted",
        "actor_id": "00000000-0000-4000-8000-000000000001",
        "ip": "198.51.100.26",
@@ -2005,6 +2049,50 @@
        "ip": "198.51.100.8",
        "meta": null,
        "target": "{{kitC}}",
+       "workspace_id": "00000000-0000-4000-8000-000000005000"
+      },
+      {
+       "action": "brand.kit_updated",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.18",
+       "meta": {
+        "changed": {
+         "name": {
+          "from": "Second",
+          "to": "Renamed"
+         }
+        }
+       },
+       "target": "{{kitA}}",
+       "workspace_id": "00000000-0000-4000-8000-000000001001"
+      },
+      {
+       "action": "brand.kit_updated",
+       "actor_id": "00000000-0000-4000-8000-000000000001",
+       "ip": "198.51.100.19",
+       "meta": {
+        "changed": {
+         "colors": {
+          "from": [
+           {
+            "hex": "#7c3aed",
+            "name": "Primary"
+           }
+          ],
+          "to": [
+           {
+            "hex": "#00aaaa",
+            "name": "Teal"
+           }
+          ]
+         },
+         "voice": {
+          "from": "Friendly",
+          "to": "Calm"
+         }
+        }
+       },
+       "target": "00000000-0000-4000-8000-000000006000",
        "workspace_id": "00000000-0000-4000-8000-000000005000"
       },
       {
