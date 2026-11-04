@@ -2714,5 +2714,18 @@
  "Full control, including deleting the team.": "チームの削除を含む、すべての操作が可能です。",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "キーフレームアニメーション、1,950種類のGoogle Fonts、グラフ、ベクターPDFとPPTXのエクスポートに対応しています。",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "SNS投稿、プレゼンテーション、動画、印刷物、ウェブサイト、ドキュメントまで、すべてオリジナルで無料です。",
- "{name} — designs started from it follow this team’s brand controls": "{name} — ここから作成したデザインにはこのチームのブランドコントロールが適用されます"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — ここから作成したデザインにはこのチームのブランドコントロールが適用されます",
+ "Brand kits": "ブランドキット",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "チームの全員が、チームのデザインでこれらのキットを使えます。キットを変更するには、デザインを開いてブランドパネルを使ってください。",
+ "This team has no brand kits yet.": "このチームにはまだブランドキットがありません。",
+ "{n} graphic|{n} graphics": {
+  "other": "{n}個のグラフィック"
+ },
+ "{n} logo|{n} logos": {
+  "other": "{n}個のロゴ"
+ },
+ "{n} photo|{n} photos": {
+  "other": "{n}枚の写真"
+ },
+ "{team} · brand kits": "{team} · ブランドキット"
 }

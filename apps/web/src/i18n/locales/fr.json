@@ -2804,5 +2804,24 @@
  "Full control, including deleting the team.": "Contrôle total, y compris la suppression de l’équipe.",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "Animation par images clés, 1 950 Google Fonts, graphiques, export PDF vectoriel et PPTX.",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "Publications sociales, présentations, vidéos, impressions, sites web et documents — tous originaux et gratuits.",
- "{name} — designs started from it follow this team’s brand controls": "{name} — les designs créés à partir de ce modèle suivent les contrôles de la marque de cette équipe"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — les designs créés à partir de ce modèle suivent les contrôles de la marque de cette équipe",
+ "Brand kits": "Kits de marque",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "Tous les membres de l’équipe peuvent utiliser ces kits dans les designs de l’équipe. Pour modifier un kit, ouvrez un design et utilisez le panneau Marque.",
+ "This team has no brand kits yet.": "Cette équipe n’a pas encore de kit de marque.",
+ "{n} graphic|{n} graphics": {
+  "one": "{n} graphique",
+  "many": "{n} graphiques",
+  "other": "{n} graphiques"
+ },
+ "{n} logo|{n} logos": {
+  "one": "{n} logo",
+  "many": "{n} logos",
+  "other": "{n} logos"
+ },
+ "{n} photo|{n} photos": {
+  "one": "{n} photo",
+  "many": "{n} photos",
+  "other": "{n} photos"
+ },
+ "{team} · brand kits": "{team} · kits de marque"
 }

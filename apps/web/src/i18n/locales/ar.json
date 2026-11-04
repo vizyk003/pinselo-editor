@@ -2944,5 +2944,33 @@
  "Full control, including deleting the team.": "تحكّم كامل، بما في ذلك حذف الفريق.",
  "Keyframe animation, 1,950 Google Fonts, charts, vector PDF and PPTX export.": "رسوم متحركة بالإطارات المفتاحية، و1,950 خط Google Fonts، ومخططات، وتصدير PDF متجهي وPPTX.",
  "Social posts, presentations, video, print, websites and docs — all original and free.": "منشورات التواصل الاجتماعي، والعروض التقديمية، والفيديو، والمطبوعات، والمواقع الإلكترونية، والمستندات — كلها أصلية ومجانية.",
- "{name} — designs started from it follow this team’s brand controls": "{name} — التصاميم التي تبدأ منه تتبع عناصر تحكم العلامة التجارية لهذا الفريق"
+ "{name} — designs started from it follow this team’s brand controls": "{name} — التصاميم التي تبدأ منه تتبع عناصر تحكم العلامة التجارية لهذا الفريق",
+ "Brand kits": "حزم العلامة التجارية",
+ "Everyone in the team can use these kits in team designs. To change a kit, open a design and use the Brand panel.": "يمكن لكل أعضاء الفريق استخدام هذه الحزم في تصاميم الفريق. لتغيير حزمة، افتح تصميمًا واستخدم لوحة العلامة التجارية.",
+ "This team has no brand kits yet.": "لا توجد لدى هذا الفريق حزم علامة تجارية بعد.",
+ "{n} graphic|{n} graphics": {
+  "zero": "{n} رسم",
+  "one": "رسم واحد",
+  "two": "رسمان",
+  "few": "{n} رسومات",
+  "many": "{n} رسمًا",
+  "other": "{n} رسم"
+ },
+ "{n} logo|{n} logos": {
+  "zero": "{n} شعار",
+  "one": "شعار واحد",
+  "two": "شعاران",
+  "few": "{n} شعارات",
+  "many": "{n} شعارًا",
+  "other": "{n} شعار"
+ },
+ "{n} photo|{n} photos": {
+  "zero": "{n} صورة",
+  "one": "صورة واحدة",
+  "two": "صورتان",
+  "few": "{n} صور",
+  "many": "{n} صورة",
+  "other": "{n} صورة"
+ },
+ "{team} · brand kits": "{team} · حزم العلامة التجارية"
 }
