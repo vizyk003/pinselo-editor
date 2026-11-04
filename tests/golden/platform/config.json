@@ -6,7 +6,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -50,7 +50,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -96,7 +96,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -139,7 +139,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -180,7 +180,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -221,7 +221,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -268,7 +268,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -312,7 +312,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -360,7 +360,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -405,7 +405,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -450,7 +450,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "staging",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -494,7 +494,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -535,7 +535,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -576,7 +576,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -620,7 +620,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -665,7 +665,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -708,7 +708,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -751,7 +751,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -793,7 +793,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "development",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -837,7 +837,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -884,7 +884,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -935,7 +935,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",
@@ -979,7 +979,7 @@
     "name": "Pinselo",
     "short": "OC",
     "tagline": "Design anything, together.",
-    "accent": "#0c7a80"
+    "accent": "#c93316"
    },
    "env": "production",
    "databaseUrl": "postgres://localhost:5432/opencanvas",

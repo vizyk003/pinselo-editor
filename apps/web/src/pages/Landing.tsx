@@ -3,6 +3,7 @@
  * no account needed until an action requires one (AuthGate opens the sign-in dialog and resumes it).
  */
 import { BRAND } from '@oc/config';
+import { BrandLogo } from '../components/BrandLogo';
 import { Accessibility, Globe, Layers, Languages, Lock, Search, Sparkles, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
@@ -42,7 +43,7 @@ export function Landing({ templatesOnly }: { templatesOnly?: boolean }) {
   return (
     <div className="landing">
       <header className="landing-bar">
-        <Link to="/" className="logo"><img src="/favicon.svg" alt="" /> {BRAND.name}</Link>
+        <Link to="/" className="logo"><BrandLogo /></Link>
         <nav className="row" aria-label={t('Main')}>
           <Link to="/templates">{t('Templates')}</Link>
           <Link to="/help">{t('Help')}</Link>
