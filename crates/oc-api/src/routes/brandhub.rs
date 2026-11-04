@@ -225,14 +225,22 @@ async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) 
     let mut next = cur.and_then(|c| c.as_object().cloned()).unwrap_or_default();
     // Only the fields actually sent: the schema's defaults would otherwise empty the rest of the kit.
     let sent = req.body().and_then(Value::as_object);
+    // What changed, old and new, for the audit log: kits hold a team's brand, so edits are traced like their creation.
+    let mut changed = serde_json::Map::new();
     if let Value::Object(p) = patch {
         for (key, v) in p {
             if sent.is_some_and(|b| b.contains_key(&key)) {
-                next.insert(key, v);
+                let old = next.insert(key.clone(), v.clone()).unwrap_or(Value::Null);
+                if old != v {
+                    changed.insert(key, json!({ "from": old, "to": v }));
+                }
             }
         }
     }
     save_kit(&s, k.workspace_id, u.id, &Value::Object(next), Some(&id)).await?;
+    if !changed.is_empty() {
+        audit(&s, &req, u.id, Some(k.workspace_id), "brand.kit_updated", Some(id.clone()), Some(json!({ "changed": changed }))).await?;
+    }
     Ok(Reply::json(json!({ "ok": true })))
 }
 
