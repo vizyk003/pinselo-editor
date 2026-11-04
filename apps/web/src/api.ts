@@ -405,6 +405,8 @@ export interface Kit {
   name: string; colors: KitColor[]; palettes: Array<{ name: string; colors: KitColor[] }>; fonts: Partial<Record<KitFontRole, string>>;
   logos: string[]; photos: string[]; graphics: string[]; voice: string;
 }
+/** A section of a brand kit's written guidelines (its brand book), in Markdown. */
+export interface GuidelineSection { title: string; body: string }
 export type KitInput = Omit<Kit, 'id' | 'workspaceId' | 'workspace' | 'personal' | 'isDefault' | 'canEdit'>;
 export interface BrandControls { colors?: boolean; fonts?: boolean; requireTemplate?: boolean; restrictUploads?: boolean }
 export interface BrandWorkspace { id: string; name: string; personal: boolean; role: string; canEdit: boolean; controls: BrandControls }
@@ -420,6 +422,8 @@ export const brandHub = {
   updateKit: (id: string, b: Partial<KitInput>) => req('PATCH', `/api/brand-kits/${id}`, b),
   deleteKit: (id: string) => req('DELETE', `/api/brand-kits/${id}`),
   makeDefault: (id: string) => req('POST', `/api/brand-kits/${id}/default`),
+  guidelines: (id: string) => req<{ sections: GuidelineSection[]; canEdit: boolean }>('GET', `/api/brand-kits/${id}/guidelines`),
+  setGuidelines: (id: string, sections: GuidelineSection[]) => req<{ ok: true }>('PUT', `/api/brand-kits/${id}/guidelines`, { sections }),
   controls: (ws: string) => req<{ controls: BrandControls; canEdit: boolean; role: string }>('GET', `/api/workspaces/${ws}/brand-controls`),
   setControls: (ws: string, c: BrandControls) => req<{ controls: BrandControls }>('PUT', `/api/workspaces/${ws}/brand-controls`, c),
   design: (id: string) => req<DesignBrand>('GET', `/api/designs/${id}/brand`),

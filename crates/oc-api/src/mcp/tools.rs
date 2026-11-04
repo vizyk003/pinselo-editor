@@ -353,7 +353,7 @@ fn trimmed_query(a: &Value) -> Option<String> {
 struct Fonts(OnceLock<oc_gfonts::GoogleFonts>);
 
 /// What to do with a design's brand kit (create_design and get_design).
-const KIT_NEXT: &str = "Design with this kit: its fonts for each role, only its colours, its logo, and its graphics and photos via add_image { asset } (or { brand: { kit, name } }). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
+const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, only its colours, its logo, and its graphics and photos via add_image { asset } (or { brand: { kit, name } }). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
 
 fn gfonts(s: &AppState) -> oc_gfonts::GoogleFonts {
     s.local::<Fonts>().0.get_or_init(|| oc_gfonts::GoogleFonts::new(s.paths.fonts.clone(), s.pool.clone(), s.store.clone())).clone()
@@ -405,6 +405,8 @@ async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result
         .map(|(id, name)| (id, name.unwrap_or_default()))
         .collect();
     let usable = usable_families(s, user_id).await?;
+    let kit_ids: Vec<String> = kits.iter().filter_map(|k| k["id"].as_str().map(str::to_owned)).collect();
+    let outlines = crate::routes::brandhub::guideline_outlines(s, &kit_ids).await?;
     Ok(kits
         .iter()
         .map(|k| {
@@ -437,6 +439,10 @@ async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result
             }
             if view::truthy(k.get("voice")) {
                 m.insert("voice".into(), k["voice"].clone());
+            }
+            // The kit's brand book: only its outline here; get_brand_guidelines returns the text.
+            if let Some(o) = k["id"].as_str().and_then(|id| outlines.get(id)).filter(|o| !o.is_empty()) {
+                m.insert("guidelines".into(), json!({ "sections": o, "read": "Call get_brand_guidelines { brand_kit } and follow them before designing." }));
             }
             Value::Object(m)
         })
@@ -597,8 +603,18 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             let list = kit_views(s, u.id, &kits.iter().collect::<Vec<_>>()).await?;
             Ok(text(&json!({
                 "kits": list,
-                "next": "Pass the kit's name as brand_kit to create_design, so the design is made where the kit and its fonts live.",
+                "next": "Pass the kit's name as brand_kit to create_design, so the design is made where the kit and its fonts live. A kit that lists guidelines has a written brand book: read it with get_brand_guidelines before designing.",
             })))
+        }
+        "get_brand_guidelines" => {
+            need(u, "designs:read")?;
+            let kits = crate::routes::brandhub::accessible_kits(s, u.id).await?;
+            let k = match find_kit(&kits, a["brand_kit"].as_str().unwrap_or("")) {
+                Ok(k) => k,
+                Err(e) => return tool_err(e),
+            };
+            let all = crate::routes::brandhub::kit_guidelines(s, k["id"].as_str().unwrap_or("")).await?;
+            Ok(text(&guidelines_view(k["name"].clone(), &all, a.get("sections").and_then(Value::as_array))))
         }
         "search_fonts" => {
             let g = gfonts(s);
@@ -1038,6 +1054,50 @@ fn find_kit<'a>(kits: &'a [Value], kit: &str) -> Result<&'a Value, String> {
     }
 }
 
+/// How much guideline text one `get_brand_guidelines` reply carries before the rest is left for a follow-up call.
+const GUIDELINES_BUDGET: usize = 40_000;
+
+/// `get_brand_guidelines`: the asked-for sections (titles matched loosely), or every section that fits the budget,
+/// in order; sections left out are listed by title so the assistant can ask for them next.
+fn guidelines_view(kit: Value, all: &[Value], wanted: Option<&Vec<Value>>) -> Value {
+    if all.is_empty() {
+        return json!({ "kit": kit, "sections": [], "note": "This kit has no written guidelines. Follow its voice, colours and fonts, and any design system the user gave you." });
+    }
+    let title = |x: &Value| x["title"].as_str().unwrap_or("").to_owned();
+    let size = |x: &Value| x["body"].as_str().map_or(0, |b| b.chars().count());
+    let wanted: Vec<String> = wanted.into_iter().flatten().filter_map(Value::as_str).map(|w| w.trim().to_lowercase()).filter(|w| !w.is_empty()).collect();
+    let picked: Vec<&Value> = if wanted.is_empty() {
+        all.iter().collect()
+    } else {
+        all.iter().filter(|x| wanted.iter().any(|w| title(x).to_lowercase().contains(w))).collect()
+    };
+    let (mut used, mut sections, mut more) = (0usize, Vec::new(), Vec::new());
+    for x in picked {
+        let n = size(x);
+        // The first section always goes out whole, however long, so a single big brand book still reads.
+        if sections.is_empty() || used + n <= GUIDELINES_BUDGET {
+            used += n;
+            sections.push(json!({ "title": x["title"], "body": x["body"] }));
+        } else {
+            more.push(json!({ "title": x["title"], "chars": n }));
+        }
+    }
+    let mut out = json!({ "kit": kit, "sections": sections });
+    if sections_empty(&out) {
+        out["note"] = json!(format!("No section matches. Sections: {}", all.iter().map(title).collect::<Vec<_>>().join(", ")));
+    } else if !more.is_empty() {
+        out["more"] = json!(more);
+        out["next"] = json!("Some sections didn't fit in this reply. Ask for them with get_brand_guidelines { brand_kit, sections: [titles] } before designing what they cover.");
+    } else {
+        out["next"] = json!("Follow these guidelines for every choice: copy, colours, type, layout, logo use and imagery. Where they conflict with a general habit, the guidelines win.");
+    }
+    out
+}
+
+fn sections_empty(v: &Value) -> bool {
+    v["sections"].as_array().is_none_or(Vec::is_empty)
+}
+
 /// `add_image { source: { brand: { kit, name } } }`: the id of the kit's logo, graphic or photo with that file name.
 /// A wrong name lists the kit's files, so the assistant can correct it instead of drawing a stand-in.
 async fn kit_asset_by_name(s: &AppState, kits: &[Value], kit: &str, name: &str) -> Result<String, Fail> {
@@ -1091,5 +1151,53 @@ mod kit_lookup_tests {
         assert!(find_kit(&kits, "amigos").unwrap_err().contains("Amigos one, Amigos two"));
         assert!(find_kit(&kits, "peritus").is_err());
         assert!(find_kit(&kits, " ").is_err());
+    }
+}
+
+#[cfg(test)]
+mod guidelines_tests {
+    use super::*;
+
+    fn sec(title: &str, chars: usize) -> Value {
+        json!({ "title": title, "body": "x".repeat(chars) })
+    }
+
+    #[test]
+    fn all_sections_when_they_fit() {
+        let v = guidelines_view(json!("PF"), &[sec("Voice", 10), sec("Colour", 20)], None);
+        assert_eq!(v["sections"].as_array().unwrap().len(), 2);
+        assert!(v.get("more").is_none());
+        assert!(v["next"].as_str().unwrap().contains("guidelines win"));
+    }
+
+    #[test]
+    fn long_guidelines_come_in_parts() {
+        let all = [sec("Intro", 30_000), sec("Colour", 15_000), sec("Type", 5_000)];
+        let v = guidelines_view(json!("PF"), &all, None);
+        let titles: Vec<&str> = v["sections"].as_array().unwrap().iter().map(|s| s["title"].as_str().unwrap()).collect();
+        assert_eq!(titles, ["Intro", "Type"]);
+        assert_eq!(v["more"][0]["title"], "Colour");
+        assert_eq!(v["more"][0]["chars"], 15_000);
+        // A first section over the budget still goes out whole.
+        let v = guidelines_view(json!("PF"), &[sec("Book", 90_000), sec("Logo", 10)], None);
+        assert_eq!(v["sections"][0]["title"], "Book");
+        assert_eq!(v["more"][0]["title"], "Logo");
+    }
+
+    #[test]
+    fn named_sections_match_loosely() {
+        let all = [sec("Colour", 5), sec("Typography", 5), sec("Logo use", 5)];
+        let want = vec![json!("logo"), json!(" TYPO ")];
+        let v = guidelines_view(json!("PF"), &all, Some(&want));
+        let titles: Vec<&str> = v["sections"].as_array().unwrap().iter().map(|s| s["title"].as_str().unwrap()).collect();
+        assert_eq!(titles, ["Typography", "Logo use"]);
+        let v = guidelines_view(json!("PF"), &all, Some(&vec![json!("motion")]));
+        assert!(v["note"].as_str().unwrap().contains("Colour, Typography, Logo use"));
+    }
+
+    #[test]
+    fn no_guidelines() {
+        let v = guidelines_view(json!("PF"), &[], None);
+        assert!(v["note"].as_str().unwrap().contains("no written guidelines"));
     }
 }
