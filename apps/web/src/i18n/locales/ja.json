@@ -2728,7 +2728,6 @@
   "other": "{n}枚の写真"
  },
  "{team} · brand kits": "{team} · ブランドキット",
- "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "まだアップロードされていないため、代替フォントで表示されています: {fonts}。ブランドフォントからフォントファイルをアップロードしてください。",
  "Add section": "セクションを追加",
  "Brand guidelines": "ブランドガイドライン",
  "Collapse": "折りたたむ",
@@ -2752,5 +2751,31 @@
  "{n} section|{n} sections": {
   "other": "{n}個のセクション"
  },
- "{used} of {max} characters": "{used} / {max} 文字"
+ "{used} of {max} characters": "{used} / {max} 文字",
+ "(none chosen: any kit colour)": "（未選択：キットのどの色でも可）",
+ "Add a text style": "テキストスタイルを追加",
+ "All capitals": "すべて大文字",
+ "Allowed colours": "使用できる色",
+ "Any": "指定なし",
+ "Edit {name}": "{name} を編集",
+ "Fonts uploaded to {place}; everyone there can use them.": "{place} にアップロードされたフォント。そこにいる全員が使えます。",
+ "From selected text": "選択したテキストから",
+ "How each kind of text looks beyond its font. Click a style to add text in it; AI assistants follow these styles and are told when their text strays.": "フォント以外の、各種テキストの見た目です。スタイルをクリックするとそのスタイルでテキストを追加します。AI アシスタントはこれらのスタイルに従い、外れた場合は通知されます。",
+ "Italic": "斜体",
+ "Kind of text": "テキストの種類",
+ "Letter spacing (‰ em)": "字間（‰ em）",
+ "Line height": "行の高さ",
+ "No text styles yet.": "テキストスタイルはまだありません。",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files here.": "まだアップロードされていないため、代替フォントで表示されます：{fonts}。ここでフォントファイルをアップロードしてください。",
+ "Note (optional)": "メモ（任意）",
+ "Select a text box first.": "先にテキストボックスを選択してください。",
+ "Size (px)": "サイズ（px）",
+ "Style {n}": "スタイル {n}",
+ "Text styles": "テキストスタイル",
+ "Uploaded to another workspace only, so people in {place} see a fallback font: {fonts}. Upload them here too.": "別のワークスペースにのみアップロードされているため、{place} のメンバーには代替フォントで表示されます：{fonts}。ここにもアップロードしてください。",
+ "capitals": "大文字",
+ "e.g. Above headings, never longer than one line": "例：見出しの上、1 行まで",
+ "e.g. Eyebrow, Lead, Pull quote": "例：アイブロウ、リード、引用",
+ "italic": "斜体",
+ "your personal workspace": "個人ワークスペース"
 }

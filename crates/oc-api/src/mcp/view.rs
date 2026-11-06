@@ -96,7 +96,7 @@ pub fn body_plain_text(body: &Value) -> String {
         .unwrap_or_default()
 }
 
-fn text_out(body: &Value, max_text: usize) -> Map<String, Value> {
+pub fn text_out(body: &Value, max_text: usize) -> Map<String, Value> {
     let d = &body["defaultRun"];
     let paragraphs = body["paragraphs"].as_array().cloned().unwrap_or_default();
     let p0 = paragraphs.first();

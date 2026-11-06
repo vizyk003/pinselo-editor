@@ -353,7 +353,7 @@ fn trimmed_query(a: &Value) -> Option<String> {
 struct Fonts(OnceLock<oc_gfonts::GoogleFonts>);
 
 /// What to do with a design's brand kit (create_design and get_design).
-const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, only its colours, its logo, and its graphics and photos via add_image { asset } (or { brand: { kit, name } }). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
+const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, its textStyles for every text (weight, italic, capitals, letterSpacing, lineHeight, colours; edit_design's check flags text that strays), only its colours, its logo, and its graphics and photos via add_image { asset } (or { brand: { kit, name } }). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
 
 fn gfonts(s: &AppState) -> oc_gfonts::GoogleFonts {
     s.local::<Fonts>().0.get_or_init(|| oc_gfonts::GoogleFonts::new(s.paths.fonts.clone(), s.pool.clone(), s.store.clone())).clone()
@@ -423,6 +423,11 @@ async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result
                     m.insert(key.into(), v.clone());
                 }
             }
+            // How each kind of text looks beyond its font: edit_design's check holds text to these.
+            let styles = super::brand::styles_view(k);
+            if !styles.is_empty() {
+                m.insert("textStyles".into(), Value::Array(styles));
+            }
             let missing = missing_fonts(k, &usable);
             if !missing.is_empty() {
                 m.insert(
@@ -447,6 +452,24 @@ async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result
             Value::Object(m)
         })
         .collect())
+}
+
+/// Every live element on the shown pages (one page, or all), in page and stacking order, as (id, raw element).
+fn text_elements<'a>(doc: &'a Value, typed: &oc_schema::design::DesignDoc, page_id: Option<&str>) -> Vec<(String, &'a Value)> {
+    let mut out = Vec::new();
+    for pid in view::sorted_page_ids(typed).into_iter().filter(|p| page_id.is_none_or(|q| q == p)) {
+        let mut stack = view::children(typed, &pid);
+        stack.reverse();
+        while let Some(id) = stack.pop() {
+            let mut kids = view::children(typed, &id);
+            kids.reverse();
+            stack.extend(kids);
+            if let Some(el) = doc["elements"].get(&id).filter(|e| e["type"] == "text") {
+                out.push((id, el));
+            }
+        }
+    }
+    out
 }
 
 /// `JSON.stringify(page)` in messages (`No page ${page}.`).
@@ -828,6 +851,13 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             if let Some(r) = super::brand::rules(s, u.id, &id).await? {
                 out.insert("brand".into(), r.view());
             }
+            // Text that strays from the kit's fonts and text styles, on the pages shown.
+            if let Some(k) = super::brand::style_kit(s, u.id, &id, &json).await? {
+                let issues = k.check(text_elements(&json, &typed, page_id.as_deref()).iter().map(|(i, e)| (i.as_str(), *e)));
+                if !issues.is_empty() {
+                    out.insert("styleCheck".into(), json!({ "kit": k.name, "issues": issues, "fix": "Set these with edit_design (update: weight, italic, case, letterSpacing, lineHeight, color) so the text follows the kit's textStyles." }));
+                }
+            }
             // The kit the design was made with (create_design { brand_kit }), while the user can still use it.
             if let Some(kit_id) = json.pointer("/meta/brandKit/id").and_then(Value::as_str) {
                 let kits = crate::routes::brandhub::accessible_kits(s, u.id).await?;
@@ -999,7 +1029,19 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
     // Layout checks of the pages the edit touched (the render service lays text out and looks behind it), so the
     // assistant can fix overflowing or unreadable text without a screenshot. Left out if the render service can't
     // answer; then the assistant is pointed at screenshot_page as before.
-    let check = if v.applied > 0 { page_check(s, &id, v.page_id.as_deref(), &v.touched).await } else { None };
+    let mut check = if v.applied > 0 { page_check(s, &id, v.page_id.as_deref(), &v.touched).await } else { None };
+    // The kit's fonts and text styles, for the text this edit touched.
+    if v.applied > 0
+        && let Some(ydoc) = live::read_doc(s, &id, u.token_id).await?
+    {
+        let (json, _) = snapshot(&ydoc)?;
+        if let Some(k) = super::brand::style_kit(s, u.id, &id, &json).await? {
+            let issues = k.check(v.touched.iter().filter_map(|t| json["elements"].get(t).map(|e| (t.as_str(), e))));
+            if !issues.is_empty() {
+                check.get_or_insert_with(Vec::new).extend(issues);
+            }
+        }
+    }
     let next = match &check {
         Some(issues) if issues.is_empty() => {
             out.insert("check".into(), json!("No layout problems found (text fits, stays on the page and is readable)."));

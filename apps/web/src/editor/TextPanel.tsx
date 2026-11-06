@@ -3,7 +3,7 @@
  * uploaded families), page numbers, and a searchable gallery of styled font combinations. One search filters the
  * combinations by name, mood and font, and lists matching font families to add text in.
  */
-import type { RunStyle } from '@oc/engine';
+import { hex, solid, type RunStyle } from '@oc/engine';
 import { Type } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { SearchField, useToast } from '../components/ui';
@@ -13,6 +13,7 @@ import { governingKits, useBrandHub } from './brandStore';
 import { useEd } from './context';
 import { addText, TEXT_PRESETS } from './insert';
 import { recordRecentFont } from './FontPicker';
+import { elementRole, runStyleOf, styleFor } from './kitTextStyles';
 
 type Combo = { title: string; titleFont: string; titleWeight: number; sub: string; subFont: string; tags: string };
 /** Styled pairs; `tags` are English search words (the translated title and subtitle are searched too). */
@@ -89,14 +90,29 @@ export function TextPanel() {
         <>
           <h4>{t('Brand fonts')}</h4>
           <div className="text-add">
-            {kit && BRAND_ROLES.map(({ role, label }) => {
+            {kit?.textStyles?.length ? kit.textStyles.map((st, i) => {
+              // The kit's own text styles: font, weight, italic, capitals, spacing and colour as the brand sets them.
+              const family = kit.fonts[st.role];
+              const f = family ? fam(family) : undefined;
+              return (
+                <button key={`${st.name}-${i}`} onClick={() => add(st.name, runStyleOf(kit, st, (h) => solid(hex(h))), { role: elementRole(st.role), lineHeight: st.lineHeight, align: 'start' })}
+                  title={family ? `${st.name} · ${family}` : st.name}
+                  style={{
+                    fontFamily: f ? previewFamily(f, true) : undefined, fontWeight: st.weight, fontStyle: st.italic ? 'italic' : undefined, textTransform: st.uppercase ? 'uppercase' : undefined,
+                    letterSpacing: st.letterSpacing ? `${st.letterSpacing / 1000}em` : undefined, fontSize: Math.max(12, Math.min(24, (st.size ?? 26) / 2)),
+                  }}>
+                  {st.name}
+                </button>
+              );
+            }) : kit && BRAND_ROLES.map(({ role, label }) => {
               const family = kit.fonts[role];
               if (!family) return null;
               const preset = TEXT_PRESETS[role];
+              const st = styleFor(kit, role);
               const f = fam(family);
               return (
-                <button key={role} onClick={() => add(t(preset.text), { ...preset.style, family })} title={`${t(label)} · ${family}`}
-                  style={{ fontFamily: f ? previewFamily(f, true) : undefined, fontSize: role === 'heading' ? 24 : role === 'subheading' ? 17 : 13, fontWeight: preset.style.weight }}>
+                <button key={role} onClick={() => add(t(preset.text), st ? { ...preset.style, ...runStyleOf(kit, st, (h) => solid(hex(h))) } : { ...preset.style, family }, { role: elementRole(role), lineHeight: st?.lineHeight })} title={`${t(label)} · ${family}`}
+                  style={{ fontFamily: f ? previewFamily(f, true) : undefined, fontSize: role === 'heading' ? 24 : role === 'subheading' ? 17 : 13, fontWeight: st?.weight ?? preset.style.weight }}>
                   {t(preset.text)}
                 </button>
               );

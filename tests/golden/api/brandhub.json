@@ -102,7 +102,8 @@
        "updatedAt": "2025-01-01T00:00:00.000Z",
        "voice": "Friendly",
        "workspace": "Ada's workspace",
-       "workspaceId": "00000000-0000-4000-8000-000000001001"
+       "workspaceId": "00000000-0000-4000-8000-000000001001",
+       "textStyles": []
       },
       {
        "canEdit": true,
@@ -127,7 +128,8 @@
        "updatedAt": "2025-01-01T00:00:00.000Z",
        "voice": "Friendly",
        "workspace": "Studio",
-       "workspaceId": "00000000-0000-4000-8000-000000005000"
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "textStyles": []
       }
      ],
      "workspaces": [
@@ -197,7 +199,8 @@
        "updatedAt": "2025-01-01T00:00:00.000Z",
        "voice": "Friendly",
        "workspace": "Studio",
-       "workspaceId": "00000000-0000-4000-8000-000000005000"
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "textStyles": []
       }
      ],
      "workspaces": [
@@ -674,7 +677,8 @@
       "photos": [],
       "updatedAt": "<ts>",
       "voice": "Bold",
-      "workspaceId": "00000000-0000-4000-8000-000000001001"
+      "workspaceId": "00000000-0000-4000-8000-000000001001",
+      "textStyles": []
      }
     },
     "headers": {
@@ -721,7 +725,8 @@
       "photos": [],
       "updatedAt": "2025-01-01T00:00:00.000Z",
       "voice": "Friendly",
-      "workspaceId": "00000000-0000-4000-8000-000000005000"
+      "workspaceId": "00000000-0000-4000-8000-000000005000",
+      "textStyles": []
      }
     },
     "headers": {
@@ -1693,7 +1698,8 @@
        "updatedAt": "<ts>",
        "voice": "",
        "workspace": "Studio",
-       "workspaceId": "00000000-0000-4000-8000-000000005000"
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "textStyles": []
       }
      ],
      "workspaces": [

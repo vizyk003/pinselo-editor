@@ -25,7 +25,7 @@ pub fn routes() -> Router<AppState> {
 
 // ---------------------------------------------------------------- shared helpers
 
-pub const KIT_COLS: &str = r#"k.id, k.workspace_id AS "workspaceId", k.name, k.is_default AS "isDefault", k.colors, k.palettes, k.fonts, k.logos, k.photos, k.graphics, k.voice, k.updated_at AS "updatedAt""#;
+pub const KIT_COLS: &str = r#"k.id, k.workspace_id AS "workspaceId", k.name, k.is_default AS "isDefault", k.colors, k.palettes, k.fonts, k.logos, k.photos, k.graphics, k.voice, k.text_styles AS "textStyles", k.updated_at AS "updatedAt""#;
 
 /// `defaultKit(workspaceId)`: the workspace's default kit as a row (`KIT_COLS`).
 pub async fn default_kit(state: &AppState, workspace_id: uuid::Uuid) -> Result<Option<serde_json::Value>, sqlx::Error> {
@@ -37,10 +37,10 @@ pub async fn save_kit(state: &AppState, workspace_id: uuid::Uuid, user_id: uuid:
     let kid = id.map_or_else(|| oc_db::uuid().to_string(), str::to_owned);
     let js = |k: &str| crate::http::jsjson::stringify(kit.get(k).unwrap_or(&serde_json::Value::Null));
     sqlx::query(
-        "INSERT INTO brand_kits(id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by, updated_at)
-     VALUES ($1::uuid,$2,$3, NOT EXISTS (SELECT 1 FROM brand_kits WHERE workspace_id = $2 AND is_default), $4::jsonb,$5::jsonb,$6::jsonb,$7::jsonb,$8::jsonb,$9::jsonb,$10,$11, now())
+        "INSERT INTO brand_kits(id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by, text_styles, updated_at)
+     VALUES ($1::uuid,$2,$3, NOT EXISTS (SELECT 1 FROM brand_kits WHERE workspace_id = $2 AND is_default), $4::jsonb,$5::jsonb,$6::jsonb,$7::jsonb,$8::jsonb,$9::jsonb,$10,$11, COALESCE($12::jsonb, '[]'), now())
      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, colors = EXCLUDED.colors, palettes = EXCLUDED.palettes, fonts = EXCLUDED.fonts, logos = EXCLUDED.logos,
-       photos = EXCLUDED.photos, graphics = EXCLUDED.graphics, voice = EXCLUDED.voice, updated_at = now()",
+       photos = EXCLUDED.photos, graphics = EXCLUDED.graphics, voice = EXCLUDED.voice, text_styles = COALESCE($12::jsonb, brand_kits.text_styles), updated_at = now()",
     )
     .bind(&kid)
     .bind(workspace_id)
@@ -53,6 +53,7 @@ pub async fn save_kit(state: &AppState, workspace_id: uuid::Uuid, user_id: uuid:
     .bind(js("graphics"))
     .bind(kit.get("voice").and_then(serde_json::Value::as_str))
     .bind(user_id)
+    .bind(kit.get("textStyles").filter(|v| v.is_array()).map(crate::http::jsjson::stringify))
     .execute(&state.pool)
     .await?;
     Ok(kid)
@@ -94,6 +95,29 @@ fn font() -> z::Schema {
     z::str().max(80.0).optional()
 }
 
+/// Kit font roles, which text styles belong to.
+pub const TEXT_ROLES: [&str; 5] = ["heading", "subheading", "body", "quote", "caption"];
+/// Caps on a kit's text styles.
+pub const MAX_TEXT_STYLES: usize = 30;
+
+/// A text style: how one kind of text looks beyond its font (the font comes from `fonts[role]`). Letter spacing is in
+/// thousandths of an em and line height a multiple of the size, as in the editor; `size` (px) is a reference for a
+/// typical page, not a rule; `colors` are the colours the text may take (any, when empty).
+fn text_style() -> z::Schema {
+    z::obj([
+        ("name", z::str().trim().min(1.0).max(40.0)),
+        ("role", z::enumeration(&TEXT_ROLES)),
+        ("weight", z::num().int().min(100.0).max(900.0).optional()),
+        ("italic", z::bool().optional()),
+        ("uppercase", z::bool().optional()),
+        ("letterSpacing", z::num().min(-500.0).max(2000.0).optional()),
+        ("lineHeight", z::num().min(0.5).max(4.0).optional()),
+        ("size", z::num().min(4.0).max(1000.0).optional()),
+        ("colors", z::array(hex()).max(12.0).optional()),
+        ("note", z::str().max(300.0).optional()),
+    ])
+}
+
 /// `KitBody` (`partial`: `KitBody.partial()`, whose defaults still apply in zod 4) plus `workspaceId` when
 /// `extend` (the create route).
 fn kit_body(partial: bool, extend: bool) -> z::Schema {
@@ -107,10 +131,11 @@ fn kit_body(partial: bool, extend: bool) -> z::Schema {
         ("photos", z::array(asset_id()).max(200.0).default(json!([]))),
         ("graphics", z::array(asset_id()).max(200.0).default(json!([]))),
         ("voice", z::str().max(4000.0).default(json!(""))),
+        ("textStyles", z::array(text_style()).max(MAX_TEXT_STYLES as f64).default(json!([]))),
     ];
     if extend {
-        let [a, b, c, d, e, f, g, h] = fields;
-        z::obj([a, b, c, d, e, f, g, h, ("workspaceId", z::str().uuid().optional())])
+        let [a, b, c, d, e, f, g, h, i] = fields;
+        z::obj([a, b, c, d, e, f, g, h, i, ("workspaceId", z::str().uuid().optional())])
     } else {
         z::obj(fields)
     }
@@ -222,7 +247,7 @@ async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) 
     if k.role != Some("edit") {
         return Ok(forbidden());
     }
-    let cur = pg::json_one(&s.pool, "SELECT name, colors, palettes, fonts, logos, photos, graphics, voice FROM brand_kits WHERE id = $1::uuid", &[pg::text(&id)]).await?;
+    let cur = pg::json_one(&s.pool, "SELECT name, colors, palettes, fonts, logos, photos, graphics, voice, text_styles AS \"textStyles\" FROM brand_kits WHERE id = $1::uuid", &[pg::text(&id)]).await?;
     let mut next = cur.and_then(|c| c.as_object().cloned()).unwrap_or_default();
     // Only the fields actually sent: the schema's defaults would otherwise empty the rest of the kit.
     let sent = req.body().and_then(Value::as_object);

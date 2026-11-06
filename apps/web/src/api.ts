@@ -400,10 +400,19 @@ export const embedApi = {
 // ---------------------------------------------------------------- Brand Hub (A8)
 export interface KitColor { name: string; hex: string }
 export type KitFontRole = 'heading' | 'subheading' | 'body' | 'quote' | 'caption';
+/**
+ * A kit text style: how one kind of text looks beyond its font, which comes from the kit's `fonts[role]`. Letter
+ * spacing is in thousandths of an em and line height a multiple of the size, as in the editor; `size` (px) is a
+ * reference for a typical page; `colors` are the colours the text may take (any, when empty).
+ */
+export interface KitTextStyle {
+  name: string; role: KitFontRole; weight?: number; italic?: boolean; uppercase?: boolean; letterSpacing?: number;
+  lineHeight?: number; size?: number; colors?: string[]; note?: string;
+}
 export interface Kit {
   id: string; workspaceId: string; workspace?: string; personal?: boolean; isDefault: boolean; canEdit?: boolean;
   name: string; colors: KitColor[]; palettes: Array<{ name: string; colors: KitColor[] }>; fonts: Partial<Record<KitFontRole, string>>;
-  logos: string[]; photos: string[]; graphics: string[]; voice: string;
+  logos: string[]; photos: string[]; graphics: string[]; voice: string; textStyles?: KitTextStyle[];
 }
 /** A section of a brand kit's written guidelines (its brand book), in Markdown. */
 export interface GuidelineSection { title: string; body: string }
