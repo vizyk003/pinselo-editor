@@ -82,16 +82,16 @@ pub async fn accessible_kits(state: &AppState, user_id: Uuid) -> Result<Vec<Valu
         .collect())
 }
 
-fn hex() -> z::Schema {
+pub fn hex() -> z::Schema {
     z::str().regex("^#[0-9a-fA-F]{6}$", "^#[0-9a-fA-F]{6}$")
 }
-fn asset_id() -> z::Schema {
+pub fn asset_id() -> z::Schema {
     z::str().regex("^[0-9A-Za-z]{16}$", "^[0-9A-Za-z]{16}$")
 }
-fn color() -> z::Schema {
+pub fn color() -> z::Schema {
     z::obj([("name", z::str().max(40.0)), ("hex", hex())])
 }
-fn font() -> z::Schema {
+pub fn font() -> z::Schema {
     z::str().max(80.0).optional()
 }
 
@@ -103,7 +103,7 @@ pub const MAX_TEXT_STYLES: usize = 30;
 /// A text style: how one kind of text looks beyond its font (the font comes from `fonts[role]`). Letter spacing is in
 /// thousandths of an em and line height a multiple of the size, as in the editor; `size` (px) is a reference for a
 /// typical page, not a rule; `colors` are the colours the text may take (any, when empty).
-fn text_style() -> z::Schema {
+pub fn text_style() -> z::Schema {
     z::obj([
         ("name", z::str().trim().min(1.0).max(40.0)),
         ("role", z::enumeration(&TEXT_ROLES)),
@@ -120,7 +120,7 @@ fn text_style() -> z::Schema {
 
 /// `KitBody` (`partial`: `KitBody.partial()`, whose defaults still apply in zod 4) plus `workspaceId` when
 /// `extend` (the create route).
-fn kit_body(partial: bool, extend: bool) -> z::Schema {
+pub fn kit_body(partial: bool, extend: bool) -> z::Schema {
     let name = z::str().min(1.0).max(80.0);
     let fields = [
         ("name", if partial { name.optional() } else { name }),
@@ -142,7 +142,7 @@ fn kit_body(partial: bool, extend: bool) -> z::Schema {
 }
 
 /// `kitRole(userId, workspaceId)`: the personal owner and team owners, admins and designers edit; members view.
-async fn kit_role(s: &AppState, user_id: Uuid, workspace_id: Uuid) -> Result<Option<&'static str>, sqlx::Error> {
+pub async fn kit_role(s: &AppState, user_id: Uuid, workspace_id: Uuid) -> Result<Option<&'static str>, sqlx::Error> {
     let r: Option<(String, bool)> = sqlx::query_as("SELECT m.role, w.personal FROM memberships m JOIN workspaces w ON w.id = m.workspace_id WHERE m.workspace_id = $1 AND m.user_id = $2")
         .bind(workspace_id)
         .bind(user_id)
@@ -152,7 +152,7 @@ async fn kit_role(s: &AppState, user_id: Uuid, workspace_id: Uuid) -> Result<Opt
 }
 
 /// Fair-use cap on brand kits per workspace.
-const MAX_BRAND_KITS: i32 = 1000;
+pub const MAX_BRAND_KITS: i32 = 1000;
 
 struct OwnKit {
     workspace_id: Uuid,
@@ -276,13 +276,40 @@ async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) 
 pub const MAX_GUIDELINE_SECTIONS: usize = 60;
 const MAX_GUIDELINE_TITLE: f64 = 120.0;
 const MAX_GUIDELINE_BODY: f64 = 60_000.0;
-const MAX_GUIDELINES_TOTAL: usize = 300_000;
+pub const MAX_GUIDELINES_TOTAL: usize = 300_000;
+
+/// A kit's guideline sections, `[{ title, body }]`, as the guidelines route and the MCP brand kit tools take them.
+pub fn guideline_sections() -> z::Schema {
+    z::array(z::obj([("title", z::str().min(1.0).max(MAX_GUIDELINE_TITLE)), ("body", z::str().max(MAX_GUIDELINE_BODY))])).max(MAX_GUIDELINE_SECTIONS as f64)
+}
 
 fn guidelines_body() -> z::Schema {
-    z::obj([(
-        "sections",
-        z::array(z::obj([("title", z::str().min(1.0).max(MAX_GUIDELINE_TITLE)), ("body", z::str().max(MAX_GUIDELINE_BODY))])).max(MAX_GUIDELINE_SECTIONS as f64),
-    )])
+    z::obj([("sections", guideline_sections())])
+}
+
+/// What a guidelines write changed, by outline (titles and sizes): the audit log records this, not the text.
+pub struct GuidelinesWrite {
+    pub before: Vec<Value>,
+    pub after: Vec<Value>,
+    /// Whether any text changed, not just the outline.
+    pub changed: bool,
+}
+
+fn outline(sections: &[Value]) -> Vec<Value> {
+    sections.iter().map(|x| json!({ "title": x["title"], "chars": x["body"].as_str().map_or(0, |b| b.chars().count()) })).collect()
+}
+
+/// Replace a kit's guidelines with already validated sections (`guideline_sections`); `Err` is the message when
+/// they're over the total size cap. The caller checks the user may edit the kit.
+pub async fn write_guidelines(s: &AppState, kit_id: &str, sections: &[Value]) -> Result<Result<GuidelinesWrite, String>, sqlx::Error> {
+    let sections: Vec<Value> = sections.iter().map(|x| json!({ "title": x["title"].as_str().unwrap_or("").trim(), "body": x["body"].as_str().unwrap_or("") })).collect();
+    let total: usize = sections.iter().map(|x| x["body"].as_str().map_or(0, |b| b.chars().count())).sum();
+    if total > MAX_GUIDELINES_TOTAL {
+        return Ok(Err(format!("Guidelines can hold up to {MAX_GUIDELINES_TOTAL} characters in all; these have {total}.")));
+    }
+    let old = kit_guidelines(s, kit_id).await?;
+    pg::exec(&s.pool, "UPDATE brand_kits SET guidelines = $2::jsonb, updated_at = now() WHERE id = $1::uuid", &[pg::text(kit_id), pg::text(serde_json::to_string(&sections).unwrap_or_else(|_| "[]".into()))]).await?;
+    Ok(Ok(GuidelinesWrite { before: outline(&old), after: outline(&sections), changed: old != sections }))
 }
 
 /// A kit's guideline sections, `[{ title, body }]` (empty when it has none or doesn't exist).
@@ -316,28 +343,16 @@ async fn put_guidelines(State(s): State<AppState>, Path(id): Path<String>, req: 
     if k.role != Some("edit") {
         return Ok(forbidden());
     }
-    let sections: Vec<Value> = b["sections"]
-        .as_array()
-        .into_iter()
-        .flatten()
-        .map(|x| json!({ "title": x["title"].as_str().unwrap_or("").trim(), "body": x["body"].as_str().unwrap_or("") }))
-        .collect();
-    let total: usize = sections.iter().map(|x| x["body"].as_str().map_or(0, |b| b.chars().count())).sum();
-    if total > MAX_GUIDELINES_TOTAL {
-        return Ok(reply::json(
-            400,
-            json!({ "error": "too_long", "message": format!("Guidelines can hold up to {MAX_GUIDELINES_TOTAL} characters in all; these have {total}.") }),
-        ));
-    }
-    let old = kit_guidelines(&s, &id).await?;
-    pg::exec(&s.pool, "UPDATE brand_kits SET guidelines = $2::jsonb, updated_at = now() WHERE id = $1::uuid", &[pg::text(&id), pg::text(serde_json::to_string(&sections).map_err(ApiError::internal)?)]).await?;
+    let sections = b["sections"].as_array().cloned().unwrap_or_default();
+    let w = match write_guidelines(&s, &id, &sections).await? {
+        Ok(w) => w,
+        Err(message) => return Ok(reply::json(400, json!({ "error": "too_long", "message": message }))),
+    };
     // The audit log records the outline (titles and sizes), not the text: a brand book would swamp it.
-    let after: Vec<Value> = sections.iter().map(|x| json!({ "title": x["title"], "chars": x["body"].as_str().map_or(0, |b| b.chars().count()) })).collect();
-    if old != sections {
-        let before: Vec<Value> = old.iter().map(|x| json!({ "title": x["title"], "chars": x["body"].as_str().map_or(0, |b| b.chars().count()) })).collect();
-        audit(&s, &req, u.id, Some(k.workspace_id), "brand.kit_guidelines_updated", Some(id.clone()), Some(json!({ "from": before, "to": after }))).await?;
+    if w.changed {
+        audit(&s, &req, u.id, Some(k.workspace_id), "brand.kit_guidelines_updated", Some(id.clone()), Some(json!({ "from": w.before, "to": w.after }))).await?;
     }
-    Ok(Reply::json(json!({ "ok": true, "sections": after })))
+    Ok(Reply::json(json!({ "ok": true, "sections": w.after })))
 }
 
 async fn default_kit_route(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {

@@ -131,6 +131,8 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 | `search_media` | `designs:read` | `query` (required, 1 to 100 characters), `type` (`image`, `gif`, `sticker`; default `image`), `page` (1 to 20) | Up to 30 stock results from the providers enabled on the server. |
 | `list_uploads` | `designs:read` | `query` (up to 100 characters), `limit` (1 to 100, default 30) | Your uploaded images: `asset`, `name`, `w`, `h`, `uploaded`. |
 | `get_brand_kit` | `designs:read` | none | See [Brand kits](#brand-kits). |
+| `create_brand_kit` | `designs:write` | `name` (required), `team`, `colors`, `palettes`, `fonts`, `text_styles`, `voice`, `logos`, `graphics`, `photos`, `guidelines` | The new kit, as `get_brand_kit` shows it. See [Making brand kits](#making-brand-kits). |
+| `update_brand_kit` | `designs:write` | `brand_kit` (required), `new_name`, the fields of `create_brand_kit`, `add_logos`, `add_graphics`, `add_photos`, `remove_assets` | The changed kit, as `get_brand_kit` shows it. |
 | `search_fonts` | none | `query` (up to 80 characters), `category` (`sans`, `serif`, `display`, `handwriting`, `mono`), `limit` (1 to 100, default 30) | Font `family` and `category`. An exact name match comes first, then by popularity. |
 
 ### Creating and reading
@@ -237,6 +239,19 @@ The server keeps that connection open for a minute after the last change. If the
 | `colors`, `palettes`, `fonts` | Brand colours, palettes and fonts by role. |
 | `logos`, `graphics`, `photos` | `{asset, name}` entries, capped at 30, 60 and 30 per kit. |
 | `voice` | Brand voice notes, when set. |
+
+### Making brand kits
+
+Assistants can set up a brand from a brand book, design system, website or files with `create_brand_kit`, and change it later with `update_brand_kit`. The same rules and limits apply as in Brand Hub:
+
+- The kit goes in your personal workspace, or in the team named by `team` if you are an owner, admin or designer there. `team` matches like `kit` below.
+- Kit names must be unique among the kits you can see, since tools find kits by name.
+- `logos`, `graphics` and `photos` take asset ids of your own image uploads. Assistants upload each file first with `upload_image` or `create_upload_link`. Ids of anyone else's files are refused.
+- Colours are `#rrggbb`. `text_styles` take the fields `get_brand_kit` shows (`name`, `role`, `weight`, `italic`, `uppercase`, `letterSpacing`, `lineHeight`, `size`, `colors`, `note`). `guidelines` are `{ title, body }` sections, up to 60 and 300,000 characters in all.
+- In `update_brand_kit`, every field given replaces the kit's, except `fonts`, which changes only the roles given (`""` clears one). `add_*` appends images and `remove_assets` takes them out of all three lists.
+- Font files can't be uploaded through the connector. A kit font that isn't uploaded shows in `missingFonts`, and the user uploads it in Brand Hub.
+
+Changes are recorded in the team's audit log like Brand Hub edits, marked as made by an AI assistant.
 
 To place a kit file, use `add_image` with `{ "asset": id }` or `{ "brand": { "kit", "name" } }`:
 

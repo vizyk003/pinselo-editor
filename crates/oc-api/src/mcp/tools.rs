@@ -42,9 +42,9 @@ impl From<oc_crdt::CrdtError> for Fail {
     }
 }
 
-type R = Result<Value, Fail>;
+pub(super) type R = Result<Value, Fail>;
 
-fn tool_err<T>(m: impl Into<String>) -> Result<T, Fail> {
+pub(super) fn tool_err<T>(m: impl Into<String>) -> Result<T, Fail> {
     Err(Fail::Tool(m.into()))
 }
 
@@ -104,7 +104,7 @@ pub fn text(v: &Value) -> Value {
     json!({ "content": [{ "type": "text", "text": t }] })
 }
 
-fn need(u: &BearerUser, scope: &str) -> Result<(), Fail> {
+pub(super) fn need(u: &BearerUser, scope: &str) -> Result<(), Fail> {
     if u.scopes.iter().any(|s| s == scope) {
         return Ok(());
     }
@@ -341,7 +341,7 @@ async fn render(s: &AppState, path: &str, body: &Value, timeout_ms: u64) -> Resu
     }
 }
 
-fn opt_str(a: &Value, k: &str) -> Option<String> {
+pub(super) fn opt_str(a: &Value, k: &str) -> Option<String> {
     a.get(k).and_then(Value::as_str).map(str::to_owned)
 }
 
@@ -387,7 +387,7 @@ fn missing_fonts(kit: &Value, usable: &std::collections::HashSet<String>) -> Vec
 
 /// What the assistant sees of brand kits (`get_brand_kit`, and the chosen kit in `create_design` and `get_design`):
 /// colours, fonts by role, logos, graphics and photos with their file names, voice, and fonts that won't render.
-async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result<Vec<Value>, Fail> {
+pub(super) async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result<Vec<Value>, Fail> {
     // File names let the assistant choose without opening every image.
     let ids: Vec<String> = kits
         .iter()
@@ -629,6 +629,8 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                 "next": "Pass the kit's name as brand_kit to create_design, so the design is made where the kit and its fonts live. A kit that lists guidelines has a written brand book: read it with get_brand_guidelines before designing.",
             })))
         }
+        "create_brand_kit" => super::brand_write::create(s, u, a).await,
+        "update_brand_kit" => super::brand_write::update(s, u, a).await,
         "get_brand_guidelines" => {
             need(u, "designs:read")?;
             let kits = crate::routes::brandhub::accessible_kits(s, u.id).await?;
@@ -1080,7 +1082,7 @@ fn named_asset(id: &Value, names: &HashMap<String, String>) -> Value {
 }
 
 /// The kit named `kit`: an exact match (ignoring case), else the only kit whose name contains it.
-fn find_kit<'a>(kits: &'a [Value], kit: &str) -> Result<&'a Value, String> {
+pub(super) fn find_kit<'a>(kits: &'a [Value], kit: &str) -> Result<&'a Value, String> {
     let want = kit.trim().to_lowercase();
     let name = |k: &Value| k["name"].as_str().unwrap_or("").to_lowercase();
     if let Some(k) = kits.iter().find(|k| name(k) == want) {

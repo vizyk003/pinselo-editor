@@ -227,7 +227,7 @@
   {
    "name": "create_upload_link",
    "title": "Create an upload link",
-   "description": "Get a private, single-use link (15 minutes) for a file that isn't public, such as a photo for this design. If you can run commands or make HTTP requests, send the file to it yourself: curl -T <file> \"<url>\" (a file attached to the chat is usually at /mnt/user-data/uploads/<name>); the reply names the asset for add_image { asset }. Otherwise give the url to the user, who opens it in a browser and picks the file, and get_upload_link tells you the asset. Offer this rather than leaving an image out, and tell the user plainly if an image couldn't be included. For a whole brand, use the Brand Hub import instead.",
+   "description": "Get a private, single-use link (15 minutes) for a file that isn't public, such as a photo for this design. If you can run commands or make HTTP requests, send the file to it yourself: curl -T <file> \"<url>\" (a file attached to the chat is usually at /mnt/user-data/uploads/<name>); the reply names the asset for add_image { asset }. Otherwise give the url to the user, who opens it in a browser and picks the file, and get_upload_link tells you the asset. Offer this rather than leaving an image out, and tell the user plainly if an image couldn't be included. For a brand's logos and images, upload each one and add it to a kit with create_brand_kit or update_brand_kit.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -329,6 +329,546 @@
    "annotations": {
     "readOnlyHint": true,
     "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "create_brand_kit",
+   "title": "Create a brand kit",
+   "description": "Make a brand kit from a brand the user gives you (a brand book, design system, website or files): colours, fonts by role, text styles, voice, written guidelines, and logos, graphics and photos. Upload each image first with upload_image (small files such as SVG logos) or create_upload_link, and pass the asset ids it returns. The kit goes in the user's personal workspace, or in a team where they are an owner, admin or designer. Use only what the brand actually specifies; don't invent colours or rules. Returns the kit as get_brand_kit shows it, including missingFonts for fonts the user still has to upload.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "name": {
+      "description": "The kit's name, usually the brand's",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+     },
+     "team": {
+      "description": "A team's name to make the kit in that team; omit for the personal workspace",
+      "type": "string",
+      "maxLength": 80
+     },
+     "colors": {
+      "description": "The brand's colours, named (#rrggbb)",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "maxLength": 40
+        },
+        "hex": {
+         "type": "string",
+         "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+       },
+       "required": [
+        "name",
+        "hex"
+       ]
+      },
+      "maxItems": 60
+     },
+     "palettes": {
+      "description": "Named groups of colours",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "maxLength": 60
+        },
+        "colors": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "name": {
+            "type": "string",
+            "maxLength": 40
+           },
+           "hex": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+           }
+          },
+          "required": [
+           "name",
+           "hex"
+          ]
+         },
+         "maxItems": 40
+        }
+       },
+       "required": [
+        "name",
+        "colors"
+       ]
+      },
+      "maxItems": 20
+     },
+     "fonts": {
+      "description": "Font family for each text role (Google Fonts from search_fonts, or the brand's own fonts, which the user uploads in Brand Hub)",
+      "type": "object",
+      "properties": {
+       "heading": {
+        "description": "Font family for heading text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "subheading": {
+        "description": "Font family for subheading text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "body": {
+        "description": "Font family for body text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "quote": {
+        "description": "Font family for quote text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "caption": {
+        "description": "Font family for caption text",
+        "type": "string",
+        "maxLength": 80
+       }
+      }
+     },
+     "text_styles": {
+      "description": "How each kind of text looks beyond its font",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "minLength": 1,
+         "maxLength": 40
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "heading",
+          "subheading",
+          "body",
+          "quote",
+          "caption"
+         ]
+        },
+        "weight": {
+         "type": "integer",
+         "minimum": 100,
+         "maximum": 900
+        },
+        "italic": {
+         "type": "boolean"
+        },
+        "uppercase": {
+         "type": "boolean"
+        },
+        "letterSpacing": {
+         "description": "Thousandths of an em",
+         "type": "number",
+         "minimum": -500,
+         "maximum": 2000
+        },
+        "lineHeight": {
+         "description": "A multiple of the size",
+         "type": "number",
+         "minimum": 0.5,
+         "maximum": 4
+        },
+        "size": {
+         "description": "Reference size in px for a typical page",
+         "type": "number",
+         "minimum": 4,
+         "maximum": 1000
+        },
+        "colors": {
+         "description": "Colours this text may take (any when empty)",
+         "type": "array",
+         "items": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+         },
+         "maxItems": 12
+        },
+        "note": {
+         "type": "string",
+         "maxLength": 300
+        }
+       },
+       "required": [
+        "name",
+        "role"
+       ]
+      },
+      "maxItems": 30
+     },
+     "voice": {
+      "description": "How the brand writes: tone, words to use and avoid",
+      "type": "string",
+      "maxLength": 4000
+     },
+     "logos": {
+      "description": "Logo asset ids, from upload_image, an upload link or list_uploads",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 30
+     },
+     "graphics": {
+      "description": "Graphic asset ids (illustrations, patterns, icons, brush strokes)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 200
+     },
+     "photos": {
+      "description": "Photo asset ids",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 200
+     },
+     "guidelines": {
+      "description": "The written brand book, in sections (voice and copy, colour, typography, logo use, layout, imagery, dos and don'ts)",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "title": {
+         "type": "string",
+         "minLength": 1,
+         "maxLength": 120
+        },
+        "body": {
+         "type": "string",
+         "maxLength": 60000
+        }
+       },
+       "required": [
+        "title",
+        "body"
+       ]
+      },
+      "maxItems": 60
+     }
+    },
+    "required": [
+     "name"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "update_brand_kit",
+   "title": "Update a brand kit",
+   "description": "Change a brand kit you can edit: give its name and only the fields to change. colors, palettes, text_styles, voice, guidelines and the logos, graphics and photos lists replace what the kit has; fonts change only the roles given. To add images, upload them (upload_image or create_upload_link) and pass their asset ids in add_logos, add_graphics or add_photos; remove_assets takes images out. Returns the kit as get_brand_kit shows it.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "brand_kit": {
+      "description": "The kit's name, as get_brand_kit lists it",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+     },
+     "new_name": {
+      "description": "A new name for the kit",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+     },
+     "colors": {
+      "description": "The brand's colours, named (#rrggbb) (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "maxLength": 40
+        },
+        "hex": {
+         "type": "string",
+         "pattern": "^#[0-9a-fA-F]{6}$"
+        }
+       },
+       "required": [
+        "name",
+        "hex"
+       ]
+      },
+      "maxItems": 60
+     },
+     "palettes": {
+      "description": "Named groups of colours (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "maxLength": 60
+        },
+        "colors": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "name": {
+            "type": "string",
+            "maxLength": 40
+           },
+           "hex": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+           }
+          },
+          "required": [
+           "name",
+           "hex"
+          ]
+         },
+         "maxItems": 40
+        }
+       },
+       "required": [
+        "name",
+        "colors"
+       ]
+      },
+      "maxItems": 20
+     },
+     "fonts": {
+      "description": "Fonts to set by role; roles left out keep their font, and \"\" clears one",
+      "type": "object",
+      "properties": {
+       "heading": {
+        "description": "Font family for heading text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "subheading": {
+        "description": "Font family for subheading text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "body": {
+        "description": "Font family for body text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "quote": {
+        "description": "Font family for quote text",
+        "type": "string",
+        "maxLength": 80
+       },
+       "caption": {
+        "description": "Font family for caption text",
+        "type": "string",
+        "maxLength": 80
+       }
+      }
+     },
+     "text_styles": {
+      "description": "How each kind of text looks beyond its font (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string",
+         "minLength": 1,
+         "maxLength": 40
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "heading",
+          "subheading",
+          "body",
+          "quote",
+          "caption"
+         ]
+        },
+        "weight": {
+         "type": "integer",
+         "minimum": 100,
+         "maximum": 900
+        },
+        "italic": {
+         "type": "boolean"
+        },
+        "uppercase": {
+         "type": "boolean"
+        },
+        "letterSpacing": {
+         "description": "Thousandths of an em",
+         "type": "number",
+         "minimum": -500,
+         "maximum": 2000
+        },
+        "lineHeight": {
+         "description": "A multiple of the size",
+         "type": "number",
+         "minimum": 0.5,
+         "maximum": 4
+        },
+        "size": {
+         "description": "Reference size in px for a typical page",
+         "type": "number",
+         "minimum": 4,
+         "maximum": 1000
+        },
+        "colors": {
+         "description": "Colours this text may take (any when empty)",
+         "type": "array",
+         "items": {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{6}$"
+         },
+         "maxItems": 12
+        },
+        "note": {
+         "type": "string",
+         "maxLength": 300
+        }
+       },
+       "required": [
+        "name",
+        "role"
+       ]
+      },
+      "maxItems": 30
+     },
+     "voice": {
+      "description": "How the brand writes: tone, words to use and avoid (replaces the kit's)",
+      "type": "string",
+      "maxLength": 4000
+     },
+     "logos": {
+      "description": "Logo asset ids, from upload_image, an upload link or list_uploads (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 30
+     },
+     "graphics": {
+      "description": "Graphic asset ids (illustrations, patterns, icons, brush strokes) (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 200
+     },
+     "photos": {
+      "description": "Photo asset ids (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 200
+     },
+     "guidelines": {
+      "description": "The written brand book, in sections (voice and copy, colour, typography, logo use, layout, imagery, dos and don'ts) (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "title": {
+         "type": "string",
+         "minLength": 1,
+         "maxLength": 120
+        },
+        "body": {
+         "type": "string",
+         "maxLength": 60000
+        }
+       },
+       "required": [
+        "title",
+        "body"
+       ]
+      },
+      "maxItems": 60
+     },
+     "add_logos": {
+      "description": "Logo asset ids to add",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 30
+     },
+     "add_graphics": {
+      "description": "Graphic asset ids to add",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 200
+     },
+     "add_photos": {
+      "description": "Photo asset ids to add",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 200
+     },
+     "remove_assets": {
+      "description": "Asset ids to take out of the kit's logos, graphics and photos",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 430
+     }
+    },
+    "required": [
+     "brand_kit"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "idempotentHint": true,
     "openWorldHint": false
    },
    "execution": {

@@ -5,6 +5,7 @@
 
 use serde_json::{Value, json};
 
+use crate::routes::brandhub as hub;
 use crate::zod::{self as z, Schema};
 
 const COLOR_JS: &str = "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$";
@@ -287,11 +288,41 @@ fn operations(input: Option<&Value>, issues: &mut Vec<Value>) -> Option<Value> {
     Some(Value::Array(out))
 }
 
+/// What `create_brand_kit` and `update_brand_kit` set on a kit, with Brand Hub's limits (routes/brandhub.rs).
+fn kit_fields() -> Vec<(&'static str, Schema)> {
+    let font = || z::str().max(80.0).optional();
+    vec![
+        ("colors", z::array(hub::color()).max(60.0).optional()),
+        ("palettes", z::array(z::obj([("name", z::str().max(60.0)), ("colors", z::array(hub::color()).max(40.0))])).max(20.0).optional()),
+        ("fonts", z::obj([("heading", font()), ("subheading", font()), ("body", font()), ("quote", font()), ("caption", font())]).optional()),
+        ("text_styles", z::array(hub::text_style()).max(hub::MAX_TEXT_STYLES as f64).optional()),
+        ("voice", z::str().max(4000.0).optional()),
+        ("logos", z::array(hub::asset_id()).max(30.0).optional()),
+        ("graphics", z::array(hub::asset_id()).max(200.0).optional()),
+        ("photos", z::array(hub::asset_id()).max(200.0).optional()),
+        ("guidelines", hub::guideline_sections().optional()),
+    ]
+}
+
 fn tool_schema(name: &str) -> Option<Schema> {
     let page = || z::union(vec![z::str(), z::num().int().min(1.0)]).optional();
     Some(match name {
         "get_design_guide" | "get_brand_kit" => z::obj([]),
         "get_brand_guidelines" => z::obj([("brand_kit", z::str().min(1.0).max(80.0)), ("sections", z::array(z::str().max(120.0)).max(60.0).optional())]),
+        "create_brand_kit" => z::obj_vec([vec![("name", z::str().trim().min(1.0).max(80.0)), ("team", z::str().max(80.0).optional())], kit_fields()].concat()),
+        "update_brand_kit" => z::obj_vec(
+            [
+                vec![("brand_kit", z::str().min(1.0).max(80.0)), ("new_name", z::str().trim().min(1.0).max(80.0).optional())],
+                kit_fields(),
+                vec![
+                    ("add_logos", z::array(hub::asset_id()).max(30.0).optional()),
+                    ("add_graphics", z::array(hub::asset_id()).max(200.0).optional()),
+                    ("add_photos", z::array(hub::asset_id()).max(200.0).optional()),
+                    ("remove_assets", z::array(hub::asset_id()).max(430.0).optional()),
+                ],
+            ]
+            .concat(),
+        ),
         "list_designs" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(50.0).optional())]),
         "list_size_presets" => z::obj([("query", z::str().max(80.0).optional())]),
         "search_templates" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(40.0).optional())]),
@@ -358,9 +389,9 @@ fn tool_schema(name: &str) -> Option<Schema> {
     })
 }
 
-pub const TOOLS: [&str; 20] = [
+pub const TOOLS: [&str; 22] = [
     "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link",
-    "get_brand_kit", "get_brand_guidelines", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
+    "get_brand_kit", "get_brand_guidelines", "create_brand_kit", "update_brand_kit", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
 ];
 
 /// `getDotPath(path)` of the SDK.
