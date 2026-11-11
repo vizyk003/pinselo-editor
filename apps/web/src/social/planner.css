@@ -95,3 +95,22 @@
   .post-pill .txt, .post-pill .nets { display: none; }
   .event-log li { grid-template-columns: 1fr; }
 }
+
+/* The creative in post details: every slide, large, opens the editor. */
+.slides { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x mandatory; }
+.slides .slide { position: relative; padding: 0; border: 0; cursor: zoom-in; flex: 0 0 auto; width: 240px; border-radius: 10px; overflow: hidden; background: var(--surface-3); scroll-snap-align: start; outline-offset: 2px; }
+.slides .slide img { display: block; width: 100%; height: auto; min-height: 120px; }
+.slides .slide:hover img { filter: brightness(0.92); }
+.slides .slide-n { position: absolute; right: 6px; bottom: 6px; padding: 1px 6px; border-radius: 6px; background: rgb(0 0 0 / 0.55); color: #fff; font-size: 11px; font-weight: 600; }
+
+.post-row .thumb-btn { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 8px; overflow: hidden; flex: 0 0 auto; }
+.post-row .thumb-btn img { display: block; }
+.lightbox { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; background: rgb(10 12 20 / 0.88); }
+.lightbox-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #fff; }
+.lightbox-bar .faint { color: rgb(255 255 255 / 0.7); }
+.lightbox-bar .btn.ghost { color: #fff; }
+.lightbox-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 16px 24px; }
+.lightbox-stage img { max-width: min(92vw, 1080px); max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgb(0 0 0 / 0.45); background: #fff; cursor: default; }
+.lightbox-nav { flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgb(255 255 255 / 0.15); color: #fff; cursor: pointer; }
+.lightbox-nav:disabled { opacity: 0.3; cursor: default; }
+.lightbox-nav:hover:not(:disabled) { background: rgb(255 255 255 / 0.28); }

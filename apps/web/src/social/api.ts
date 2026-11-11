@@ -37,6 +37,8 @@ export interface SocialPost {
   publisher: Publisher; channels: Channel[]; fields: Record<string, string>;
   submittedBy: string | null; submittedAt: string | null;
   approvedBy: string | null; approvedByName?: string | null; approvedAt: string | null; approvedVersion: number | null;
+  /** The design's current content version (list endpoint). */
+  designVersion?: number | null;
   claimedAt: string | null;
 }
 export interface PostInput {

@@ -1,7 +1,8 @@
 /** Content Planner (A16): month/week calendar with drag-to-reschedule, list view, account filter. */
-import { CalendarDays, CalendarRange, Check, ChevronLeft, ChevronRight, ExternalLink, List, MessageSquareWarning, Plus, Send, Pencil, Trash2 } from 'lucide-react';
+import { CalendarDays, CalendarRange, Check, ChevronLeft, ChevronRight, ExternalLink, List, MessageSquareWarning, Palette, Plus, Send, Pencil, Trash2, X as XIcon } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { createPortal } from 'react-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { api, ApiError, thumbUrl, type DesignSummary } from '../api';
 import { EmptyState, Modal, PageHeader, useToast } from '../components/ui';
 import { fmtDate, getLocale, t } from '../i18n';
@@ -21,6 +22,11 @@ const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.g
 const startOfWeek = (d: Date) => addDays(startOfDay(d), -((d.getDay() + 6) % 7));
 const timeFmt = (iso: string) => new Date(iso).toLocaleTimeString(getLocale(), { hour: 'numeric', minute: '2-digit' });
 const editable = isEditable;
+/** An approved external post whose design was edited since: it needs approving again before it goes out. */
+const changedSinceApproval = (p: SocialPost) =>
+  p.publisher === 'external' && p.status === 'approved' && p.approvedVersion != null && p.designVersion != null && p.designVersion > p.approvedVersion;
+/** Waiting for a reviewer's Approve or Reject. */
+const awaitsReview = (p: SocialPost) => p.status === 'in_review' || changedSinceApproval(p);
 /** "P-001 · " before the design title, unless the title already starts with the post ID. */
 const refPrefix = (p: SocialPost) => (p.fields.ref && !(p.designTitle ?? '').startsWith(p.fields.ref) ? `${p.fields.ref} · ` : '');
 /** Statuses the review filter offers. */
@@ -37,6 +43,9 @@ export function PlannerPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [posts, setPosts] = useState<SocialPost[] | null>(null);
   const [open, setOpen] = useState<SocialPost | null>(null);
+  const [rejecting, setRejecting] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const wanted = params.get('post');
   const [creating, setCreating] = useState<Date | null>(null);
   const [dropDay, setDropDay] = useState<number | null>(null);
 
@@ -67,6 +76,18 @@ export function PlannerPage() {
   useEffect(() => {
     void load().catch(() => setPosts([]));
   }, [load]);
+  // Back from the editor (`/planner?post=<id>`): reopen that post with its fresh slides.
+  useEffect(() => {
+    if (!wanted) return;
+    void socialApi.posts().then((r) => {
+      const p = r.posts.find((x) => x.id === wanted);
+      if (p) {
+        if (p.scheduledAt) setCursor(startOfDay(new Date(p.scheduledAt)));
+        setOpen(p);
+      }
+      setParams((q) => { q.delete('post'); return q; }, { replace: true });
+    }).catch(() => {});
+  }, [wanted, setParams]);
   useEffect(() => {
     void socialApi.accounts().then((r) => setAccounts(r.accounts)).catch(() => {});
     // Publishing finishes in the background: refresh while the page is open.
@@ -139,7 +160,17 @@ export function PlannerPage() {
       </div>
 
       {posts === null ? <div className="spinner" /> : view === 'list' ? (
-        <PostList posts={visible} accounts={accounts} onOpen={setOpen} />
+        <PostList posts={visible} accounts={accounts} onOpen={(p) => { setRejecting(false); setOpen(p); }}
+          onReject={(p) => { setRejecting(true); setOpen(p); }}
+          onApprove={async (p) => {
+            try {
+              await socialApi.approve(p.id);
+              toast(t('Approved — it goes out on {date}', { date: p.scheduledAt ? new Date(p.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'medium', timeStyle: 'short' }) : t('No time') }));
+            } catch (e) {
+              toast(e instanceof ApiError ? (e.message || e.code) : t('That didn’t work. Try again.'));
+            }
+            void load();
+          }} />
       ) : (
         <div className={`cal ${view}`} role="grid" aria-label={period}>
           {dows.map((d) => <div key={d} className="dow" role="columnheader">{d}</div>)}
@@ -178,7 +209,7 @@ export function PlannerPage() {
         </EmptyState>
       )}
 
-      {open && <PostDetails post={open} accounts={accounts} onClose={() => setOpen(null)} onChanged={() => { setOpen(null); void load(); }} />}
+      {open && <PostDetails post={open} accounts={accounts} rejecting={rejecting} onClose={() => { setOpen(null); setRejecting(false); }} onChanged={() => { setOpen(null); setRejecting(false); void load(); }} />}
       {creating && <PickDesign at={creating} onClose={() => setCreating(null)} onSaved={() => void load()} />}
     </div>
     </>
@@ -218,7 +249,11 @@ function PostPill({ post, accounts, onOpen }: { post: SocialPost; accounts: Soci
   );
 }
 
-function PostList({ posts, accounts, onOpen }: { posts: SocialPost[]; accounts: SocialAccount[]; onOpen: (p: SocialPost) => void }) {
+function PostList({ posts, accounts, onOpen, onApprove, onReject }: {
+  posts: SocialPost[]; accounts: SocialAccount[]; onOpen: (p: SocialPost) => void; onApprove: (p: SocialPost) => void; onReject: (p: SocialPost) => void;
+}) {
+  const nav = useNavigate();
+  const [viewing, setViewing] = useState<SocialPost | null>(null);
   const now = Date.now();
   const upcoming = posts.filter((p) => !p.scheduledAt || new Date(p.scheduledAt).getTime() >= now || ['scheduled', 'publishing', 'in_review', 'changes_requested', 'approved'].includes(p.status));
   const past = posts.filter((p) => !upcoming.includes(p)).reverse();
@@ -228,7 +263,7 @@ function PostList({ posts, accounts, onOpen }: { posts: SocialPost[]; accounts: 
       <div className="post-list">
         {list.map((p) => (
           <div key={p.id} className="post-row">
-            <img src={thumbUrl(p.designId)} alt="" loading="lazy" />
+            <button type="button" className="thumb-btn" onClick={() => setViewing(p)} title={t('Enlarge')}><img src={thumbUrl(p.designId)} alt={t('Slide {n}', { n: 1 })} loading="lazy" /></button>
             <div className="meta">
               <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
                 <b>{refPrefix(p)}{p.designTitle}</b>
@@ -241,22 +276,33 @@ function PostList({ posts, accounts, onOpen }: { posts: SocialPost[]; accounts: 
               <span className="cap">{p.caption || <i className="faint">{t('No caption')}</i>}</span>
               {p.status === 'failed' && p.error && <span className="error" style={{ fontSize: 12 }}>{p.error}</span>}
             </div>
-            <button className="btn sm" onClick={() => onOpen(p)}>{t('Details')}</button>
+            <div className="row" style={{ gap: 6 }}>
+              {awaitsReview(p) && <button className="btn sm" onClick={() => onReject(p)}><MessageSquareWarning size={14} /> {t('Reject')}</button>}
+              {awaitsReview(p) && <button className="btn sm primary" onClick={() => onApprove(p)}><Check size={14} /> {changedSinceApproval(p) ? t('Approve this version') : t('Approve')}</button>}
+              <button className="btn sm" onClick={() => onOpen(p)}>{t('Details')}</button>
+            </div>
           </div>
         ))}
       </div>
     </section>
   );
-  return <>{section(t('Upcoming'), upcoming)}{section(t('Past'), past)}</>;
+  return (
+    <>
+      {section(t('Upcoming'), upcoming)}{section(t('Past'), past)}
+      {viewing && <Lightbox designId={viewing.designId} title={`${refPrefix(viewing)}${viewing.designTitle ?? ''}`} pages={viewing.pages} start={0}
+        onClose={() => setViewing(null)} onEdit={() => nav(`/design/${viewing.designId}?from=planner&post=${viewing.id}`)} />}
+    </>
+  );
 }
 
-function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost; accounts: SocialAccount[]; onClose: () => void; onChanged: () => void }) {
+function PostDetails({ post, accounts, onClose, onChanged, rejecting = false }: { post: SocialPost; accounts: SocialAccount[]; onClose: () => void; onChanged: () => void; rejecting?: boolean }) {
   const toast = useToast();
   const nav = useNavigate();
   const [events, setEvents] = useState<PostEvent[]>([]);
   const [design, setDesign] = useState<DesignSummary | null>(null);
   const [editing, setEditing] = useState(false);
-  const [note, setNote] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(rejecting ? (post.fields.reviewerNote ?? '') : null);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const act = async (fn: () => Promise<unknown>, done: string) => {
     setBusy(true);
@@ -271,6 +317,10 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
     }
   };
   const external = post.publisher === 'external';
+  // The editor's back button returns here, with this post open again.
+  const editUrl = `/design/${post.designId}?from=planner&post=${post.id}`;
+  const slides = design ? (post.pages.length ? post.pages.map((p) => p + 1) : [...Array(Math.max(1, design.page_count)).keys()].map((i) => i + 1)) : [1];
+  const changed = changedSinceApproval(post);
   const shownFields = EDITORIAL_FIELDS.filter((f) => post.fields[f.key]);
   useEffect(() => {
     void socialApi.events(post.id).then((r) => setEvents(r.events)).catch(() => {});
@@ -286,8 +336,25 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
   return (
     <Modal title={`${refPrefix(post)}${post.designTitle ?? t('Scheduled post')}`} onClose={onClose} size="lg">
       <div className="planner-form">
+        <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <span className="faint" style={{ fontSize: 13 }}>{slides.length > 1 ? t('{n} slides · click to enlarge', { n: slides.length }) : t('Click to enlarge')}</span>
+          <button className="btn primary sm" onClick={() => nav(editUrl)}><Palette size={15} /> {t('Edit design')}</button>
+        </div>
+        <div className="slides" aria-label={t('Creative')}>
+          {slides.map((n, i) => (
+            <button key={n} type="button" className="slide" onClick={() => setLightbox(i)} title={t('Enlarge')}>
+              <img src={design ? pageUrl(post.designId, n, 540, design.updated_at) : thumbUrl(post.designId)} alt={t('Slide {n}', { n })} loading="lazy" />
+              {slides.length > 1 && <span className="slide-n">{n}/{slides.length}</span>}
+            </button>
+          ))}
+        </div>
+        {lightbox !== null && <Lightbox designId={post.designId} title={`${refPrefix(post)}${post.designTitle ?? ''}`} start={lightbox} onClose={() => setLightbox(null)} onEdit={() => nav(editUrl)} />}
+        {changed && (
+          <p className="warn-list" style={{ margin: 0 }}>
+            {t('The design changed after it was approved (approved version {a}, now {b}). The publisher won’t post it until it is approved again.', { a: post.approvedVersion ?? 0, b: post.designVersion ?? 0 })}
+          </p>
+        )}
         <div className="row" style={{ gap: 14, alignItems: 'flex-start' }}>
-          <img src={thumbUrl(post.designId)} alt="" style={{ width: 120, borderRadius: 10, background: 'var(--surface-3)' }} />
           <div className="col grow" style={{ gap: 6 }}>
             <span className={`status-dot ${post.status}`}>{t(STATUS_LABEL[post.status])}</span>
             <span>{post.scheduledAt ? new Date(post.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'full', timeStyle: 'short', timeZone: post.timezone }) : t('No time')} <span className="faint">({post.timezone.replace(/_/g, ' ')})</span></span>
@@ -332,12 +399,12 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
         {note !== null && (
           <div className="review-box">
             <label className="field">
-              <span>{t('What should change?')}</span>
+              <span>{t('Why is it rejected? What should change?')}</span>
               <textarea className="input" rows={3} value={note} autoFocus onChange={(e) => setNote(e.target.value)} />
             </label>
             <div className="row" style={{ justifyContent: 'flex-end', gap: 8 }}>
               <button className="btn ghost" onClick={() => setNote(null)}>{t('Cancel')}</button>
-              <button className="btn primary" disabled={busy} onClick={() => act(() => socialApi.requestChanges(post.id, note), t('Changes requested'))}>{t('Request changes')}</button>
+              <button className="btn danger" disabled={busy} onClick={() => act(() => socialApi.requestChanges(post.id, note), t('Rejected — sent back with your note'))}>{t('Reject')}</button>
             </div>
           </div>
         )}
@@ -366,7 +433,6 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
           </details>
         )}
         <div className="row" style={{ justifyContent: 'flex-end', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn ghost" onClick={() => nav(`/design/${post.designId}`)}>{t('Open design')}</button>
           <div className="grow" />
           {post.status !== 'publishing' && (
             <button className="btn ghost danger" onClick={async () => {
@@ -380,10 +446,10 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
             <button className="btn" disabled={busy} onClick={() => act(() => socialApi.submit(post.id), t('Sent for review'))}><Send size={15} /> {t('Submit for review')}</button>
           )}
           {['in_review', 'approved', 'scheduled', 'failed'].includes(post.status) && note === null && (post.status !== 'scheduled' || post.approvedAt) && (
-            <button className="btn" disabled={busy} onClick={() => setNote(post.fields.reviewerNote ?? '')}><MessageSquareWarning size={15} /> {t('Request changes')}</button>
+            <button className="btn" disabled={busy} onClick={() => setNote(post.fields.reviewerNote ?? '')}><MessageSquareWarning size={15} /> {t('Reject')}</button>
           )}
-          {(post.status === 'in_review' || (post.status === 'failed' && external)) && (
-            <button className="btn primary" disabled={busy} onClick={() => act(() => socialApi.approve(post.id), t('Approved'))}><Check size={15} /> {t('Approve')}</button>
+          {(post.status === 'in_review' || (post.status === 'failed' && external) || changed) && (
+            <button className="btn primary" disabled={busy} onClick={() => act(() => socialApi.approve(post.id), t('Approved'))}><Check size={15} /> {changed ? t('Approve this version') : t('Approve')}</button>
           )}
           {!external && ['draft', 'scheduled', 'failed'].includes(post.status) && post.accounts.length > 0 && (
             <button className="btn primary" onClick={async () => {
@@ -428,5 +494,45 @@ function PickDesign({ at, onClose, onSaved }: { at: Date; onClose: () => void; o
         </div>
       )}
     </Modal>
+  );
+}
+
+const pageUrl = (designId: string, n: number, w: number, v: string) => `/api/designs/${designId}/pages/${n}.png?w=${w}&v=${encodeURIComponent(v)}`;
+
+/** The creative full screen: every slide, ←/→ to move, Esc to close, Edit design opens the editor. */
+function Lightbox({ designId, title, pages = [], start, onClose, onEdit }: {
+  designId: string; title: string; pages?: number[]; start: number; onClose: () => void; onEdit: () => void;
+}) {
+  const [design, setDesign] = useState<DesignSummary | null>(null);
+  const [i, setI] = useState(start);
+  useEffect(() => {
+    void api.design(designId).then((r) => setDesign(r.design)).catch(() => {});
+  }, [designId]);
+  const slides = design ? (pages.length ? pages.map((p) => p + 1) : [...Array(Math.max(1, design.page_count)).keys()].map((k) => k + 1)) : [start + 1];
+  const n = Math.min(i, slides.length - 1);
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.stopPropagation(); onClose(); }
+      if (e.key === 'ArrowRight') setI((x) => Math.min(x + 1, slides.length - 1));
+      if (e.key === 'ArrowLeft') setI((x) => Math.max(x - 1, 0));
+    };
+    window.addEventListener('keydown', key, true);
+    return () => window.removeEventListener('keydown', key, true);
+  }, [slides.length, onClose]);
+  return createPortal(
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
+      <div className="lightbox-bar" onClick={(e) => e.stopPropagation()}>
+        <b className="grow">{title}</b>
+        {slides.length > 1 && <span className="faint">{n + 1} / {slides.length}</span>}
+        <button className="btn primary sm" onClick={onEdit}><Palette size={15} /> {t('Edit design')}</button>
+        <button className="btn ghost icon" aria-label={t('Close')} onClick={onClose}><XIcon size={18} /></button>
+      </div>
+      <div className="lightbox-stage">
+        {slides.length > 1 && <button className="lightbox-nav prev" aria-label={t('Previous')} disabled={n === 0} onClick={(e) => { e.stopPropagation(); setI(n - 1); }}><ChevronLeft size={28} /></button>}
+        <img src={design ? pageUrl(designId, slides[n]!, 1080, design.updated_at) : thumbUrl(designId)} alt={t('Slide {n}', { n: slides[n] ?? 1 })} onClick={(e) => e.stopPropagation()} />
+        {slides.length > 1 && <button className="lightbox-nav next" aria-label={t('Next')} disabled={n === slides.length - 1} onClick={(e) => { e.stopPropagation(); setI(n + 1); }}><ChevronRight size={28} /></button>}
+      </div>
+    </div>,
+    document.body,
   );
 }

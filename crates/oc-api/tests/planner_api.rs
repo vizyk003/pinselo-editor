@@ -247,6 +247,17 @@ async fn review_and_external_publishing() {
         let r = send(&s, "PATCH", "/v1/planner/posts/P-001", &[("authorization", &format!("Bearer {}", token(&pool, ada, &["planner:write"], Some(team)).await))], Some(json!({ "caption": "y" }))).await;
         assert_eq!(r.status, 409, "published posts are locked");
 
+        // A design edited after approval, then approved again: the approval records the new version.
+        let r = send(&s, "POST", "/api/social/posts", &b, Some(post_body(&designs[0], "P-005"))).await;
+        let p5 = r.body["post"]["id"].as_str().expect("id").to_owned();
+        assert_eq!(send(&s, "POST", &format!("/api/social/posts/{p5}/approve"), &a, None).await.body["post"]["approvedVersion"], json!(1));
+        edit(&pool, &designs[0]).await;
+        let listed = send(&s, "GET", "/api/social/posts", &a, None).await;
+        let p5row = listed.body["posts"].as_array().expect("posts").iter().find(|p| p["id"] == p5.as_str()).expect("p5").clone();
+        assert_eq!((p5row["approvedVersion"].clone(), p5row["designVersion"].clone()), (json!(1), json!(2)));
+        let r = send(&s, "POST", &format!("/api/social/posts/{p5}/approve"), &a, None).await;
+        assert_eq!((r.status, r.body["post"]["approvedVersion"].clone()), (200, json!(2)), "{:?}", r.body);
+
         // A design edited after approval: claiming sends the post back to review instead of posting it.
         assert_eq!(send(&s, "POST", &format!("/api/social/posts/{p2}/approve"), &a, None).await.status, 200);
         edit(&pool, &designs[1]).await;

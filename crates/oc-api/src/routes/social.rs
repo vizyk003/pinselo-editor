@@ -487,6 +487,7 @@ async fn delete_account(State(s): State<AppState>, Path(id): Path<String>, req: 
 #[derive(sqlx::FromRow)]
 struct ListedPost {
     approver_name: Option<String>,
+    design_version: Option<i64>,
     #[sqlx(flatten)]
     post: PostRow,
     design_title: Option<String>,
@@ -504,7 +505,7 @@ async fn list_posts(State(s): State<AppState>, req: Req) -> ApiResult {
     .parse(Some(&req.query))?;
     let qs = |k: &str| q.get(k).and_then(Value::as_str).map(str::to_owned);
     let rows: Vec<ListedPost> = sqlx::query_as(
-        "SELECT p.*, d.title AS design_title, ua.name AS approver_name FROM social_posts p JOIN designs d ON d.id = p.design_id
+        "SELECT p.*, d.title AS design_title, ua.name AS approver_name, d.content_version AS design_version FROM social_posts p JOIN designs d ON d.id = p.design_id
          LEFT JOIN users ua ON ua.id = p.approved_by
          WHERE (p.owner_id = $1 OR p.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))
            AND ($2::timestamptz IS NULL OR p.scheduled_at IS NULL OR p.scheduled_at >= $2::timestamptz)
@@ -525,6 +526,7 @@ async fn list_posts(State(s): State<AppState>, req: Req) -> ApiResult {
     Ok(Reply::json(json!({ "posts": rows.iter().map(|r| {
         let mut v = public_post(&r.post, r.design_title.as_deref());
         v["approvedByName"] = json!(r.approver_name);
+        v["designVersion"] = json!(r.design_version);
         v
     }).collect::<Vec<_>>() })))
 }
@@ -919,7 +921,8 @@ async fn approve_post(State(s): State<AppState>, Path(id): Path<String>, req: Re
             json!({ "error": "forbidden", "message": "Only workspace admins and owners can approve posts." }),
         ));
     }
-    if !matches!(post.status.as_str(), "in_review" | "failed") {
+    // An approved external post may be approved again: it records the design's current version (after a fix).
+    if !matches!(post.status.as_str(), "in_review" | "failed") && !(post.status == "approved" && post.publisher == "external") {
         return Ok(reply::json(
             409,
             json!({ "error": "wrong_status", "message": "Only posts in review (or failed ones) can be approved." }),

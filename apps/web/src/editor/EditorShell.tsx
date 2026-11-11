@@ -493,6 +493,9 @@ function Header({ status, unsynced, presence, openComments, commentCount, setDia
   const doc = useDoc();
   useEditorState();
   const nav = useNavigate();
+  // Opened from the Content Planner: the back button returns to the post (`/planner?post=<id>`).
+  const [headerParams] = useSearchParams();
+  const fromPlanner = headerParams.get('from') === 'planner' ? headerParams.get('post') : null;
   const { user } = useAuth();
   const toast = useToast();
   const [title, setTitle] = useState(doc.meta.title);
@@ -555,7 +558,9 @@ function Header({ status, unsynced, presence, openComments, commentCount, setDia
   const canRedo = editor.store.undo.redoStack.length > 0;
   return (
     <header className="editor-header">
-      <button className="btn ghost sm" onClick={() => nav('/')} aria-label={t('Home')}><ChevronLeft size={16} /><span className="hide-mobile">{t('Home')}</span></button>
+      {fromPlanner
+        ? <button className="btn ghost sm" onClick={() => nav(`/planner?post=${encodeURIComponent(fromPlanner)}`)} aria-label={t('Back to the planner')}><ChevronLeft size={16} /><span className="hide-mobile">{t('Planner')}</span></button>
+        : <button className="btn ghost sm" onClick={() => nav('/')} aria-label={t('Home')}><ChevronLeft size={16} /><span className="hide-mobile">{t('Home')}</span></button>}
       <PopoverButton className="btn ghost sm" title={t('File')} label={<>{t('File')} <ChevronDown size={14} className="hide-mobile" /></>} menu content={(close) => (
         <div className="menu" role="menu">
           <FileInfo folderId={folderId} folders={folders} loadFolders={loadFolders} />
