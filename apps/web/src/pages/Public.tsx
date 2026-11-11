@@ -16,7 +16,7 @@ import { fmtDate, t, tk } from '../i18n';
 
 /** Help articles; the plans article only while paid plans exist. */
 
-function PublicShell({ children, wide }: { children: ReactNode; wide?: boolean }) {
+export function PublicShell({ children, wide }: { children: ReactNode; wide?: boolean }) {
   const { user } = useAuth();
   const { openAuth } = useAuthGate();
   return (
@@ -26,6 +26,7 @@ function PublicShell({ children, wide }: { children: ReactNode; wide?: boolean }
         <nav className="row" style={{ gap: 4 }}>
           <NavLink className="btn ghost sm" to="/help">{t('Help')}</NavLink>
           <NavLink className="btn ghost sm" to="/status">{t('Status')}</NavLink>
+          <NavLink className="btn ghost sm" to="/developers/api">{t('API')}</NavLink>
         </nav>
         <span className="grow" />
         {user ? <Link className="btn" to="/">{t('Your designs')}</Link> : <><button className="btn ghost" onClick={() => openAuth('login')}>{t('Log in')}</button><button className="btn primary" onClick={() => openAuth('signup')}>{t('Sign up')}</button></>}

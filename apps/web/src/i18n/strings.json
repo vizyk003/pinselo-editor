@@ -30,6 +30,7 @@
  "AI": "editor/EditorShell.tsx",
  "AI assistants": "pages/Developers.tsx",
  "AI changes": "editor/AiActivity.tsx",
+ "API": "pages/Public.tsx",
  "API access tokens": "pages/Developers.tsx",
  "Accept invite": "pages/Auth.tsx",
  "Accept the Terms to continue.": "auth/SupabaseAuth.tsx",

@@ -268,6 +268,8 @@ With `"format": "jpeg"`, this route makes the [JPEG export for publishing](#jpeg
 
 ### JPEG exports for publishing
 
+The public guide for integrators is the web app's `/developers/api` page (`apps/web/src/pages/ApiDocs.tsx`). Keep it in step with this section.
+
 For tools that post designs on their own, for example to Instagram through Meta's Graph API. Scope: `exports` or `designs:export`. Needs at least view access.
 
 ```sh

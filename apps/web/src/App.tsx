@@ -1,4 +1,5 @@
 import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState } from 'react';
+import { ApiDocsPage } from './pages/ApiDocs';
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router';
 import { AuthDialog, AuthGateProvider } from './auth/AuthGate';
 import { loadSession } from './auth/session';
@@ -126,6 +127,7 @@ export function App() {
             <Route path="/help/requests" element={<HelpRequests />} />
             <Route path="/help/:slug" element={<HelpArticlePage />} />
             <Route path="/status" element={<StatusPage />} />
+            <Route path="/developers/api" element={<ApiDocsPage />} />
             <Route path="/view/:id" element={<PublicView />} />
             <Route path="/oauth/authorize" element={<OAuthConsent />} />
             {/* Template links (g136) stay public: the page shows a preview and asks for sign-in itself. */}
