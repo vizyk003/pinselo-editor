@@ -16,6 +16,8 @@ import { addText, assetRef, insertAssetAt } from './insert';
 import { setAssetDrag, withFillColor } from './dropTarget';
 import { SwatchInput } from './ColorPicker';
 import { BrandGuidelines } from './BrandGuidelines';
+import { BrandTextStyles } from './BrandTextStyles';
+import { elementRole, runStyleOf, styleFor } from './kitTextStyles';
 
 const FONT_ROLES: Array<[KitFontRole, string, number, number]> = [
   ['heading', tk('Heading'), 64, 800], ['subheading', tk('Subheading'), 40, 600], ['body', tk('Body text'), 24, 400],
@@ -224,27 +226,21 @@ export function BrandPanel() {
       {FONT_ROLES.map(([role, label, size, weight]) => {
         const fam = kit.fonts[role];
         const f = fam ? engine.fonts.families().find((x) => x.family === fam) : undefined;
+        // The role's first text style, when the kit has one, sets the weight and the rest; else a plain default.
+        const st = styleFor(kit, role);
+        const run = st ? { size, ...runStyleOf(kit, st, (h) => solid(hex(h))) } : { family: fam ?? 'Inter', size, weight };
         return (
           <div key={role} className="row">
-            <button className="btn grow" style={{ justifyContent: 'flex-start', fontFamily: f ? previewFamily(f, true) : undefined, fontSize: Math.min(20, size / 2.5) }}
-              onClick={() => addText(editor, t(label), { family: fam ?? 'Inter', size, weight })} title={t('Add {label}', { label: t(label) })}>{t(label)}</button>
+            <button className="btn grow" style={{ justifyContent: 'flex-start', fontFamily: f ? previewFamily(f, true) : undefined, fontSize: Math.min(20, size / 2.5), fontWeight: st?.weight }}
+              onClick={() => addText(editor, t(label), run, { role: elementRole(role), lineHeight: st?.lineHeight })} title={t('Add {label}', { label: t(label) })}>{t(label)}</button>
             {canEdit ? (
               <FontSelect value={fam ?? ''} onChange={(v) => save({ fonts: { ...kit.fonts, [role]: v || undefined } })} label={t('{label} font', { label: t(label) })} />
             ) : <span className="faint" style={{ fontSize: 12 }}>{fam ?? '—'}</span>}
           </div>
         );
       })}
-      {(() => {
-        // Kit fonts that are neither Google fonts nor uploaded draw in a fallback until someone uploads them.
-        const known = new Set(engine.fonts.families().map((x) => x.family.toLowerCase()));
-        const missing = [...new Set(Object.values(kit.fonts).filter((f): f is string => Boolean(f) && !known.has(f!.toLowerCase())))];
-        return missing.length ? (
-          <p className="faint" role="status" style={{ margin: 0, fontSize: 12 }}>
-            {t('Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.', { fonts: missing.join(', ') })}
-          </p>
-        ) : null;
-      })()}
-      <BrandFonts canUpload={!controls.restrictUploads} />
+      <BrandTextStyles kit={kit} canEdit={canEdit} save={save} />
+      <BrandFonts kit={kit} canUpload={canEdit && !controls.restrictUploads} />
 
       <AssetGroup title={t('Logos')} icon={<ImageIcon size={13} />} ids={kit.logos} canEdit={canEdit} onChange={(logos) => save({ logos })} />
       <AssetGroup title={t('Brand photos')} icon={<ImageIcon size={13} />} ids={kit.photos} canEdit={canEdit} onChange={(photos) => save({ photos })} />
@@ -346,8 +342,11 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
   );
 }
 
-/** Uploaded brand fonts (FT-020): TTF/OTF files your organisation licenses; usable by everyone in the workspace. */
-function BrandFonts({ canUpload }: { canUpload: boolean }) {
+/**
+ * Uploaded brand fonts (FT-020): TTF/OTF files your organisation licenses; usable by everyone in the workspace they
+ * are uploaded to. Shows and uploads to the kit's workspace, so a team kit's fonts reach the whole team.
+ */
+function BrandFonts({ kit, canUpload }: { kit: Kit; canUpload: boolean }) {
   const { engine, editor } = useEd();
   const toast = useToast();
   const [fonts, setFonts] = useState<CustomFont[]>([]);
@@ -357,12 +356,31 @@ function BrandFonts({ canUpload }: { canUpload: boolean }) {
   useEffect(() => {
     void load();
   }, [load]);
-  const families = [...new Set(fonts.map((f) => f.family))];
+  const here = fonts.filter((f) => f.workspaceId === kit.workspaceId);
+  const families = [...new Set(here.map((f) => f.family))];
+  // Kit fonts that aren't Google fonts draw in a fallback for anyone outside the workspace they're uploaded to.
+  const google = new Set(engine.fonts.families().filter((x) => x.category !== 'uploaded').map((x) => x.family.toLowerCase()));
+  const kitFonts = [...new Set(Object.values(kit.fonts).filter((f): f is string => Boolean(f)))].filter((f) => !google.has(f.toLowerCase()));
+  const missing = kitFonts.filter((f) => !here.some((x) => x.family.toLowerCase() === f.toLowerCase()));
+  const elsewhere = missing.filter((f) => fonts.some((x) => x.family.toLowerCase() === f.toLowerCase()));
+  const nowhere = missing.filter((f) => !elsewhere.includes(f));
+  const place = kit.personal ? t('your personal workspace') : kit.workspace ?? '';
   return (
     <>
       <h4><Type size={13} /> {t('Brand fonts')}</h4>
+      <p className="faint" style={{ margin: 0, fontSize: 12 }}>{t('Fonts uploaded to {place}; everyone there can use them.', { place })}</p>
+      {nowhere.length > 0 && (
+        <p className="faint" role="status" style={{ margin: 0, fontSize: 12 }}>
+          {t('Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files here.', { fonts: nowhere.join(', ') })}
+        </p>
+      )}
+      {elsewhere.length > 0 && (
+        <p className="faint" role="status" style={{ margin: 0, fontSize: 12 }}>
+          {t('Uploaded to another workspace only, so people in {place} see a fallback font: {fonts}. Upload them here too.', { place, fonts: elsewhere.join(', ') })}
+        </p>
+      )}
       {families.map((fam) => {
-        const faces = fonts.filter((f) => f.family === fam);
+        const faces = here.filter((f) => f.family === fam);
         const f = engine.fonts.families().find((x) => x.family === fam);
         return (
           <div key={fam} className="row">
@@ -381,7 +399,7 @@ function BrandFonts({ canUpload }: { canUpload: boolean }) {
       <input ref={input} type="file" accept=".ttf,.otf,font/ttf,font/otf" multiple hidden onChange={async (e) => {
         for (const file of [...(e.target.files ?? [])]) {
           try {
-            const { font } = await contentApi.uploadFont(file);
+            const { font } = await contentApi.uploadFont(file, kit.workspaceId);
             const existing = engine.fonts.families().find((x) => x.family === font.family);
             const face = { weight: font.weight, italic: font.italic, file: font.file, sha256: font.sha256, bytes: font.bytes };
             engine.fonts.addFamily(existing

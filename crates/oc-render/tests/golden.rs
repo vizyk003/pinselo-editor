@@ -88,7 +88,7 @@ fn size(v: &Value) -> (f64, f64) {
 }
 
 fn popts(v: &Value) -> PresetOpts {
-    PresetOpts { direction: v.get("direction").map(|d| AnimDirection::parse(s(d))), intensity: v.get("intensity").map(f) }
+    PresetOpts { direction: v.get("direction").map(|d| AnimDirection::parse(s(d))), intensity: v.get("intensity").map(f), ..Default::default() }
 }
 
 fn opt_dir(v: &Value) -> Option<AnimDirection> {

@@ -39,7 +39,7 @@ use crate::renderer::{
 };
 use crate::service::{Service, SvcError, safe_name};
 use crate::site::{SiteOptions, build_site};
-use crate::video::{VideoQuality, export_audio, export_gif, export_mp4};
+use crate::video::{VideoQuality, export_audio, export_gif, export_mp4, export_mp4_at, keep_pages};
 
 /// Shared state of the app.
 #[derive(Clone)]
@@ -232,12 +232,15 @@ async fn doc_to_design(State(st): State<AppState>, axum::Json(b): axum::Json<Val
 async fn page_png(State(st): State<AppState>, axum::Json(b): axum::Json<Value>) -> Response {
     let id = str_of(&b, "designId").unwrap_or("");
     let w = b.get("w").and_then(Value::as_f64).unwrap_or(800.0);
+    // `timesMs`: moments of the page's playback (one frame, or a filmstrip); without it the settled page.
+    let times: Vec<f64> = b.get("timesMs").and_then(Value::as_array).map(|a| a.iter().filter_map(Value::as_f64).collect()).unwrap_or_default();
     let _g = st.svc.serial.lock().await;
-    match st
-        .svc
-        .render_page(id, str_of(&b, "pageId"), oc_schema::js::round(w))
-        .await
-    {
+    let r = if times.is_empty() {
+        st.svc.render_page(id, str_of(&b, "pageId"), oc_schema::js::round(w)).await
+    } else {
+        st.svc.render_page_at(id, str_of(&b, "pageId"), oc_schema::js::round(w), &times).await
+    };
+    match r {
         Ok(Some(r)) => {
             let mut res = Response::new(Body::from(r.png));
             res.headers_mut()
@@ -464,6 +467,9 @@ struct ExportBody {
     pages: Option<Vec<i64>>,
     #[serde(default)]
     scale: Option<f64>,
+    /// Video width in px (height follows the design); wins over `scale`.
+    #[serde(default)]
+    width: Option<f64>,
     #[serde(default)]
     quality: Option<f64>,
     #[serde(default)]
@@ -476,6 +482,18 @@ struct ExportBody {
     /// Text watermark on every page ([`crate::watermark::Watermark`]).
     #[serde(default)]
     watermark: Option<crate::watermark::Watermark>,
+}
+
+/// Output pixels per design px of a video: `width` px wide, else `scale` × the design's own size (default 1), with
+/// the long side kept within 16..3840 px.
+pub fn video_size_scale(doc: &oc_schema::DesignDoc, width: Option<f64>, scale: Option<f64>) -> f64 {
+    let (w, h) = (doc.meta.dims.w, doc.meta.dims.h);
+    let long = w.max(h).max(1.0);
+    let k = match width.filter(|v| v.is_finite() && *v > 0.0) {
+        Some(px) => px / w.max(1.0),
+        None => scale.filter(|v| v.is_finite() && *v > 0.0).unwrap_or(1.0),
+    };
+    k.clamp(16.0 / long, 3840.0 / long)
 }
 
 async fn export(State(st): State<AppState>, axum::Json(b): axum::Json<Value>) -> Response {
@@ -545,6 +563,8 @@ async fn export_inner(svc: &Service, b: &ExportBody) -> Result<Response, SvcErro
             json!({ "error": "no_pages" }),
         ));
     }
+    // Videos play only the pages asked for (without a choice: the visible pages).
+    let picked = b.pages.as_ref().is_some_and(|p| !p.is_empty());
     let name = safe_name(&doc.meta.title);
     let _g = svc.serial.lock().await;
     let fmt = b.format.as_str();
@@ -569,11 +589,14 @@ async fn export_inner(svc: &Service, b: &ExportBody) -> Result<Response, SvcErro
             ));
         }
         "mp4" => {
+            if picked {
+                keep_pages(&mut doc, &pages);
+            }
             let media = svc.media_for(&doc).await?;
-            let bytes = export_mp4(
+            let bytes = export_mp4_at(
                 svc.video_deps(&media),
                 &doc,
-                VideoQuality::P1080,
+                video_size_scale(&doc, b.width, b.scale),
                 None,
                 None,
             )
@@ -581,11 +604,17 @@ async fn export_inner(svc: &Service, b: &ExportBody) -> Result<Response, SvcErro
             return Ok(file(bytes, "video/mp4", &format!("{name}.mp4")));
         }
         "gif" => {
+            if picked {
+                keep_pages(&mut doc, &pages);
+            }
             let media = svc.media_for(&doc).await?;
             let bytes = export_gif(svc.video_deps(&media), &doc, None).await?;
             return Ok(file(bytes, "image/gif", &format!("{name}.gif")));
         }
         "m4a" => {
+            if picked {
+                keep_pages(&mut doc, &pages);
+            }
             let media = svc.media_for(&doc).await?;
             return Ok(match export_audio(svc.video_deps(&media), &doc).await? {
                 Some(bytes) => file(bytes, "audio/mp4", &format!("{name}.m4a")),
@@ -804,4 +833,21 @@ pub async fn run_export(
     };
     let sha = svc.put(&bytes, ty).await?;
     Ok(done(sha, ty, format!("{name}.{ext}"), bytes.len()))
+}
+
+#[cfg(test)]
+mod video_size_tests {
+    use super::video_size_scale;
+
+    #[test]
+    fn videos_come_out_at_the_design_size_unless_asked() {
+        let mut d = oc_schema::factory::empty_design(&oc_schema::presets::preset_design_init(None, &Default::default()).meta_init());
+        d.meta.dims.w = 1080.0;
+        d.meta.dims.h = 1350.0;
+        assert_eq!(video_size_scale(&d, None, None), 1.0);
+        assert_eq!(video_size_scale(&d, None, Some(0.5)), 0.5);
+        assert_eq!(video_size_scale(&d, Some(720.0), Some(2.0)), 720.0 / 1080.0);
+        // The long side stays within 3840 px.
+        assert_eq!(video_size_scale(&d, None, Some(4.0)), 3840.0 / 1350.0);
+    }
 }

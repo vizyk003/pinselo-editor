@@ -250,6 +250,43 @@ pub fn video_scale(doc: &DesignDoc, quality: VideoQuality) -> f64 {
     quality.long_side() / doc.meta.dims.w.max(doc.meta.dims.h)
 }
 
+/// Only `pages` (ids) play: the others are hidden, and the soundtrack and captions move with the first page kept so
+/// they stay in step with it (whatever started before it is trimmed off).
+pub fn keep_pages(doc: &mut DesignDoc, pages: &[String]) {
+    let offset = timeline_of(doc, false)
+        .spans
+        .iter()
+        .find(|s| pages.iter().any(|p| *p == *s.page.id))
+        .map_or(0.0, |s| s.start_ms);
+    for (id, p) in doc.pages.iter_mut() {
+        let keep = pages.iter().any(|k| **k == **id);
+        p.hidden = if keep { None } else { Some(true) };
+    }
+    if offset <= 0.0 {
+        return;
+    }
+    if let Some(clips) = doc.meta.audio.as_mut() {
+        clips.retain_mut(|c| {
+            c.start_ms -= offset;
+            if c.start_ms < 0.0 {
+                let cut = -c.start_ms;
+                c.start_ms = 0.0;
+                c.trim_start_ms += cut;
+                c.duration_ms -= cut;
+                c.fade_in_ms = 0.0;
+            }
+            c.duration_ms > 0.0
+        });
+    }
+    if let Some(track) = doc.meta.captions.as_mut() {
+        track.cues.retain_mut(|c| {
+            c.start_ms = (c.start_ms - offset).max(0.0);
+            c.end_ms -= offset;
+            c.end_ms > 0.0
+        });
+    }
+}
+
 /// A temporary directory (`mkdtemp(join(tmpdir(), prefix))`), removed on drop.
 struct TempDir(PathBuf);
 
@@ -374,8 +411,18 @@ pub async fn export_mp4(
     fps: Option<f64>,
     progress: Option<Progress<'_>>,
 ) -> RenderResult<Vec<u8>> {
+    export_mp4_at(deps, doc, video_scale(doc, quality), fps, progress).await
+}
+
+/// An MP4 at `scale` output pixels per design px (1 = the design's own size).
+pub async fn export_mp4_at(
+    deps: VideoDeps<'_>,
+    doc: &DesignDoc,
+    scale: f64,
+    fps: Option<f64>,
+    progress: Option<Progress<'_>>,
+) -> RenderResult<Vec<u8>> {
     let fps = fps.unwrap_or(30.0);
-    let scale = video_scale(doc, quality);
     let dir = TempDir::new(deps.tmp, "oc-video-")?;
     let silent = dir.file("video.mp4");
     let out = dir.file("out.mp4");
@@ -492,4 +539,68 @@ pub async fn export_audio(deps: VideoDeps<'_>, doc: &DesignDoc) -> RenderResult<
     ]);
     run_ffmpeg(deps.spawner, &args).await.map_err(failed)?;
     Ok(Some(std::fs::read(&out).map_err(failed)?))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use oc_schema::design::{AudioClip, CaptionCue, CaptionPosition, CaptionStyle, CaptionTrack};
+    use oc_schema::primitives::Extra;
+
+    /// Three 2-second pages, a soundtrack over all of them and a caption on each.
+    fn three_pages() -> DesignDoc {
+        let mut d = oc_schema::factory::empty_design(&oc_schema::presets::preset_design_init(None, &Default::default()).meta_init());
+        let first = d.pages.values().next().unwrap().clone();
+        d.pages.clear();
+        for (i, id) in ["p1", "p2", "p3"].iter().enumerate() {
+            let mut p = first.clone();
+            p.id = (*id).into();
+            p.order = format!("a{i}");
+            p.duration_ms = Some(2000.0);
+            d.pages.insert((*id).into(), p);
+        }
+        d.meta.audio = Some(vec![AudioClip {
+            id: "m".into(),
+            asset: "music".into(),
+            name: None,
+            start_ms: 0.0,
+            trim_start_ms: 0.0,
+            duration_ms: 6000.0,
+            volume: 1.0,
+            fade_in_ms: 500.0,
+            fade_out_ms: 800.0,
+            loop_: None,
+            extra: Extra::new(),
+        }]);
+        let cue = |id: &str, a: f64, b: f64| CaptionCue { id: id.into(), start_ms: a, end_ms: b, text: id.into(), extra: Extra::new() };
+        d.meta.captions = Some(CaptionTrack {
+            cues: vec![cue("one", 0.0, 1800.0), cue("two", 2000.0, 3800.0), cue("three", 4000.0, 5800.0)],
+            style: CaptionStyle { family: "Inter".into(), size: 40.0, color: "#ffffff".into(), background: "#000000".into(), position: CaptionPosition::Bottom, extra: Extra::new() },
+            visible: true,
+            extra: Extra::new(),
+        });
+        d
+    }
+
+    #[test]
+    fn keeping_one_page_plays_only_it_with_sound_and_captions_in_step() {
+        let mut d = three_pages();
+        keep_pages(&mut d, &["p2".into()]);
+        let tl = timeline_of(&d, false);
+        assert_eq!(tl.spans.len(), 1);
+        assert_eq!((&*tl.spans[0].page.id, tl.total_ms), ("p2", 2000.0));
+        let c = &d.meta.audio.as_ref().unwrap()[0];
+        assert_eq!((c.start_ms, c.trim_start_ms, c.duration_ms, c.fade_in_ms), (0.0, 2000.0, 4000.0, 0.0));
+        let cues: Vec<(&str, f64, f64)> = d.meta.captions.as_ref().unwrap().cues.iter().map(|c| (c.text.as_str(), c.start_ms, c.end_ms)).collect();
+        assert_eq!(cues, vec![("two", 0.0, 1800.0), ("three", 2000.0, 3800.0)]);
+    }
+
+    #[test]
+    fn keeping_the_first_page_moves_nothing() {
+        let mut d = three_pages();
+        keep_pages(&mut d, &["p1".into(), "p3".into()]);
+        assert_eq!(timeline_of(&d, false).total_ms, 4000.0);
+        assert_eq!(d.meta.audio.as_ref().unwrap()[0].start_ms, 0.0);
+        assert_eq!(d.meta.captions.as_ref().unwrap().cues.len(), 3);
+    }
 }

@@ -1,7 +1,7 @@
 /** Insertion helpers shared by panels, drag-and-drop and paste. */
 import type { Editor } from '@oc/engine';
 import {
-  makeEmbed, makeImage, makeText, parseEmbedUrl, type AssetId, type AssetRef, type DocOp, type ElementId, type FrameEl, type PageId, type RunStyle, type ShapeEl,
+  makeEmbed, makeImage, makeText, parseEmbedUrl, type AssetId, type AssetRef, type DocOp, type ElementId, type FrameEl, type PageId, type RunStyle, type ShapeEl, type TextEl,
   type Vec2,
 } from '@oc/engine';
 import { api, embedApi, type UploadedAsset } from '../api';
@@ -123,14 +123,20 @@ export const TEXT_PRESETS: Record<TextPreset, { text: string; style: Partial<Run
   body: { text: tk('Add a little bit of body text'), style: { size: 24, weight: 400 } },
 };
 
-export function addText(editor: Editor, text: string, style: Partial<RunStyle>, opts: { edit?: boolean; at?: Vec2; align?: 'start' | 'center' } = {}) {
+export function addText(
+  editor: Editor, text: string, style: Partial<RunStyle>,
+  opts: { edit?: boolean; at?: Vec2; align?: 'start' | 'center'; role?: TextEl['role']; lineHeight?: number } = {},
+) {
   const W = editor.doc.meta.dims.w;
   const size = style.size ?? 32;
   // Scale default sizes to the page so headings look right on both a 500px logo and a 2560px banner.
   const k = Math.max(0.4, Math.min(3, W / 1080));
   const s = { ...style, size: Math.round(size * k) };
   const width = Math.min(W * 0.8, Math.max(s.size * text.length * 0.55, s.size * 4));
-  const el = makeText({ xf: { x: 0, y: 0, w: width, h: s.size * 1.3, rot: 0 }, text, style: s, align: opts.align ?? 'center' });
+  const lh = opts.lineHeight ?? 1.3;
+  const el = makeText({ xf: { x: 0, y: 0, w: width, h: s.size * lh, rot: 0 }, text, style: s, align: opts.align ?? 'center' });
+  if (opts.role) el.role = opts.role;
+  if (opts.lineHeight) el.body = { ...el.body, paragraphs: el.body.paragraphs.map((p) => ({ ...p, lineHeight: lh })) };
   return editor.insert([el], opts.at, { edit: opts.edit });
 }
 

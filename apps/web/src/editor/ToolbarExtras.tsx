@@ -10,7 +10,7 @@ import { useDoc, useEd, useEditorState } from './context';
 
 const PRESET_LABEL: Record<AnimPreset, string> = {
   fade: tk('Fade'), rise: tk('Rise'), drop: tk('Drop'), pan: tk('Pan'), pop: tk('Pop'), zoom: tk('Zoom'), wipe: tk('Wipe'), blur: tk('Blur'), tumble: tk('Tumble'), breathe: tk('Breathe'),
-  slide: tk('Slide'), flip: tk('Flip'), stomp: tk('Stomp'), spin: tk('Spin'), bounce: tk('Bounce'), float: tk('Float'), shrink: tk('Shrink'), typewriter: tk('Typewriter'),
+  slide: tk('Slide'), flip: tk('Flip'), stomp: tk('Stomp'), spin: tk('Spin'), bounce: tk('Bounce'), float: tk('Float'), shrink: tk('Shrink'), typewriter: tk('Typewriter'), draw: tk('Draw'),
 };
 const EMPHASIS_LABEL: Record<EmphasisPreset, string> = {
   pulse: tk('Pulse'), wiggle: tk('Wiggle'), bounce: tk('Bounce'), flicker: tk('Flicker'), spin: tk('Spin'), heartbeat: tk('Heartbeat'), float: tk('Float'), swing: tk('Swing'),

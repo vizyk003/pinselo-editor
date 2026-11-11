@@ -566,6 +566,30 @@ async fn scenario(pool: sqlx::PgPool, dir: &std::path::Path) {
             "{}",
             String::from_utf8_lossy(&r.body)
         );
+        // A video of the pages asked for, at the design's own size or a given width.
+        let probe = |body: &[u8]| -> (u64, u64, f64) {
+            let f = std::env::temp_dir().join(format!("oc-svc-test-{}.mp4", uuid::Uuid::new_v4()));
+            std::fs::write(&f, body).unwrap();
+            let o = std::process::Command::new("ffprobe")
+                .args(["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height:format=duration", "-of", "json"])
+                .arg(&f)
+                .output()
+                .unwrap();
+            let _ = std::fs::remove_file(&f);
+            let v: Value = serde_json::from_slice(&o.stdout).unwrap();
+            let s = &v["streams"][0];
+            (s["width"].as_u64().unwrap(), s["height"].as_u64().unwrap(), v["format"]["duration"].as_str().unwrap().parse().unwrap())
+        };
+        let mut body = export("rreel00000000000", "mp4");
+        body["pages"] = json!([1]);
+        let r = call(&app, "POST", "/internal/export", t, body.clone()).await;
+        assert_eq!(r.status, StatusCode::OK, "{}", String::from_utf8_lossy(&r.body));
+        let (w, h, secs) = probe(&r.body);
+        assert_eq!((w, h), (640, 360));
+        assert!((secs - 0.8).abs() < 0.15, "page 2 alone lasts 0.8 s, not {secs}");
+        body["width"] = json!(320);
+        let r = call(&app, "POST", "/internal/export", t, body).await;
+        assert_eq!(probe(&r.body).0, 320);
         let r = call(
             &app,
             "POST",
@@ -633,6 +657,18 @@ async fn scenario(pool: sqlx::PgPool, dir: &std::path::Path) {
     )
     .await;
     assert_eq!((r.status, &r.body[..4]), (StatusCode::OK, &b"\x89PNG"[..]));
+    // Moments of a page's playback: three 160 px frames side by side, 8 px apart.
+    let r = call(
+        &app,
+        "POST",
+        "/internal/page-png",
+        t,
+        json!({ "designId": "rreel00000000000", "w": 160, "timesMs": [0, 500, 900] }),
+    )
+    .await;
+    assert_eq!((r.status, &r.body[..4]), (StatusCode::OK, &b"\x89PNG"[..]));
+    let dim = |o: usize| u32::from_be_bytes(r.body[o..o + 4].try_into().unwrap());
+    assert_eq!((dim(16), dim(20)), (3 * 160 + 4 * 8, 90 + 2 * 8));
     let r = call(
         &app,
         "POST",

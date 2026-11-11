@@ -2728,7 +2728,6 @@
   "other": "{n} 张照片"
  },
  "{team} · brand kits": "{team} · 品牌套件",
- "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files under Brand fonts.": "尚未上传，因此显示的是替代字体：{fonts}。请在“品牌字体”中上传字体文件。",
  "Add section": "添加章节",
  "Brand guidelines": "品牌规范",
  "Collapse": "收起",
@@ -2752,5 +2751,31 @@
  "{n} section|{n} sections": {
   "other": "{n} 个章节"
  },
- "{used} of {max} characters": "{used} / {max} 个字符"
+ "{used} of {max} characters": "{used} / {max} 个字符",
+ "(none chosen: any kit colour)": "（未选择：任意品牌套件颜色）",
+ "Add a text style": "添加文字样式",
+ "All capitals": "全部大写",
+ "Allowed colours": "允许的颜色",
+ "Any": "任意",
+ "Edit {name}": "编辑 {name}",
+ "Fonts uploaded to {place}; everyone there can use them.": "已上传到 {place} 的字体，那里的每个人都可以使用。",
+ "From selected text": "从所选文字创建",
+ "How each kind of text looks beyond its font. Click a style to add text in it; AI assistants follow these styles and are told when their text strays.": "除字体外，每类文字的外观。点击样式即可添加该样式的文字；AI 助手会遵循这些样式，并在文字偏离时收到提示。",
+ "Italic": "斜体",
+ "Kind of text": "文字类型",
+ "Letter spacing (‰ em)": "字间距（‰ em）",
+ "Line height": "行高",
+ "No text styles yet.": "还没有文字样式。",
+ "Not uploaded yet, so a fallback font shows instead: {fonts}. Upload the font files here.": "尚未上传，因此显示替代字体：{fonts}。请在此上传字体文件。",
+ "Note (optional)": "备注（可选）",
+ "Select a text box first.": "请先选择一个文本框。",
+ "Size (px)": "大小（px）",
+ "Style {n}": "样式 {n}",
+ "Text styles": "文字样式",
+ "Uploaded to another workspace only, so people in {place} see a fallback font: {fonts}. Upload them here too.": "仅上传到了另一个工作区，因此 {place} 的成员看到的是替代字体：{fonts}。请也在此上传。",
+ "capitals": "大写",
+ "e.g. Above headings, never longer than one line": "例如：位于标题上方，不超过一行",
+ "e.g. Eyebrow, Lead, Pull quote": "例如：眉题、导语、引文",
+ "italic": "斜体",
+ "your personal workspace": "你的个人工作区"
 }

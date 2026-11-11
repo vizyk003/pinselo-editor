@@ -4,7 +4,7 @@
 //! MP4/GIF export agree frame-for-frame (ADR-0035: time is an explicit evaluator input; no wall clock).
 
 use oc_schema::design::{Page, TransitionKind};
-use oc_schema::elements::{AnimDirection, AnimPreset, AnimUnit, Element, ElementAnim, ElementEmphasis, EmphasisPreset, Keyframes, MotionEasing};
+use oc_schema::elements::{AnimDirection, AnimEasing, AnimPreset, AnimUnit, Element, ElementAnim, ElementEmphasis, EmphasisPreset, Keyframes, MotionEasing};
 use oc_schema::keyframes::keyframe_value;
 use oc_schema::primitives::Extra;
 use oc_schema::timeline::Window;
@@ -43,6 +43,9 @@ pub struct MotionState {
     pub sx: Option<f64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub units: Option<Units>,
+    /// 'draw': the reveal cuts only at its moving edge, so strokes past the element box (lines) stay visible.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub reveal_open: bool,
     /// Whether this is the shared identity object of the TS (`motion === IDENTITY_MOTION`): the resolver adds
     /// the animation transform only for any other state, even one with identity values.
     #[serde(skip)]
@@ -61,6 +64,7 @@ pub const IDENTITY_MOTION: MotionState = MotionState {
     reveal_from: None,
     sx: None,
     units: None,
+    reveal_open: false,
     identity: true,
 };
 
@@ -117,16 +121,31 @@ fn ease_out_back(t: f64) -> f64 {
     1.0 + c3 * pow(t - 1.0, 3.0) + c1 * pow(t - 1.0, 2.0)
 }
 
-/// Direction and intensity of a preset evaluation (`{ direction?, intensity? }`).
+/// `easing` of an entrance at progress `p` (0..1); the default is ease-out (cubic).
+pub fn ease(easing: Option<&AnimEasing>, p: f64) -> f64 {
+    match easing {
+        Some(AnimEasing::Linear) => p,
+        Some(AnimEasing::EaseIn) => p * p * p,
+        Some(AnimEasing::EaseInOut) => if p < 0.5 { 4.0 * p * p * p } else { 1.0 - pow(-2.0 * p + 2.0, 3.0) / 2.0 },
+        // CSS `ease` is close to a quadratic ease-in-out with a quicker start.
+        Some(AnimEasing::Ease) => 1.0 - pow(1.0 - p, 2.0) * (1.0 - p * 0.5),
+        _ => ease_out_cubic(p),
+    }
+}
+
+/// Direction, intensity, easing and travel of a preset evaluation (`{ direction?, intensity? }`).
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct PresetOpts {
     pub direction: Option<AnimDirection>,
     pub intensity: Option<f64>,
+    pub easing: Option<AnimEasing>,
+    /// Travel of moving presets in px (default: from the element size).
+    pub distance: Option<f64>,
 }
 
 impl From<&ElementAnim> for PresetOpts {
     fn from(a: &ElementAnim) -> Self {
-        PresetOpts { direction: a.direction.clone(), intensity: a.intensity }
+        PresetOpts { direction: a.direction.clone(), intensity: a.intensity, easing: a.easing.clone(), distance: a.distance.filter(|d| d.is_finite() && *d >= 0.0) }
     }
 }
 
@@ -146,9 +165,11 @@ pub fn evaluate_preset(preset: &AnimPreset, t: f64, duration_ms: f64, size: (f64
         return IDENTITY_MOTION;
     }
     let k = min(2.0, max(0.25, o.intensity.unwrap_or(1.0)));
-    let e = ease_out_cubic(p);
+    let e = ease(o.easing.as_ref(), p);
     let (w, h) = size;
-    let travel = max(40.0, min(w, h) * 0.5) * k;
+    // `distance` sets the travel exactly; otherwise it follows the element size (and `scale` the preset's own factor).
+    let travel = o.distance.unwrap_or(max(40.0, min(w, h) * 0.5) * k);
+    let scaled = |f: f64| o.distance.unwrap_or(travel * f);
     let (vx, vy) = dir_vec(o.direction.as_ref(), AnimDirection::Up);
     let id = fresh();
     match preset {
@@ -161,11 +182,15 @@ pub fn evaluate_preset(preset: &AnimPreset, t: f64, duration_ms: f64, size: (f64
             }
         }
         AnimPreset::Drop => MotionState { opacity: e, dy: -(1.0 - e) * travel, ..id },
-        AnimPreset::Pan => MotionState { opacity: e, dx: -(1.0 - e) * travel * 1.5, ..id },
+        AnimPreset::Pan => MotionState { opacity: e, dx: -(1.0 - e) * scaled(1.5), ..id },
         AnimPreset::Slide => {
             // Travels a full box length, no fade: reads as entering from off the element's edge.
             let (sx, sy) = dir_vec(o.direction.as_ref(), AnimDirection::Left);
-            MotionState { dx: (1.0 - e) * w * 1.2 * k * sx, dy: (1.0 - e) * h * 1.2 * k * sy, opacity: min(1.0, p * 4.0), ..id }
+            let (tx, ty) = match o.distance {
+                Some(d) => (d, d),
+                None => (w * 1.2 * k, h * 1.2 * k),
+            };
+            MotionState { dx: (1.0 - e) * tx * sx, dy: (1.0 - e) * ty * sy, opacity: min(1.0, p * 4.0), ..id }
         }
         AnimPreset::Pop => MotionState { opacity: min(1.0, p * 3.0), scale: max(0.01, 1.0 + (ease_out_back(p) - 1.0) * k), ..id },
         AnimPreset::Zoom => MotionState { opacity: e, scale: 1.0 + 0.6 * k * (1.0 - e), ..id },
@@ -185,8 +210,10 @@ pub fn evaluate_preset(preset: &AnimPreset, t: f64, duration_ms: f64, size: (f64
             dy: (1.0 - ease_out_bounce(p)) * travel * if has_dir(&o.direction) { vy } else { -1.0 },
             ..id
         },
-        AnimPreset::Float => MotionState { opacity: e, dy: (1.0 - e) * travel * 0.3, ..id },
+        AnimPreset::Float => MotionState { opacity: e, dy: (1.0 - e) * scaled(0.3), ..id },
+        // Draw reveals along the travel direction like wipe, but leaves strokes past the box visible (lines).
         AnimPreset::Wipe => MotionState { reveal: e, reveal_from: Some(o.direction.clone().unwrap_or(AnimDirection::Right)), ..id },
+        AnimPreset::Draw => MotionState { reveal: e, reveal_from: Some(o.direction.clone().unwrap_or(AnimDirection::Right)), reveal_open: true, ..id },
         AnimPreset::Blur => MotionState { opacity: e, blur: (1.0 - e) * 24.0 * k, ..id },
         AnimPreset::Flip => MotionState { opacity: min(1.0, p * 2.0), sx: Some(max(0.02, cos((1.0 - e) * PI / 2.0 * k).abs())), ..id },
         AnimPreset::Spin => MotionState { opacity: e, rot: (1.0 - e) * -360.0 * k, scale: 0.3 + 0.7 * e, ..id },
@@ -241,6 +268,7 @@ fn compose(a: &MotionState, b: &MotionState) -> MotionState {
         reveal_from: if a.reveal < 1.0 { a.reveal_from.clone() } else { b.reveal_from.clone() },
         sx: if a.sx.is_some() || b.sx.is_some() { Some(a.sx.unwrap_or(1.0) * b.sx.unwrap_or(1.0)) } else { None },
         units: a.units.clone().or_else(|| b.units.clone()),
+        reveal_open: if a.reveal < 1.0 { a.reveal_open } else { b.reveal_open },
         identity: false,
     }
 }
@@ -309,6 +337,8 @@ pub fn animation_for(el: &Element, page: &Page, index: usize) -> Option<ElementA
         by: None,
         stagger_ms: None,
         on_click: None,
+        easing: None,
+        distance: None,
         extra: Extra::new(),
     })
 }
@@ -563,4 +593,39 @@ pub fn transition_frame(kind: &TransitionKind, p: f64, direction: Option<&AnimDi
 /// Number of click build steps on a page (0 = none).
 pub fn click_step_count(els: &[&Element]) -> f64 {
     els.iter().fold(0.0, |n, e| max(n, e.base().and_then(|b| b.anim.as_ref()).and_then(|a| a.on_click).unwrap_or(0.0)))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn distance_sets_the_travel_exactly() {
+        let o = PresetOpts { distance: Some(8.0), easing: Some(AnimEasing::Linear), ..Default::default() };
+        // Halfway through a linear rise: 4 px below its place, half visible.
+        let m = evaluate_preset(&AnimPreset::Rise, 50.0, 100.0, (600.0, 200.0), &o);
+        assert!((m.dy - 4.0).abs() < 1e-9 && (m.opacity - 0.5).abs() < 1e-9);
+        // Without a distance the travel follows the element size.
+        let m = evaluate_preset(&AnimPreset::Rise, 50.0, 100.0, (600.0, 200.0), &PresetOpts { easing: Some(AnimEasing::Linear), ..Default::default() });
+        assert!((m.dy - 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn easings_run_from_zero_to_one() {
+        for e in [None, Some(AnimEasing::Linear), Some(AnimEasing::Ease), Some(AnimEasing::EaseIn), Some(AnimEasing::EaseOut), Some(AnimEasing::EaseInOut)] {
+            assert!(ease(e.as_ref(), 0.0).abs() < 1e-9);
+            assert!((ease(e.as_ref(), 1.0) - 1.0).abs() < 1e-9);
+            assert!(ease(e.as_ref(), 0.25) <= ease(e.as_ref(), 0.75));
+        }
+        assert!(ease(Some(&AnimEasing::EaseIn), 0.5) < 0.5 && ease(None, 0.5) > 0.5);
+    }
+
+    #[test]
+    fn draw_reveals_open_and_wipe_stays_in_its_box() {
+        let o = PresetOpts { direction: Some(AnimDirection::Down), ..Default::default() };
+        let d = evaluate_preset(&AnimPreset::Draw, 50.0, 100.0, (2.0, 300.0), &o);
+        assert!(d.reveal_open && d.reveal > 0.0 && d.reveal < 1.0 && d.opacity == 1.0);
+        assert_eq!(d.reveal_from, Some(AnimDirection::Down));
+        assert!(!evaluate_preset(&AnimPreset::Wipe, 50.0, 100.0, (2.0, 300.0), &o).reveal_open);
+    }
 }

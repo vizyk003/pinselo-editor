@@ -287,11 +287,14 @@ impl<'a> Resolver<'a> {
             self.push(DLItem::Save { matrix: [a, b, cc, d, cx + motion.dx - a * cx - cc * cy, cy + motion.dy - b * cx - d * cy] });
             if motion.reveal < 1.0 {
                 let k = motion.reveal;
+                // 'draw': strokes reach past the box (a horizontal line's box is 1 px high), so the clip is left open
+                // across the travel and behind its start; only the moving edge cuts.
+                let o = if motion.reveal_open { 1e4 } else { 0.0 };
                 let (x0, y0, x1, y1) = match motion.reveal_from.as_ref().map(|d| d.as_str()) {
-                    Some("left") => (bbox.w * (1.0 - k), 0.0, bbox.w, bbox.h),
-                    Some("up") => (0.0, bbox.h * (1.0 - k), bbox.w, bbox.h),
-                    Some("down") => (0.0, 0.0, bbox.w, bbox.h * k),
-                    _ => (0.0, 0.0, bbox.w * k, bbox.h),
+                    Some("left") => (bbox.w * (1.0 - k), -o, bbox.w + o, bbox.h + o),
+                    Some("up") => (-o, bbox.h * (1.0 - k), bbox.w + o, bbox.h + o),
+                    Some("down") => (-o, -o, bbox.w + o, bbox.h * k),
+                    _ => (-o, -o, bbox.w * k, bbox.h + o),
                 };
                 let s = num_to_string;
                 self.push(DLItem::Clip { path: format!("M{} {} L{} {} L{} {} L{} {} Z", s(x0), s(y0), s(x1), s(y0), s(x1), s(y1), s(x0), s(y1)) });

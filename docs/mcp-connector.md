@@ -128,9 +128,11 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 | `list_designs` | `designs:read` | `query` (up to 200 characters), `limit` (1 to 50, default 20) | Your own, team and shared designs, most recently edited first: `id`, `title`, `type`, `size`, `pages`, `updated`, `editUrl`. |
 | `list_size_presets` | none | `query` (up to 80 characters) | Presets: `id`, `label`, `group`, `type`, `w`, `h`, `unit`. |
 | `search_templates` | `designs:read` | `query` (up to 200 characters), `limit` (1 to 40, default 12) | Templates, including team templates, with `id`, `title`, `category`, `preset`, `size`, `tags` and `thumbnailUrl`. |
-| `search_media` | `designs:read` | `query` (required, 1 to 100 characters), `type` (`image`, `gif`, `sticker`; default `image`), `page` (1 to 20) | Up to 30 stock results from the providers enabled on the server. |
-| `list_uploads` | `designs:read` | `query` (up to 100 characters), `limit` (1 to 100, default 30) | Your uploaded images: `asset`, `name`, `w`, `h`, `uploaded`. |
+| `search_media` | `designs:read` | `query` (required, 1 to 100 characters), `type` (`image`, `gif`, `sticker`, `video`, `audio`; default `image`), `page` (1 to 20) | Up to 30 stock results from the providers enabled on the server, with `duration` for clips and sounds when the provider gives it. |
+| `list_uploads` | `designs:read` | `query` (up to 100 characters), `limit` (1 to 100, default 30), `type` (`image`, `video`, `audio`, `all`; default `image`) | Your uploads: `asset`, `name`, `w`, `h`, `uploaded`; videos and sounds also have `kind` and `duration` (seconds), and sounds no size. |
 | `get_brand_kit` | `designs:read` | none | See [Brand kits](#brand-kits). |
+| `create_brand_kit` | `designs:write` | `name` (required), `team`, `colors`, `palettes`, `fonts`, `text_styles`, `voice`, `motion`, `logos`, `graphics`, `photos`, `guidelines` | The new kit, as `get_brand_kit` shows it. See [Making brand kits](#making-brand-kits). |
+| `update_brand_kit` | `designs:write` | `brand_kit` (required), `new_name`, the fields of `create_brand_kit`, `add_logos`, `add_graphics`, `add_photos`, `remove_assets` | The changed kit, as `get_brand_kit` shows it. |
 | `search_fonts` | none | `query` (up to 80 characters), `category` (`sans`, `serif`, `display`, `handwriting`, `mono`), `limit` (1 to 100, default 30) | Font `family` and `category`. An exact name match comes first, then by popularity. |
 
 ### Creating and reading
@@ -140,9 +142,9 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 | `create_design` | `designs:write` | `title` (required), `preset`, `width` and `height` (16 to 20000), `unit` (`px`, `mm`, `cm`, `in`, `pt`), `template_id` | `id`, `editUrl`, `design`. A unit other than px needs both width and height. |
 | `copy_design` | `designs:write`, view | `design_id` (required), `title`, `preset`, `width`, `height`, `unit`, `scale_content` (default false) | `id`, `editUrl`, `resized`, `design`. When resized, also `check`, a layout check of up to 10 pages. |
 | `bulk_create` | `designs:write`, view | `design_id` (required), `rows` (required, 1 to 50 objects of field to value), `titles` (up to 50) | `created` (each with `id`, `title`, `editUrl`, `filled`), plus optional `warning` and `check`. |
-| `get_design` | `designs:read`, view | `design_id` (required), `page` (id or 1-based number) | `id`, `editUrl`, `title`, `type`, `size`, `pageCount`, `pages`, and `brand` when a team's kit governs the design. |
-| `screenshot_page` | `designs:read`, view | `design_id` (required), `page` (default first), `width` (200 to 2000, default 1024) | A PNG image. |
-| `export_design` | `exports`, view | `design_id` (required), `format` (required: `png`, `jpg`, `pdf`, `pdf-print`, `pptx`, `svg`, `mp4`, `gif`), `pages` (1-based), `scale` (0.25 to 4, default 1) | `file`, `size`, `downloadUrl`. |
+| `get_design` | `designs:read`, view | `design_id` (required), `page` (id or 1-based number) | `id`, `editUrl`, `title`, `type`, `size`, `pageCount`, `pages`, and `brand` when a team's kit governs the design. For a design that uses time, also `timeline`, page `duration` and `transition`, element `animation`, `visibleFrom` and `visibleTo`, and `videoCheck`. See [Video and motion](#video-and-motion). |
+| `screenshot_page` | `designs:read`, view | `design_id` (required), `page` (default first), `width` (120 to 2000, default 1024), and one of `time` (seconds), `frames` (2 to 12) or `times` (up to 12 seconds) | A PNG image. With a time, the page at that moment of its playback; with `frames` or `times`, a filmstrip, four frames a row, and a line naming the times. |
+| `export_design` | `exports`, view | `design_id` (required), `format` (required: `png`, `jpg`, `pdf`, `pdf-print`, `pptx`, `svg`, `mp4`, `gif`), `pages` (1-based), `scale` (0.25 to 4, default 1), `width` (MP4 only, 16 to 3840 px) | `file`, `size`, `downloadUrl`. |
 | `edit_design` | `designs:write`, edit | `design_id` (required), `operations` (required, 1 to 200) | See below. |
 | `undo_ai_changes` | `designs:write`, edit | `design_id` (required) | `restored`, `savedAt`, `editUrl`. See [Undoing AI changes](#undoing-ai-changes). |
 
@@ -150,11 +152,15 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 
 `copy_design` without `scale_content` keeps text and shapes at their size and repositions them. With a resize, give a preset or both width and height.
 
+MP4 and GIF exports play only the pages given (default: all visible pages), each for its duration; the soundtrack and captions move with the first page given. An MP4 comes out at the design's own size times `scale`, or `width` px wide; the long side stays within 3,840 px.
+
 `export_design` has no bleed, marks or colour profile arguments. For those, use [`POST /v1/designs/{id}/exports`](api.md#post-v1designsidexports).
 
 ### edit_design
 
 Coordinates are px at 96 dpi from the page's top-left, and colours are hex (`#rrggbb` or `#rrggbbaa`). Operations run in order. A later operation can refer to an earlier new item as `"$name"` if that item was given `ref: "name"`. A page reference is a page id, a `$ref` or a 1-based number.
+
+Every `add_*` operation except `add_audio`, and `update`, also take the time fields `animation`, `visibleFrom` and `visibleTo` (see [Video and motion](#video-and-motion)).
 
 Add operations share these optional placement fields, except `add_line`, which takes only `page`, `parent` and `name`: `page`, `parent` (a group), `rotation`, `opacity` (0 to 1), `name`, and `role` (`headline`, `subhead`, `body`, `quote`, `caption`, `cta`, `logo`, `hero-image`, `background`, `decor`, `price`, `legal`).
 
@@ -167,16 +173,22 @@ Add operations share these optional placement fields, except `add_line`, which t
 | `add_table` | `data`, `x`, `y`, `w` | `ref`, `h`, `font`, `size`, `color`, `headerFill`, `headerColor` |
 | `add_chart` | `chart`, `labels`, `series`, `x`, `y`, `w`, `h` | `ref`, `showLegend`, `showValues`, `font`, `textColor` |
 | `add_qr` | `data`, `x`, `y`, `size` | `ref`, `color`, `background` |
+| `add_video` | `source`, `x`, `y`, `w`, `h` | `ref`, `fit`, `trim` (`{ start, end }` in seconds of the clip), `muted`, `loop`, `volume` (0 to 1), `radius` |
+| `add_audio` | `source` | `ref`, `start`, `trim`, `duration` (default: to the end of the video, looping if shorter), `volume`, `fadeIn` (default 0), `fadeOut` (default 0.8), `loop` |
+| `update_audio` | `id` | `start`, `trim`, `duration`, `volume`, `fadeIn`, `fadeOut`, `loop`, `fit` (to the end of the video as it is now) |
+| `remove_audio` | `id` | |
+| `set_captions` | | `cues` (`[{ start, end, text }]`, replaces the track's cues), `style` (`font`, `size`, `color`, `background`, `position`), `visible` |
+| `animate` | `ids` | `in`, `out`, `start`, `stagger` (default: the kit's, else 0.15 s), `visibleFrom`, `visibleTo` |
 | `group` | `ids` (at least 2) | `ref`, `name` |
 | `ungroup` | `id` | |
-| `update` | `id` | `x`, `y`, `w`, `h`, `rotation`, `opacity`, `name`, `role`, `hidden`, `text`, text style fields, `fill`, `stroke` (`null` removes it), `radius`, `image`, `alt` |
+| `update` | `id` | `x`, `y`, `w`, `h`, `rotation`, `opacity`, `name`, `role`, `hidden`, `text`, text style fields, `fill`, `stroke` (`null` removes it), `radius`, `image`, `alt`, time fields, and for videos `muted`, `loop`, `volume`, `trim` |
 | `delete` | `ids` | |
 | `reorder` | `id`, `to` (`front`, `back`, `forward`, `backward`) | |
 | `arrange` | `ids`, `direction` (`row`, `column`, `grid`) | `gap`, `columns`, `within` (`page`, `items`), `padding`, `x`, `y`, `width`, `height`, `align`, `justify`, `stretch` |
 | `align` | `ids`, `to` (`left`, `center`, `right`, `top`, `middle`, `bottom`) | `relativeTo` (`page`, `selection`) |
 | `distribute` | `ids` (at least 3), `axis` (`horizontal`, `vertical`) | |
-| `add_page` | | `ref`, `after`, `duplicate`, `title`, `background` |
-| `update_page` | `page` | `title`, `background`, `notes` |
+| `add_page` | | `ref`, `after`, `duplicate`, `title`, `background`, `duration`, `transition` |
+| `update_page` | `page` | `title`, `background`, `notes`, `duration`, `transition` |
 | `delete_page` | `page` | |
 | `move_page` | `page`, `after` (`null` makes it first) | |
 | `set_title` | `title` | |
@@ -221,6 +233,32 @@ The result:
 
 Arguments are validated before anything runs, and images are imported before the edit starts. A bad image or a brand control violation means no operation is applied.
 
+### Video and motion
+
+Times are in seconds. Pages play one after another in videos, GIFs and auto-playing presentations.
+
+- **Page timing:** `duration` (0.1 to 600; `null` is automatic: 5 s, or as long as the page's videos) and `transition` (`{ type, duration, direction }`; `type` is a page transition such as `fade`, `slide`, `push` or `wipe`, and `none` or `null` cuts). A transition is how the page comes in from the one before.
+- **`animation`:** `{ in, out }`; `null` removes both, and `null` for either removes that one.
+  - `in`: `type` (`fade`, `rise`, `drop`, `slide-left`, `slide-right`, `slide-up`, `slide-down`, `scale`, `zoom`, `pop`, `wipe`, `draw`, `typewriter`, `blur`), `delay` (from when the element appears), `duration`, `easing` (`linear`, `ease`, `ease-in`, `ease-out`, `ease-in-out`), `direction`, `distance` (px of travel for `rise`, `drop` and slides), and for text `by` (`element`, `line`, `word`, `letter`) with `stagger`. `draw` reveals a line from its first point to its last.
+  - `out`: `type` (`fade`, `rise`, `drop`, `slide`, `scale`, `zoom`, `wipe`, `blur`), `at` (the page second it starts, which sets `visibleTo` to `at + duration`) and `duration`.
+- **`visibleFrom`, `visibleTo`:** the page seconds an element appears and disappears (`null` clears), so texts can take turns on one page. Give `visibleTo` or `out.at`, not both.
+- **Defaults:** without a brand kit, an entrance is `fade` for 0.5 s (`draw` 0.6 s) with an ease-out, an exit 0.4 s, a transition `fade` for 0.4 s. A kit's `motion` replaces these (see below).
+
+`edit_design`'s `check` and `get_design`'s `videoCheck` add these problems for designs that use time:
+
+| `problem` | Meaning |
+|---|---|
+| `text_too_brief` | Text can't be read in the time it is fully on screen, at about 3 words a second plus half a second. |
+| `caption_too_brief` | The same for a caption cue. |
+| `outside_safe_zone` | In a 9:16 video, text, a QR code or an element with a text, logo, button or price role reaches into the top 14% or the bottom 35%, which Reels covers with its interface. Stories cover 14% at each end. |
+| `never_shown`, `cut_by_page_end` | An element appears after its page ends, or its exit is cut off by the page end. |
+| `video_too_long` | A 9:16 video over 60 s (a Stories card), or a 4:5 or square video over 15 s (Meta's advice for feed ads). |
+| `audio_ends_early` | The soundtrack stops more than half a second before the video ends. |
+
+A brand kit's `motion` sets the defaults, in milliseconds and px: `enter` (`type`, `duration`, `easing`, `distance`), `text` (the same, for text), `draw` (`duration`, `easing`), `exit` (`type`, `duration`), `stagger` (between elements in `animate`), `transition` (`type`, `duration`), `bounce` (`false` refuses `pop`) and `note`. For example `{ "transition": { "type": "fade", "duration": 150 }, "draw": { "duration": 400 }, "text": { "type": "rise", "distance": 8 }, "stagger": 60, "bounce": false }`. The design's kit is the one it was made with, else its team's default kit. `get_brand_kit` and `get_design` show it.
+
+`screenshot_page` with a time draws animations, timing and captions as in the video. Videos show their poster frame, and page transitions are not drawn.
+
 ## How edits reach the editor
 
 The assistant joins the design as a live collaborator. Anyone with the design open sees its avatar, a **{name} is editing** label and its changes as they happen.
@@ -237,6 +275,20 @@ The server keeps that connection open for a minute after the last change. If the
 | `colors`, `palettes`, `fonts` | Brand colours, palettes and fonts by role. |
 | `logos`, `graphics`, `photos` | `{asset, name}` entries, capped at 30, 60 and 30 per kit. |
 | `voice` | Brand voice notes, when set. |
+| `motion` | How the brand moves, when set. See [Video and motion](#video-and-motion). |
+
+### Making brand kits
+
+Assistants can set up a brand from a brand book, design system, website or files with `create_brand_kit`, and change it later with `update_brand_kit`. The same rules and limits apply as in Brand Hub:
+
+- The kit goes in your personal workspace, or in the team named by `team` if you are an owner, admin or designer there. `team` matches like `kit` below.
+- Kit names must be unique among the kits you can see, since tools find kits by name.
+- `logos`, `graphics` and `photos` take asset ids of your own image uploads. Assistants upload each file first with `upload_image` or `create_upload_link`. Ids of anyone else's files are refused.
+- Colours are `#rrggbb`. `text_styles` take the fields `get_brand_kit` shows (`name`, `role`, `weight`, `italic`, `uppercase`, `letterSpacing`, `lineHeight`, `size`, `colors`, `note`). `guidelines` are `{ title, body }` sections, up to 60 and 300,000 characters in all.
+- In `update_brand_kit`, every field given replaces the kit's, except `fonts`, which changes only the roles given (`""` clears one). `add_*` appends images and `remove_assets` takes them out of all three lists.
+- Font files can't be uploaded through the connector. A kit font that isn't uploaded shows in `missingFonts`, and the user uploads it in Brand Hub.
+
+Changes are recorded in the team's audit log like Brand Hub edits, marked as made by an AI assistant.
 
 To place a kit file, use `add_image` with `{ "asset": id }` or `{ "brand": { "kit", "name" } }`:
 
