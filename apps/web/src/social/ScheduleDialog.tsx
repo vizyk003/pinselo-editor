@@ -6,10 +6,10 @@ import { ApiError } from '../api';
 import { Modal, useToast } from '../components/ui';
 import { t, tn } from '../i18n';
 import {
-  CHANNEL_LABEL, charCount, composeText, EDITORIAL_FIELDS, isoToZoned, localTz, PROVIDER_COLOR, socialApi, suggestHashtags, timeZones, zonedToIso,
+  CHANNEL_LABEL, charCount, composeText, EDITORIAL_FIELDS, isoToZoned, TRANSLATION_FIELD, localTz, PROVIDER_COLOR, socialApi, suggestHashtags, timeZones, zonedToIso,
   type Channel, type Provider, type Publisher, type SocialAccount, type SocialPost,
 } from './api';
-import { AccountBadge } from './AccountBadge';
+import { AccountBadge, ChannelLogo } from './AccountBadge';
 import './planner.css';
 
 export interface ScheduleProps {
@@ -145,7 +145,7 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
               {(['instagram', 'facebook'] as const).map((c) => (
                 <button key={c} type="button" className={`chip acct-chip ${channels.includes(c) ? 'active' : ''}`} aria-pressed={channels.includes(c)}
                   onClick={() => setChannels(channels.includes(c) ? channels.filter((x) => x !== c) : [...channels, c])}>
-                  <span className="chan-badge" style={{ background: PROVIDER_COLOR[c] }}>{c === 'instagram' ? 'IG' : 'f'}</span>
+                  <ChannelLogo channel={c} size={20} />
                   <span>{CHANNEL_LABEL[c]}</span>
                 </button>
               ))}
@@ -195,6 +195,10 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
         <label className="field">
           <span>{t('Caption')}</span>
           <textarea className="input" rows={5} value={caption} onChange={(e) => setCaption(e.target.value)} placeholder={t('Write a caption…')} />
+        </label>
+        <label className="field">
+          <span>{t(TRANSLATION_FIELD.label)} <span className="faint">{t('— for review, not posted')}</span></span>
+          <textarea className="input" rows={3} value={fields[TRANSLATION_FIELD.key] ?? ''} onChange={(e) => setFields({ ...fields, [TRANSLATION_FIELD.key]: e.target.value })} />
         </label>
         {chosen.length > 0 && (
           <div className="char-counts">

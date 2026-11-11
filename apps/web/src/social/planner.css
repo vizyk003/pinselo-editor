@@ -114,3 +114,16 @@
 .lightbox-nav { flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgb(255 255 255 / 0.15); color: #fff; cursor: pointer; }
 .lightbox-nav:disabled { opacity: 0.3; cursor: default; }
 .lightbox-nav:hover:not(:disabled) { background: rgb(255 255 255 / 0.28); }
+
+.channel-logos { display: inline-flex; align-items: center; gap: 4px; }
+.channel-logo { display: block; flex: 0 0 auto; border-radius: 6px; }
+.caption-pair { display: grid; gap: 10px; }
+.caption-pair.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 720px) { .caption-pair.two { grid-template-columns: 1fr; } }
+.caption-box { position: relative; padding: 12px; white-space: pre-wrap; font-size: 14px; }
+.caption-box.translation { background: var(--surface-2); }
+.lang-tag { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-3); }
+
+.post-row .title-link { padding: 0; border: 0; background: none; font: inherit; font-weight: 700; color: inherit; text-align: left; cursor: pointer; }
+.post-row .title-link:hover, .post-row .title-link:focus-visible { text-decoration: underline; }
+.post-row .cap.clickable { cursor: pointer; }

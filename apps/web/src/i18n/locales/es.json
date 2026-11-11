@@ -2918,11 +2918,16 @@
  "Approved — it goes out on {date}": "Aprobado: se publica el {date}",
  "Back to the planner": "Volver al planificador",
  "Edit design": "Editar diseño",
- "Edit in the editor": "Editar en el editor",
  "Planner": "Planificador",
  "Reject": "Rechazar",
  "Rejected — sent back with your note": "Rechazado: devuelto con tu nota",
  "Slide {n}": "Diapositiva {n}",
  "The design changed after it was approved (approved version {a}, now {b}). The publisher won’t post it until it is approved again.": "El diseño cambió después de aprobarse (versión aprobada {a}, ahora {b}). No se publicará hasta que se apruebe de nuevo.",
- "Why is it rejected? What should change?": "¿Por qué se rechaza? ¿Qué debería cambiar?"
+ "Why is it rejected? What should change?": "¿Por qué se rechaza? ¿Qué debería cambiar?",
+ "Click to enlarge": "Haz clic para ampliar",
+ "Enlarge": "Ampliar",
+ "Hungarian translation": "Traducción al húngaro",
+ "Posted text": "Texto publicado",
+ "{n} slides · click to enlarge": "{n} diapositivas · haz clic para ampliar",
+ "— for review, not posted": "— para revisión, no se publica"
 }

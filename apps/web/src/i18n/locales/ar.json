@@ -3073,11 +3073,16 @@
  "Approved — it goes out on {date}": "تم الاعتماد — يُنشر في {date}",
  "Back to the planner": "العودة إلى المخطط",
  "Edit design": "تعديل التصميم",
- "Edit in the editor": "التعديل في المحرر",
  "Planner": "المخطط",
  "Reject": "رفض",
  "Rejected — sent back with your note": "تم الرفض — أُعيد مع ملاحظتك",
  "Slide {n}": "الشريحة {n}",
  "The design changed after it was approved (approved version {a}, now {b}). The publisher won’t post it until it is approved again.": "تغيّر التصميم بعد اعتماده (الإصدار المعتمد {a}، الآن {b}). لن يُنشر حتى يُعتمد مجددًا.",
- "Why is it rejected? What should change?": "لماذا رُفض؟ ما الذي يجب تغييره؟"
+ "Why is it rejected? What should change?": "لماذا رُفض؟ ما الذي يجب تغييره؟",
+ "Click to enlarge": "انقر للتكبير",
+ "Enlarge": "تكبير",
+ "Hungarian translation": "الترجمة المجرية",
+ "Posted text": "النص المنشور",
+ "{n} slides · click to enlarge": "{n} شرائح · انقر للتكبير",
+ "— for review, not posted": "— للمراجعة، لا يُنشر"
 }

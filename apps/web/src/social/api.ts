@@ -77,6 +77,9 @@ export const EDITORIAL_FIELDS: Array<{ key: string; label: string; multiline?: b
   { key: 'reviewerNote', label: tk('Reviewer note'), multiline: true },
 ];
 
+/** Shown beside the caption for reviewers who don't read the post's language; never posted. */
+export const TRANSLATION_FIELD = { key: 'translationHu', label: tk('Hungarian translation') };
+
 export const CHANNEL_LABEL: Record<Channel, string> = { instagram: 'Instagram', facebook: 'Facebook' };
 
 /** A person can still change the post (not while it is being published, not once it is). */

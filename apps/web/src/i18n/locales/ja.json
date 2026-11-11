@@ -2818,11 +2818,16 @@
  "Approved — it goes out on {date}": "承認しました。{date} に公開されます",
  "Back to the planner": "プランナーに戻る",
  "Edit design": "デザインを編集",
- "Edit in the editor": "エディターで編集",
  "Planner": "プランナー",
  "Reject": "差し戻す",
  "Rejected — sent back with your note": "差し戻しました（メモ付き）",
  "Slide {n}": "スライド {n}",
  "The design changed after it was approved (approved version {a}, now {b}). The publisher won’t post it until it is approved again.": "承認後にデザインが変更されました（承認時 {a}、現在 {b}）。再承認されるまで公開されません。",
- "Why is it rejected? What should change?": "差し戻しの理由と修正点は？"
+ "Why is it rejected? What should change?": "差し戻しの理由と修正点は？",
+ "Click to enlarge": "クリックで拡大",
+ "Enlarge": "拡大",
+ "Hungarian translation": "ハンガリー語訳",
+ "Posted text": "投稿されるテキスト",
+ "{n} slides · click to enlarge": "{n} 枚 · クリックで拡大",
+ "— for review, not posted": "— 確認用(投稿されません)"
 }

@@ -7,7 +7,7 @@ import { api, ApiError, thumbUrl, type DesignSummary } from '../api';
 import { EmptyState, Modal, PageHeader, useToast } from '../components/ui';
 import { fmtDate, getLocale, t } from '../i18n';
 import { CHANNEL_LABEL, EDITORIAL_FIELDS, isEditable, PROVIDER_COLOR, socialApi, STATUS_LABEL, type PostEvent, type SocialAccount, type SocialPost } from './api';
-import { AccountBadge } from './AccountBadge';
+import { AccountBadge, ChannelLogo } from './AccountBadge';
 import { ScheduleDialog } from './ScheduleDialog';
 import './planner.css';
 
@@ -219,9 +219,11 @@ export function PlannerPage() {
 function Nets({ post, accounts, size = 16 }: { post: SocialPost; accounts: SocialAccount[]; size?: number }) {
   return (
     <span className="nets">
-      {post.publisher === 'external' && post.channels.map((c) => (
-        <span key={c} className="chan-badge" title={CHANNEL_LABEL[c]} style={{ background: PROVIDER_COLOR[c], minWidth: size, height: size }}>{c === 'instagram' ? 'IG' : 'f'}</span>
-      ))}
+      {post.publisher === 'external' && post.channels.length > 0 && (
+        <span className="channel-logos" title={post.channels.map((c) => CHANNEL_LABEL[c]).join(' + ')}>
+          {post.channels.map((c) => <ChannelLogo key={c} channel={c} size={size} />)}
+        </span>
+      )}
       {post.accounts.slice(0, 4).map((id) => {
         const a = accounts.find((x) => x.id === id);
         return a ? <AccountBadge key={id} account={{ ...a, avatarUrl: null }} size={size} /> : null;
@@ -266,14 +268,14 @@ function PostList({ posts, accounts, onOpen, onApprove, onReject }: {
             <button type="button" className="thumb-btn" onClick={() => setViewing(p)} title={t('Enlarge')}><img src={thumbUrl(p.designId)} alt={t('Slide {n}', { n: 1 })} loading="lazy" /></button>
             <div className="meta">
               <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
-                <b>{refPrefix(p)}{p.designTitle}</b>
+                <button type="button" className="title-link" onClick={() => onOpen(p)}>{refPrefix(p)}{p.designTitle}</button>
                 <span className={`status-dot ${p.status}`}>{t(STATUS_LABEL[p.status])}</span>
                 <span className="faint" style={{ fontSize: 12 }}>
                   {p.scheduledAt ? new Date(p.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'medium', timeStyle: 'short' }) : t('No time')}
                 </span>
                 <Nets post={p} accounts={accounts} size={18} />
               </div>
-              <span className="cap">{p.caption || <i className="faint">{t('No caption')}</i>}</span>
+              <span className="cap clickable" onClick={() => onOpen(p)}>{p.caption || <i className="faint">{t('No caption')}</i>}</span>
               {p.status === 'failed' && p.error && <span className="error" style={{ fontSize: 12 }}>{p.error}</span>}
             </div>
             <div className="row" style={{ gap: 6 }}>
@@ -374,9 +376,18 @@ function PostDetails({ post, accounts, onClose, onChanged, rejecting = false }: 
             {shownFields.map((f) => <Fragment key={f.key}><dt>{t(f.label)}</dt><dd>{post.fields[f.key]}</dd></Fragment>)}
           </dl>
         )}
-        {(post.caption || post.hashtags.length > 0) && (
-          <div className="box" style={{ padding: 12, whiteSpace: 'pre-wrap', fontSize: 14 }}>
-            {post.caption}{post.hashtags.length > 0 && <div className="faint" style={{ marginTop: 6 }}>{post.hashtags.map((h) => `#${h}`).join(' ')}</div>}
+        {(post.caption || post.hashtags.length > 0 || post.fields.translationHu) && (
+          <div className={`caption-pair ${post.fields.translationHu ? 'two' : ''}`}>
+            <div className="box caption-box">
+              {post.fields.translationHu && <span className="lang-tag">{t('Posted text')}</span>}
+              {post.caption}{post.hashtags.length > 0 && <div className="faint" style={{ marginTop: 6 }}>{post.hashtags.map((h) => `#${h}`).join(' ')}</div>}
+            </div>
+            {post.fields.translationHu && (
+              <div className="box caption-box translation">
+                <span className="lang-tag">{t('Hungarian translation')}</span>
+                {post.fields.translationHu}
+              </div>
+            )}
           </div>
         )}
         {external && (
@@ -385,7 +396,7 @@ function PostDetails({ post, accounts, onClose, onChanged, rejecting = false }: 
               const r = post.results[c];
               return (
                 <div key={c} className="account-row">
-                  <span className="chan-badge" style={{ background: PROVIDER_COLOR[c], minWidth: 26, height: 26, fontSize: 11 }}>{c === 'instagram' ? 'IG' : 'f'}</span>
+                  <ChannelLogo channel={c} size={26} />
                   <div className="who"><b>{CHANNEL_LABEL[c]}</b>{r?.error && <span className="error" style={{ fontSize: 12 }}>{r.error}</span>}</div>
                   {r?.status === 'published' && r.url && <a className="btn sm" href={r.url} target="_blank" rel="noreferrer"><ExternalLink size={14} /> {t('View post')}</a>}
                   {r?.status === 'published' && !r.url && <span className="status-dot published">{t('Published')}</span>}

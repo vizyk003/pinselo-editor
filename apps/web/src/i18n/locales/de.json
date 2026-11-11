@@ -2869,11 +2869,16 @@
  "Approved — it goes out on {date}": "Freigegeben – wird am {date} veröffentlicht",
  "Back to the planner": "Zurück zum Planer",
  "Edit design": "Design bearbeiten",
- "Edit in the editor": "Im Editor bearbeiten",
  "Planner": "Planer",
  "Reject": "Ablehnen",
  "Rejected — sent back with your note": "Abgelehnt – mit deiner Anmerkung zurückgeschickt",
  "Slide {n}": "Folie {n}",
  "The design changed after it was approved (approved version {a}, now {b}). The publisher won’t post it until it is approved again.": "Das Design wurde nach der Freigabe geändert (freigegeben: Version {a}, jetzt {b}). Der Publisher veröffentlicht es erst nach erneuter Freigabe.",
- "Why is it rejected? What should change?": "Warum abgelehnt? Was soll sich ändern?"
+ "Why is it rejected? What should change?": "Warum abgelehnt? Was soll sich ändern?",
+ "Click to enlarge": "Zum Vergrößern klicken",
+ "Enlarge": "Vergrößern",
+ "Hungarian translation": "Ungarische Übersetzung",
+ "Posted text": "Veröffentlichter Text",
+ "{n} slides · click to enlarge": "{n} Folien · zum Vergrößern klicken",
+ "— for review, not posted": "— zur Prüfung, wird nicht veröffentlicht"
 }

@@ -2818,11 +2818,16 @@
  "Approved — it goes out on {date}": "已批准，将于 {date} 发布",
  "Back to the planner": "返回内容规划",
  "Edit design": "编辑设计",
- "Edit in the editor": "在编辑器中编辑",
  "Planner": "内容规划",
  "Reject": "驳回",
  "Rejected — sent back with your note": "已驳回，并附上你的备注",
  "Slide {n}": "第 {n} 张",
  "The design changed after it was approved (approved version {a}, now {b}). The publisher won’t post it until it is approved again.": "设计在批准后被修改（批准版本 {a}，现在 {b}）。重新批准前不会发布。",
- "Why is it rejected? What should change?": "为什么驳回？需要修改什么？"
+ "Why is it rejected? What should change?": "为什么驳回？需要修改什么？",
+ "Click to enlarge": "点击放大",
+ "Enlarge": "放大",
+ "Hungarian translation": "匈牙利语译文",
+ "Posted text": "发布的文字",
+ "{n} slides · click to enlarge": "{n} 张 · 点击放大",
+ "— for review, not posted": "— 仅供审阅,不发布"
 }
