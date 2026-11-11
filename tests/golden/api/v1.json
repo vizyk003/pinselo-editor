@@ -5019,7 +5019,10 @@
       "assets:write",
       "exports",
       "designs:export",
-      "webhooks"
+      "webhooks",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "tokens": [
       {
@@ -5172,7 +5175,10 @@
      "workspaceScopes": [
       "designs:read",
       "exports",
-      "designs:export"
+      "designs:export",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "workspaces": [
       {
@@ -5233,7 +5239,7 @@
       },
       {
        "code": "invalid_value",
-       "message": "Invalid option: expected one of \"designs:read\"|\"designs:write\"|\"assets:write\"|\"exports\"|\"designs:export\"|\"webhooks\"",
+       "message": "Invalid option: expected one of \"designs:read\"|\"designs:write\"|\"assets:write\"|\"exports\"|\"designs:export\"|\"webhooks\"|\"planner:read\"|\"planner:write\"|\"planner:publish\"",
        "path": [
         "scopes",
         0
@@ -5244,7 +5250,10 @@
         "assets:write",
         "exports",
         "designs:export",
-        "webhooks"
+        "webhooks",
+        "planner:read",
+        "planner:write",
+        "planner:publish"
        ]
       },
       {
@@ -5480,7 +5489,10 @@
       "assets:write",
       "exports",
       "designs:export",
-      "webhooks"
+      "webhooks",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "tokens": [
       {
@@ -5660,7 +5672,10 @@
      "workspaceScopes": [
       "designs:read",
       "exports",
-      "designs:export"
+      "designs:export",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "workspaces": [
       {
@@ -6050,7 +6065,10 @@
       "assets:write",
       "exports",
       "designs:export",
-      "webhooks"
+      "webhooks",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "tokens": [
       {
@@ -6239,7 +6257,10 @@
      "workspaceScopes": [
       "designs:read",
       "exports",
-      "designs:export"
+      "designs:export",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "workspaces": [
       {

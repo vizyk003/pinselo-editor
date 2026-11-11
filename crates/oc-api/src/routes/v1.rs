@@ -28,7 +28,7 @@ use crate::prelude::*;
 use crate::routes::assets::{Ingest, IngestOpts, TempDir, ingest_file};
 use crate::routes::designs::{CreateOpts, create_design_from_doc, is_retired_surface, load_doc, unsupported_surface};
 
-pub const SCOPES: [&str; 6] = ["designs:read", "designs:write", "assets:write", "exports", "designs:export", "webhooks"];
+pub const SCOPES: [&str; 9] = ["designs:read", "designs:write", "assets:write", "exports", "designs:export", "webhooks", "planner:read", "planner:write", "planner:publish"];
 
 /// Scopes that may start and read exports: `exports` (every format) or `designs:export` (the same, named for tokens
 /// that only read and export designs).
@@ -683,8 +683,9 @@ async fn developer(State(s): State<AppState>, req: Req) -> ApiResult {
     Ok(Reply::json(json!({ "tokens": tokens, "webhooks": webhooks, "scopes": SCOPES, "workspaceScopes": WORKSPACE_SCOPES, "events": oc_webhooks::WEBHOOK_EVENTS, "workspaces": workspaces })))
 }
 
-/// The scopes a token limited to one workspace may have: it reads and exports, nothing that writes.
-pub const WORKSPACE_SCOPES: [&str; 3] = ["designs:read", "exports", "designs:export"];
+/// The scopes a token limited to one workspace may have: it reads and exports designs, and works with that
+/// workspace's planner (drafting, claiming and reporting posts; never approving them).
+pub const WORKSPACE_SCOPES: [&str; 6] = ["designs:read", "exports", "designs:export", "planner:read", "planner:write", "planner:publish"];
 
 async fn create_token(State(s): State<AppState>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;

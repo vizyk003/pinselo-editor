@@ -429,6 +429,25 @@ Answers `201`. `secret` is returned only here, so store it now:
 
 Scope: `webhooks`. Answers `204` whether or not the webhook existed. An id that is not a UUID answers `500`.
 
+## Content Planner for outside publishers
+
+For teams that post approved designs with their own tool (for example their own Instagram/Facebook publisher) instead of Pinselo's connected accounts. Such a post has `publisher: "external"` and `channels` (`instagram`, `facebook`). Pinselo's own worker never publishes it.
+
+**Review.** Status runs `draft` → `in_review` → `approved` (or `changes_requested`). Anyone who can edit the design submits; only a workspace admin or owner approves, in the web app (`POST /api/social/posts/{id}/approve`, `/request-changes`, `/submit`). The API cannot approve. Approving records `approvedBy`, `approvedAt` and `approvedVersion` (the design's content version). Any later change to the post sends it back to `in_review`.
+
+**Editorial fields.** `fields` holds strings such as `ref` (a post ID like `P-001`, unique per workspace), `formatLabel`, `pillar`, `source`, `topic`, `factIds` and `reviewerNote`. Every route below accepts the post's id or its `ref`.
+
+| Route | Scope | Does |
+|---|---|---|
+| `GET /v1/planner/posts` | `planner:read`, `planner:write` or `planner:publish` | Lists posts. `?due=1`: approved external posts whose `scheduledAt` has passed. Also `status`, `publisher`, `from`, `to`. |
+| `GET /v1/planner/posts/{id}` | same | One post, with `designVersion` (current) and `ref`. |
+| `POST /v1/planner/posts` | `planner:write` | Creates a post (body as the web app: `designId`, `publisher`, `channels`, `scheduledAt`, `timezone`, `caption`, `fields`, `status` `draft` or `in_review`). |
+| `PATCH /v1/planner/posts/{id}` | `planner:write` | Changes a post; an approved one goes back to review. |
+| `POST /v1/planner/posts/{id}/claim` | `planner:publish` | Locks an approved, due external post: `status` becomes `publishing`, the answer carries a `claimToken`. A second claim answers `409 not_claimable`. If the design changed since approval, the post goes back to review and the claim answers `409 version_changed`. |
+| `POST /v1/planner/posts/{id}/results` | `planner:publish` | `{ claimToken, results: { instagram: { status: "published" \| "failed" \| "unknown", id, url, error } }, images?, done }`. With `done: true` the post becomes `published` when every channel is published, otherwise `failed` with the reasons. Published and `unknown` results are kept when the post is fixed and approved again, so a publisher retries only the missing channels. |
+
+Tokens limited to a workspace may hold the three planner scopes. A post claimed over an hour ago and never finished can be pulled back with Request changes.
+
 ## Webhook deliveries
 
 Each event is sent as a JSON `POST`:

@@ -28,10 +28,22 @@ pub fn routes() -> Router<AppState> {
         .route("/api/social/providers", get(providers))
         .route("/api/social/accounts", get(accounts))
         .route("/api/social/connect/{provider}", post(connect))
-        .route("/api/social/accounts/{id}", patch(patch_account).delete(delete_account))
+        .route(
+            "/api/social/accounts/{id}",
+            patch(patch_account).delete(delete_account),
+        )
         .route("/api/social/posts", get(list_posts).post(create_post))
-        .route("/api/social/posts/{id}", patch(update_post).delete(delete_post))
+        .route(
+            "/api/social/posts/{id}",
+            patch(update_post).delete(delete_post),
+        )
         .route("/api/social/posts/{id}/publish-now", post(publish_now))
+        .route("/api/social/posts/{id}/submit", post(submit_post))
+        .route("/api/social/posts/{id}/approve", post(approve_post))
+        .route(
+            "/api/social/posts/{id}/request-changes",
+            post(request_changes),
+        )
         .route("/api/social/posts/{id}/events", get(events))
 }
 
@@ -97,16 +109,20 @@ fn valid_tz(tz: &str) -> String {
 }
 
 /// `publicPost(p)`.
-fn public_post(p: &PostRow, design_title: Option<&str>) -> Value {
+pub(crate) fn public_post(p: &PostRow, design_title: Option<&str>) -> Value {
     json!({
         "id": p.id.to_string(), "designId": p.design_id, "designTitle": design_title, "pages": p.pages, "format": p.format, "caption": p.caption,
         "hashtags": p.hashtags, "accounts": p.accounts.iter().map(Uuid::to_string).collect::<Vec<_>>(), "options": p.options.0, "scheduledAt": iso(p.scheduled_at),
         "timezone": p.timezone, "status": p.status, "results": p.results.0, "error": p.error, "publishedAt": iso(p.published_at), "createdAt": iso(Some(p.created_at)),
         "updatedAt": iso(Some(p.updated_at)), "ownerId": p.owner_id.to_string(), "mediaCount": p.media.0.len(),
+        "publisher": p.publisher, "channels": p.channels, "fields": p.fields.0,
+        "submittedBy": p.submitted_by.map(|u| u.to_string()), "submittedAt": iso(p.submitted_at),
+        "approvedBy": p.approved_by.map(|u| u.to_string()), "approvedAt": iso(p.approved_at), "approvedVersion": p.approved_version,
+        "claimedAt": iso(p.claimed_at),
     })
 }
 
-async fn post_for(s: &AppState, user: Uuid, id: &str) -> Result<Option<PostRow>, sqlx::Error> {
+pub(crate) async fn post_for(s: &AppState, user: Uuid, id: &str) -> Result<Option<PostRow>, sqlx::Error> {
     if !is_uuid(id) {
         return Ok(None);
     }
@@ -152,38 +168,132 @@ fn problems(rows: &[AccountRow], caption: &str, hashtags: &[String], format: &st
 }
 
 /// The checks of a post about to be scheduled; `Some(reply)` refuses it.
-fn schedule_checks(rows: &[AccountRow], scheduled: bool, text: (&str, &[String], &str)) -> Option<Reply> {
+fn schedule_checks(
+    rows: &[AccountRow],
+    scheduled: bool,
+    text: (&str, &[String], &str),
+) -> Option<Refusal> {
     if rows.is_empty() {
-        return Some(reply::json(400, json!({ "error": "no_accounts", "message": "Pick at least one account." })));
+        return Some(Refusal(
+            400,
+            json!({ "error": "no_accounts", "message": "Pick at least one account." }),
+        ));
     }
     if !scheduled {
-        return Some(reply::json(400, json!({ "error": "no_time", "message": "Pick a date and time." })));
+        return Some(Refusal(
+            400,
+            json!({ "error": "no_time", "message": "Pick a date and time." }),
+        ));
     }
     let p = problems(rows, text.0, text.1, text.2);
     if !p.is_empty() {
-        return Some(reply::json(400, json!({ "error": "invalid_post", "message": p.join("; ") })));
+        return Some(Refusal(
+            400,
+            json!({ "error": "invalid_post", "message": p.join("; ") }),
+        ));
     }
     None
 }
 
 fn post_body(partial: bool) -> z::Schema {
     let format = z::enumeration(&["png", "jpg", "mp4"]);
-    let fields = [
-        ("pages", z::array(z::num().int().min(0.0).max(999.0)).max(100.0).default(json!([]))),
+    let mut fields: Vec<(&str, z::Schema)> = vec![
+        (
+            "pages",
+            z::array(z::num().int().min(0.0).max(999.0))
+                .max(100.0)
+                .default(json!([])),
+        ),
         ("format", if partial { format.optional() } else { format }),
         ("caption", z::str().max(70_000.0).default(json!(""))),
-        ("hashtags", z::array(z::str().max(100.0)).max(60.0).default(json!([]))),
-        ("accounts", z::array(z::str().uuid()).max(30.0).default(json!([]))),
+        (
+            "hashtags",
+            z::array(z::str().max(100.0)).max(60.0).default(json!([])),
+        ),
+        (
+            "accounts",
+            z::array(z::str().uuid()).max(30.0).default(json!([])),
+        ),
         ("options", z::record(z::any()).default(json!({}))),
-        ("scheduledAt", z::str().datetime_offset().nullable().optional()),
+        (
+            "scheduledAt",
+            z::str().datetime_offset().nullable().optional(),
+        ),
         ("timezone", z::str().max(64.0).default(json!("UTC"))),
-        ("status", z::enumeration(&["draft", "scheduled"]).default(json!("scheduled"))),
+        (
+            "status",
+            z::enumeration(&["draft", "scheduled", "in_review"]).optional(),
+        ),
+        (
+            "channels",
+            z::array(z::enumeration(&CHANNELS)).max(2.0).optional(),
+        ),
+        ("fields", z::record(z::str().max(20_000.0)).optional()),
     ];
-    if partial {
-        z::obj(fields)
-    } else {
-        let [a, b, c, d, e, f, g, h, i] = fields;
-        z::obj([("designId", z::str().min(1.0).max(64.0)), a, b, c, d, e, f, g, h, i])
+    if !partial {
+        fields.insert(0, ("designId", z::str().min(1.0).max(64.0)));
+        fields.push((
+            "publisher",
+            z::enumeration(&["pinselo", "external"]).default(json!("pinselo")),
+        ));
+    }
+    z::obj_vec(fields)
+}
+
+/// Channels an external publisher posts to.
+pub(crate) const CHANNELS: [&str; 2] = ["instagram", "facebook"];
+
+/// Editorial fields: at most 40 keys of up to 64 characters (values were checked by the schema).
+fn clean_fields(v: Option<&Value>) -> Result<Option<Map<String, Value>>, ApiError> {
+    let Some(Value::Object(m)) = v else {
+        return Ok(None);
+    };
+    if m.len() > 40 || m.keys().any(|k| k.is_empty() || k.chars().count() > 64) {
+        return Err(ApiError::status(400, "invalid_fields"));
+    }
+    Ok(Some(
+        m.iter()
+            .filter(|(_, v)| v.as_str().is_some_and(|s| !s.trim().is_empty()))
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect(),
+    ))
+}
+
+/// The checks of an external post about to be reviewed or approved; `Some(reply)` refuses it.
+fn external_checks(channels: &[String], scheduled: bool) -> Option<Refusal> {
+    if channels.is_empty() {
+        return Some(Refusal(
+            400,
+            json!({ "error": "no_channels", "message": "Pick Instagram, Facebook or both." }),
+        ));
+    }
+    if !scheduled {
+        return Some(Refusal(
+            400,
+            json!({ "error": "no_time", "message": "Pick a date and time." }),
+        ));
+    }
+    None
+}
+
+fn duplicate_ref() -> Refusal {
+    Refusal(
+        409,
+        json!({ "error": "duplicate_ref", "message": "Another post in this workspace already uses this post ID." }),
+    )
+}
+
+fn is_unique_violation(e: &sqlx::Error) -> bool {
+    e.as_database_error().and_then(|d| d.code()).as_deref() == Some("23505")
+}
+
+/// Approvers: in a team workspace its admins and owners; a personal post's owner.
+pub(crate) async fn can_approve(s: &AppState, user: Uuid, p: &PostRow) -> Result<bool, ApiError> {
+    match p.workspace_id {
+        None => Ok(p.owner_id == user),
+        Some(ws) => Ok(crate::routes::teams::team_role(s, user, ws)
+            .await?
+            .is_some_and(|r| r == "admin" || r == "owner")),
     }
 }
 
@@ -376,6 +486,7 @@ async fn delete_account(State(s): State<AppState>, Path(id): Path<String>, req: 
 
 #[derive(sqlx::FromRow)]
 struct ListedPost {
+    approver_name: Option<String>,
     #[sqlx(flatten)]
     post: PostRow,
     design_title: Option<String>,
@@ -393,7 +504,8 @@ async fn list_posts(State(s): State<AppState>, req: Req) -> ApiResult {
     .parse(Some(&req.query))?;
     let qs = |k: &str| q.get(k).and_then(Value::as_str).map(str::to_owned);
     let rows: Vec<ListedPost> = sqlx::query_as(
-        "SELECT p.*, d.title AS design_title FROM social_posts p JOIN designs d ON d.id = p.design_id
+        "SELECT p.*, d.title AS design_title, ua.name AS approver_name FROM social_posts p JOIN designs d ON d.id = p.design_id
+         LEFT JOIN users ua ON ua.id = p.approved_by
          WHERE (p.owner_id = $1 OR p.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))
            AND ($2::timestamptz IS NULL OR p.scheduled_at IS NULL OR p.scheduled_at >= $2::timestamptz)
            AND ($3::timestamptz IS NULL OR p.scheduled_at IS NULL OR p.scheduled_at < $3::timestamptz)
@@ -410,35 +522,126 @@ async fn list_posts(State(s): State<AppState>, req: Req) -> ApiResult {
     .bind(qs("status"))
     .fetch_all(&s.pool)
     .await?;
-    Ok(Reply::json(json!({ "posts": rows.iter().map(|r| public_post(&r.post, r.design_title.as_deref())).collect::<Vec<_>>() })))
+    Ok(Reply::json(json!({ "posts": rows.iter().map(|r| {
+        let mut v = public_post(&r.post, r.design_title.as_deref());
+        v["approvedByName"] = json!(r.approver_name);
+        v
+    }).collect::<Vec<_>>() })))
 }
 
 async fn create_post(State(s): State<AppState>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
-    let b = post_body(false).parse(req.body())?;
-    let bs = |k: &str| b.get(k).and_then(Value::as_str).unwrap_or("").to_owned();
-    let design_id = bs("designId");
-    if !at_least(design_role(&s, Some(u.id), &design_id).await?, Role::Edit) {
-        return Ok(not_found());
+    Ok(match create_post_as(&s, u.id, req.body(), None).await? {
+        Ok(p) => Reply::json(json!({ "post": public_post(&p, None) })),
+        Err(r) => r.reply(),
+    })
+}
+
+/// Creates a post for `user` from a request body (web app and `POST /v1/planner/posts`). `only_ws` limits the design
+/// to one workspace (a workspace-limited API token).
+/// A refused request: HTTP status and JSON body (`{ error, message? }`).
+pub(crate) struct Refusal(pub u16, pub Value);
+
+impl Refusal {
+    pub(crate) fn reply(self) -> Reply {
+        reply::json(self.0, self.1)
     }
-    let accounts = strings(b.get("accounts"));
-    let hashtags = strings(b.get("hashtags"));
-    let rows = check_accounts(&s, u.id, &accounts).await?;
-    let scheduled_at = b.get("scheduledAt").and_then(Value::as_str).map(str::to_owned);
-    let status = bs("status");
-    if status == "scheduled"
-        && let Some(r) = schedule_checks(&rows, scheduled_at.is_some(), (&bs("caption"), &hashtags, &bs("format")))
-    {
-        return Ok(r);
+    /// The human-readable reason (AI assistants show it).
+    pub(crate) fn message(&self) -> String {
+        self.1
+            .get("message")
+            .or_else(|| self.1.get("error"))
+            .and_then(Value::as_str)
+            .unwrap_or("refused")
+            .to_owned()
+    }
+}
+
+/// `Ok(Err(refusal))` refuses the request.
+pub(crate) type PostOutcome = Result<Result<PostRow, Refusal>, ApiError>;
+
+pub(crate) async fn create_post_as(
+    s: &AppState,
+    user: Uuid,
+    body: Option<&Value>,
+    only_ws: Option<Uuid>,
+) -> PostOutcome {
+    let b = post_body(false).parse(body)?;
+    let bs = |k: &str| b.get(k).and_then(Value::as_str).unwrap_or("").to_owned();
+    let design_id = crate::routes::v1::design_id_param(&bs("designId"));
+    if !at_least(design_role(s, Some(user), &design_id).await?, Role::Edit) {
+        return Ok(Err(Refusal(404, json!({ "error": "not_found" }))));
     }
     let ws: Option<(Uuid, bool)> = sqlx::query_as("SELECT w.id, w.personal FROM designs d JOIN workspaces w ON w.id = d.workspace_id WHERE d.id = $1").bind(&design_id).fetch_optional(&s.pool).await?;
-    let pages: Vec<i32> = b.get("pages").and_then(Value::as_array).map(|a| a.iter().filter_map(Value::as_f64).map(|f| f as i32).collect()).unwrap_or_default();
-    let post: PostRow = sqlx::query_as(
-        "INSERT INTO social_posts(id, owner_id, workspace_id, design_id, pages, format, caption, hashtags, accounts, options, scheduled_at, timezone, status)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::timestamptz,$12,$13) RETURNING *",
+    if only_ws.is_some() && ws.map(|(id, _)| id) != only_ws {
+        return Ok(Err(Refusal(404, json!({ "error": "not_found" }))));
+    }
+    let publisher = bs("publisher");
+    let external = publisher == "external";
+    let accounts = strings(b.get("accounts"));
+    let channels = strings(b.get("channels"));
+    let hashtags = strings(b.get("hashtags"));
+    let fields = clean_fields(b.get("fields"))?.unwrap_or_default();
+    let rows = check_accounts(s, user, &accounts).await?;
+    let scheduled_at = b
+        .get("scheduledAt")
+        .and_then(Value::as_str)
+        .map(str::to_owned);
+    let status = b.get("status").and_then(Value::as_str).map_or_else(
+        || {
+            if external {
+                "draft".to_owned()
+            } else {
+                "scheduled".to_owned()
+            }
+        },
+        str::to_owned,
+    );
+    if external {
+        if !accounts.is_empty() {
+            return Ok(Err(Refusal(
+                400,
+                json!({ "error": "external_accounts", "message": "Posts published by an outside tool have channels, not accounts." }),
+            )));
+        }
+        if status == "scheduled" {
+            return Ok(Err(Refusal(
+                400,
+                json!({ "error": "needs_approval", "message": "Submit the post for review; it is published once approved." }),
+            )));
+        }
+        if status == "in_review"
+            && let Some(r) = external_checks(&channels, scheduled_at.is_some())
+        {
+            return Ok(Err(r));
+        }
+    } else if status != "draft"
+        && let Some(r) = schedule_checks(
+            &rows,
+            scheduled_at.is_some(),
+            (&bs("caption"), &hashtags, &bs("format")),
+        )
+    {
+        return Ok(Err(r));
+    }
+    let pages: Vec<i32> = b
+        .get("pages")
+        .and_then(Value::as_array)
+        .map(|a| {
+            a.iter()
+                .filter_map(Value::as_f64)
+                .map(|f| f as i32)
+                .collect()
+        })
+        .unwrap_or_default();
+    let in_review = status == "in_review";
+    let inserted = sqlx::query_as::<_, PostRow>(
+        "INSERT INTO social_posts(id, owner_id, workspace_id, design_id, pages, format, caption, hashtags, accounts, options, scheduled_at, timezone, status,
+                                  publisher, channels, fields, submitted_by, submitted_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::timestamptz,$12,$13,$14,$15,$16::jsonb,$17,CASE WHEN $17::uuid IS NULL THEN NULL ELSE now() END) RETURNING *",
     )
     .bind(oc_db::uuid())
-    .bind(u.id)
+    .bind(user)
     .bind(ws.and_then(|(id, personal)| (!personal).then_some(id)))
     .bind(&design_id)
     .bind(&pages)
@@ -450,55 +653,170 @@ async fn create_post(State(s): State<AppState>, req: Req) -> ApiResult {
     .bind(&scheduled_at)
     .bind(valid_tz(&bs("timezone")))
     .bind(&status)
+    .bind(&publisher)
+    .bind(&channels)
+    .bind(crate::http::jsjson::stringify(&Value::Object(fields)))
+    .bind(in_review.then_some(user))
     .fetch_one(&s.pool)
-    .await?;
-    log_event(&s.pool, post.id, if status == "scheduled" { "scheduled" } else { "created" }, scheduled_at.as_deref(), None, None).await?;
+    .await;
+    let post = match inserted {
+        Err(e) if is_unique_violation(&e) => return Ok(Err(duplicate_ref())),
+        other => other?,
+    };
+    let kind = match status.as_str() {
+        "scheduled" => "scheduled",
+        "in_review" => "submitted",
+        _ => "created",
+    };
+    log_event(&s.pool, post.id, kind, scheduled_at.as_deref(), None, None).await?;
     if post.status == "scheduled" {
-        schedule_publish(&s.pool, post.id, post.owner_id, post.scheduled_at, s.now_ms()).await?;
+        schedule_publish(
+            &s.pool,
+            post.id,
+            post.owner_id,
+            post.scheduled_at,
+            s.now_ms(),
+        )
+        .await?;
     }
-    Ok(Reply::json(json!({ "post": public_post(&post, None) })))
+    Ok(Ok(post))
 }
 
 fn locked() -> Reply {
-    reply::json(409, json!({ "error": "locked", "message": "This post was already published." }))
+    reply::json(
+        409,
+        json!({ "error": "locked", "message": "This post was already published." }),
+    )
 }
 
 async fn update_post(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
-    let Some(post) = post_for(&s, u.id, &id).await? else { return Ok(not_found()) };
+    let Some(post) = post_for(&s, u.id, &id).await? else {
+        return Ok(not_found());
+    };
+    Ok(match update_post_as(&s, u.id, post, req.body()).await? {
+        Ok(p) => Reply::json(json!({ "post": public_post(&p, None) })),
+        Err(r) => r.reply(),
+    })
+}
+
+/// Updates `post` for `user` (web app and `PATCH /v1/planner/posts/{id}`). Any change to an approved post sends it
+/// back to review: the approval covered what was approved, not what it became.
+pub(crate) async fn update_post_as(
+    s: &AppState,
+    user: Uuid,
+    post: PostRow,
+    body: Option<&Value>,
+) -> PostOutcome {
     if post.status == "publishing" || post.status == "published" {
-        return Ok(locked());
+        return Ok(Err(Refusal(
+            409,
+            json!({ "error": "locked", "message": "This post was already published." }),
+        )));
     }
-    let b = post_body(true).parse(req.body())?;
+    let b = post_body(true).parse(body)?;
     let bs = |k: &str| b.get(k).and_then(Value::as_str).map(str::to_owned);
+    let external = post.publisher == "external";
     let pages: Vec<i32> = match b.get("pages").and_then(Value::as_array) {
-        Some(a) => a.iter().filter_map(Value::as_f64).map(|f| f as i32).collect(),
+        Some(a) => a
+            .iter()
+            .filter_map(Value::as_f64)
+            .map(|f| f as i32)
+            .collect(),
         None => post.pages.clone(),
     };
     let format = bs("format").unwrap_or_else(|| post.format.clone());
     let caption = bs("caption").unwrap_or_else(|| post.caption.clone());
-    let hashtags = clean_tags(&b.get("hashtags").map_or_else(|| post.hashtags.clone(), |v| strings(Some(v))));
-    let accounts: Vec<String> = b.get("accounts").map_or_else(|| post.accounts.iter().map(Uuid::to_string).collect(), |v| strings(Some(v)));
-    let options = b.get("options").cloned().unwrap_or_else(|| Value::Object(post.options.0.clone()));
+    let hashtags = clean_tags(
+        &b.get("hashtags")
+            .map_or_else(|| post.hashtags.clone(), |v| strings(Some(v))),
+    );
+    let accounts: Vec<String> = b.get("accounts").map_or_else(
+        || post.accounts.iter().map(Uuid::to_string).collect(),
+        |v| strings(Some(v)),
+    );
+    let channels: Vec<String> = b
+        .get("channels")
+        .map_or_else(|| post.channels.clone(), |v| strings(Some(v)));
+    let fields = clean_fields(b.get("fields"))?.unwrap_or_else(|| post.fields.0.clone());
+    let options = b
+        .get("options")
+        .cloned()
+        .unwrap_or_else(|| Value::Object(post.options.0.clone()));
     let scheduled_at: Option<DateTime<Utc>> = match b.get("scheduledAt") {
         None => post.scheduled_at,
         Some(Value::String(t)) => Some(parse_time(t)?),
         Some(_) => None,
     };
     let timezone = valid_tz(&bs("timezone").unwrap_or_else(|| post.timezone.clone()));
-    let status = bs("status").unwrap_or_else(|| if post.status == "failed" { "scheduled".into() } else { post.status.clone() });
-    let rows = check_accounts(&s, u.id, &accounts).await?;
-    if status == "scheduled"
-        && let Some(r) = schedule_checks(&rows, scheduled_at.is_some(), (&caption, &hashtags, &format))
+    let was_approved =
+        post.approved_at.is_some() && matches!(post.status.as_str(), "approved" | "scheduled");
+    let status = match bs("status") {
+        Some(st) => st,
+        None if was_approved || post.status == "approved" => "in_review".into(),
+        None if post.status == "failed" => {
+            if external {
+                "in_review".into()
+            } else {
+                "scheduled".into()
+            }
+        }
+        None => post.status.clone(),
+    };
+    // An approved post that is edited goes back to review instead of staying scheduled.
+    let status = if status == "scheduled" && (external || was_approved) {
+        "in_review".to_owned()
+    } else {
+        status
+    };
+    let rows = check_accounts(s, user, &accounts).await?;
+    if external {
+        if !accounts.is_empty() {
+            return Ok(Err(Refusal(
+                400,
+                json!({ "error": "external_accounts", "message": "Posts published by an outside tool have channels, not accounts." }),
+            )));
+        }
+        if status == "in_review"
+            && let Some(r) = external_checks(&channels, scheduled_at.is_some())
+        {
+            return Ok(Err(r));
+        }
+    } else if status != "draft"
+        && let Some(r) = schedule_checks(
+            &rows,
+            scheduled_at.is_some(),
+            (&caption, &hashtags, &format),
+        )
     {
-        return Ok(r);
+        return Ok(Err(r));
     }
-    // Re-render on the next run (the design may have changed); keep results of accounts already published.
-    let results: Map<String, Value> =
-        post.results.0.iter().filter(|(aid, r)| r.get("status").and_then(Value::as_str) == Some("published") && accounts.contains(aid)).map(|(k, v)| (k.clone(), v.clone())).collect();
-    let updated: PostRow = sqlx::query_as(
+    // Re-render on the next run (the design may have changed); keep results already published (or of unknown
+    // outcome, which an external publisher must not retry) for targets still selected.
+    let targets: Vec<String> = if external {
+        channels.clone()
+    } else {
+        accounts.clone()
+    };
+    let results: Map<String, Value> = post
+        .results
+        .0
+        .iter()
+        .filter(|(k, r)| {
+            matches!(
+                r.get("status").and_then(Value::as_str),
+                Some("published" | "unknown")
+            ) && targets.contains(k)
+        })
+        .map(|(k, v)| (k.clone(), v.clone()))
+        .collect();
+    let submitted = status == "in_review" && post.status != "in_review";
+    let updated = sqlx::query_as::<_, PostRow>(
         "UPDATE social_posts SET pages = $2, format = $3, caption = $4, hashtags = $5, accounts = $6, options = $7::jsonb, scheduled_at = $8, timezone = $9,
-           status = $10, media = '[]', results = $11::jsonb, error = NULL, job_id = NULL, updated_at = now() WHERE id = $1 RETURNING *",
+           status = $10, media = '[]', results = $11::jsonb, error = NULL, job_id = NULL, channels = $12, fields = $13::jsonb,
+           submitted_by = CASE WHEN $14 THEN $15 ELSE submitted_by END, submitted_at = CASE WHEN $14 THEN now() ELSE submitted_at END,
+           approved_by = NULL, approved_at = NULL, approved_version = NULL, claim_token = NULL, claimed_at = NULL, updated_at = now()
+         WHERE id = $1 RETURNING *",
     )
     .bind(post.id)
     .bind(&pages)
@@ -511,10 +829,21 @@ async fn update_post(State(s): State<AppState>, Path(id): Path<String>, req: Req
     .bind(&timezone)
     .bind(&status)
     .bind(crate::http::jsjson::stringify(&Value::Object(results)))
+    .bind(&channels)
+    .bind(crate::http::jsjson::stringify(&Value::Object(fields)))
+    .bind(submitted)
+    .bind(user)
     .fetch_one(&s.pool)
-    .await?;
-    let moved = post.scheduled_at.map(|t| t.timestamp_millis()) != scheduled_at.map(|t| t.timestamp_millis());
-    let kind = if status == "draft" {
+    .await;
+    let updated = match updated {
+        Err(e) if is_unique_violation(&e) => return Ok(Err(duplicate_ref())),
+        other => other?,
+    };
+    let moved = post.scheduled_at.map(|t| t.timestamp_millis())
+        != scheduled_at.map(|t| t.timestamp_millis());
+    let kind = if submitted {
+        "submitted"
+    } else if status == "draft" || status == "in_review" || status == "changes_requested" {
         "updated"
     } else if moved || post.status != "scheduled" {
         "rescheduled"
@@ -524,33 +853,248 @@ async fn update_post(State(s): State<AppState>, Path(id): Path<String>, req: Req
     let message = scheduled_at.map(|t| oc_js::iso_string(&t));
     log_event(&s.pool, post.id, kind, message.as_deref(), None, None).await?;
     if updated.status == "scheduled" {
-        schedule_publish(&s.pool, updated.id, updated.owner_id, updated.scheduled_at, s.now_ms()).await?;
+        schedule_publish(
+            &s.pool,
+            updated.id,
+            updated.owner_id,
+            updated.scheduled_at,
+            s.now_ms(),
+        )
+        .await?;
     }
+    Ok(Ok(updated))
+}
+
+// ---------------------------------------------------------------- review: submit, approve, request changes
+
+async fn submit_post(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
+    let u = require_user(&s, &req).await?;
+    let Some(post) = post_for(&s, u.id, &id).await? else {
+        return Ok(not_found());
+    };
+    if !matches!(
+        post.status.as_str(),
+        "draft" | "changes_requested" | "failed"
+    ) {
+        return Ok(reply::json(
+            409,
+            json!({ "error": "wrong_status", "message": "Only drafts, posts with requested changes and failed posts can be submitted." }),
+        ));
+    }
+    if post.publisher == "external" {
+        if let Some(r) = external_checks(&post.channels, post.scheduled_at.is_some()) {
+            return Ok(r.reply());
+        }
+    } else {
+        let accounts: Vec<String> = post.accounts.iter().map(Uuid::to_string).collect();
+        let rows = check_accounts(&s, u.id, &accounts).await?;
+        if let Some(r) = schedule_checks(
+            &rows,
+            post.scheduled_at.is_some(),
+            (&post.caption, &post.hashtags, &post.format),
+        ) {
+            return Ok(r.reply());
+        }
+    }
+    let updated: PostRow = sqlx::query_as(
+        "UPDATE social_posts SET status = 'in_review', submitted_by = $2, submitted_at = now(), approved_by = NULL, approved_at = NULL, approved_version = NULL,
+           error = NULL, updated_at = now() WHERE id = $1 RETURNING *",
+    )
+    .bind(post.id)
+    .bind(u.id)
+    .fetch_one(&s.pool)
+    .await?;
+    log_event(&s.pool, post.id, "submitted", None, None, None).await?;
+    Ok(Reply::json(json!({ "post": public_post(&updated, None) })))
+}
+
+async fn approve_post(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
+    let u = require_user(&s, &req).await?;
+    let Some(post) = post_for(&s, u.id, &id).await? else {
+        return Ok(not_found());
+    };
+    if !can_approve(&s, u.id, &post).await? {
+        return Ok(reply::json(
+            403,
+            json!({ "error": "forbidden", "message": "Only workspace admins and owners can approve posts." }),
+        ));
+    }
+    if !matches!(post.status.as_str(), "in_review" | "failed") {
+        return Ok(reply::json(
+            409,
+            json!({ "error": "wrong_status", "message": "Only posts in review (or failed ones) can be approved." }),
+        ));
+    }
+    let external = post.publisher == "external";
+    if external {
+        if let Some(r) = external_checks(&post.channels, post.scheduled_at.is_some()) {
+            return Ok(r.reply());
+        }
+    } else {
+        let accounts: Vec<String> = post.accounts.iter().map(Uuid::to_string).collect();
+        let rows = check_accounts(&s, post.owner_id, &accounts).await?;
+        if let Some(r) = schedule_checks(
+            &rows,
+            post.scheduled_at.is_some(),
+            (&post.caption, &post.hashtags, &post.format),
+        ) {
+            return Ok(r.reply());
+        }
+    }
+    let version = crate::routes::v1_export::content_version(&s, &post.design_id).await?;
+    let next = if external { "approved" } else { "scheduled" };
+    let updated: PostRow = sqlx::query_as(
+        "UPDATE social_posts SET status = $2, approved_by = $3, approved_at = now(), approved_version = $4, error = NULL, claim_token = NULL, claimed_at = NULL,
+           updated_at = now() WHERE id = $1 AND status = $5 RETURNING *",
+    )
+    .bind(post.id)
+    .bind(next)
+    .bind(u.id)
+    .bind(version)
+    .bind(&post.status)
+    .fetch_optional(&s.pool)
+    .await?
+    .ok_or_else(|| ApiError::status(409, "changed"))?;
+    log_event(
+        &s.pool,
+        post.id,
+        "approved",
+        version.map(|v| format!("Design version {v}")).as_deref(),
+        None,
+        None,
+    )
+    .await?;
+    if updated.status == "scheduled" {
+        schedule_publish(
+            &s.pool,
+            updated.id,
+            updated.owner_id,
+            updated.scheduled_at,
+            s.now_ms(),
+        )
+        .await?;
+    }
+    Ok(Reply::json(json!({ "post": public_post(&updated, None) })))
+}
+
+async fn request_changes(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
+    let u = require_user(&s, &req).await?;
+    let Some(post) = post_for(&s, u.id, &id).await? else {
+        return Ok(not_found());
+    };
+    if !can_approve(&s, u.id, &post).await? {
+        return Ok(reply::json(
+            403,
+            json!({ "error": "forbidden", "message": "Only workspace admins and owners can review posts." }),
+        ));
+    }
+    // A post an outside publisher claimed over an hour ago and never finished can be pulled back too.
+    let stuck = post.status == "publishing"
+        && post.publisher == "external"
+        && post
+            .claimed_at
+            .is_some_and(|t| s.now_ms() - t.timestamp_millis() > 3_600_000);
+    if !stuck
+        && !matches!(
+            post.status.as_str(),
+            "in_review" | "approved" | "scheduled" | "failed"
+        )
+    {
+        return Ok(reply::json(
+            409,
+            json!({ "error": "wrong_status", "message": "This post is not waiting for review." }),
+        ));
+    }
+    let b = z::obj([("note", z::str().max(20_000.0).optional())]).parse(req.body())?;
+    let note = b
+        .get("note")
+        .and_then(Value::as_str)
+        .map(str::trim)
+        .filter(|n| !n.is_empty())
+        .map(str::to_owned);
+    let mut fields = post.fields.0.clone();
+    if let Some(n) = &note {
+        fields.insert("reviewerNote".into(), json!(n));
+    }
+    let updated: PostRow = sqlx::query_as(
+        "UPDATE social_posts SET status = 'changes_requested', fields = $2::jsonb, approved_by = NULL, approved_at = NULL, approved_version = NULL,
+           claim_token = NULL, claimed_at = NULL, job_id = NULL, updated_at = now() WHERE id = $1 RETURNING *",
+    )
+    .bind(post.id)
+    .bind(crate::http::jsjson::stringify(&Value::Object(fields)))
+    .fetch_one(&s.pool)
+    .await?;
+    log_event(
+        &s.pool,
+        post.id,
+        "changes_requested",
+        note.as_deref(),
+        None,
+        None,
+    )
+    .await?;
     Ok(Reply::json(json!({ "post": public_post(&updated, None) })))
 }
 
 async fn publish_now(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
-    let Some(post) = post_for(&s, u.id, &id).await? else { return Ok(not_found()) };
+    let Some(post) = post_for(&s, u.id, &id).await? else {
+        return Ok(not_found());
+    };
     if post.status == "publishing" || post.status == "published" {
         return Ok(locked());
+    }
+    if post.publisher == "external" {
+        return Ok(reply::json(
+            400,
+            json!({ "error": "external_post", "message": "This post is published by an outside tool once approved." }),
+        ));
+    }
+    if post.approved_at.is_none()
+        && matches!(post.status.as_str(), "in_review" | "changes_requested")
+    {
+        return Ok(reply::json(
+            409,
+            json!({ "error": "needs_approval", "message": "Approve the post first." }),
+        ));
     }
     let accounts: Vec<String> = post.accounts.iter().map(Uuid::to_string).collect();
     let rows = check_accounts(&s, u.id, &accounts).await?;
     if rows.is_empty() {
-        return Ok(reply::json(400, json!({ "error": "no_accounts", "message": "Pick at least one account." })));
+        return Ok(reply::json(
+            400,
+            json!({ "error": "no_accounts", "message": "Pick at least one account." }),
+        ));
     }
     let p = problems(&rows, &post.caption, &post.hashtags, &post.format);
     if !p.is_empty() {
-        return Ok(reply::json(400, json!({ "error": "invalid_post", "message": p.join("; ") })));
+        return Ok(reply::json(
+            400,
+            json!({ "error": "invalid_post", "message": p.join("; ") }),
+        ));
     }
     let updated: PostRow =
         sqlx::query_as("UPDATE social_posts SET status = 'scheduled', scheduled_at = now(), media = '[]', error = NULL, job_id = NULL, updated_at = now() WHERE id = $1 RETURNING *")
             .bind(post.id)
             .fetch_one(&s.pool)
             .await?;
-    log_event(&s.pool, post.id, "scheduled", Some("Publish now"), None, None).await?;
-    schedule_publish(&s.pool, updated.id, updated.owner_id, updated.scheduled_at, s.now_ms()).await?;
+    log_event(
+        &s.pool,
+        post.id,
+        "scheduled",
+        Some("Publish now"),
+        None,
+        None,
+    )
+    .await?;
+    schedule_publish(
+        &s.pool,
+        updated.id,
+        updated.owner_id,
+        updated.scheduled_at,
+        s.now_ms(),
+    )
+    .await?;
     Ok(Reply::json(json!({ "post": public_post(&updated, None) })))
 }
 

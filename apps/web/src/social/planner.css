@@ -59,6 +59,17 @@
 .status-dot.failed { color: #dc2626; }
 .status-dot.publishing { color: #d97706; }
 .status-dot.draft { color: var(--text-3); }
+.status-dot.in_review { color: #7c3aed; }
+.status-dot.changes_requested { color: #c2410c; }
+.status-dot.approved { color: #0d9488; }
+.post-pill.in_review { border-color: color-mix(in srgb, #7c3aed 55%, var(--border)); }
+.post-pill.changes_requested { border-color: color-mix(in srgb, #c2410c 60%, var(--border)); background: color-mix(in srgb, #c2410c 7%, var(--surface)); }
+.post-pill.approved { border-color: color-mix(in srgb, #0d9488 55%, var(--border)); }
+.chan-badge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 4px; color: #fff; font-size: 9px; font-weight: 700; }
+.review-box { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; background: var(--surface-2); }
+.fields-table { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 13px; }
+.fields-table dt { color: var(--text-3); }
+.fields-table dd { margin: 0; white-space: pre-wrap; }
 .post-list { display: flex; flex-direction: column; gap: 8px; }
 .post-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
 .post-row img { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: var(--surface-3); }

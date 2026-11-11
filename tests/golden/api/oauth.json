@@ -2409,14 +2409,20 @@
       "assets:write",
       "exports",
       "designs:export",
-      "webhooks"
+      "webhooks",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "tokens": [],
      "webhooks": [],
      "workspaceScopes": [
       "designs:read",
       "exports",
-      "designs:export"
+      "designs:export",
+      "planner:read",
+      "planner:write",
+      "planner:publish"
      ],
      "workspaces": [
       {

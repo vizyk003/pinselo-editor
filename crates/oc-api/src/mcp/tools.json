@@ -4745,6 +4745,218 @@
    "execution": {
     "taskSupport": "forbidden"
    }
+  },
+  {
+   "name": "list_planner_posts",
+   "title": "List planner posts",
+   "description": "Posts in the user's Content Planner (own and team), soonest first: date, status (draft, in_review, changes_requested, approved, publishing, published, failed), channels, caption and editorial fields such as the post ID.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "status": {
+      "type": "string",
+      "enum": [
+       "draft",
+       "in_review",
+       "changes_requested",
+       "approved",
+       "scheduled",
+       "publishing",
+       "published",
+       "failed"
+      ]
+     },
+     "from": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Only posts scheduled at or after this time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+     },
+     "to": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Only posts scheduled before this time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+     }
+    }
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "get_planner_post",
+   "title": "Get planner post",
+   "description": "One Content Planner post by its id or its post ID (e.g. P-001), with its review status, approval and per-channel results.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "post": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "The post's id or its post ID (fields.ref)"
+     }
+    },
+    "required": [
+     "post"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "create_planner_post",
+   "title": "Create planner post",
+   "description": "Draft a post in the Content Planner for the team's own publisher (Instagram and/or Facebook). Pass submit: true to send it for review. Only a person can approve it.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "design": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500,
+      "description": "Design id or its edit link"
+     },
+     "channels": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "instagram",
+        "facebook"
+       ]
+      },
+      "maxItems": 2,
+      "description": "Where the team's publisher posts it"
+     },
+     "scheduled_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "description": "When to publish (ISO date-time with offset)"
+     },
+     "timezone": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "IANA time zone, e.g. Europe/Budapest"
+     },
+     "caption": {
+      "type": "string",
+      "maxLength": 70000
+     },
+     "fields": {
+      "type": "object",
+      "propertyNames": {
+       "type": "string"
+      },
+      "additionalProperties": {
+       "type": "string",
+       "maxLength": 20000
+      },
+      "description": "Editorial fields: ref (post ID such as P-001), formatLabel, pillar, source, topic, factIds, reviewerNote"
+     },
+     "submit": {
+      "type": "boolean",
+      "description": "true sends the post for review (a person approves it in the planner)"
+     }
+    },
+    "required": [
+     "design"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "update_planner_post",
+   "title": "Update planner post",
+   "description": "Change a Content Planner post (caption, date, channels, editorial fields). An approved post goes back to review. Pass submit: true to send a draft or a post with requested changes for review.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "post": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "The post's id or its post ID (fields.ref)"
+     },
+     "channels": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "enum": [
+        "instagram",
+        "facebook"
+       ]
+      },
+      "maxItems": 2,
+      "description": "Where the team's publisher posts it"
+     },
+     "scheduled_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "description": "When to publish (ISO date-time with offset)"
+     },
+     "timezone": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "IANA time zone, e.g. Europe/Budapest"
+     },
+     "caption": {
+      "type": "string",
+      "maxLength": 70000
+     },
+     "fields": {
+      "type": "object",
+      "propertyNames": {
+       "type": "string"
+      },
+      "additionalProperties": {
+       "type": "string",
+       "maxLength": 20000
+      },
+      "description": "Editorial fields: ref (post ID such as P-001), formatLabel, pillar, source, topic, factIds, reviewerNote"
+     },
+     "submit": {
+      "type": "boolean",
+      "description": "true sends the post for review (a person approves it in the planner)"
+     }
+    },
+    "required": [
+     "post"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
   }
  ]
 }

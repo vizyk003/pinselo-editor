@@ -1,11 +1,11 @@
 /** Content Planner (A16): month/week calendar with drag-to-reschedule, list view, account filter. */
-import { CalendarDays, CalendarRange, ChevronLeft, ChevronRight, ExternalLink, List, Plus, Send, Pencil, Trash2 } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CalendarDays, CalendarRange, Check, ChevronLeft, ChevronRight, ExternalLink, List, MessageSquareWarning, Plus, Send, Pencil, Trash2 } from 'lucide-react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { api, ApiError, thumbUrl, type DesignSummary } from '../api';
 import { EmptyState, Modal, PageHeader, useToast } from '../components/ui';
 import { fmtDate, getLocale, t } from '../i18n';
-import { socialApi, STATUS_LABEL, type PostEvent, type SocialAccount, type SocialPost } from './api';
+import { CHANNEL_LABEL, EDITORIAL_FIELDS, isEditable, PROVIDER_COLOR, socialApi, STATUS_LABEL, type PostEvent, type SocialAccount, type SocialPost } from './api';
 import { AccountBadge } from './AccountBadge';
 import { ScheduleDialog } from './ScheduleDialog';
 import './planner.css';
@@ -20,7 +20,9 @@ const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.g
 /** Weeks start on Monday. */
 const startOfWeek = (d: Date) => addDays(startOfDay(d), -((d.getDay() + 6) % 7));
 const timeFmt = (iso: string) => new Date(iso).toLocaleTimeString(getLocale(), { hour: 'numeric', minute: '2-digit' });
-const editable = (p: SocialPost) => p.status === 'draft' || p.status === 'scheduled' || p.status === 'failed';
+const editable = isEditable;
+/** Statuses the review filter offers. */
+const REVIEW_FILTERS = ['in_review', 'changes_requested', 'approved', 'failed'] as const;
 
 export function PlannerPage() {
   const toast = useToast();
@@ -30,6 +32,7 @@ export function PlannerPage() {
   const [cursor, setCursor] = useState(() => startOfDay(new Date()));
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
   const [filter, setFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [posts, setPosts] = useState<SocialPost[] | null>(null);
   const [open, setOpen] = useState<SocialPost | null>(null);
   const [creating, setCreating] = useState<Date | null>(null);
@@ -55,9 +58,9 @@ export function PlannerPage() {
   }, [view, cursor]);
 
   const load = useCallback(async () => {
-    const r = await socialApi.posts({ from: range.from?.toISOString(), to: range.to?.toISOString(), account: filter || undefined });
+    const r = await socialApi.posts({ from: range.from?.toISOString(), to: range.to?.toISOString(), account: filter || undefined, status: statusFilter || undefined });
     setPosts(r.posts);
-  }, [range.from, range.to, filter]);
+  }, [range.from, range.to, filter, statusFilter]);
 
   useEffect(() => {
     void load().catch(() => setPosts([]));
@@ -81,10 +84,13 @@ export function PlannerPage() {
     const old = p.scheduledAt ? new Date(p.scheduledAt) : new Date(day.getFullYear(), day.getMonth(), day.getDate(), 9);
     const next = new Date(day.getFullYear(), day.getMonth(), day.getDate(), old.getHours(), old.getMinutes());
     if (p.scheduledAt && sameDay(old, next)) return;
-    if (p.status !== 'draft' && next.getTime() < Date.now()) return toast(t('Pick a time in the future.'));
+    if (p.status === 'scheduled' && next.getTime() < Date.now()) return toast(t('Pick a time in the future.'));
+    if (p.approvedAt && !confirm(t('This post is approved. Moving it sends it back to review. Move it?'))) return;
     setPosts((list) => list?.map((x) => (x.id === p.id ? { ...x, scheduledAt: next.toISOString() } : x)) ?? null);
     try {
-      await socialApi.update(p.id, { scheduledAt: next.toISOString(), status: p.status === 'draft' ? 'draft' : 'scheduled' });
+      // Review posts keep their place in the workflow (the server sends approved ones back to review).
+      const keep = p.publisher === 'external' || ['in_review', 'changes_requested', 'approved'].includes(p.status) || p.approvedAt;
+      await socialApi.update(p.id, keep ? { scheduledAt: next.toISOString() } : { scheduledAt: next.toISOString(), status: p.status === 'draft' ? 'draft' : 'scheduled' });
       toast(t('Moved to {date}', { date: fmtDate(next, { weekday: 'short', month: 'short', day: 'numeric' }) }));
     } catch (e) {
       toast(e instanceof ApiError ? e.message : t('That didn’t work. Try again.'));
@@ -119,6 +125,10 @@ export function PlannerPage() {
           </>
         )}
         <div className="grow" />
+        <select className="input" style={{ width: 'auto', minWidth: 170 }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} aria-label={t('Filter by status')}>
+          <option value="">{t('All statuses')}</option>
+          {REVIEW_FILTERS.map((st) => <option key={st} value={st}>{st === 'in_review' ? t('Needs approval') : t(STATUS_LABEL[st])}</option>)}
+        </select>
         <select className="input" style={{ width: 'auto', minWidth: 200 }} value={filter} onChange={(e) => setFilter(e.target.value)} aria-label={t('Filter by account')}>
           <option value="">{t('All accounts')}</option>
           {accounts.map((a) => <option key={a.id} value={a.id}>{a.provider === 'local' ? t('Download & remind') : `${a.displayName}${a.handle ? ` (@${a.handle})` : ''}`}</option>)}
@@ -176,6 +186,9 @@ export function PlannerPage() {
 function Nets({ post, accounts, size = 16 }: { post: SocialPost; accounts: SocialAccount[]; size?: number }) {
   return (
     <span className="nets">
+      {post.publisher === 'external' && post.channels.map((c) => (
+        <span key={c} className="chan-badge" title={CHANNEL_LABEL[c]} style={{ background: PROVIDER_COLOR[c], minWidth: size, height: size }}>{c === 'instagram' ? 'IG' : 'f'}</span>
+      ))}
       {post.accounts.slice(0, 4).map((id) => {
         const a = accounts.find((x) => x.id === id);
         return a ? <AccountBadge key={id} account={{ ...a, avatarUrl: null }} size={size} /> : null;
@@ -196,7 +209,7 @@ function PostPill({ post, accounts, onOpen }: { post: SocialPost; accounts: Soci
       <img className="thumb" src={thumbUrl(post.designId)} alt="" loading="lazy" />
       <span className="txt">
         <b>{post.scheduledAt ? timeFmt(post.scheduledAt) : t('No time')}</b>
-        <span>{post.designTitle}</span>
+        <span>{post.fields.ref ? `${post.fields.ref} · ` : ''}{post.designTitle}</span>
       </span>
       <Nets post={post} accounts={accounts} />
     </button>
@@ -205,7 +218,7 @@ function PostPill({ post, accounts, onOpen }: { post: SocialPost; accounts: Soci
 
 function PostList({ posts, accounts, onOpen }: { posts: SocialPost[]; accounts: SocialAccount[]; onOpen: (p: SocialPost) => void }) {
   const now = Date.now();
-  const upcoming = posts.filter((p) => !p.scheduledAt || new Date(p.scheduledAt).getTime() >= now || p.status === 'scheduled' || p.status === 'publishing');
+  const upcoming = posts.filter((p) => !p.scheduledAt || new Date(p.scheduledAt).getTime() >= now || ['scheduled', 'publishing', 'in_review', 'changes_requested', 'approved'].includes(p.status));
   const past = posts.filter((p) => !upcoming.includes(p)).reverse();
   const section = (title: string, list: SocialPost[]) => list.length > 0 && (
     <section className="col">
@@ -216,7 +229,7 @@ function PostList({ posts, accounts, onOpen }: { posts: SocialPost[]; accounts: 
             <img src={thumbUrl(p.designId)} alt="" loading="lazy" />
             <div className="meta">
               <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
-                <b>{p.designTitle}</b>
+                <b>{p.fields.ref ? `${p.fields.ref} · ` : ''}{p.designTitle}</b>
                 <span className={`status-dot ${p.status}`}>{t(STATUS_LABEL[p.status])}</span>
                 <span className="faint" style={{ fontSize: 12 }}>
                   {p.scheduledAt ? new Date(p.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'medium', timeStyle: 'short' }) : t('No time')}
@@ -241,6 +254,22 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
   const [events, setEvents] = useState<PostEvent[]>([]);
   const [design, setDesign] = useState<DesignSummary | null>(null);
   const [editing, setEditing] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const act = async (fn: () => Promise<unknown>, done: string) => {
+    setBusy(true);
+    try {
+      await fn();
+      toast(done);
+      onChanged();
+    } catch (e) {
+      toast(e instanceof ApiError ? (e.message || e.code) : t('That didn’t work. Try again.'));
+    } finally {
+      setBusy(false);
+    }
+  };
+  const external = post.publisher === 'external';
+  const shownFields = EDITORIAL_FIELDS.filter((f) => post.fields[f.key]);
   useEffect(() => {
     void socialApi.events(post.id).then((r) => setEvents(r.events)).catch(() => {});
     void api.design(post.designId).then((r) => setDesign(r.design)).catch(() => {});
@@ -253,7 +282,7 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
     return <ScheduleDialog designId={post.designId} title={post.designTitle ?? ''} pageCount={design?.page_count ?? Math.max(1, ...post.pages.map((p) => p + 1))} post={post} onClose={() => setEditing(false)} onSaved={onChanged} />;
   }
   return (
-    <Modal title={post.designTitle ?? t('Scheduled post')} onClose={onClose} size="lg">
+    <Modal title={`${post.fields.ref ? `${post.fields.ref} · ` : ''}${post.designTitle ?? t('Scheduled post')}`} onClose={onClose} size="lg">
       <div className="planner-form">
         <div className="row" style={{ gap: 14, alignItems: 'flex-start' }}>
           <img src={thumbUrl(post.designId)} alt="" style={{ width: 120, borderRadius: 10, background: 'var(--surface-3)' }} />
@@ -261,12 +290,53 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
             <span className={`status-dot ${post.status}`}>{t(STATUS_LABEL[post.status])}</span>
             <span>{post.scheduledAt ? new Date(post.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'full', timeStyle: 'short', timeZone: post.timezone }) : t('No time')} <span className="faint">({post.timezone.replace(/_/g, ' ')})</span></span>
             <span className="faint" style={{ fontSize: 13 }}>{post.format === 'mp4' ? t('Video (MP4)') : `${post.format.toUpperCase()} · ${post.pages.length ? t('Pages {list}', { list: post.pages.map((p) => p + 1).join(', ') }) : t('All pages')}`}</span>
+            {external && <span className="faint" style={{ fontSize: 13 }}>{t('Published by your own publisher')}</span>}
+            {post.approvedAt && (
+              <span style={{ fontSize: 13 }}>
+                <Check size={13} /> {t('Approved by {name} on {date}', { name: post.approvedByName ?? t('a reviewer'), date: new Date(post.approvedAt).toLocaleString(getLocale(), { dateStyle: 'medium', timeStyle: 'short' }) })}
+                {post.approvedVersion != null && <span className="faint"> · {t('design version {n}', { n: post.approvedVersion })}</span>}
+              </span>
+            )}
             {post.error && <span className="error" style={{ fontSize: 13 }}>{post.error}</span>}
           </div>
         </div>
+        {shownFields.length > 0 && (
+          <dl className="fields-table">
+            {shownFields.map((f) => <Fragment key={f.key}><dt>{t(f.label)}</dt><dd>{post.fields[f.key]}</dd></Fragment>)}
+          </dl>
+        )}
         {(post.caption || post.hashtags.length > 0) && (
           <div className="box" style={{ padding: 12, whiteSpace: 'pre-wrap', fontSize: 14 }}>
             {post.caption}{post.hashtags.length > 0 && <div className="faint" style={{ marginTop: 6 }}>{post.hashtags.map((h) => `#${h}`).join(' ')}</div>}
+          </div>
+        )}
+        {external && (
+          <div className="col" style={{ gap: 6 }}>
+            {post.channels.map((c) => {
+              const r = post.results[c];
+              return (
+                <div key={c} className="account-row">
+                  <span className="chan-badge" style={{ background: PROVIDER_COLOR[c], minWidth: 26, height: 26, fontSize: 11 }}>{c === 'instagram' ? 'IG' : 'f'}</span>
+                  <div className="who"><b>{CHANNEL_LABEL[c]}</b>{r?.error && <span className="error" style={{ fontSize: 12 }}>{r.error}</span>}</div>
+                  {r?.status === 'published' && r.url && <a className="btn sm" href={r.url} target="_blank" rel="noreferrer"><ExternalLink size={14} /> {t('View post')}</a>}
+                  {r?.status === 'published' && !r.url && <span className="status-dot published">{t('Published')}</span>}
+                  {r?.status === 'failed' && <span className="status-dot failed">{t('Failed')}</span>}
+                  {r?.status === 'unknown' && <span className="status-dot publishing">{t('Check by hand')}</span>}
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {note !== null && (
+          <div className="review-box">
+            <label className="field">
+              <span>{t('What should change?')}</span>
+              <textarea className="input" rows={3} value={note} autoFocus onChange={(e) => setNote(e.target.value)} />
+            </label>
+            <div className="row" style={{ justifyContent: 'flex-end', gap: 8 }}>
+              <button className="btn ghost" onClick={() => setNote(null)}>{t('Cancel')}</button>
+              <button className="btn primary" disabled={busy} onClick={() => act(() => socialApi.requestChanges(post.id, note), t('Changes requested'))}>{t('Request changes')}</button>
+            </div>
           </div>
         )}
         <div className="col" style={{ gap: 6 }}>
@@ -304,7 +374,16 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
             }}><Trash2 size={15} /> {t('Delete')}</button>
           )}
           {editable(post) && <button className="btn" onClick={() => setEditing(true)}><Pencil size={15} /> {t('Edit')}</button>}
-          {editable(post) && post.accounts.length > 0 && (
+          {['draft', 'changes_requested', 'failed'].includes(post.status) && (post.status !== 'failed' || external) && (
+            <button className="btn" disabled={busy} onClick={() => act(() => socialApi.submit(post.id), t('Sent for review'))}><Send size={15} /> {t('Submit for review')}</button>
+          )}
+          {['in_review', 'approved', 'scheduled', 'failed'].includes(post.status) && note === null && (post.status !== 'scheduled' || post.approvedAt) && (
+            <button className="btn" disabled={busy} onClick={() => setNote(post.fields.reviewerNote ?? '')}><MessageSquareWarning size={15} /> {t('Request changes')}</button>
+          )}
+          {(post.status === 'in_review' || (post.status === 'failed' && external)) && (
+            <button className="btn primary" disabled={busy} onClick={() => act(() => socialApi.approve(post.id), t('Approved'))}><Check size={15} /> {t('Approve')}</button>
+          )}
+          {!external && ['draft', 'scheduled', 'failed'].includes(post.status) && post.accounts.length > 0 && (
             <button className="btn primary" onClick={async () => {
               try {
                 await socialApi.publishNow(post.id);

@@ -540,6 +540,88 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             .await?;
             Ok(text(&json!({ "designs": rows.iter().map(|r| design_summary(r, &s.cfg.web_origin)).collect::<Vec<_>>() })))
         }
+        "list_planner_posts" => {
+            need(u, "designs:read")?;
+            let rows: Vec<oc_social::publish::PostRow> = sqlx::query_as(
+                "SELECT p.* FROM social_posts p
+                 WHERE (p.owner_id = $1 OR p.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))
+                   AND ($2::text IS NULL OR p.status = $2)
+                   AND ($3::timestamptz IS NULL OR p.scheduled_at >= $3::timestamptz)
+                   AND ($4::timestamptz IS NULL OR p.scheduled_at < $4::timestamptz)
+                 ORDER BY p.scheduled_at NULLS LAST, p.created_at LIMIT 200",
+            )
+            .bind(u.id)
+            .bind(opt_str(a, "status"))
+            .bind(opt_str(a, "from"))
+            .bind(opt_str(a, "to"))
+            .fetch_all(&s.pool)
+            .await
+            .map_err(ApiError::from)?;
+            let mut posts = Vec::with_capacity(rows.len());
+            for p in &rows {
+                posts.push(crate::routes::v1_planner::out(s, p).await?);
+            }
+            Ok(text(&json!({ "posts": posts })))
+        }
+        "get_planner_post" => {
+            need(u, "designs:read")?;
+            let key = opt_str(a, "post").unwrap_or_default();
+            match crate::routes::v1_planner::find_for(s, u.id, None, &key).await? {
+                Ok(Some(p)) => Ok(text(
+                    &json!({ "post": crate::routes::v1_planner::out(s, &p).await? }),
+                )),
+                Ok(None) => tool_err(format!("No planner post {key}.")),
+                Err(()) => tool_err(format!(
+                    "Several posts use the post ID {key}; use the post's id."
+                )),
+            }
+        }
+        "create_planner_post" | "update_planner_post" => {
+            need(u, "designs:write")?;
+            // The planner's web rules apply as they are: an assistant drafts and submits, a person approves.
+            let mut body = Map::new();
+            for (from, to) in [
+                ("channels", "channels"),
+                ("scheduled_at", "scheduledAt"),
+                ("timezone", "timezone"),
+                ("caption", "caption"),
+                ("fields", "fields"),
+            ] {
+                if let Some(v) = a.get(from) {
+                    body.insert(to.into(), v.clone());
+                }
+            }
+            if a.get("submit").and_then(Value::as_bool) == Some(true) {
+                body.insert("status".into(), json!("in_review"));
+            }
+            let outcome = if name == "create_planner_post" {
+                body.insert("designId".into(), a["design"].clone());
+                body.insert("publisher".into(), json!("external"));
+                body.insert("format".into(), json!("jpg"));
+                body.entry("status").or_insert(json!("draft"));
+                crate::routes::social::create_post_as(s, u.id, Some(&Value::Object(body)), None)
+                    .await?
+            } else {
+                let key = opt_str(a, "post").unwrap_or_default();
+                let post = match crate::routes::v1_planner::find_for(s, u.id, None, &key).await? {
+                    Ok(Some(p)) => p,
+                    Ok(None) => return tool_err(format!("No planner post {key}.")),
+                    Err(()) => {
+                        return tool_err(format!(
+                            "Several posts use the post ID {key}; use the post's id."
+                        ));
+                    }
+                };
+                crate::routes::social::update_post_as(s, u.id, post, Some(&Value::Object(body)))
+                    .await?
+            };
+            match outcome {
+                Ok(p) => Ok(text(
+                    &json!({ "post": crate::routes::v1_planner::out(s, &p).await? }),
+                )),
+                Err(refusal) => tool_err(refusal.message()),
+            }
+        }
         "list_size_presets" => {
             let q = opt_str(a, "query").map(|q| crate::js::trim(&q.to_lowercase()).to_owned());
             let list: Vec<Value> = oc_schema::presets::SIZE_PRESETS

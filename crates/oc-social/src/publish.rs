@@ -49,6 +49,20 @@ pub struct PostRow {
     pub published_at: Option<DateTime<Utc>>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    /// `'pinselo'` (this worker publishes it) or `'external'` (an outside tool claims it through /v1/planner).
+    pub publisher: String,
+    /// External posts: `'instagram' | 'facebook'`.
+    pub channels: Vec<String>,
+    /// Editorial fields (`ref`, `pillar`, `source`, `topic`, `factIds`, `reviewerNote`, `formatLabel`, …).
+    pub fields: Json<Map<String, Value>>,
+    pub submitted_by: Option<Uuid>,
+    pub submitted_at: Option<DateTime<Utc>>,
+    pub approved_by: Option<Uuid>,
+    pub approved_at: Option<DateTime<Utc>>,
+    /// The design's `content_version` when the post was approved.
+    pub approved_version: Option<i64>,
+    pub claim_token: Option<String>,
+    pub claimed_at: Option<DateTime<Utc>>,
 }
 
 /// One rendered file (`StoredMedia`).
@@ -168,7 +182,7 @@ pub struct DuePost {
 pub async fn due_posts(pool: &sqlx::PgPool, limit: i64) -> Result<Vec<DuePost>, sqlx::Error> {
     sqlx::query_as(
         "SELECT p.id, p.owner_id, p.scheduled_at FROM social_posts p
-     WHERE p.status = 'scheduled' AND p.scheduled_at <= now()
+     WHERE p.status = 'scheduled' AND p.publisher = 'pinselo' AND p.scheduled_at <= now()
        AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.queue = 'publish' AND j.status IN ('queued','running') AND j.payload->>'postId' = p.id::text)
      ORDER BY p.scheduled_at LIMIT $1",
     )
@@ -187,7 +201,7 @@ pub async fn sweep(pool: &sqlx::PgPool, now_ms: i64) -> Result<usize, sqlx::Erro
     }
     let stuck: Vec<Uuid> = sqlx::query_scalar(
         "UPDATE social_posts p SET status = 'failed', error = 'Publishing was interrupted. Try again.', updated_at = now()
-     WHERE p.status = 'publishing' AND p.updated_at < now() - interval '30 minutes'
+     WHERE p.status = 'publishing' AND p.publisher = 'pinselo' AND p.updated_at < now() - interval '30 minutes'
        AND NOT EXISTS (SELECT 1 FROM jobs j WHERE j.queue = 'publish' AND j.status IN ('queued','running') AND j.payload->>'postId' = p.id::text)
      RETURNING p.id",
     )
@@ -664,7 +678,7 @@ pub async fn run_publish(s: &Social, payload: &Value, job: JobInfo, render: &dyn
     let post_id: Option<String> = crate::http::non_null(payload.get("postId")).map(|v| crate::http::js_string(Some(v)));
     let post: Option<PostRow> = sqlx::query_as(
         "UPDATE social_posts SET status = 'publishing', job_id = $2, updated_at = now()
-     WHERE id = $1::text::uuid AND ((status = 'scheduled' AND scheduled_at <= now() + interval '30 seconds') OR (status = 'publishing' AND job_id = $2))
+     WHERE id = $1::text::uuid AND publisher = 'pinselo' AND ((status = 'scheduled' AND scheduled_at <= now() + interval '30 seconds') OR (status = 'publishing' AND job_id = $2))
      RETURNING *",
     )
     .bind(post_id)
