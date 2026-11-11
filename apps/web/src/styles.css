@@ -641,6 +641,20 @@ pre code { padding: 0; background: none; font-size: inherit; }
 .prose h1 { margin: 0 0 4px; }
 .prose h2 { font-size: 18px; margin: 26px 0 6px; }
 .prose p { margin: 0 0 12px; color: var(--text-2); }
+/* Developer docs (/developers/api): code, tables and step headings in prose. */
+.prose h3 { font-size: 15px; margin: 18px 0 6px; }
+.prose a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.prose ul, .prose ol { margin: 0 0 12px; padding-left: 22px; color: var(--text-2); }
+.prose li { margin: 2px 0; }
+.prose code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .88em; background: var(--surface-2); border: 1px solid var(--border); border-radius: 5px; padding: 0 4px; overflow-wrap: anywhere; }
+.prose pre { margin: 0 0 14px; padding: 12px 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+.prose pre code { background: none; border: 0; padding: 0; font-size: inherit; overflow-wrap: normal; }
+.prose .table-wrap { overflow-x: auto; margin: 0 0 14px; }
+.prose table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.prose th, .prose td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+.prose th { color: var(--text); font-weight: 600; }
+.prose td { color: var(--text-2); }
+.prose td code { overflow-wrap: normal; white-space: nowrap; }
 .public-foot { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; padding: 24px 16px 40px; font-size: 13px; color: var(--text-3); border-top: 1px solid var(--border); }
 .public-foot a:hover { color: var(--text); }
 /* The hover fill hangs 8px past the text, which stays on the list's edge; square corners keep the separators straight. */

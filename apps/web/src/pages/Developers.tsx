@@ -76,7 +76,7 @@ export function DevelopersTab() {
 
       <section className="box">
         <h2>{t('API access tokens')}</h2>
-        <p className="muted">{interp(t('Use tokens with the {api}. Send {header}. A token can do anything its scopes allow on your designs, so keep it secret.'), { api: <a href="/v1/openapi.json" target="_blank" rel="noreferrer">{t('Pinselo REST API')}</a>, header: <code>Authorization: Bearer &lt;token&gt;</code> })}</p>
+        <p className="muted">{interp(t('Use tokens with the {api}. Send {header}. A token can do anything its scopes allow on your designs, so keep it secret.'), { api: <a href="/developers/api" target="_blank" rel="noreferrer">{t('Pinselo REST API')}</a>, header: <code>Authorization: Bearer &lt;token&gt;</code> })}</p>
         {data.tokens.length > 0 && (
           <div className="list">
             {data.tokens.map((tok0) => (
