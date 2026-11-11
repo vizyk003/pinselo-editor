@@ -2,7 +2,8 @@
 //! access tokens (`Authorization: Bearer oc_pat_…`) carrying scopes: designs (list, read, create, document
 //! JSON), autofill (fill a template's data bindings), asynchronous exports, asset upload and webhooks; plus the
 //! signed-in token and webhook management of Settings → Developers. The OpenAPI document is
-//! [`crate::routes::openapi`].
+//! [`crate::routes::openapi`]. JPEG exports with public links and version locking (for publishing tools) are in
+//! [`crate::routes::v1_export`].
 //!
 //! Fastify order for the token routes: the plugin's `onRequest` token check runs before the route's rate limit
 //! (a rejected token is not counted and gets no rate-limit headers), the limit is keyed by the `Authorization`
@@ -27,7 +28,11 @@ use crate::prelude::*;
 use crate::routes::assets::{Ingest, IngestOpts, TempDir, ingest_file};
 use crate::routes::designs::{CreateOpts, create_design_from_doc, is_retired_surface, load_doc, unsupported_surface};
 
-pub const SCOPES: [&str; 5] = ["designs:read", "designs:write", "assets:write", "exports", "webhooks"];
+pub const SCOPES: [&str; 6] = ["designs:read", "designs:write", "assets:write", "exports", "designs:export", "webhooks"];
+
+/// Scopes that may start and read exports: `exports` (every format) or `designs:export` (the same, named for tokens
+/// that only read and export designs).
+pub const EXPORT_SCOPES: [&str; 2] = ["exports", "designs:export"];
 
 /// The token routes count with their own keyed limiters (see the module docs); only the signed-in routes and
 /// `/v1/openapi.json` go through the shared ones.
@@ -44,6 +49,7 @@ pub fn routes() -> Router<AppState> {
         .route("/v1/designs/{id}/exports", post(start_export))
         .route("/v1/exports/{job}", get(export_status))
         .route("/v1/exports/{job}/file", get(export_file))
+        .route("/v1/files/{export}/{file}", get(crate::routes::v1_export::public_file))
         .route("/v1/assets", post(upload_asset))
         .route("/v1/webhooks", get(list_webhooks).post(create_webhook))
         .route("/v1/webhooks/{id}", delete(delete_webhook))
@@ -59,14 +65,18 @@ fn sha(s: &str) -> String {
     crate::auth::sha(s)
 }
 
-fn not_found() -> Reply {
+pub(crate) fn not_found() -> Reply {
     reply::json(404, json!({ "error": "not_found" }))
 }
 
 /// `req.apiUser`.
-struct ApiUser {
-    id: Uuid,
-    scopes: Vec<String>,
+pub(crate) struct ApiUser {
+    pub id: Uuid,
+    pub scopes: Vec<String>,
+    /// The token (rate limits, idempotency keys and export quotas are per token).
+    pub token_id: Uuid,
+    /// The token only reaches designs of this workspace.
+    pub workspace_id: Option<Uuid>,
 }
 
 /// One `LocalStore` per token route (`store.child(routeOptions)`).
@@ -75,7 +85,7 @@ struct V1Limits(Mutex<HashMap<&'static str, std::sync::Arc<Limiter>>>);
 
 /// The per-route limit of a token route.
 #[derive(Clone, Copy)]
-enum Limit {
+pub(crate) enum Limit {
     /// `{ max: 120, timeWindow: '1 minute', keyGenerator: authorization ?? ip }`
     Token,
     /// `{ max: 30, timeWindow: '1 minute' }` (autofill: keyed by IP)
@@ -83,7 +93,7 @@ enum Limit {
 }
 
 /// `tokenAuth` (onRequest), the route's rate limit, then the body: the API user and the parsed request.
-async fn api(s: &AppState, raw: Request, route: &'static str, limit: Limit) -> Result<(ApiUser, Req), ApiError> {
+pub(crate) async fn api(s: &AppState, raw: Request, route: &'static str, limit: Limit) -> Result<(ApiUser, Req), ApiError> {
     let (mut parts, body) = raw.into_parts();
     let auth = parts.headers.get("authorization").map(|v| String::from_utf8_lossy(v.as_bytes()).into_owned());
     let h = auth.clone().unwrap_or_default();
@@ -101,7 +111,7 @@ async fn api(s: &AppState, raw: Request, route: &'static str, limit: Limit) -> R
     let Some(t) = crate::bearer::resolve_bearer(s, Some(&h), crate::bearer::Audience::Rest).await? else {
         return Err(reply::json(401, json!({ "error": "invalid_token" })).into());
     };
-    let (user_id, scopes) = (t.id, t.scopes);
+    let (user_id, scopes, token_id, workspace_id) = (t.id, t.scopes, t.token_id, t.workspace_id);
     // The route's rate limit.
     let peer = parts.extensions.get::<axum::extract::ConnectInfo<std::net::SocketAddr>>().map(|c| c.0);
     let ip = crate::http::req::client_ip(&parts.headers, peer);
@@ -128,15 +138,39 @@ async fn api(s: &AppState, raw: Request, route: &'static str, limit: Limit) -> R
     }
     parts.extensions.remove::<MatchedPath>();
     let req = Req::from_request(Request::from_parts(parts, body), s).await?;
-    Ok((ApiUser { id: user_id, scopes }, req))
+    Ok((ApiUser { id: user_id, scopes, token_id, workspace_id }, req))
 }
 
 /// `need(req, reply, scope)`.
-fn need(u: &ApiUser, scope: &str) -> Result<(), ApiError> {
-    if u.scopes.iter().any(|x| x == scope) {
+pub(crate) fn need(u: &ApiUser, scope: &str) -> Result<(), ApiError> {
+    need_any(u, &[scope])
+}
+
+/// The token has one of `scopes`.
+pub(crate) fn need_any(u: &ApiUser, scopes: &[&str]) -> Result<(), ApiError> {
+    if u.scopes.iter().any(|x| scopes.contains(&x.as_str())) {
         return Ok(());
     }
-    Err(reply::json(403, json!({ "error": "insufficient_scope", "message": format!("This token needs the {scope} scope.") })).into())
+    Err(reply::json(403, json!({ "error": "insufficient_scope", "message": format!("This token needs the {} scope.", scopes.join(" or ")) })).into())
+}
+
+/// The design id of a path parameter that may also be a design's edit link (`https://…/design/<id>?…`), as
+/// spreadsheets and calendars often store the link.
+pub(crate) fn design_id_param(raw: &str) -> String {
+    let raw = raw.trim();
+    let tail = raw.rfind("/design/").map_or(raw, |i| &raw[i + "/design/".len()..]);
+    tail.split(['/', '?', '#']).next().unwrap_or("").to_owned()
+}
+
+/// The token's user can see the design (at least view access), and it lies in the token's workspace when the token
+/// is limited to one. Anything else is "not found", never "forbidden".
+pub(crate) async fn can_see(s: &AppState, u: &ApiUser, id: &str) -> Result<bool, ApiError> {
+    if !at_least(design_role(s, Some(u.id), id).await?, Role::View) {
+        return Ok(false);
+    }
+    let Some(ws) = u.workspace_id else { return Ok(true) };
+    let in_ws: Option<i32> = sqlx::query_scalar("SELECT 1 FROM designs WHERE id = $1 AND workspace_id = $2").bind(id).bind(ws).fetch_optional(&s.pool).await?;
+    Ok(in_ws.is_some())
 }
 
 /// `reply.code(ing.status).send({ error: ing.error, message: ing.message })` (`message` may be undefined).
@@ -149,7 +183,7 @@ fn ingest_error(status: u16, error: &str, message: Option<String>) -> Reply {
     reply::json(status, Value::Object(m))
 }
 
-fn respond(r: ApiResult) -> Response {
+pub(crate) fn respond(r: ApiResult) -> Response {
     match r {
         Ok(r) => r.into_response(),
         Err(e) => e.into_response(),
@@ -202,10 +236,11 @@ async fn list_designs(State(s): State<AppState>, raw: Request) -> Response {
          WHERE d.trashed_at IS NULL AND (d.owner_id = $1 OR {}
            OR EXISTS (SELECT 1 FROM memberships m JOIN workspaces w ON w.id = m.workspace_id WHERE m.workspace_id = d.workspace_id AND m.user_id = $1 AND NOT w.personal))
            AND ($2::timestamptz IS NULL OR d.updated_at < $2::timestamptz) AND ($3::text IS NULL OR d.title ILIKE '%' || $3 || '%')
+           AND ($5::uuid IS NULL OR d.workspace_id = $5)
          ORDER BY d.updated_at DESC LIMIT $4",
                     crate::share_access::shared_with_sql("d.id", "$1")
                 ),
-                &[pg::uuid(u.id), Arg::Text(q.get("before").and_then(Value::as_str).map(str::to_owned)), Arg::Text(q.get("q").and_then(Value::as_str).map(str::to_owned)), Arg::Int(Some(limit + 1))],
+                &[pg::uuid(u.id), Arg::Text(q.get("before").and_then(Value::as_str).map(str::to_owned)), Arg::Text(q.get("q").and_then(Value::as_str).map(str::to_owned)), Arg::Int(Some(limit + 1)), Arg::Uuid(u.workspace_id)],
             )
             .await?;
             let items: Vec<Value> = rows.iter().take(limit as usize).map(|d| design_out(&s, d)).collect();
@@ -216,19 +251,25 @@ async fn list_designs(State(s): State<AppState>, raw: Request) -> Response {
     )
 }
 
+/// A design with its content `version` (pin exports to it) and its pages in order (`pageList`, 1-based `index`).
 async fn read_design(State(s): State<AppState>, Path(id): Path<String>, raw: Request) -> Response {
     respond(
         async {
             let (u, _req) = api(&s, raw, "GET /v1/designs/:id", Limit::Token).await?;
             need(&u, "designs:read")?;
-            if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
+            let id = design_id_param(&id);
+            if !can_see(&s, &u, &id).await? {
                 return Ok(not_found());
             }
             let d = pg::json_one(&s.pool, &format!("SELECT {DESIGN_COLS} FROM designs WHERE id = $1"), &[pg::text(&id)]).await?;
-            Ok(match d {
-                Some(d) => Reply::json(design_out(&s, &d)),
-                None => not_found(),
-            })
+            let Some(d) = d else { return Ok(not_found()) };
+            let mut out = design_out(&s, &d);
+            out["version"] = json!(crate::routes::v1_export::content_version(&s, &id).await?.unwrap_or(1));
+            out["pageList"] = match crate::routes::v1_export::current_pages(&s, &id).await? {
+                Some(pages) => Value::Array(pages.iter().map(|p| json!({ "index": p.index, "id": p.id, "name": p.name, "hidden": p.hidden })).collect()),
+                None => json!([]),
+            };
+            Ok(Reply::json(out))
         }
         .await,
     )
@@ -239,7 +280,8 @@ async fn document(State(s): State<AppState>, Path(id): Path<String>, raw: Reques
         async {
             let (u, _req) = api(&s, raw, "GET /v1/designs/:id/document", Limit::Token).await?;
             need(&u, "designs:read")?;
-            if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
+            let id = design_id_param(&id);
+            if !can_see(&s, &u, &id).await? {
                 return Ok(not_found());
             }
             Ok(match load_doc(&s, &id).await? {
@@ -344,7 +386,8 @@ async fn autofill(State(s): State<AppState>, Path(id): Path<String>, raw: Reques
         async {
             let (u, req) = api(&s, raw, "POST /v1/designs/:id/autofill", Limit::Autofill).await?;
             need(&u, "designs:write")?;
-            if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
+            let id = design_id_param(&id);
+            if !can_see(&s, &u, &id).await? {
                 return Ok(not_found());
             }
             let b = z::obj([("title", z::str().max(200.0).optional()), ("data", z::record(z::str().max(10000.0)))]).parse(req.body())?;
@@ -448,9 +491,13 @@ async fn start_export(State(s): State<AppState>, Path(id): Path<String>, raw: Re
     respond(
         async {
             let (u, req) = api(&s, raw, "POST /v1/designs/:id/exports", Limit::Token).await?;
-            need(&u, "exports")?;
-            if !at_least(design_role(&s, Some(u.id), &id).await?, Role::View) {
+            need_any(&u, &EXPORT_SCOPES)?;
+            let id = design_id_param(&id);
+            if !can_see(&s, &u, &id).await? {
                 return Ok(not_found());
+            }
+            if crate::routes::v1_export::is_jpeg_request(&req) {
+                return crate::routes::v1_export::start(&s, &u, &req, &id).await;
             }
             let b = z::obj([
                 ("format", z::enumeration(&["pdf", "pdf-print", "pptx", "mp4", "gif", "m4a"])),
@@ -484,8 +531,11 @@ async fn job_row(s: &AppState, id: &str) -> Option<Value> {
 async fn export_status(State(s): State<AppState>, Path(job): Path<String>, raw: Request) -> Response {
     respond(
         async {
-            let (u, _req) = api(&s, raw, "GET /v1/exports/:job", Limit::Token).await?;
-            need(&u, "exports")?;
+            let (u, req) = api(&s, raw, "GET /v1/exports/:job", Limit::Token).await?;
+            need_any(&u, &EXPORT_SCOPES)?;
+            if job.starts_with(crate::routes::v1_export::ID_PREFIX) {
+                return crate::routes::v1_export::status(&s, &u, &req, &job).await;
+            }
             let j = job_row(&s, &job).await;
             let Some(j) = j.filter(|j| j["queue"] == "export" && j["owner_id"].as_str() == Some(&u.id.to_string())) else { return Ok(not_found()) };
             let status = j["status"].as_str().unwrap_or("");
@@ -515,7 +565,7 @@ async fn export_file(State(s): State<AppState>, Path(job): Path<String>, raw: Re
     respond(
         async {
             let (u, _req) = api(&s, raw, "GET /v1/exports/:job/file", Limit::Token).await?;
-            need(&u, "exports")?;
+            need_any(&u, &EXPORT_SCOPES)?;
             let j = job_row(&s, &job).await;
             let ok = j.as_ref().filter(|j| j["owner_id"].as_str() == Some(&u.id.to_string()) && j["status"] == "done" && j["result"].is_object());
             let Some(j) = ok else { return Ok(reply::json(404, json!({ "error": "not_ready" }))) };
@@ -610,7 +660,9 @@ async fn developer(State(s): State<AppState>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
     let tokens = pg::json_rows(
         &s.pool,
-        "SELECT id, name, prefix, scopes, last_used_at, expires_at, created_at FROM api_tokens WHERE user_id = $1 AND kind = 'pat' AND revoked_at IS NULL ORDER BY created_at DESC",
+        "SELECT t.id, t.name, t.prefix, t.scopes, t.last_used_at, t.expires_at, t.created_at, t.workspace_id, w.name AS workspace_name
+         FROM api_tokens t LEFT JOIN workspaces w ON w.id = t.workspace_id
+         WHERE t.user_id = $1 AND t.kind = 'pat' AND t.revoked_at IS NULL ORDER BY t.created_at DESC",
         &[pg::uuid(u.id)],
     )
     .await?;
@@ -622,17 +674,43 @@ async fn developer(State(s): State<AppState>, req: Req) -> ApiResult {
         &[pg::uuid(u.id)],
     )
     .await?;
-    Ok(Reply::json(json!({ "tokens": tokens, "webhooks": webhooks, "scopes": SCOPES, "events": oc_webhooks::WEBHOOK_EVENTS })))
+    let workspaces = pg::json_rows(
+        &s.pool,
+        "SELECT w.id, w.name, w.personal FROM memberships m JOIN workspaces w ON w.id = m.workspace_id WHERE m.user_id = $1 ORDER BY w.personal DESC, w.name",
+        &[pg::uuid(u.id)],
+    )
+    .await?;
+    Ok(Reply::json(json!({ "tokens": tokens, "webhooks": webhooks, "scopes": SCOPES, "workspaceScopes": WORKSPACE_SCOPES, "events": oc_webhooks::WEBHOOK_EVENTS, "workspaces": workspaces })))
 }
+
+/// The scopes a token limited to one workspace may have: it reads and exports, nothing that writes.
+pub const WORKSPACE_SCOPES: [&str; 3] = ["designs:read", "exports", "designs:export"];
 
 async fn create_token(State(s): State<AppState>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
-    let b = z::obj([("name", z::str().min(1.0).max(80.0)), ("scopes", z::array(z::enumeration(&SCOPES)).min(1.0)), ("expiresInDays", z::num().int().min(1.0).max(366.0).optional())]).parse(req.body())?;
+    let b = z::obj([
+        ("name", z::str().min(1.0).max(80.0)),
+        ("scopes", z::array(z::enumeration(&SCOPES)).min(1.0)),
+        ("expiresInDays", z::num().int().min(1.0).max(366.0).optional()),
+        ("workspaceId", z::str().uuid().optional()),
+    ])
+    .parse(req.body())?;
+    let workspace = b.get("workspaceId").and_then(Value::as_str).and_then(|w| Uuid::parse_str(w).ok());
+    if let Some(ws) = workspace {
+        let member: Option<i32> = sqlx::query_scalar("SELECT 1 FROM memberships WHERE workspace_id = $1 AND user_id = $2").bind(ws).bind(u.id).fetch_optional(&s.pool).await?;
+        if member.is_none() {
+            return Ok(reply::json(404, json!({ "error": "workspace_not_found" })));
+        }
+        let extra: Vec<&str> = b["scopes"].as_array().into_iter().flatten().filter_map(Value::as_str).filter(|x| !WORKSPACE_SCOPES.contains(x)).collect();
+        if !extra.is_empty() {
+            return Ok(reply::json(400, json!({ "error": "scope_not_allowed", "message": format!("A token limited to one workspace can only read and export designs, not {}.", extra.join(", ")) })));
+        }
+    }
     let token = format!("oc_pat_{}", base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(crate::auth::random_bytes(24)));
     let id = oc_db::uuid();
     let scopes: Vec<String> = b["scopes"].as_array().map(|a| a.iter().filter_map(|e| e.as_str().map(str::to_owned)).collect()).unwrap_or_default();
     sqlx::query(
-        "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, expires_at) VALUES ($1,$2,$3,$4,$5,$6, CASE WHEN $7::int IS NULL THEN NULL ELSE now() + make_interval(days => $7::int) END)",
+        "INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, expires_at, workspace_id) VALUES ($1,$2,$3,$4,$5,$6, CASE WHEN $7::int IS NULL THEN NULL ELSE now() + make_interval(days => $7::int) END, $8)",
     )
     .bind(id)
     .bind(u.id)
@@ -641,6 +719,7 @@ async fn create_token(State(s): State<AppState>, req: Req) -> ApiResult {
     .bind(js::take(&token, 12))
     .bind(&scopes)
     .bind(b.get("expiresInDays").and_then(Value::as_f64).map(|d| d as i32))
+    .bind(workspace)
     .execute(&s.pool)
     .await?;
     Ok(Reply::json(json!({ "id": id.to_string(), "token": token })))

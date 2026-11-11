@@ -47,6 +47,9 @@ pub enum RenderError {
     /// The renderer ran and failed (HTTP 500).
     #[error("{0}")]
     Failed(String),
+    /// A strict render ([`RasterOptions::strict_fonts`]) could not load these font families (HTTP 422).
+    #[error("these fonts could not be loaded: {}", .0.join(", "))]
+    MissingFonts(Vec<String>),
 }
 
 pub type RenderResult<T> = Result<T, RenderError>;
@@ -118,6 +121,10 @@ pub struct RasterOptions {
     /// export. Videos without a frame show their poster.
     #[serde(skip)]
     pub video_frames: Option<VideoFrameSet>,
+    /// Fail with [`RenderError::MissingFonts`] instead of drawing a fallback face when a font of the page cannot be
+    /// loaded (exports that are published as they are, e.g. the REST API's JPEG export).
+    #[serde(default)]
+    pub strict_fonts: bool,
 }
 
 /// Current video frames by playback key (unpremultiplied RGBA at the video's size).
@@ -132,6 +139,7 @@ impl Default for RasterOptions {
             time_ms: None,
             caption_time_ms: None,
             video_frames: None,
+            strict_fonts: false,
         }
     }
 }

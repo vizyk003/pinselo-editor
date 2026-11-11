@@ -21,7 +21,7 @@
 	}
 }
 
-# Read by fail2ban and CrowdSec on the host (docs/deploy-oracle.md). Sign-in links and OAuth redirects carry secrets in
+# Read by fail2ban and CrowdSec on the host (docs/deploy-oracle.md). Sign-in links, OAuth redirects and export links carry secrets in
 # the query string, and the Referer repeats them; Caddy already redacts cookies and Authorization.
 (access_log) {
 	log {
@@ -38,6 +38,7 @@
 					delete state
 					delete ticket
 					delete access_token
+					delete sig
 				}
 				request>headers>Referer delete
 			}

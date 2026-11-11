@@ -36,9 +36,9 @@ pub const COLUMNS: [&str; 11] = [
 ];
 
 /// JSON documents that can embed shas (template docs, job payloads/results such as exports and imports,
-/// brand kits, scheduled-post renders).
-pub const JSON_SOURCES: [(&str, &str); 5] =
-    [("templates", "doc"), ("jobs", "payload"), ("jobs", "result"), ("brand_kits", "logos"), ("social_posts", "media")];
+/// brand kits, scheduled-post renders, REST API JPEG exports).
+pub const JSON_SOURCES: [(&str, &str); 6] =
+    [("templates", "doc"), ("jobs", "payload"), ("jobs", "result"), ("brand_kits", "logos"), ("social_posts", "media"), ("api_exports", "files")];
 
 /// Binary Yjs data: the current state, pending updates and version snapshots (`table`, `col`, `key`).
 pub const BINARY_SOURCES: [(&str, &str, &str); 3] =

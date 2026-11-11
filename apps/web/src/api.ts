@@ -368,11 +368,18 @@ export const siteApi = {
   removeDomain: (id: string, domain: string) => req('DELETE', `/api/designs/${id}/site/domains/${domain}`),
 };
 
-export interface DevToken { id: string; name: string; prefix: string; scopes: string[]; last_used_at: string | null; expires_at: string | null; created_at: string }
+export interface DevToken { id: string; name: string; prefix: string; scopes: string[]; last_used_at: string | null; expires_at: string | null; created_at: string; workspace_id: string | null; workspace_name: string | null }
 export interface DevWebhook { id: string; url: string; events: string[]; active: boolean; failures: number; created_at: string; deliveries: { id: string; event: string; status: string; response_code: number | null; error: string | null; attempts: number; created_at: string }[] | null }
+export interface DeveloperData {
+  tokens: DevToken[]; webhooks: DevWebhook[]; scopes: string[]; events: string[];
+  /** Scopes a token limited to one workspace may have. */
+  workspaceScopes: string[];
+  workspaces: { id: string; name: string; personal: boolean }[];
+}
 export const developerApi = {
-  get: () => req<{ tokens: DevToken[]; webhooks: DevWebhook[]; scopes: string[]; events: string[] }>('GET', '/api/developer'),
-  createToken: (b: { name: string; scopes: string[]; expiresInDays?: number }) => req<{ id: string; token: string }>('POST', '/api/developer/tokens', b),
+  get: () => req<DeveloperData>('GET', '/api/developer'),
+  /** `workspaceId`: the token only reaches that workspace's designs (and may only read and export them). */
+  createToken: (b: { name: string; scopes: string[]; expiresInDays?: number; workspaceId?: string }) => req<{ id: string; token: string }>('POST', '/api/developer/tokens', b),
   revokeToken: (id: string) => req('DELETE', `/api/developer/tokens/${id}`),
   createWebhook: (b: { url: string; events: string[] }) => req<{ id: string; secret: string }>('POST', '/api/developer/webhooks', b),
   pingWebhook: (id: string) => req('POST', `/api/developer/webhooks/${id}/ping`, {}),

@@ -74,6 +74,10 @@ pub fn error_response(e: &SvcError) -> Response {
             StatusCode::NOT_IMPLEMENTED,
             json!({ "error": "not_implemented", "message": e.to_string() }),
         ),
+        SvcError::Renderer(RenderError::MissingFonts(families)) => json_response(
+            StatusCode::UNPROCESSABLE_ENTITY,
+            json!({ "error": "fonts_unavailable", "message": e.to_string(), "families": families }),
+        ),
         SvcError::SheetUnsupported => json_response(
             StatusCode::UNPROCESSABLE_ENTITY,
             json!({ "error": "sheet_unsupported", "message": e.to_string() }),
@@ -467,9 +471,12 @@ struct ExportBody {
     pages: Option<Vec<i64>>,
     #[serde(default)]
     scale: Option<f64>,
-    /// Video width in px (height follows the design); wins over `scale`.
+    /// Output width in px of a video or a PNG/JPEG page (height follows the design); wins over `scale`.
     #[serde(default)]
     width: Option<f64>,
+    /// PNG/JPEG: fail (422 `fonts_unavailable`) rather than draw a fallback font ([`RasterOptions::strict_fonts`]).
+    #[serde(default, rename = "strictFonts")]
+    strict_fonts: bool,
     #[serde(default)]
     quality: Option<f64>,
     #[serde(default)]
@@ -672,9 +679,14 @@ async fn export_inner(svc: &Service, b: &ExportBody) -> Result<Response, SvcErro
     } else {
         ImageFormat::Png
     };
+    let scale = match b.width.filter(|w| w.is_finite() && *w > 0.0) {
+        Some(w) => w / doc.meta.dims.w.max(1.0),
+        None => b.scale.unwrap_or(1.0),
+    };
     let opts = RasterOptions {
-        scale: b.scale.unwrap_or(1.0),
+        scale,
         transparent: b.transparent.unwrap_or(false) && !jpeg,
+        strict_fonts: b.strict_fonts,
         ..RasterOptions::default()
     };
     if pages.len() == 1 && fmt != "zip" {
