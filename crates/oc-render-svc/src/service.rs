@@ -441,14 +441,26 @@ impl Service {
         self.objects.get(&sha).await.map_err(storage)
     }
 
-    /// The Yjs state of a design.
+    /// The Yjs state of a design: the stored snapshot plus the edits logged since (`doc_updates` newer than the
+    /// snapshot; the collab server folds them in after a short debounce, edits made while it was unreachable wait in
+    /// the log until it next loads the design). One statement, so the snapshot and its tail are read consistently.
     pub async fn state(&self, design_id: &str) -> Result<Option<Vec<u8>>, SvcError> {
-        let row: Option<(Vec<u8>,)> =
-            sqlx::query_as("SELECT state FROM doc_state WHERE design_id = $1")
-                .bind(design_id)
-                .fetch_optional(&self.pool)
-                .await?;
-        Ok(row.map(|r| r.0))
+        let row: Option<(Vec<u8>, Vec<Vec<u8>>)> = sqlx::query_as(
+            "SELECT s.state, ARRAY(SELECT u.update FROM doc_updates u WHERE u.design_id = s.design_id AND u.seq > s.seq ORDER BY u.seq)
+             FROM doc_state s WHERE s.design_id = $1",
+        )
+        .bind(design_id)
+        .fetch_optional(&self.pool)
+        .await?;
+        let Some((state, tail)) = row else { return Ok(None) };
+        if tail.is_empty() {
+            return Ok(Some(state));
+        }
+        let ydoc = oc_crdt::new_doc();
+        for u in std::iter::once(&state).chain(tail.iter()) {
+            oc_crdt::apply_update(&ydoc, u, None).map_err(|e| SvcError::Other(e.to_string()))?;
+        }
+        Ok(Some(oc_crdt::encode_state(&ydoc)))
     }
 
     /// `docState(designId)`: a Docs design's state and title (`None` for other surfaces).

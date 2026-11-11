@@ -1,7 +1,7 @@
 /** Settings → Developers: AI assistants (MCP connector, connected apps), personal access tokens for the public API and webhook endpoints. */
 import { Trash2, Unplug } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ApiError, developerApi, oauthApi, type DevToken, type DevWebhook } from '../api';
+import { ApiError, developerApi, oauthApi, type DeveloperData } from '../api';
 import { ConnectAi, mcpUrl, useAiConnections } from '../components/ConnectAi';
 import { CopyButton, interp, Modal, timeAgo, useToast } from '../components/ui';
 import { fmtDate, t } from '../i18n';
@@ -57,10 +57,10 @@ function AiAssistants({ onCodexToken }: { onCodexToken: () => void }) {
 
 export function DevelopersTab() {
   const toast = useToast();
-  const [data, setData] = useState<{ tokens: DevToken[]; webhooks: DevWebhook[]; scopes: string[]; events: string[] } | null>(null);
+  const [data, setData] = useState<DeveloperData | null>(null);
   const reload = useCallback(() => developerApi.get().then(setData), []);
   useEffect(() => { void reload(); }, [reload]);
-  const [tok, setTok] = useState({ name: '', scopes: ['designs:read'] as string[], expires: '90' });
+  const [tok, setTok] = useState({ name: '', scopes: ['designs:read'] as string[], expires: '90', workspace: '' });
   const [hook, setHook] = useState({ url: '', events: ['design.created'] as string[] });
   const [secret, setSecret] = useState<{ title: string; value: string } | null>(null);
   const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v]);
@@ -69,7 +69,7 @@ export function DevelopersTab() {
   return (
     <>
       <AiAssistants onCodexToken={() => {
-        setTok({ name: 'Codex', scopes: CONNECTOR_SCOPES, expires: '90' });
+        setTok({ name: 'Codex', scopes: CONNECTOR_SCOPES, expires: '90', workspace: '' });
         tokenName.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         tokenName.current?.focus({ preventScroll: true });
       }} />
@@ -83,7 +83,7 @@ export function DevelopersTab() {
               <div className="item" key={tok0.id}>
                 <div className="main">
                   <div>{tok0.name} <span className="muted">({tok0.prefix}…)</span></div>
-                  <div className="sub">{tok0.scopes.join(', ')} · {tok0.last_used_at ? t('used {when}', { when: timeAgo(tok0.last_used_at) }) : t('never used')}{tok0.expires_at ? ` · ${t('expires {date}', { date: fmtDate(tok0.expires_at) })}` : ''}</div>
+                  <div className="sub">{tok0.workspace_name ? `${t('Only {workspace}', { workspace: tok0.workspace_name })} · ` : ''}{tok0.scopes.join(', ')} · {tok0.last_used_at ? t('used {when}', { when: timeAgo(tok0.last_used_at) }) : t('never used')}{tok0.expires_at ? ` · ${t('expires {date}', { date: fmtDate(tok0.expires_at) })}` : ''}</div>
                 </div>
                 <button className="btn sm ghost" aria-label={t('Revoke {name}', { name: tok0.name })} onClick={async () => { await developerApi.revokeToken(tok0.id); toast(t('Token revoked')); void reload(); }}><Trash2 size={14} /> {t('Revoke')}</button>
               </div>
@@ -93,16 +93,27 @@ export function DevelopersTab() {
         <form className="col" style={{ gap: 12 }} onSubmit={async (e) => {
           e.preventDefault();
           try {
-            const r = await developerApi.createToken({ name: tok.name.trim(), scopes: tok.scopes, expiresInDays: tok.expires ? Number(tok.expires) : undefined });
+            const r = await developerApi.createToken({ name: tok.name.trim(), scopes: tok.scopes, expiresInDays: tok.expires ? Number(tok.expires) : undefined, workspaceId: tok.workspace || undefined });
             setSecret({ title: t('Your new token'), value: r.token });
-            setTok({ name: '', scopes: ['designs:read'], expires: '90' });
+            setTok({ name: '', scopes: ['designs:read'], expires: '90', workspace: '' });
             void reload();
           } catch (err) { toast(errText(err)); }
         }}>
           <label className="field">{t('Name')}<input ref={tokenName} className="input" value={tok.name} onChange={(e) => setTok({ ...tok, name: e.target.value })} maxLength={80} placeholder={t('e.g. Zapier, CMS sync')} required /></label>
+          <label className="field">{t('Designs')}
+            <select className="input" value={tok.workspace} onChange={(e) => {
+              const workspace = e.target.value;
+              // A token limited to one workspace only reads and exports.
+              setTok({ ...tok, workspace, scopes: workspace ? tok.scopes.filter((s) => data.workspaceScopes.includes(s)) : tok.scopes });
+            }}>
+              <option value="">{t('All designs I can open')}</option>
+              {data.workspaces.map((w) => <option key={w.id} value={w.id}>{w.personal ? t('Only my personal designs') : t('Only {workspace}', { workspace: w.name })}</option>)}
+            </select>
+            {tok.workspace && <span className="faint" style={{ fontSize: 13 }}>{t('Designs elsewhere are invisible to this token. It can read and export designs, nothing else.')}</span>}
+          </label>
           <fieldset className="field"><legend>{t('Scopes')}</legend>
             <div className="row" style={{ flexWrap: 'wrap', gap: 12 }}>
-              {data.scopes.map((s) => <label key={s} className="row" style={{ gap: 4 }}><input type="checkbox" checked={tok.scopes.includes(s)} onChange={() => setTok({ ...tok, scopes: toggle(tok.scopes, s) })} />{s}</label>)}
+              {data.scopes.filter((s) => !tok.workspace || data.workspaceScopes.includes(s)).map((s) => <label key={s} className="row" style={{ gap: 4 }}><input type="checkbox" checked={tok.scopes.includes(s)} onChange={() => setTok({ ...tok, scopes: toggle(tok.scopes, s) })} />{s}</label>)}
             </div>
           </fieldset>
           <label className="field">{t('Expires')}

@@ -463,6 +463,11 @@ impl Fake {
         Fake { base, state, inflight, task }
     }
 
+    /// How many requests reached `route` (path without the query) so far.
+    pub fn count(&self, route: &str) -> usize {
+        self.state.lock().expect("fake").log.iter().filter(|e| e["path"].as_str().and_then(|p| p.split('?').next()) == Some(route)).count()
+    }
+
     /// The reply for `route` from now on (same shape as a transcript's `fake` entries).
     pub fn set_default(&self, route: &str, reply: &Value) {
         let reply = fake_reply(reply, &self.base);

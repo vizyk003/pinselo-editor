@@ -2408,10 +2408,23 @@
       "designs:write",
       "assets:write",
       "exports",
+      "designs:export",
       "webhooks"
      ],
      "tokens": [],
-     "webhooks": []
+     "webhooks": [],
+     "workspaceScopes": [
+      "designs:read",
+      "exports",
+      "designs:export"
+     ],
+     "workspaces": [
+      {
+       "id": "00000000-0000-4000-8000-000000001001",
+       "name": "Ada's workspace",
+       "personal": true
+      }
+     ]
     },
     "headers": {
      "cache-control": "no-store",

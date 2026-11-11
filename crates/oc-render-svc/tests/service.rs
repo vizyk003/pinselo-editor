@@ -867,3 +867,106 @@ async fn icc_inspect_and_gamut() {
     assert_eq!(r.status, StatusCode::BAD_REQUEST);
     let _ = std::fs::remove_dir_all(dir);
 }
+
+/// What the REST API's JPEG export relies on: `width` sets the output size, `strictFonts` fails instead of drawing a
+/// fallback face, and edits still in the op log (not yet folded into the snapshot) are rendered.
+#[tokio::test]
+async fn publishing_export_contract() {
+    let Some(db) = oc_db::testing::TestDb::create().await else {
+        eprintln!("OC_DATABASE_URL not set: skipping the database-backed service test");
+        return;
+    };
+    let dir = tmp("publish");
+    let res = futures::FutureExt::catch_unwind(std::panic::AssertUnwindSafe(publishing(db.pool.clone(), &dir))).await;
+    db.drop_db().await;
+    let _ = std::fs::remove_dir_all(&dir);
+    if let Err(p) = res {
+        std::panic::resume_unwind(p);
+    }
+}
+
+/// `(width, height)` of a baseline JPEG's frame header.
+fn sof0_size(jpeg: &[u8]) -> Option<(u16, u16)> {
+    let i = jpeg.windows(2).position(|w| w == [0xFF, 0xC0])?;
+    let d = &jpeg[i + 4..];
+    Some((u16::from_be_bytes([d[3], d[4]]), u16::from_be_bytes([d[1], d[2]])))
+}
+
+/// Every `family` in the elements set to `family`.
+fn set_families(v: &mut Value, family: &str) {
+    match v {
+        Value::Object(m) => {
+            for (k, x) in m.iter_mut() {
+                if k == "family" && x.is_string() {
+                    *x = json!(family);
+                } else {
+                    set_families(x, family);
+                }
+            }
+        }
+        Value::Array(a) => a.iter_mut().for_each(|x| set_families(x, family)),
+        _ => {}
+    }
+}
+
+async fn publishing(pool: sqlx::PgPool, dir: &std::path::Path) {
+    let (user, ws) = (uuid::Uuid::new_v4(), uuid::Uuid::new_v4());
+    sqlx::query("INSERT INTO users(id, email, name, color) VALUES ($1, 'p@example.com', 'P', '#000')").bind(user).execute(&pool).await.unwrap();
+    sqlx::query("INSERT INTO workspaces(id, name) VALUES ($1, 'W')").bind(ws).execute(&pool).await.unwrap();
+    let insert = |id: &'static str, doc: Value| {
+        let pool = pool.clone();
+        async move {
+            let typed: oc_schema::DesignDoc = serde_json::from_value(doc).unwrap();
+            sqlx::query("INSERT INTO designs(id, workspace_id, owner_id, title, surface, width, height) VALUES ($1, $2, $3, 'Card', 'print', 100, 100)").bind(id).bind(ws).bind(user).execute(&pool).await.unwrap();
+            sqlx::query("INSERT INTO doc_state(design_id, state) VALUES ($1, $2)").bind(id).bind(oc_crdt::encode_doc(&typed).unwrap()).execute(&pool).await.unwrap();
+        }
+    };
+    let card = common::design_json("fixture:card-business-clean");
+    insert("pcard00000000000", card.clone()).await;
+    let mut missing = card.clone();
+    set_families(&mut missing["elements"], "No Such Family 9");
+    insert("pfont00000000000", missing).await;
+
+    let app = router(AppState::new(service(pool.clone(), dir), SECRET.into()));
+    let tok = oc_auth::internal_token_with(SECRET);
+    let t = Some(tok.as_str());
+    let jpg = |id: &str, extra: Value| {
+        let mut b = json!({ "designId": id, "format": "jpg", "quality": 90, "transparent": false, "pages": [0] });
+        b.as_object_mut().unwrap().extend(extra.as_object().unwrap().clone());
+        b
+    };
+
+    // `width` wins over `scale`; the height follows the design.
+    let r = call(&app, "POST", "/internal/export", t, jpg("pcard00000000000", json!({ "width": 500, "scale": 3, "strictFonts": true }))).await;
+    assert_eq!(r.status, StatusCode::OK, "{}", String::from_utf8_lossy(&r.body));
+    assert_eq!(r.header("content-type"), "image/jpeg");
+    let (w, h) = sof0_size(&r.body).expect("baseline JPEG");
+    let dims = &card["meta"]["dims"];
+    assert_eq!(w, 500);
+    assert_eq!(h, (500.0 * dims["h"].as_f64().unwrap() / dims["w"].as_f64().unwrap()).ceil() as u16);
+
+    // A font that cannot be loaded: a fallback face normally, a 422 when strict.
+    let r = call(&app, "POST", "/internal/export", t, jpg("pfont00000000000", json!({}))).await;
+    assert_eq!(r.status, StatusCode::OK);
+    let r = call(&app, "POST", "/internal/export", t, jpg("pfont00000000000", json!({ "strictFonts": true }))).await;
+    assert_eq!(r.status, StatusCode::UNPROCESSABLE_ENTITY);
+    assert_eq!(r.json()["error"], "fonts_unavailable");
+    assert_eq!(r.json()["families"], json!(["No Such Family 9"]));
+
+    // An edit still in the op log is part of the export (the title names the file).
+    let state: Vec<u8> = sqlx::query_scalar("SELECT state FROM doc_state WHERE design_id = 'pcard00000000000'").fetch_one(&pool).await.unwrap();
+    let ydoc = oc_crdt::new_doc();
+    oc_crdt::apply_update(&ydoc, &state, None).unwrap();
+    let before = oc_crdt::encode_state_vector(&ydoc);
+    let mut renamed = card.clone();
+    renamed["meta"]["title"] = json!("Renamed in the log");
+    oc_crdt::replace_content(&ydoc, &renamed, None, "test", 0.0);
+    let update = oc_crdt::encode_diff(&ydoc, &before).unwrap();
+    sqlx::query("INSERT INTO doc_updates(design_id, update) VALUES ('pcard00000000000', $1)").bind(update).execute(&pool).await.unwrap();
+    let r = call(&app, "POST", "/internal/export", t, jpg("pcard00000000000", json!({ "width": 400 }))).await;
+    assert_eq!(r.status, StatusCode::OK);
+    assert_eq!(r.header("content-disposition"), "attachment; filename=\"Renamed in the log.jpg\"");
+    let v: i64 = sqlx::query_scalar("SELECT content_version FROM designs WHERE id = 'pcard00000000000'").fetch_one(&pool).await.unwrap();
+    assert_eq!(v, 2, "the op-log insert moved the content version");
+    pool.close().await;
+}

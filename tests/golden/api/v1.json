@@ -112,6 +112,43 @@
         },
         "type": "object"
        },
+       "DesignDetail": {
+        "allOf": [
+         {
+          "$ref": "#/components/schemas/Design"
+         },
+         {
+          "properties": {
+           "pageList": {
+            "items": {
+             "properties": {
+              "hidden": {
+               "type": "boolean"
+              },
+              "id": {
+               "type": "string"
+              },
+              "index": {
+               "description": "1-based page number",
+               "type": "integer"
+              },
+              "name": {
+               "type": "string"
+              }
+             },
+             "type": "object"
+            },
+            "type": "array"
+           },
+           "version": {
+            "description": "Content version: +1 for every saved change. Send it with a JPEG export to refuse a design edited since.",
+            "type": "integer"
+           }
+          },
+          "type": "object"
+         }
+        ]
+       },
        "Export": {
         "properties": {
          "downloadUrl": {
@@ -140,6 +177,100 @@
            "error",
            "cancelled"
           ]
+         }
+        },
+        "type": "object"
+       },
+       "JpegExport": {
+        "properties": {
+         "createdAt": {
+          "format": "date-time",
+          "type": "string"
+         },
+         "designId": {
+          "type": "string"
+         },
+         "designVersion": {
+          "type": "integer"
+         },
+         "error": {
+          "description": "When failed",
+          "properties": {
+           "code": {
+            "enum": [
+             "version_changed",
+             "invalid_export",
+             "render_failed",
+             "unavailable"
+            ]
+           },
+           "currentVersion": {
+            "type": "integer"
+           },
+           "message": {
+            "type": "string"
+           }
+          },
+          "type": "object"
+         },
+         "expiresAt": {
+          "format": "date-time",
+          "type": "string"
+         },
+         "files": {
+          "description": "When done, in the order asked for. Public links (no sign-in) until expiresAt.",
+          "items": {
+           "properties": {
+            "bytes": {
+             "type": "integer"
+            },
+            "contentType": {
+             "const": "image/jpeg"
+            },
+            "height": {
+             "type": "integer"
+            },
+            "page": {
+             "type": "integer"
+            },
+            "url": {
+             "type": "string"
+            },
+            "width": {
+             "type": "integer"
+            }
+           },
+           "type": "object"
+          },
+          "type": "array"
+         },
+         "id": {
+          "description": "exp_…",
+          "type": "string"
+         },
+         "status": {
+          "enum": [
+           "rendering",
+           "done",
+           "failed"
+          ]
+         },
+         "statusUrl": {
+          "type": "string"
+         },
+         "warnings": {
+          "items": {
+           "properties": {
+            "code": {
+             "type": "string"
+            },
+            "message": {
+             "type": "string"
+            }
+           },
+           "type": "object"
+          },
+          "type": "array"
          }
         },
         "type": "object"
@@ -405,6 +536,7 @@
       },
       "/v1/designs/{id}": {
        "get": {
+        "description": "`id` may also be the design's edit link (URL-encoded).",
         "parameters": [
          {
           "in": "path",
@@ -420,7 +552,7 @@
           "content": {
            "application/json": {
             "schema": {
-             "$ref": "#/components/schemas/Design"
+             "$ref": "#/components/schemas/DesignDetail"
             }
            }
           },
@@ -436,7 +568,7 @@
           "description": "Not found"
          }
         },
-        "summary": "Get a design"
+        "summary": "Get a design with its content version and pages (scope designs:read)"
        }
       },
       "/v1/designs/{id}/autofill": {
@@ -546,6 +678,7 @@
       },
       "/v1/designs/{id}/exports": {
        "post": {
+        "description": "PDF, PPTX, video and audio are queued (202, poll /v1/exports/{job}). `format: \"jpeg\"` renders up to 10 pages as Instagram-ready JPEGs with public 24-hour links; `version` refuses a design edited since (409 version_changed); `wait` holds the request up to 25 s; an `Idempotency-Key` header replays the same export for 24 hours.",
         "parameters": [
          {
           "in": "path",
@@ -554,65 +687,135 @@
           "schema": {
            "type": "string"
           }
+         },
+         {
+          "in": "header",
+          "name": "Idempotency-Key",
+          "schema": {
+           "maxLength": 200,
+           "type": "string"
+          }
          }
         ],
         "requestBody": {
          "content": {
           "application/json": {
            "schema": {
-            "properties": {
-             "format": {
-              "enum": [
-               "pdf",
-               "pdf-print",
-               "pptx",
-               "mp4",
-               "gif",
-               "m4a"
-              ]
+            "oneOf": [
+             {
+              "properties": {
+               "format": {
+                "enum": [
+                 "pdf",
+                 "pdf-print",
+                 "pptx",
+                 "mp4",
+                 "gif",
+                 "m4a"
+                ]
+               },
+               "print": {
+                "$ref": "#/components/schemas/PrintOptions"
+               },
+               "quality": {
+                "enum": [
+                 "720p",
+                 "1080p",
+                 "4k"
+                ]
+               }
+              },
+              "required": [
+               "format"
+              ],
+              "type": "object"
              },
-             "print": {
-              "$ref": "#/components/schemas/PrintOptions"
-             },
-             "quality": {
-              "enum": [
-               "720p",
-               "1080p",
-               "4k"
-              ]
+             {
+              "additionalProperties": false,
+              "properties": {
+               "format": {
+                "enum": [
+                 "jpeg",
+                 "jpg"
+                ]
+               },
+               "pages": {
+                "items": {
+                 "minimum": 1,
+                 "type": "integer"
+                },
+                "maxItems": 10,
+                "type": "array"
+               },
+               "quality": {
+                "default": 90,
+                "maximum": 100,
+                "minimum": 60,
+                "type": "integer"
+               },
+               "version": {
+                "type": "integer"
+               },
+               "wait": {
+                "type": "boolean"
+               },
+               "width": {
+                "default": 1080,
+                "maximum": 1440,
+                "minimum": 320,
+                "type": "integer"
+               }
+              },
+              "required": [
+               "format"
+              ],
+              "type": "object"
              }
-            },
-            "required": [
-             "format"
-            ],
-            "type": "object"
+            ]
            }
           }
          },
          "required": true
         },
         "responses": {
+         "200": {
+          "content": {
+           "application/json": {
+            "schema": {
+             "$ref": "#/components/schemas/JpegExport"
+            }
+           }
+          },
+          "description": "JPEG export done"
+         },
          "202": {
           "content": {
            "application/json": {
             "schema": {
-             "$ref": "#/components/schemas/Export"
+             "oneOf": [
+              {
+               "$ref": "#/components/schemas/Export"
+              },
+              {
+               "$ref": "#/components/schemas/JpegExport"
+              }
+             ]
             }
            }
           },
-          "description": "Accepted"
+          "description": "Queued, or a JPEG export still rendering"
          },
-         "401": {
-          "description": "Missing or invalid token"
+         "409": {
+          "description": "version_changed: the design is no longer at `version` (`currentVersion` in the body)"
          },
-         "403": {
-          "description": "Token lacks the required scope"
+         "422": {
+          "description": "invalid_export"
          },
-         "404": {
-          "description": "Not found"
+         "429": {
+          "description": "rate_limited (200 JPEG exports per token per 24 hours)"
          }
         },
-        "summary": "Start an export (scope exports)"
+        "summary": "Start an export (scope exports or designs:export)"
        }
       },
       "/v1/exports/{job}": {
@@ -632,7 +835,14 @@
           "content": {
            "application/json": {
             "schema": {
-             "$ref": "#/components/schemas/Export"
+             "oneOf": [
+              {
+               "$ref": "#/components/schemas/Export"
+              },
+              {
+               "$ref": "#/components/schemas/JpegExport"
+              }
+             ]
             }
            }
           },
@@ -648,7 +858,7 @@
           "description": "Not found"
          }
         },
-        "summary": "Export status"
+        "summary": "Export status (a queued job's uuid, or exp_… of a JPEG export)"
        }
       },
       "/v1/exports/{job}/file": {
@@ -678,6 +888,38 @@
          }
         },
         "summary": "Download a finished export"
+       }
+      },
+      "/v1/files/{export}/{page}.jpg": {
+       "get": {
+        "parameters": [
+         {
+          "in": "path",
+          "name": "export",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         },
+         {
+          "in": "path",
+          "name": "page",
+          "required": true,
+          "schema": {
+           "type": "string"
+          }
+         }
+        ],
+        "responses": {
+         "200": {
+          "description": "image/jpeg"
+         },
+         "404": {
+          "description": "Expired, altered, or its token was revoked"
+         }
+        },
+        "security": [],
+        "summary": "A JPEG export's file: public, signed link from `files[].url` (no token)"
        }
       },
       "/v1/me": {
@@ -1609,11 +1851,20 @@
      "editUrl": "https://app.example/design/Sbravo0000000000",
      "height": 1080,
      "id": "Sbravo0000000000",
+     "pageList": [
+      {
+       "hidden": false,
+       "id": "<id:1>",
+       "index": 1,
+       "name": "Page 1"
+      }
+     ],
      "pages": 3,
      "thumbnailUrl": "https://app.example/api/designs/Sbravo0000000000/thumbnail.png",
      "title": "Bravo deck",
      "type": "presentation",
      "updatedAt": "{{next}}",
+     "version": 1,
      "width": 1080
     },
     "headers": {
@@ -1643,11 +1894,20 @@
      "editUrl": "https://app.example/design/Sbobshared000000",
      "height": 1080,
      "id": "Sbobshared000000",
+     "pageList": [
+      {
+       "hidden": false,
+       "id": "<id:1>",
+       "index": 1,
+       "name": "Page 1"
+      }
+     ],
      "pages": 1,
      "thumbnailUrl": "https://app.example/api/designs/Sbobshared000000/thumbnail.png",
      "title": "Shared with Ada",
      "type": "graphic",
      "updatedAt": "2025-01-01T07:00:00.000Z",
+     "version": 1,
      "width": 1080
     },
     "headers": {
@@ -1702,11 +1962,20 @@
      "editUrl": "https://app.example/design/Strashed00000000",
      "height": 1080,
      "id": "Strashed00000000",
+     "pageList": [
+      {
+       "hidden": false,
+       "id": "<id:1>",
+       "index": 1,
+       "name": "Page 1"
+      }
+     ],
      "pages": 1,
      "thumbnailUrl": "https://app.example/api/designs/Strashed00000000/thumbnail.png",
      "title": "Trashed",
      "type": "graphic",
      "updatedAt": "2025-01-01T00:00:00.000Z",
+     "version": 1,
      "width": 1080
     },
     "headers": {
@@ -3549,7 +3818,7 @@
    "response": {
     "body": {
      "error": "insufficient_scope",
-     "message": "This token needs the exports scope."
+     "message": "This token needs the exports or designs:export scope."
     },
     "headers": {
      "content-type": "application/json; charset=utf-8",
@@ -4145,7 +4414,7 @@
    "response": {
     "body": {
      "error": "insufficient_scope",
-     "message": "This token needs the exports scope."
+     "message": "This token needs the exports or designs:export scope."
     },
     "headers": {
      "content-type": "application/json; charset=utf-8",
@@ -4749,6 +5018,7 @@
       "designs:write",
       "assets:write",
       "exports",
+      "designs:export",
       "webhooks"
      ],
      "tokens": [
@@ -4765,7 +5035,9 @@
         "assets:write",
         "exports",
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -4776,7 +5048,9 @@
        "prefix": "oc_pat_adare",
        "scopes": [
         "designs:read"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -4787,7 +5061,9 @@
        "prefix": "oc_pat_adaho",
        "scopes": [
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -4802,7 +5078,9 @@
         "assets:write",
         "exports",
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       }
      ],
      "webhooks": [
@@ -4890,6 +5168,23 @@
        "id": "00000000-0000-4000-8000-000000009100",
        "url": "https://hooks.example/a"
       }
+     ],
+     "workspaceScopes": [
+      "designs:read",
+      "exports",
+      "designs:export"
+     ],
+     "workspaces": [
+      {
+       "id": "00000000-0000-4000-8000-000000001001",
+       "name": "Ada's workspace",
+       "personal": true
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000005000",
+       "name": "Agency",
+       "personal": false
+      }
      ]
     },
     "headers": {
@@ -4938,7 +5233,7 @@
       },
       {
        "code": "invalid_value",
-       "message": "Invalid option: expected one of \"designs:read\"|\"designs:write\"|\"assets:write\"|\"exports\"|\"webhooks\"",
+       "message": "Invalid option: expected one of \"designs:read\"|\"designs:write\"|\"assets:write\"|\"exports\"|\"designs:export\"|\"webhooks\"",
        "path": [
         "scopes",
         0
@@ -4948,6 +5243,7 @@
         "designs:write",
         "assets:write",
         "exports",
+        "designs:export",
         "webhooks"
        ]
       },
@@ -5183,6 +5479,7 @@
       "designs:write",
       "assets:write",
       "exports",
+      "designs:export",
       "webhooks"
      ],
      "tokens": [
@@ -5196,7 +5493,9 @@
        "scopes": [
         "webhooks",
         "exports"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "<ts>",
@@ -5207,7 +5506,9 @@
        "prefix": "{{patPrefix}}",
        "scopes": [
         "designs:read"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5222,7 +5523,9 @@
         "assets:write",
         "exports",
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5233,7 +5536,9 @@
        "prefix": "oc_pat_adare",
        "scopes": [
         "designs:read"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5244,7 +5549,9 @@
        "prefix": "oc_pat_adaho",
        "scopes": [
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5259,7 +5566,9 @@
         "assets:write",
         "exports",
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       }
      ],
      "webhooks": [
@@ -5346,6 +5655,23 @@
        "failures": 0,
        "id": "00000000-0000-4000-8000-000000009100",
        "url": "https://hooks.example/a"
+      }
+     ],
+     "workspaceScopes": [
+      "designs:read",
+      "exports",
+      "designs:export"
+     ],
+     "workspaces": [
+      {
+       "id": "00000000-0000-4000-8000-000000001001",
+       "name": "Ada's workspace",
+       "personal": true
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000005000",
+       "name": "Agency",
+       "personal": false
       }
      ]
     },
@@ -5723,6 +6049,7 @@
       "designs:write",
       "assets:write",
       "exports",
+      "designs:export",
       "webhooks"
      ],
      "tokens": [
@@ -5736,7 +6063,9 @@
        "scopes": [
         "webhooks",
         "exports"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5751,7 +6080,9 @@
         "assets:write",
         "exports",
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5762,7 +6093,9 @@
        "prefix": "oc_pat_adare",
        "scopes": [
         "designs:read"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5773,7 +6106,9 @@
        "prefix": "oc_pat_adaho",
        "scopes": [
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       },
       {
        "created_at": "2025-01-01T00:00:00.000Z",
@@ -5788,7 +6123,9 @@
         "assets:write",
         "exports",
         "webhooks"
-       ]
+       ],
+       "workspace_id": null,
+       "workspace_name": null
       }
      ],
      "webhooks": [
@@ -5897,6 +6234,23 @@
        "failures": 0,
        "id": "{{dwh}}",
        "url": "https://hooks.example/c"
+      }
+     ],
+     "workspaceScopes": [
+      "designs:read",
+      "exports",
+      "designs:export"
+     ],
+     "workspaces": [
+      {
+       "id": "00000000-0000-4000-8000-000000001001",
+       "name": "Ada's workspace",
+       "personal": true
+      },
+      {
+       "id": "00000000-0000-4000-8000-000000005000",
+       "name": "Agency",
+       "personal": false
       }
      ]
     },

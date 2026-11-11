@@ -99,8 +99,10 @@ impl OcRenderer {
         self.painter.lock().unwrap_or_else(|p| p.into_inner())
     }
 
-    /// Load the fonts the bodies need (registering uploaded families the manifest does not know).
-    async fn ensure_fonts(&self, host: &dyn RenderHost, bodies: &[&TextBody]) -> RenderResult<()> {
+    /// Load the fonts the bodies need (registering uploaded families the manifest does not know). `strict`: a family
+    /// that is unknown or whose face could not be fetched is an error ([`RenderError::MissingFonts`]) instead of
+    /// falling back.
+    async fn ensure_fonts(&self, host: &dyn RenderHost, bodies: &[&TextBody], strict: bool) -> RenderResult<()> {
         let unknown: Vec<String> = {
             let r = self.lock();
             let mut v: Vec<String> = Vec::new();
@@ -148,11 +150,24 @@ impl OcRenderer {
                 let _ = r.text.fonts.insert_unchecked(&file, bytes);
             }
         }
+        if strict {
+            let r = self.lock();
+            let mut lost: Vec<String> = Vec::new();
+            for f in bodies.iter().flat_map(|b| oc_text::faces(b)) {
+                let unavailable = !r.text.fonts.has(&f.family) || !r.text.fonts.missing([&f]).is_empty();
+                if unavailable && !lost.contains(&f.family) {
+                    lost.push(f.family.clone());
+                }
+            }
+            if !lost.is_empty() {
+                return Err(RenderError::MissingFonts(lost));
+            }
+        }
         Ok(())
     }
 
     /// Fonts and asset bytes for a display list.
-    async fn prepare(&self, host: &dyn RenderHost, dl: &DisplayList) -> RenderResult<Prefetched> {
+    async fn prepare(&self, host: &dyn RenderHost, dl: &DisplayList, strict_fonts: bool) -> RenderResult<Prefetched> {
         let bodies: Vec<&TextBody> = dl
             .items
             .iter()
@@ -164,7 +179,7 @@ impl OcRenderer {
                 }
             })
             .collect();
-        self.ensure_fonts(host, &bodies).await?;
+        self.ensure_fonts(host, &bodies, strict_fonts).await?;
         let mut keys: Vec<String> = dl.assets.iter().map(|a| a.to_string()).collect();
         for it in &dl.items {
             if let DLItem::Video { asset, .. } = it {
@@ -193,7 +208,7 @@ impl OcRenderer {
         white: bool,
     ) -> RenderResult<oc_render::tiny_skia::Pixmap> {
         let dl = resolve_page(doc, page_id, &resolve_opts(opts));
-        let assets = self.prepare(host, &dl).await?;
+        let assets = self.prepare(host, &dl, opts.strict_fonts).await?;
         let p = self.painter.clone();
         let ro = RenderOptions {
             scale: opts.scale,
@@ -220,7 +235,7 @@ impl OcRenderer {
         dl: DisplayList,
         opts: &SvgOptions,
     ) -> RenderResult<String> {
-        let assets = self.prepare(host, &dl).await?;
+        let assets = self.prepare(host, &dl, false).await?;
         let mut fonts = Vec::new();
         if !opts.external_fonts {
             let picks: Vec<(String, f64, bool, String)> = {
@@ -293,7 +308,7 @@ impl OcRenderer {
     ) -> RenderResult<Vec<u8>> {
         let mut assets = Prefetched(extra);
         for dl in &dls {
-            assets.0.extend(self.prepare(host, dl).await?.0);
+            assets.0.extend(self.prepare(host, dl, false).await?.0);
         }
         let _ = doc;
         let p = self.painter.clone();
@@ -681,7 +696,7 @@ impl Renderer for OcRenderer {
         width: f64,
     ) -> RenderFuture<'a, TextMeasure> {
         Box::pin(async move {
-            self.ensure_fonts(host, &[body]).await?;
+            self.ensure_fonts(host, &[body], false).await?;
             let mut r = self.lock();
             let l = r.text.layout_uncached(body, width, None);
             let lines = l.paras.first().map_or_else(Vec::new, |p| {

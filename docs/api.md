@@ -24,6 +24,10 @@ Create a token in the web app under **Settings > Developers > API access tokens*
 
 The web app offers expiry in 30 days, 90 days, a year, or never. The endpoint accepts `expiresInDays` from 1 to 366, or no expiry when the field is left out.
 
+A token can be limited to the designs of one workspace (**Designs** in the form, `workspaceId` on the endpoint). Designs in other workspaces answer `404`, exactly as if they did not exist. Such a token may only have the `designs:read`, `exports` and `designs:export` scopes, and it works on `/v1` only, not on `/mcp`. Use one for tools that publish designs unattended.
+
+Revoking a token takes effect on the next request, and the public links of its [JPEG exports](#jpeg-exports-for-publishing) stop working too.
+
 ### Scopes
 
 | Scope | Allows |
@@ -32,6 +36,7 @@ The web app offers expiry in 30 days, 90 days, a year, or never. The endpoint ac
 | `designs:write` | Create designs and run autofill. |
 | `assets:write` | Upload assets. |
 | `exports` | Start exports, read their status, download the files. |
+| `designs:export` | The same as `exports`. Pair it with `designs:read` for a token that can only read and export designs. |
 | `webhooks` | List, create and delete webhooks. |
 
 `GET /v1/me` needs a valid token but no particular scope.
@@ -68,6 +73,7 @@ The checks run in this order: token, rate limit, body parsing, then scope. So a 
 | Routes | Limit | Counted per |
 |---|---|---|
 | `/v1/*` token routes except autofill | 120 per minute, with a separate counter for each route | `Authorization` header |
+| JPEG exports (`POST /v1/designs/{id}/exports` with `format: "jpeg"`) | 200 per 24 hours. Idempotent replays are not counted. | Token |
 | `POST /v1/designs/{id}/autofill` | 30 per minute | Client IP |
 | `/mcp` | 240 per minute | Client IP plus token hash |
 | Other routes without their own limit, including `/v1/openapi.json` | 600 per minute | Client IP |
@@ -160,7 +166,21 @@ Answers `201` with a [Design object](#the-design-object) and emits the `design.c
 
 ### GET /v1/designs/{id}
 
-Scope: `designs:read`. Needs at least view access. Answers a [Design object](#the-design-object) or `404`.
+Scope: `designs:read`. Needs at least view access. Answers a [Design object](#the-design-object) or `404`. `{id}` may also be the design's edit link, URL-encoded (`https%3A%2F%2Fexample.com%2Fdesign%2FSalpha0000000000`), because spreadsheets and calendars often store the link.
+
+This route adds two fields to the Design object:
+
+```json
+{
+  "version": 14,
+  "pageList": [
+    { "index": 1, "id": "pg_a1", "name": "Cover", "hidden": false },
+    { "index": 2, "id": "pg_b2", "name": "Page 2", "hidden": false }
+  ]
+}
+```
+
+`version` is the design's content version. It starts at 1 and goes up with every saved change, from the editor's autosave, AI assistants, or brand template updates. Record it when a design is approved and send it with the export (see [JPEG exports for publishing](#jpeg-exports-for-publishing)). `pageList` lists the pages in order. `index` is the page number that exports use, and `name` is the page title or `Page <n>`.
 
 A trashed design is still returned to its owner.
 
@@ -243,6 +263,88 @@ Answers `202`:
 | Status | `error` | Meaning |
 |---|---|---|
 | 404 | `profile_not_found` | The colour profile does not exist or is not shared with the user. |
+
+With `"format": "jpeg"`, this route makes the [JPEG export for publishing](#jpeg-exports-for-publishing) instead: no queue, public links, and an optional version lock.
+
+### JPEG exports for publishing
+
+For tools that post designs on their own, for example to Instagram through Meta's Graph API. Scope: `exports` or `designs:export`. Needs at least view access.
+
+```sh
+curl https://example.com/v1/designs/Salpha0000000000/exports \
+  -H "Authorization: Bearer $PINSELO_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: P-002-v14" \
+  -d '{"format":"jpeg","version":14,"width":1080,"pages":[1,2,3],"wait":true}'
+```
+
+| Field | Type | Notes |
+|---|---|---|
+| `format` | `jpeg` (or `jpg`) | Required. |
+| `version` | integer | Optional. When sent, the export only runs if the design is still at this [version](#get-v1designsid). Otherwise it answers `409 version_changed` without rendering anything. |
+| `width` | integer, 320 to 1440 | Output width in px. The default is 1080, and the height follows the design. Instagram accepts 320 to 1440. |
+| `quality` | integer, 60 to 100 | The default is 90. A page over 7.5 MiB is rendered again 5 lower each time, down to 60. |
+| `pages` | array of page numbers | 1 is the first page. Files come back in this order. The default is every visible page, in order. At most 10 pages, Instagram's carousel limit. |
+| `wait` | boolean | `true` holds the request for up to 25 seconds until the files are ready. Otherwise, or if rendering takes longer, the route answers `202` and you poll `GET /v1/exports/{id}`. |
+
+The `Idempotency-Key` header is optional, 1 to 200 visible ASCII characters. For 24 hours, the same key on the same token returns the same export and the same links without rendering again. A key reused for a different design answers `422`.
+
+Answers `200` when the export is done:
+
+```json
+{
+  "id": "exp_7Hq2uY1pQ0aZ3cV8bN5mKw",
+  "status": "done",
+  "designId": "Salpha0000000000",
+  "designVersion": 14,
+  "createdAt": "2026-11-14T17:23:02.114Z",
+  "statusUrl": "https://example.com/v1/exports/exp_7Hq2uY1pQ0aZ3cV8bN5mKw",
+  "warnings": [],
+  "files": [
+    {
+      "page": 1,
+      "url": "https://example.com/v1/files/exp_7Hq2uY1pQ0aZ3cV8bN5mKw/1.jpg?e=1794763390&sig=…",
+      "width": 1080,
+      "height": 1350,
+      "bytes": 412883,
+      "contentType": "image/jpeg"
+    }
+  ],
+  "expiresAt": "2026-11-15T17:23:10.552Z"
+}
+```
+
+Every file meets Instagram's image rules:
+
+- It is a baseline JPEG, with transparency flattened onto white and the sRGB profile embedded.
+- Each file is 7.5 MiB or less.
+- Fonts must load. If one can't, the export fails with `render_failed` rather than rendering a fallback font.
+
+`warnings` holds `{ "code": "aspect_ratio", "message": "…" }` when the design is taller than 4:5 or wider than 1.91:1, which Instagram's feed does not accept as is.
+
+The file links work without signing in for 24 hours (`expiresAt`). Meta's servers download them directly.
+
+- **The request:** a plain `GET`. No cookies or headers are needed, and the path ends in `.jpg`.
+- **The response:** `Content-Type: image/jpeg`, with no redirects.
+- **When a link stops working:** after it expires, when it was altered, or when the token that made it is revoked. It then answers `404`.
+
+The export checks the version again after its last page has rendered. If the design was edited while rendering, the export fails with `version_changed` instead of returning a mix of old and new pages.
+
+| Status | `error` | Meaning |
+|---|---|---|
+| 202 | | Still rendering (`"status": "rendering"`). Poll `statusUrl`. |
+| 404 | `not_found` | Unknown design, or one the token cannot see, including designs outside a workspace-limited token's workspace. |
+| 409 | `version_changed` | The design is no longer at `version`. The body carries `currentVersion`. Treat it as "changed after approval". |
+| 422 | `invalid_export` | A bad field, such as a width outside 320 to 1440, a page out of range, more than 10 pages, a document or spreadsheet design, or a page still over 7.5 MiB at quality 60. The `message` says which. |
+| 429 | `rate_limited` | 200 exports in the last 24 hours. Wait `retry-after` seconds. |
+| 500 | `render_failed` | Rendering failed, for example because a font could not be loaded. Retry once later. |
+| 503 | `unavailable` | The render service or file storage is unreachable. Retry later. |
+
+Errors found before rendering answer `{"error":"<code>","message":"…"}`, plus `currentVersion` on a 409. An export that fails while rendering, with `wait: true`, answers the same status and adds the export's fields.
+
+### GET /v1/exports/exp_…
+
+Scope: `exports` or `designs:export`. The JPEG export as `POST` returned it. `status` is `rendering`, `done` or `failed`. A failed export answers `200` with `"status": "failed"` and `"error": { "code": "…", "message": "…" }`, using the codes above. An export interrupted by a server restart is reported as failed after 10 minutes. Links are signed once, at completion, so repeated reads return the same URLs.
 
 ### GET /v1/exports/{job}
 

@@ -40,6 +40,7 @@
 					delete state
 					delete ticket
 					delete access_token
+					delete sig
 				}
 				request>headers>Referer delete
 			}

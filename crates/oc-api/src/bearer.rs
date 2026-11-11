@@ -41,6 +41,8 @@ pub struct BearerUser {
     pub client_id: Option<String>,
     /// The grant the token belongs to: the OAuth token family, or the PAT's own id (export links are bound to it).
     pub grant_id: Uuid,
+    /// A personal access token limited to the designs of one workspace (REST API only).
+    pub workspace_id: Option<Uuid>,
 }
 
 /// Where a token is presented.
@@ -72,22 +74,23 @@ pub fn bearer_token(header: &str) -> Option<&str> {
     (rest.len() >= 20 && rest.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_' || c == b'-')).then_some(t)
 }
 
-type Row = (Uuid, Uuid, Vec<String>, String, Option<String>, String, Option<String>, String, String, String, Option<chrono::DateTime<chrono::Utc>>, Option<String>, Option<Uuid>);
+type Row = (Uuid, Uuid, Vec<String>, String, Option<String>, String, Option<String>, String, String, String, Option<chrono::DateTime<chrono::Utc>>, Option<String>, Option<Uuid>, Option<Uuid>);
 
 /// `resolveBearer(header, audience)`: the token's user, or `None` when missing, unknown, expired, revoked, not meant
-/// for `audience` (or the user is disabled). Touches `last_used_at` at most once a minute, in the background.
+/// for `audience` (or the user is disabled). A token limited to one workspace is for the REST API only: the MCP tools
+/// do not apply the limit. Touches `last_used_at` at most once a minute, in the background.
 pub async fn resolve_bearer(s: &AppState, header: Option<&str>, audience: Audience) -> Result<Option<BearerUser>, ApiError> {
     let Some(token) = bearer_token(header.unwrap_or("")) else { return Ok(None) };
     let t: Option<Row> = sqlx::query_as(
-        "SELECT t.id, t.user_id, t.scopes, t.kind, t.client_id, t.name AS token_name, c.name AS client_name, u.email, u.name, u.color, u.disabled_at, t.resource, t.family
+        "SELECT t.id, t.user_id, t.scopes, t.kind, t.client_id, t.name AS token_name, c.name AS client_name, u.email, u.name, u.color, u.disabled_at, t.resource, t.family, t.workspace_id
      FROM api_tokens t JOIN users u ON u.id = t.user_id LEFT JOIN oauth_clients c ON c.id = t.client_id
      WHERE t.token_sha256 = $1 AND t.revoked_at IS NULL AND (t.expires_at IS NULL OR t.expires_at > now()) AND u.deleted_at IS NULL",
     )
     .bind(sha256(token))
     .fetch_optional(&s.pool)
     .await?;
-    let Some((id, user_id, scopes, kind, client_id, token_name, client_name, email, name, color, disabled, resource, family)) = t else { return Ok(None) };
-    if disabled.is_some() || !audience_allows(s, audience, &kind, resource.as_deref()) {
+    let Some((id, user_id, scopes, kind, client_id, token_name, client_name, email, name, color, disabled, resource, family, workspace_id)) = t else { return Ok(None) };
+    if disabled.is_some() || !audience_allows(s, audience, &kind, resource.as_deref()) || (workspace_id.is_some() && audience != Audience::Rest) {
         return Ok(None);
     }
     let pool = s.pool.clone();
@@ -97,5 +100,5 @@ pub async fn resolve_bearer(s: &AppState, header: Option<&str>, audience: Audien
             .execute(&pool)
             .await;
     });
-    Ok(Some(BearerUser { id: user_id, email, name, color, scopes, token_id: id, kind, client_name: client_name.unwrap_or(token_name), client_id, grant_id: family.unwrap_or(id) }))
+    Ok(Some(BearerUser { id: user_id, email, name, color, scopes, token_id: id, kind, client_name: client_name.unwrap_or(token_name), client_id, grant_id: family.unwrap_or(id), workspace_id }))
 }

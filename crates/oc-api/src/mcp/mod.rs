@@ -13,7 +13,7 @@
 mod brand;
 mod brand_write;
 mod edit;
-mod files;
+pub(crate) mod files;
 mod guide;
 mod layout;
 mod live;
