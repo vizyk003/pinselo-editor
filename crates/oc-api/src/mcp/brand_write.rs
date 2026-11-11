@@ -11,7 +11,7 @@ use crate::routes::brandhub::{self as hub, MAX_BRAND_KITS, MAX_GUIDELINES_TOTAL}
 use crate::state::AppState;
 
 /// Kit fields an assistant sets, as (argument, kit field); the image lists are handled on their own.
-const FIELDS: [(&str, &str); 5] = [("colors", "colors"), ("palettes", "palettes"), ("fonts", "fonts"), ("text_styles", "textStyles"), ("voice", "voice")];
+const FIELDS: [(&str, &str); 6] = [("colors", "colors"), ("palettes", "palettes"), ("fonts", "fonts"), ("text_styles", "textStyles"), ("voice", "voice"), ("motion", "motion")];
 const IMAGE_LISTS: [&str; 3] = ["logos", "graphics", "photos"];
 
 const NEXT: &str = "Check the kit as it now stands. If missingFonts is set, tell the user those font files must be uploaded in Brand Hub (the kit's Fonts), or pick Google Fonts with search_fonts instead. Add more logos, graphics or photos with update_brand_kit { add_logos | add_graphics | add_photos } after uploading them with upload_image or create_upload_link. Design with it by passing its name to create_design as brand_kit.";
@@ -164,7 +164,7 @@ pub async fn update(s: &AppState, u: &BearerUser, a: &Value) -> R {
     let kit_id = k["id"].as_str().unwrap_or("").to_owned();
     let ws = k["workspaceId"].as_str().and_then(|w| Uuid::parse_str(w).ok()).ok_or_else(|| Fail::Other("brand kit without a workspace".into()))?;
     let mut next = Map::new();
-    for key in ["name", "colors", "palettes", "fonts", "logos", "photos", "graphics", "voice", "textStyles"] {
+    for key in ["name", "colors", "palettes", "fonts", "logos", "photos", "graphics", "voice", "textStyles", "motion"] {
         next.insert(key.into(), k.get(key).cloned().unwrap_or(Value::Null));
     }
     let mut touched = a.get("guidelines").is_some();

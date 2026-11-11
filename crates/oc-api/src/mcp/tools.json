@@ -101,7 +101,7 @@
   {
    "name": "search_media",
    "title": "Search stock media",
-   "description": "Free stock photos, illustrations, GIFs and stickers. Pass a result's provider and id to add_image as { stock: { provider, id } }.",
+   "description": "Free stock photos, illustrations, GIFs, stickers, video clips and music. Pass a result's provider and id to add_image as { stock: { provider, id } }, or with type video or audio to add_video or add_audio.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -116,7 +116,9 @@
       "enum": [
        "image",
        "gif",
-       "sticker"
+       "sticker",
+       "video",
+       "audio"
       ]
      },
      "page": {
@@ -141,7 +143,7 @@
   {
    "name": "list_uploads",
    "title": "List uploads",
-   "description": "Images the user uploaded (photos, logos). Use an id with add_image as { asset: id }.",
+   "description": "Files the user uploaded: images (photos, logos) by default, or videos and sounds with type. Use an id with add_image, add_video or add_audio as { asset: id }.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -154,6 +156,16 @@
       "type": "integer",
       "minimum": 1,
       "maximum": 100
+     },
+     "type": {
+      "description": "Default image",
+      "type": "string",
+      "enum": [
+       "image",
+       "video",
+       "audio",
+       "all"
+      ]
      }
     }
    },
@@ -571,6 +583,191 @@
        ]
       },
       "maxItems": 60
+     },
+     "motion": {
+      "description": "How the brand moves (ms, px): the defaults of edit_design's animations and page transitions",
+      "type": "object",
+      "properties": {
+       "enter": {
+        "description": "Default entrance",
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "fade",
+           "rise",
+           "drop",
+           "slide-left",
+           "slide-right",
+           "slide-up",
+           "slide-down",
+           "scale",
+           "zoom",
+           "pop",
+           "wipe",
+           "draw",
+           "typewriter",
+           "blur"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         },
+         "easing": {
+          "type": "string",
+          "enum": [
+           "linear",
+           "ease",
+           "ease-in",
+           "ease-out",
+           "ease-in-out"
+          ]
+         },
+         "distance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2000
+         }
+        }
+       },
+       "text": {
+        "description": "Entrance of text (overrides enter), e.g. rise 8 px",
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "fade",
+           "rise",
+           "drop",
+           "slide-left",
+           "slide-right",
+           "slide-up",
+           "slide-down",
+           "scale",
+           "zoom",
+           "pop",
+           "wipe",
+           "draw",
+           "typewriter",
+           "blur"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         },
+         "easing": {
+          "type": "string",
+          "enum": [
+           "linear",
+           "ease",
+           "ease-in",
+           "ease-out",
+           "ease-in-out"
+          ]
+         },
+         "distance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2000
+         }
+        }
+       },
+       "draw": {
+        "description": "Lines drawing themselves in",
+        "type": "object",
+        "properties": {
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         },
+         "easing": {
+          "type": "string",
+          "enum": [
+           "linear",
+           "ease",
+           "ease-in",
+           "ease-out",
+           "ease-in-out"
+          ]
+         }
+        }
+       },
+       "exit": {
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "fade",
+           "rise",
+           "drop",
+           "slide",
+           "scale",
+           "zoom",
+           "wipe",
+           "blur"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         }
+        }
+       },
+       "stagger": {
+        "description": "ms between elements that appear one after another",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 10000
+       },
+       "transition": {
+        "description": "Page transition",
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "none",
+           "fade",
+           "dissolve",
+           "slide",
+           "push",
+           "cover",
+           "reveal",
+           "zoom",
+           "wipe",
+           "iris",
+           "split",
+           "flip",
+           "blur",
+           "spin",
+           "drop"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         }
+        }
+       },
+       "bounce": {
+        "description": "false: nothing may overshoot (no pop)",
+        "type": "boolean"
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 1000
+       }
+      }
      }
     },
     "required": [
@@ -589,7 +786,7 @@
   {
    "name": "update_brand_kit",
    "title": "Update a brand kit",
-   "description": "Change a brand kit you can edit: give its name and only the fields to change. colors, palettes, text_styles, voice, guidelines and the logos, graphics and photos lists replace what the kit has; fonts change only the roles given. To add images, upload them (upload_image or create_upload_link) and pass their asset ids in add_logos, add_graphics or add_photos; remove_assets takes images out. Returns the kit as get_brand_kit shows it.",
+   "description": "Change a brand kit you can edit: give its name and only the fields to change. colors, palettes, text_styles, voice, motion, guidelines and the logos, graphics and photos lists replace what the kit has; fonts change only the roles given. To add images, upload them (upload_image or create_upload_link) and pass their asset ids in add_logos, add_graphics or add_photos; remove_assets takes images out. Returns the kit as get_brand_kit shows it.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -859,6 +1056,191 @@
        "pattern": "^[0-9A-Za-z]{16}$"
       },
       "maxItems": 430
+     },
+     "motion": {
+      "description": "How the brand moves (ms, px): the defaults of edit_design's animations and page transitions",
+      "type": "object",
+      "properties": {
+       "enter": {
+        "description": "Default entrance",
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "fade",
+           "rise",
+           "drop",
+           "slide-left",
+           "slide-right",
+           "slide-up",
+           "slide-down",
+           "scale",
+           "zoom",
+           "pop",
+           "wipe",
+           "draw",
+           "typewriter",
+           "blur"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         },
+         "easing": {
+          "type": "string",
+          "enum": [
+           "linear",
+           "ease",
+           "ease-in",
+           "ease-out",
+           "ease-in-out"
+          ]
+         },
+         "distance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2000
+         }
+        }
+       },
+       "text": {
+        "description": "Entrance of text (overrides enter), e.g. rise 8 px",
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "fade",
+           "rise",
+           "drop",
+           "slide-left",
+           "slide-right",
+           "slide-up",
+           "slide-down",
+           "scale",
+           "zoom",
+           "pop",
+           "wipe",
+           "draw",
+           "typewriter",
+           "blur"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         },
+         "easing": {
+          "type": "string",
+          "enum": [
+           "linear",
+           "ease",
+           "ease-in",
+           "ease-out",
+           "ease-in-out"
+          ]
+         },
+         "distance": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2000
+         }
+        }
+       },
+       "draw": {
+        "description": "Lines drawing themselves in",
+        "type": "object",
+        "properties": {
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         },
+         "easing": {
+          "type": "string",
+          "enum": [
+           "linear",
+           "ease",
+           "ease-in",
+           "ease-out",
+           "ease-in-out"
+          ]
+         }
+        }
+       },
+       "exit": {
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "fade",
+           "rise",
+           "drop",
+           "slide",
+           "scale",
+           "zoom",
+           "wipe",
+           "blur"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         }
+        }
+       },
+       "stagger": {
+        "description": "ms between elements that appear one after another",
+        "type": "number",
+        "minimum": 0,
+        "maximum": 10000
+       },
+       "transition": {
+        "description": "Page transition",
+        "type": "object",
+        "properties": {
+         "type": {
+          "type": "string",
+          "enum": [
+           "none",
+           "fade",
+           "dissolve",
+           "slide",
+           "push",
+           "cover",
+           "reveal",
+           "zoom",
+           "wipe",
+           "iris",
+           "split",
+           "flip",
+           "blur",
+           "spin",
+           "drop"
+          ]
+         },
+         "duration": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10000
+         }
+        }
+       },
+       "bounce": {
+        "description": "false: nothing may overshoot (no pop)",
+        "type": "boolean"
+       },
+       "note": {
+        "type": "string",
+        "maxLength": 1000
+       }
+      }
      }
     },
     "required": [
@@ -1128,7 +1510,7 @@
   {
    "name": "edit_design",
    "title": "Edit design",
-   "description": "Apply a list of operations (add text, shapes, lines, images, tables, charts, QR codes; update, delete, group, reorder; arrange, align, distribute; add, update, move and delete pages; replace text everywhere, keeping its style; rename). Applied in order as one change that collaborators see live. See get_design_guide.",
+   "description": "Apply a list of operations (add text, shapes, lines, images, videos, tables, charts, QR codes; update, delete, group, reorder; arrange, align, distribute; add, update, move and delete pages; animate elements, time them and set page lengths and transitions; add music or a voice-over and captions; replace text everywhere, keeping its style; rename). Applied in order as one change that collaborators see live. See get_design_guide.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -1279,6 +1661,43 @@
            "enum": [
             "bullet",
             "number"
+           ]
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
            ]
           }
          },
@@ -1433,6 +1852,43 @@
            "description": "Corner radius (rect)",
            "type": "number",
            "minimum": 0
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -1557,6 +2013,43 @@
             "decor",
             "price",
             "legal"
+           ]
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
            ]
           }
          },
@@ -1744,6 +2237,43 @@
           "alt": {
            "type": "string",
            "maxLength": 500
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -1867,6 +2397,43 @@
            "type": "string",
            "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
            "description": "Hex colour, #rrggbb or #rrggbbaa"
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2007,6 +2574,43 @@
            "type": "string",
            "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
            "description": "Hex colour, #rrggbb or #rrggbbaa"
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2103,6 +2707,43 @@
            "type": "string",
            "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
            "description": "Hex colour, #rrggbb or #rrggbbaa"
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2461,6 +3102,204 @@
           "alt": {
            "type": "string",
            "maxLength": 500
+          },
+          "animation": {
+           "description": "How it comes in and goes out, in seconds (video, GIF, presenting). null removes both",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "in": {
+               "description": "Entrance; null removes it",
+               "anyOf": [
+                {
+                 "type": "object",
+                 "properties": {
+                  "type": {
+                   "description": "fade, rise, drop, slide-left/-right/-up/-down (moves that way into place), scale (grows into place), zoom (settles from larger), pop (overshoots), wipe, draw (a line draws itself from its start point), typewriter (text letter by letter), blur. Default: the brand kit's, else fade",
+                   "type": "string",
+                   "enum": [
+                    "fade",
+                    "rise",
+                    "drop",
+                    "slide-left",
+                    "slide-right",
+                    "slide-up",
+                    "slide-down",
+                    "scale",
+                    "zoom",
+                    "pop",
+                    "wipe",
+                    "draw",
+                    "typewriter",
+                    "blur"
+                   ]
+                  },
+                  "delay": {
+                   "description": "Seconds after the element appears (page start, or visibleFrom) before it starts; stagger elements with it",
+                   "type": "number",
+                   "minimum": 0,
+                   "maximum": 600
+                  },
+                  "duration": {
+                   "description": "Seconds (default: the brand kit's, else 0.5; draw 0.6)",
+                   "type": "number",
+                   "minimum": 0.01,
+                   "maximum": 30
+                  },
+                  "easing": {
+                   "description": "Default: the brand kit's, else ease-out",
+                   "type": "string",
+                   "enum": [
+                    "linear",
+                    "ease",
+                    "ease-in",
+                    "ease-out",
+                    "ease-in-out"
+                   ]
+                  },
+                  "direction": {
+                   "description": "Travel direction for rise and wipe (draw follows the line by itself)",
+                   "type": "string",
+                   "enum": [
+                    "up",
+                    "down",
+                    "left",
+                    "right"
+                   ]
+                  },
+                  "distance": {
+                   "description": "Px the element travels for rise, drop and slide (default: the brand kit's, else from its size)",
+                   "type": "number",
+                   "minimum": 0,
+                   "maximum": 4000
+                  },
+                  "by": {
+                   "description": "Text only: animate line by line, word by word or letter by letter",
+                   "type": "string",
+                   "enum": [
+                    "element",
+                    "line",
+                    "word",
+                    "letter"
+                   ]
+                  },
+                  "stagger": {
+                   "description": "Seconds between lines, words or letters (by)",
+                   "type": "number",
+                   "minimum": 0,
+                   "maximum": 5
+                  }
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "out": {
+               "description": "Exit; null removes it",
+               "anyOf": [
+                {
+                 "type": "object",
+                 "properties": {
+                  "type": {
+                   "description": "Default: the brand kit's, else fade",
+                   "type": "string",
+                   "enum": [
+                    "fade",
+                    "rise",
+                    "drop",
+                    "slide",
+                    "scale",
+                    "zoom",
+                    "wipe",
+                    "blur"
+                   ]
+                  },
+                  "at": {
+                   "description": "Page second the exit starts; the element is gone at at + duration (sets visibleTo)",
+                   "type": "number",
+                   "minimum": 0,
+                   "maximum": 600
+                  },
+                  "duration": {
+                   "description": "Seconds (default: the brand kit's, else 0.4)",
+                   "type": "number",
+                   "minimum": 0.01,
+                   "maximum": 30
+                  }
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears (null: from the start)",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears (null: to the end); swap texts on one page with these",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "muted": {
+           "description": "Video: no sound",
+           "type": "boolean"
+          },
+          "loop": {
+           "description": "Video: play again from the start while it is shown",
+           "type": "boolean"
+          },
+          "volume": {
+           "description": "Video: 0..1",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          },
+          "trim": {
+           "description": "Video: the part of the clip to play",
+           "type": "object",
+           "properties": {
+            "start": {
+             "description": "Second of the clip to start from",
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            "end": {
+             "description": "Second of the clip to stop at",
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            }
+           }
           }
          },
          "required": [
@@ -2748,6 +3587,68 @@
             }
            ],
            "description": "A hex colour, or { gradient: [colours], angle } for a gradient"
+          },
+          "duration": {
+           "description": "Page length in seconds in videos, GIFs and auto-playing presentations (null: automatic, 5 s or its videos' length)",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0.1,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "transition": {
+           "description": "How this page comes in from the one before (null: a cut)",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "type": {
+               "description": "Default: the brand kit's, else fade; none cuts",
+               "type": "string",
+               "enum": [
+                "none",
+                "fade",
+                "dissolve",
+                "slide",
+                "push",
+                "cover",
+                "reveal",
+                "zoom",
+                "wipe",
+                "iris",
+                "split",
+                "flip",
+                "blur",
+                "spin",
+                "drop"
+               ]
+              },
+              "duration": {
+               "description": "Seconds (default: the brand kit's, else 0.4)",
+               "type": "number",
+               "minimum": 0.01,
+               "maximum": 5
+              },
+              "direction": {
+               "type": "string",
+               "enum": [
+                "up",
+                "down",
+                "left",
+                "right"
+               ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2817,6 +3718,68 @@
            "description": "Speaker notes",
            "type": "string",
            "maxLength": 5000
+          },
+          "duration": {
+           "description": "Page length in seconds in videos, GIFs and auto-playing presentations (null: automatic, 5 s or its videos' length)",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0.1,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "transition": {
+           "description": "How this page comes in from the one before (null: a cut)",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "type": {
+               "description": "Default: the brand kit's, else fade; none cuts",
+               "type": "string",
+               "enum": [
+                "none",
+                "fade",
+                "dissolve",
+                "slide",
+                "push",
+                "cover",
+                "reveal",
+                "zoom",
+                "wipe",
+                "iris",
+                "split",
+                "flip",
+                "blur",
+                "spin",
+                "drop"
+               ]
+              },
+              "duration": {
+               "description": "Seconds (default: the brand kit's, else 0.4)",
+               "type": "number",
+               "minimum": 0.01,
+               "maximum": 5
+              },
+              "direction": {
+               "type": "string",
+               "enum": [
+                "up",
+                "down",
+                "left",
+                "right"
+               ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2970,6 +3933,648 @@
           "find",
           "replace"
          ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "add_video"
+          },
+          "ref": {
+           "description": "Name for the new item; later operations in this batch can use \"$name\" in place of its id",
+           "type": "string",
+           "maxLength": 40
+          },
+          "source": {
+           "description": "The clip: an upload, stock, or a URL (MP4, MOV, WebM)",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "asset": {
+               "type": "string",
+               "description": "An upload's asset id (list_uploads with type video or audio)"
+              }
+             },
+             "required": [
+              "asset"
+             ]
+            },
+            {
+             "type": "object",
+             "properties": {
+              "url": {
+               "type": "string",
+               "format": "uri",
+               "description": "Public https URL of the file"
+              }
+             },
+             "required": [
+              "url"
+             ]
+            },
+            {
+             "type": "object",
+             "properties": {
+              "stock": {
+               "type": "object",
+               "properties": {
+                "provider": {
+                 "type": "string"
+                },
+                "id": {
+                 "type": "string"
+                }
+               },
+               "required": [
+                "provider",
+                "id"
+               ],
+               "description": "A result from search_media with type video or audio"
+              }
+             },
+             "required": [
+              "stock"
+             ]
+            }
+           ]
+          },
+          "page": {
+           "description": "Page to add to (default: the page used by the previous operation, else the first page)",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "integer",
+             "minimum": 1,
+             "maximum": 9007199254740991
+            }
+           ]
+          },
+          "parent": {
+           "description": "Group to add into (coordinates stay page-space)",
+           "type": "string"
+          },
+          "x": {
+           "type": "number"
+          },
+          "y": {
+           "type": "number"
+          },
+          "rotation": {
+           "type": "number"
+          },
+          "opacity": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          },
+          "name": {
+           "type": "string",
+           "maxLength": 80
+          },
+          "role": {
+           "description": "What the element is for (headline, cta, logo, …); keeps the hierarchy when resizing and shows the brand font to use",
+           "type": "string",
+           "enum": [
+            "headline",
+            "subhead",
+            "body",
+            "quote",
+            "caption",
+            "cta",
+            "logo",
+            "hero-image",
+            "background",
+            "decor",
+            "price",
+            "legal"
+           ]
+          },
+          "w": {
+           "type": "number",
+           "exclusiveMinimum": 0
+          },
+          "h": {
+           "type": "number",
+           "exclusiveMinimum": 0
+          },
+          "fit": {
+           "description": "cover (default) fills the box and crops; contain shows the whole frame",
+           "type": "string",
+           "enum": [
+            "cover",
+            "contain"
+           ]
+          },
+          "trim": {
+           "description": "The part of the clip to play (seconds of the clip)",
+           "type": "object",
+           "properties": {
+            "start": {
+             "description": "Second of the clip to start from",
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            "end": {
+             "description": "Second of the clip to stop at",
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            }
+           }
+          },
+          "muted": {
+           "type": "boolean"
+          },
+          "loop": {
+           "type": "boolean",
+           "description": "Play again from the start while it is shown"
+          },
+          "volume": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          },
+          "radius": {
+           "type": "number",
+           "minimum": 0
+          },
+          "animation": {
+           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          }
+         },
+         "required": [
+          "op",
+          "source",
+          "x",
+          "y",
+          "w",
+          "h"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "add_audio"
+          },
+          "ref": {
+           "description": "Name for the new item; later operations in this batch can use \"$name\" in place of its id",
+           "type": "string",
+           "maxLength": 40
+          },
+          "source": {
+           "description": "Music or a voice-over: an upload, stock (search_media type audio), or a URL",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "asset": {
+               "type": "string",
+               "description": "An upload's asset id (list_uploads with type video or audio)"
+              }
+             },
+             "required": [
+              "asset"
+             ]
+            },
+            {
+             "type": "object",
+             "properties": {
+              "url": {
+               "type": "string",
+               "format": "uri",
+               "description": "Public https URL of the file"
+              }
+             },
+             "required": [
+              "url"
+             ]
+            },
+            {
+             "type": "object",
+             "properties": {
+              "stock": {
+               "type": "object",
+               "properties": {
+                "provider": {
+                 "type": "string"
+                },
+                "id": {
+                 "type": "string"
+                }
+               },
+               "required": [
+                "provider",
+                "id"
+               ],
+               "description": "A result from search_media with type video or audio"
+              }
+             },
+             "required": [
+              "stock"
+             ]
+            }
+           ]
+          },
+          "start": {
+           "description": "Video second it starts (default 0)",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 600
+          },
+          "trim": {
+           "description": "Second of the sound to start from (default 0)",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 600
+          },
+          "duration": {
+           "description": "Seconds it plays (default: to the end of the video, looping if the sound is shorter)",
+           "type": "number",
+           "minimum": 0.1,
+           "maximum": 3600
+          },
+          "volume": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          },
+          "fadeIn": {
+           "description": "Seconds (default 0)",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 30
+          },
+          "fadeOut": {
+           "description": "Seconds (default 0.8)",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 30
+          },
+          "loop": {
+           "type": "boolean"
+          }
+         },
+         "required": [
+          "op",
+          "source"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "update_audio"
+          },
+          "id": {
+           "type": "string",
+           "description": "Soundtrack clip id (get_design timeline.audio) or \"$ref\""
+          },
+          "start": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 600
+          },
+          "trim": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 600
+          },
+          "duration": {
+           "type": "number",
+           "minimum": 0.1,
+           "maximum": 3600
+          },
+          "volume": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 1
+          },
+          "fadeIn": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 30
+          },
+          "fadeOut": {
+           "type": "number",
+           "minimum": 0,
+           "maximum": 30
+          },
+          "loop": {
+           "type": "boolean"
+          },
+          "fit": {
+           "type": "boolean",
+           "description": "Make it last to the end of the video as it is now (after changing page lengths)"
+          }
+         },
+         "required": [
+          "op",
+          "id"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "remove_audio"
+          },
+          "id": {
+           "type": "string",
+           "description": "Soundtrack clip id or \"$ref\""
+          }
+         },
+         "required": [
+          "op",
+          "id"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "set_captions"
+          },
+          "cues": {
+           "description": "The whole caption track, replacing the cues there (video seconds). Most people watch social video muted: caption the voice-over or the key lines",
+           "maxItems": 500,
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "start": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 600
+             },
+             "end": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 600
+             },
+             "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 500
+             }
+            },
+            "required": [
+             "start",
+             "end",
+             "text"
+            ]
+           }
+          },
+          "style": {
+           "type": "object",
+           "properties": {
+            "font": {
+             "type": "string",
+             "maxLength": 80
+            },
+            "size": {
+             "type": "number",
+             "minimum": 8,
+             "maximum": 400
+            },
+            "color": {
+             "type": "string",
+             "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+             "description": "Hex colour, #rrggbb or #rrggbbaa"
+            },
+            "background": {
+             "type": "string",
+             "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+             "description": "Box behind the text; #00000000 for none"
+            },
+            "position": {
+             "type": "string",
+             "enum": [
+              "bottom",
+              "middle",
+              "top"
+             ]
+            }
+           }
+          },
+          "visible": {
+           "type": "boolean"
+          }
+         },
+         "required": [
+          "op"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "animate"
+          },
+          "ids": {
+           "description": "Elements in the order they should appear",
+           "minItems": 1,
+           "maxItems": 100,
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          },
+          "in": {
+           "description": "The entrance for all of them, as animation.in on update (default: the brand kit's); null removes theirs",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "type": {
+               "type": "string",
+               "enum": [
+                "fade",
+                "rise",
+                "drop",
+                "slide-left",
+                "slide-right",
+                "slide-up",
+                "slide-down",
+                "scale",
+                "zoom",
+                "pop",
+                "wipe",
+                "draw",
+                "typewriter",
+                "blur"
+               ]
+              },
+              "delay": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 600
+              },
+              "duration": {
+               "type": "number",
+               "minimum": 0.01,
+               "maximum": 30
+              },
+              "easing": {
+               "type": "string",
+               "enum": [
+                "linear",
+                "ease",
+                "ease-in",
+                "ease-out",
+                "ease-in-out"
+               ]
+              },
+              "direction": {
+               "type": "string",
+               "enum": [
+                "up",
+                "down",
+                "left",
+                "right"
+               ]
+              },
+              "distance": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 4000
+              },
+              "by": {
+               "type": "string",
+               "enum": [
+                "element",
+                "line",
+                "word",
+                "letter"
+               ]
+              },
+              "stagger": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 5
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "out": {
+           "type": "object",
+           "properties": {
+            "type": {
+             "type": "string",
+             "enum": [
+              "fade",
+              "rise",
+              "drop",
+              "slide",
+              "scale",
+              "zoom",
+              "wipe",
+              "blur"
+             ]
+            },
+            "at": {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            "duration": {
+             "type": "number",
+             "minimum": 0.01,
+             "maximum": 30
+            }
+           }
+          },
+          "start": {
+           "description": "Second the first one starts (default 0)",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 600
+          },
+          "stagger": {
+           "description": "Seconds between one element and the next (default: the brand kit's stagger, else 0.15)",
+           "type": "number",
+           "minimum": 0,
+           "maximum": 10
+          },
+          "visibleFrom": {
+           "description": "Page second it appears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "visibleTo": {
+           "description": "Page second it disappears",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          }
+         },
+         "required": [
+          "op",
+          "ids"
+         ]
         }
        ]
       }
@@ -2992,7 +4597,7 @@
   {
    "name": "screenshot_page",
    "title": "Screenshot page",
-   "description": "Render a page as a PNG image to check how the design looks.",
+   "description": "Render a page as a PNG image to check how the design looks. With time, frames or times it shows the page at moments of its playback (animations, timing and captions as in the video), so you can check motion.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -3014,10 +4619,33 @@
       ]
      },
      "width": {
-      "description": "Image width in px (default 1024)",
+      "description": "Image width in px (default 1024; for frames, each frame's width, default up to 360)",
       "type": "integer",
-      "minimum": 200,
+      "minimum": 120,
       "maximum": 2000
+     },
+     "time": {
+      "description": "The page at this second of its playback",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 600
+     },
+     "frames": {
+      "description": "A filmstrip of this many frames spread over the page, ending on its last moment",
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 12
+     },
+     "times": {
+      "description": "A filmstrip at these page seconds",
+      "minItems": 1,
+      "maxItems": 12,
+      "type": "array",
+      "items": {
+       "type": "number",
+       "minimum": 0,
+       "maximum": 600
+      }
      }
     },
     "required": [
@@ -3036,7 +4664,7 @@
   {
    "name": "export_design",
    "title": "Export design",
-   "description": "Export a design to a file and get a download link (valid for 24 hours).",
+   "description": "Export a design to a file and get a download link (valid for 24 hours). MP4 and GIF play the pages given (default: all visible pages) at their durations; MP4 comes out at the design's own size unless scale or width says otherwise.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -3067,10 +4695,16 @@
       }
      },
      "scale": {
-      "description": "PNG/JPG resolution multiplier (default 1)",
+      "description": "Resolution multiplier for PNG, JPG and MP4 (default 1: the design's own size)",
       "type": "number",
       "minimum": 0.25,
       "maximum": 4
+     },
+     "width": {
+      "description": "MP4 width in px (height follows the design); wins over scale",
+      "type": "integer",
+      "minimum": 16,
+      "maximum": 3840
      }
     },
     "required": [

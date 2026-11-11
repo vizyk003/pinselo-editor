@@ -331,6 +331,9 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
         for (k, v) in detail(el, max_text) {
             n.insert(k, v);
         }
+        for (k, v) in super::motion::element_view(el) {
+            n.insert(k, v);
+        }
         let kids = children(typed, id);
         if !kids.is_empty() {
             n.insert("children".into(), Value::Array(kids.iter().map(|k| node(doc, typed, k, listed, max_text)).collect()));
@@ -345,6 +348,9 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
     if meta["dims"]["unit"] != "px" {
         size.insert("displayUnit".into(), meta["dims"]["unit"].clone());
     }
+    // Page lengths and transitions once the design uses time (a video, animations, sound).
+    let timed = super::motion::is_timed(doc);
+    let lengths: std::collections::HashMap<String, f64> = oc_schema::timeline::timeline_of(typed, true).spans.iter().map(|s| (s.page.id.to_string(), s.duration_ms)).collect();
     let mut pages = Vec::new();
     for pid in order.iter().filter(|p| page_id.is_none_or(|q| q == p.as_str())) {
         let p = &doc["pages"][pid.as_str()];
@@ -372,6 +378,11 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
         if truthy(p.get("hidden")) {
             pm.insert("hidden".into(), json!(true));
         }
+        if timed {
+            for (k, v) in super::motion::page_view(p, lengths.get(pid.as_str()).copied().unwrap_or(oc_schema::timeline::DEFAULT_PAGE_MS)) {
+                pm.insert(k, v);
+            }
+        }
         pm.insert("elements".into(), Value::Array(elements));
         if total > listed - before {
             pm.insert("omitted".into(), json!(total - (listed - before)));
@@ -383,6 +394,9 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
     out.insert("type".into(), meta["surface"].clone());
     out.insert("size".into(), Value::Object(size));
     out.insert("pageCount".into(), json!(order.len()));
+    if timed {
+        out.insert("timeline".into(), super::motion::timeline_view(doc, typed));
+    }
     out.insert("pages".into(), Value::Array(pages));
     out
 }

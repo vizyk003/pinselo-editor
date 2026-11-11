@@ -103,7 +103,8 @@
        "voice": "Friendly",
        "workspace": "Ada's workspace",
        "workspaceId": "00000000-0000-4000-8000-000000001001",
-       "textStyles": []
+       "textStyles": [],
+       "motion": {}
       },
       {
        "canEdit": true,
@@ -129,7 +130,8 @@
        "voice": "Friendly",
        "workspace": "Studio",
        "workspaceId": "00000000-0000-4000-8000-000000005000",
-       "textStyles": []
+       "textStyles": [],
+       "motion": {}
       }
      ],
      "workspaces": [
@@ -200,7 +202,8 @@
        "voice": "Friendly",
        "workspace": "Studio",
        "workspaceId": "00000000-0000-4000-8000-000000005000",
-       "textStyles": []
+       "textStyles": [],
+       "motion": {}
       }
      ],
      "workspaces": [
@@ -678,7 +681,8 @@
       "updatedAt": "<ts>",
       "voice": "Bold",
       "workspaceId": "00000000-0000-4000-8000-000000001001",
-      "textStyles": []
+      "textStyles": [],
+      "motion": {}
      }
     },
     "headers": {
@@ -726,7 +730,8 @@
       "updatedAt": "2025-01-01T00:00:00.000Z",
       "voice": "Friendly",
       "workspaceId": "00000000-0000-4000-8000-000000005000",
-      "textStyles": []
+      "textStyles": [],
+      "motion": {}
      }
     },
     "headers": {
@@ -1699,7 +1704,8 @@
        "voice": "",
        "workspace": "Studio",
        "workspaceId": "00000000-0000-4000-8000-000000005000",
-       "textStyles": []
+       "textStyles": [],
+       "motion": {}
       }
      ],
      "workspaces": [

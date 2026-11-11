@@ -205,6 +205,34 @@ pub async fn style_kit(s: &AppState, user_id: Uuid, design_id: &str, doc: &Value
     Ok(Some(StyleKit { name, fonts, styles }))
 }
 
+/// The motion rules of the kit a design follows (the one it was made with, else its team's default kit), as defaults
+/// for edit_design's animations and page transitions; an empty kit when there are none.
+pub async fn motion_kit(s: &AppState, user_id: Uuid, design_id: &str, doc: &Value) -> Result<super::motion::Kit, Fail> {
+    type Row = (String, sqlx::types::Json<Value>);
+    let mut row: Option<Row> = None;
+    if let Some(kit_id) = doc.pointer("/meta/brandKit/id").and_then(Value::as_str) {
+        row = sqlx::query_as("SELECT k.name, k.motion FROM brand_kits k JOIN memberships m ON m.workspace_id = k.workspace_id AND m.user_id = $2 WHERE k.id::text = $1")
+            .bind(kit_id)
+            .bind(user_id)
+            .fetch_optional(&s.pool)
+            .await
+            .map_err(|e| Fail::Other(e.to_string()))?;
+    }
+    if row.is_none()
+        && let Some(ws) = governing_workspace(s, design_id).await?
+    {
+        row = sqlx::query_as("SELECT name, motion FROM brand_kits WHERE workspace_id = $1 ORDER BY is_default DESC, created_at LIMIT 1")
+            .bind(ws)
+            .fetch_optional(&s.pool)
+            .await
+            .map_err(|e| Fail::Other(e.to_string()))?;
+    }
+    Ok(match row {
+        Some((name, m)) => super::motion::Kit::new(Some(name), m.0),
+        None => super::motion::Kit::default(),
+    })
+}
+
 /// The kit role a text element's semantic role stands for; `None` (a call to action, or no role) means "by its font".
 fn kit_role(role: Option<&str>) -> Option<&'static str> {
     match role? {

@@ -167,15 +167,21 @@ string_enum! {
         Fade = "fade", Rise = "rise", Drop = "drop", Pan = "pan", Pop = "pop", Zoom = "zoom", Wipe = "wipe",
         Blur = "blur", Tumble = "tumble", Breathe = "breathe", Slide = "slide", Flip = "flip", Stomp = "stomp",
         Spin = "spin", Bounce = "bounce", Float = "float", Shrink = "shrink", Typewriter = "typewriter",
+        Draw = "draw",
     }
 }
 pub const ANIM_PRESETS: &[&str] = &[
     "fade", "rise", "drop", "pan", "slide", "pop", "zoom", "shrink", "stomp", "bounce", "wipe", "blur", "flip", "spin",
-    "tumble", "float", "breathe", "typewriter",
+    "tumble", "float", "breathe", "typewriter", "draw",
 ];
 string_enum! {
     pub enum AnimDirection { Up = "up", Down = "down", Left = "left", Right = "right" }
 }
+string_enum! {
+    /// How an entrance moves over its duration (default: ease-out).
+    pub enum AnimEasing { Linear = "linear", Ease = "ease", EaseIn = "ease-in", EaseOut = "ease-out", EaseInOut = "ease-in-out" }
+}
+pub const ANIM_EASINGS: &[&str] = &["linear", "ease", "ease-in", "ease-out", "ease-in-out"];
 string_enum! {
     /// Text can animate as a whole or one line (paragraph), word or letter at a time.
     pub enum AnimUnit { Element = "element", Line = "line", Word = "word", Char = "char" }
@@ -197,6 +203,11 @@ pub struct ElementAnim {
     pub stagger_ms: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub on_click: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub easing: Option<AnimEasing>,
+    /// How far moving presets (rise, drop, pan, slide, float, bounce) travel, in px; default: from the element size.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub distance: Option<f64>,
     #[serde(flatten)]
     pub extra: Extra,
 }

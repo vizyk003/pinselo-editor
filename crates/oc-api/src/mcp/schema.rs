@@ -11,9 +11,10 @@ use crate::zod::{self as z, Schema};
 const COLOR_JS: &str = "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$";
 const COLOR_MESSAGE: &str = "a hex colour like #1f2328 or #1f232880";
 
-pub const OPS: [&str; 21] = [
+pub const OPS: [&str; 27] = [
     "add_text", "add_shape", "add_line", "add_image", "add_table", "add_chart", "add_qr", "group", "ungroup", "update", "delete", "reorder", "arrange", "align",
-    "distribute", "add_page", "update_page", "delete_page", "move_page", "set_title", "replace_text",
+    "distribute", "add_page", "update_page", "delete_page", "move_page", "set_title", "replace_text", "add_video", "add_audio", "update_audio",
+    "remove_audio", "set_captions", "animate",
 ];
 
 fn color() -> Schema {
@@ -82,6 +83,55 @@ fn image_source() -> Schema {
 fn positive() -> Schema {
     z::num().positive()
 }
+/// Seconds of page or video time.
+fn secs() -> Schema {
+    z::num().min(0.0).max(600.0)
+}
+fn direction() -> Schema {
+    z::enumeration(&["up", "down", "left", "right"])
+}
+/// `animation.in`: an entrance (times in seconds); what it leaves out comes from the brand kit's motion.
+fn anim_in() -> Schema {
+    z::obj([
+        ("type", z::enumeration(&hub::MOTION_IN).optional()),
+        ("delay", secs().optional()),
+        ("duration", z::num().min(0.01).max(30.0).optional()),
+        ("easing", z::enumeration(oc_schema::elements::ANIM_EASINGS).optional()),
+        ("direction", direction().optional()),
+        ("distance", z::num().min(0.0).max(4000.0).optional()),
+        ("by", z::enumeration(&["element", "line", "word", "letter"]).optional()),
+        ("stagger", z::num().min(0.0).max(5.0).optional()),
+    ])
+}
+fn anim_out() -> Schema {
+    z::obj([("type", z::enumeration(&hub::MOTION_OUT).optional()), ("at", secs().optional()), ("duration", z::num().min(0.01).max(30.0).optional())])
+}
+/// When an element moves and shows: `animation` (`null` removes both), `visibleFrom` / `visibleTo` (`null` clears).
+fn timing() -> Vec<(&'static str, Schema)> {
+    vec![
+        ("animation", z::obj([("in", anim_in().nullable().optional()), ("out", anim_out().nullable().optional())]).nullable().optional()),
+        ("visibleFrom", secs().nullable().optional()),
+        ("visibleTo", secs().nullable().optional()),
+    ]
+}
+/// A page's length (`null`: automatic) and how it comes in from the page before (`null` or type "none": a cut).
+fn page_time() -> Vec<(&'static str, Schema)> {
+    vec![
+        ("duration", z::num().min(0.1).max(600.0).nullable().optional()),
+        ("transition", z::obj([("type", z::enumeration(&hub::MOTION_TRANSITIONS).optional()), ("duration", z::num().min(0.01).max(5.0).optional()), ("direction", direction().optional())]).nullable().optional()),
+    ]
+}
+/// A video or sound: an upload (`list_uploads`), stock (`search_media`), or a URL.
+fn media_source() -> Schema {
+    z::union(vec![
+        z::obj([("asset", z::str())]),
+        z::obj([("url", z::str().url())]),
+        z::obj([("stock", z::obj([("provider", z::str()), ("id", z::str())]))]),
+    ])
+}
+fn trim() -> Schema {
+    z::obj([("start", secs().optional()), ("end", secs().optional())])
+}
 
 fn op_schema(op: &str) -> Schema {
     let lit = ("op", z::literal(json!(op)));
@@ -93,13 +143,16 @@ fn op_schema(op: &str) -> Schema {
             f.extend([("w", positive()), ("h", positive().optional())]);
             f.extend(text_style());
             f.push(("list", z::enumeration(&["bullet", "number"]).optional()));
+            f.extend(timing());
         }
         "add_shape" => {
             f.extend([("ref", r#ref()), ("shape", z::str())]);
             f.extend(placement());
             f.extend([("w", positive()), ("h", positive()), ("fill", fill().optional()), ("stroke", stroke_in().optional()), ("radius", z::num().min(0.0).optional())]);
+            f.extend(timing());
         }
-        "add_line" => f.extend([
+        "add_line" => {
+            f.extend([
             ("ref", r#ref()),
             ("page", page_ref().optional()),
             ("parent", target().optional()),
@@ -113,7 +166,9 @@ fn op_schema(op: &str) -> Schema {
             ("start", marker().optional()),
             ("end", marker().optional()),
             ("name", z::str().max(80.0).optional()),
-        ]),
+            ]);
+            f.extend(timing());
+        }
         "add_image" => {
             f.extend([("ref", r#ref()), ("source", image_source())]);
             f.extend(placement());
@@ -124,6 +179,7 @@ fn op_schema(op: &str) -> Schema {
                 ("radius", z::num().min(0.0).optional()),
                 ("alt", z::str().max(500.0).optional()),
             ]);
+            f.extend(timing());
         }
         "add_table" => {
             f.extend([("ref", r#ref()), ("data", z::array(z::array(z::str().max(2000.0)).max(30.0)).min(1.0).max(100.0))]);
@@ -137,6 +193,7 @@ fn op_schema(op: &str) -> Schema {
                 ("headerFill", color().optional()),
                 ("headerColor", color().optional()),
             ]);
+            f.extend(timing());
         }
         "add_chart" => {
             f.extend([
@@ -154,11 +211,13 @@ fn op_schema(op: &str) -> Schema {
                 ("font", font()),
                 ("textColor", color().optional()),
             ]);
+            f.extend(timing());
         }
         "add_qr" => {
             f.extend([("ref", r#ref()), ("data", z::str().min(1.0).max(2000.0))]);
             f.extend(placement());
             f.extend([("size", positive()), ("color", color().optional()), ("background", color().optional())]);
+            f.extend(timing());
         }
         "group" => f.extend([("ref", r#ref()), ("ids", z::array(target()).min(2.0)), ("name", z::str().max(80.0).optional())]),
         "ungroup" => f.push(("id", target())),
@@ -184,6 +243,8 @@ fn op_schema(op: &str) -> Schema {
                 ("image", image_source().optional()),
                 ("alt", z::str().max(500.0).optional()),
             ]);
+            f.extend(timing());
+            f.extend([("muted", z::bool().optional()), ("loop", z::bool().optional()), ("volume", z::num().min(0.0).max(1.0).optional()), ("trim", trim().optional())]);
         }
         "delete" => f.push(("ids", z::array(target()).min(1.0))),
         "reorder" => f.extend([("id", target()), ("to", z::enumeration(&["front", "back", "forward", "backward"]))]),
@@ -208,14 +269,83 @@ fn op_schema(op: &str) -> Schema {
             ("relativeTo", z::enumeration(&["page", "selection"]).optional()),
         ]),
         "distribute" => f.extend([("ids", z::array(target()).min(3.0)), ("axis", z::enumeration(&["horizontal", "vertical"]))]),
-        "add_page" => f.extend([
+        "add_page" => {
+            f.extend([
+                ("ref", r#ref()),
+                ("after", page_ref().optional()),
+                ("duplicate", page_ref().optional()),
+                ("title", z::str().max(120.0).optional()),
+                ("background", fill().optional()),
+            ]);
+            f.extend(page_time());
+        }
+        "update_page" => {
+            f.extend([("page", page_ref()), ("title", z::str().max(120.0).optional()), ("background", fill().optional()), ("notes", z::str().max(5000.0).optional())]);
+            f.extend(page_time());
+        }
+        "add_video" => {
+            f.extend([("ref", r#ref()), ("source", media_source())]);
+            f.extend(placement());
+            f.extend([
+                ("w", positive()),
+                ("h", positive()),
+                ("fit", z::enumeration(&["cover", "contain"]).optional()),
+                ("trim", trim().optional()),
+                ("muted", z::bool().optional()),
+                ("loop", z::bool().optional()),
+                ("volume", z::num().min(0.0).max(1.0).optional()),
+                ("radius", z::num().min(0.0).optional()),
+            ]);
+            f.extend(timing());
+        }
+        "add_audio" => f.extend([
             ("ref", r#ref()),
-            ("after", page_ref().optional()),
-            ("duplicate", page_ref().optional()),
-            ("title", z::str().max(120.0).optional()),
-            ("background", fill().optional()),
+            ("source", media_source()),
+            ("start", secs().optional()),
+            ("trim", secs().optional()),
+            ("duration", z::num().min(0.1).max(3600.0).optional()),
+            ("volume", z::num().min(0.0).max(1.0).optional()),
+            ("fadeIn", z::num().min(0.0).max(30.0).optional()),
+            ("fadeOut", z::num().min(0.0).max(30.0).optional()),
+            ("loop", z::bool().optional()),
         ]),
-        "update_page" => f.extend([("page", page_ref()), ("title", z::str().max(120.0).optional()), ("background", fill().optional()), ("notes", z::str().max(5000.0).optional())]),
+        "update_audio" => f.extend([
+            ("id", target()),
+            ("start", secs().optional()),
+            ("trim", secs().optional()),
+            ("duration", z::num().min(0.1).max(3600.0).optional()),
+            ("volume", z::num().min(0.0).max(1.0).optional()),
+            ("fadeIn", z::num().min(0.0).max(30.0).optional()),
+            ("fadeOut", z::num().min(0.0).max(30.0).optional()),
+            ("loop", z::bool().optional()),
+            ("fit", z::bool().optional()),
+        ]),
+        "remove_audio" => f.push(("id", target())),
+        "set_captions" => f.extend([
+            ("cues", z::array(z::obj([("start", secs()), ("end", secs()), ("text", z::str().min(1.0).max(500.0))])).max(500.0).optional()),
+            (
+                "style",
+                z::obj([
+                    ("font", font()),
+                    ("size", z::num().min(8.0).max(400.0).optional()),
+                    ("color", color().optional()),
+                    ("background", color().optional()),
+                    ("position", z::enumeration(&["bottom", "middle", "top"]).optional()),
+                ])
+                .optional(),
+            ),
+            ("visible", z::bool().optional()),
+        ]),
+        "animate" => {
+            f.extend([
+                ("ids", z::array(target()).min(1.0).max(100.0)),
+                ("in", anim_in().nullable().optional()),
+                ("out", anim_out().optional()),
+                ("start", secs().optional()),
+                ("stagger", z::num().min(0.0).max(10.0).optional()),
+            ]);
+            f.extend(timing().into_iter().filter(|(k, _)| *k != "animation"));
+        }
         "delete_page" => f.push(("page", page_ref())),
         "move_page" => f.extend([("page", page_ref()), ("after", page_ref().nullable())]),
         "replace_text" => f.extend([
@@ -301,6 +431,7 @@ fn kit_fields() -> Vec<(&'static str, Schema)> {
         ("graphics", z::array(hub::asset_id()).max(200.0).optional()),
         ("photos", z::array(hub::asset_id()).max(200.0).optional()),
         ("guidelines", hub::guideline_sections().optional()),
+        ("motion", hub::motion().optional()),
     ]
 }
 
@@ -328,10 +459,14 @@ fn tool_schema(name: &str) -> Option<Schema> {
         "search_templates" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(40.0).optional())]),
         "search_media" => z::obj([
             ("query", z::str().min(1.0).max(100.0)),
-            ("type", z::enumeration(&["image", "gif", "sticker"]).optional()),
+            ("type", z::enumeration(&["image", "gif", "sticker", "video", "audio"]).optional()),
             ("page", z::num().int().min(1.0).max(20.0).optional()),
         ]),
-        "list_uploads" => z::obj([("query", z::str().max(100.0).optional()), ("limit", z::num().int().min(1.0).max(100.0).optional())]),
+        "list_uploads" => z::obj([
+            ("query", z::str().max(100.0).optional()),
+            ("limit", z::num().int().min(1.0).max(100.0).optional()),
+            ("type", z::enumeration(&["image", "video", "audio", "all"]).optional()),
+        ]),
         "upload_image" => z::obj([
             ("filename", z::str().min(1.0).max(200.0).optional()),
             ("data_base64", z::str().min(1.0).optional()),
@@ -363,12 +498,20 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ("brand_kit", z::str().max(80.0).optional()),
         ]),
         "get_design" => z::obj([("design_id", z::str()), ("page", page())]),
-        "screenshot_page" => z::obj([("design_id", z::str()), ("page", page()), ("width", z::num().int().min(200.0).max(2000.0).optional())]),
+        "screenshot_page" => z::obj([
+            ("design_id", z::str()),
+            ("page", page()),
+            ("width", z::num().int().min(120.0).max(2000.0).optional()),
+            ("time", z::num().min(0.0).max(600.0).optional()),
+            ("frames", z::num().int().min(2.0).max(12.0).optional()),
+            ("times", z::array(z::num().min(0.0).max(600.0)).min(1.0).max(12.0).optional()),
+        ]),
         "export_design" => z::obj([
             ("design_id", z::str()),
             ("format", z::enumeration(&["png", "jpg", "pdf", "pdf-print", "pptx", "svg", "mp4", "gif"])),
             ("pages", z::array(z::num().int().min(1.0)).optional()),
             ("scale", z::num().min(0.25).max(4.0).optional()),
+            ("width", z::num().int().min(16.0).max(3840.0).optional()),
         ]),
         "undo_ai_changes" => z::obj([("design_id", z::str())]),
         "bulk_create" => z::obj([

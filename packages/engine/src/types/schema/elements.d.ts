@@ -71,9 +71,11 @@ export interface ImageEditStack {
     version: 1;
 }
 /** Entrance animation (MV-002). Evaluated deterministically from (element, page time) — see @oc/render-core motion. */
-export type AnimPreset = 'fade' | 'rise' | 'drop' | 'pan' | 'pop' | 'zoom' | 'wipe' | 'blur' | 'tumble' | 'breathe' | 'slide' | 'flip' | 'stomp' | 'spin' | 'bounce' | 'float' | 'shrink' | 'typewriter';
+export type AnimPreset = 'fade' | 'rise' | 'drop' | 'pan' | 'pop' | 'zoom' | 'wipe' | 'blur' | 'tumble' | 'breathe' | 'slide' | 'flip' | 'stomp' | 'spin' | 'bounce' | 'float' | 'shrink' | 'typewriter' | 'draw';
 export declare const ANIM_PRESETS: readonly AnimPreset[];
 export type AnimDirection = 'up' | 'down' | 'left' | 'right';
+/** How an entrance moves over its duration (default: ease-out). */
+export type AnimEasing = 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
 /** Text can animate as a whole or one line (paragraph), word or letter at a time. */
 export type AnimUnit = 'element' | 'line' | 'word' | 'char';
 export interface ElementAnim {
@@ -89,6 +91,9 @@ export interface ElementAnim {
     staggerMs?: number;
     /** Presentations (PS-010): appear on the Nth click instead of automatically (1-based build step). */
     onClick?: number;
+    easing?: AnimEasing;
+    /** Travel of moving presets (rise, drop, pan, slide, float, bounce) in px; default: from the element size. */
+    distance?: number;
 }
 /** Keyframes (MV-100): animate any of these properties over page time, as offsets from the element's own values. */
 export type KeyframeProp = 'x' | 'y' | 'scale' | 'rotate' | 'opacity' | 'blur';

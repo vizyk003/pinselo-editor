@@ -30,7 +30,7 @@ use crate::docx::{
     DepError, DepResult, DocxDeps, DocxError, DocxImage, DocxMeta, ImageType, export_docx,
 };
 use crate::renderer::{
-    ImageFormat, RasterOptions, RenderError, RenderFuture, RenderHost, Renderer,
+    ImageFormat, RasterOptions, RenderError, RenderFuture, RenderHost, Renderer, Rgba,
 };
 
 /// Service settings (`@oc/config` values the render service reads).
@@ -531,6 +531,56 @@ impl Service {
         }))
     }
 
+    /// A page at moments of its playback (page time, ms) as one PNG: a single frame, or a filmstrip of up to 12
+    /// frames, four to a row, each `width_px` wide. Animations, element timing and captions are drawn as in the video;
+    /// videos show their poster. Times past the page's length show its last moment.
+    pub async fn render_page_at(
+        &self,
+        design_id: &str,
+        page_id: Option<&str>,
+        width_px: f64,
+        times_ms: &[f64],
+    ) -> Result<Option<PagePng>, SvcError> {
+        let Some(doc) = self.load_doc(design_id, &[], None).await? else {
+            return Ok(None);
+        };
+        let Some(page) = pick_page(&doc, page_id) else {
+            return Ok(None);
+        };
+        let tl = oc_schema::timeline::timeline_of(&doc, true);
+        let (start, len) = tl
+            .spans
+            .iter()
+            .find(|s| s.page.id == page.id)
+            .map_or((0.0, oc_schema::timeline::DEFAULT_PAGE_MS), |s| (s.start_ms, s.duration_ms));
+        let pw = doc.meta.dims.w;
+        let scale = (2400f64.min(width_px.max(16.0)) / pw).clamp(0.05, 4.0);
+        let mut frames = Vec::new();
+        for &t in times_ms.iter().take(12) {
+            // The last frame of a page is just before the next page starts.
+            let t = t.clamp(0.0, (len - 1.0).max(0.0));
+            let opts = RasterOptions {
+                scale,
+                time_ms: Some(t),
+                caption_time_ms: Some(start + t),
+                ..RasterOptions::default()
+            };
+            frames.push(self.renderer.render_rgba(self, &doc, &page.id, &opts).await?);
+        }
+        let Some(first) = frames.first() else {
+            return Ok(None);
+        };
+        let (fw, fh) = (first.width, first.height);
+        let sheet = if frames.len() == 1 {
+            frames.pop().expect("one frame")
+        } else {
+            filmstrip(&frames, fw, fh)
+        };
+        let (w, h) = (f64::from(sheet.width), f64::from(sheet.height));
+        let png = self.renderer.encode_png(&sheet).await?;
+        Ok(Some(PagePng { png, w, h }))
+    }
+
     /// A chart block rendered as PNG (2×).
     pub async fn chart_png(
         &self,
@@ -794,5 +844,43 @@ mod tests {
     fn names() {
         assert_eq!(safe_name("  Q3 report: final!  "), "Q3 report final");
         assert_eq!(safe_name("日本"), "design");
+    }
+}
+
+/// Frames of one size laid out four to a row on a grey sheet, 8 px apart, in reading order.
+pub fn filmstrip(frames: &[Rgba], fw: u32, fh: u32) -> Rgba {
+    const GAP: u32 = 8;
+    let n = frames.len() as u32;
+    let cols = n.clamp(1, 4);
+    let rows = n.div_ceil(cols);
+    let (w, h) = (cols * fw + (cols + 1) * GAP, rows * fh + (rows + 1) * GAP);
+    let mut pixels = [0x9a, 0x9a, 0x9a, 0xff].repeat((w * h) as usize);
+    for (i, f) in frames.iter().enumerate() {
+        let (c, r) = (i as u32 % cols, i as u32 / cols);
+        let (x0, y0) = (GAP + c * (fw + GAP), GAP + r * (fh + GAP));
+        let (cw, ch) = (f.width.min(fw), f.height.min(fh));
+        for y in 0..ch {
+            let src = (y * f.width * 4) as usize;
+            let dst = (((y0 + y) * w + x0) * 4) as usize;
+            pixels[dst..dst + (cw * 4) as usize].copy_from_slice(&f.pixels[src..src + (cw * 4) as usize]);
+        }
+    }
+    Rgba { width: w, height: h, pixels }
+}
+
+#[cfg(test)]
+mod filmstrip_tests {
+    use super::*;
+
+    #[test]
+    fn lays_frames_out_four_to_a_row() {
+        let frame = |v: u8| Rgba { width: 2, height: 3, pixels: vec![v; 2 * 3 * 4] };
+        let s = filmstrip(&[frame(1), frame(2), frame(3), frame(4), frame(5)], 2, 3);
+        assert_eq!((s.width, s.height), (4 * 2 + 5 * 8, 2 * 3 + 3 * 8));
+        let at = |x: u32, y: u32| s.pixels[((y * s.width + x) * 4) as usize];
+        assert_eq!(at(8, 8), 1);
+        assert_eq!(at(8 + 3 * 10, 8), 4);
+        assert_eq!(at(8, 8 + 3 + 8), 5);
+        assert_eq!(at(0, 0), 0x9a);
     }
 }

@@ -17,6 +17,7 @@ mod files;
 mod guide;
 mod layout;
 mod live;
+mod motion;
 mod schema;
 mod tools;
 mod view;

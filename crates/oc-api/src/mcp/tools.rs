@@ -147,7 +147,38 @@ fn snapshot(ydoc: &yrs::Doc) -> Result<(Value, oc_schema::design::DesignDoc), Fa
 }
 
 /// Import an image for an edit: an https URL, a stock result or an existing asset of the user.
-async fn import_image(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Map<String, Value>) -> Result<Value, Fail> {
+/// What a file kind is called in errors.
+fn kind_word(want: &str) -> &'static str {
+    match want {
+        "video" => "video",
+        "audio" => "sound",
+        _ => "image",
+    }
+}
+
+/// AssetRef JSON of an asset row or ingest result: media keep their length and sound; sounds have no size.
+fn media_ref(mut a: Value, want: &str) -> Value {
+    if want == "image" {
+        return a;
+    }
+    for k in ["w", "h"] {
+        if !a[k].is_number() {
+            a[k] = json!(0);
+        }
+    }
+    if let Some(m) = a.as_object_mut() {
+        m.retain(|_, v| !v.is_null());
+    }
+    a
+}
+
+/// An image, video or sound for an operation (`want`: "image", "video" or "audio"), from the user's uploads, a brand
+/// kit, stock, or a URL, as the design's AssetRef JSON.
+async fn import_media(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Map<String, Value>, want: &str) -> Result<Value, Fail> {
+    let fits = |kind: &Value| match want {
+        "image" => kind == "image" || kind == "svg",
+        k => kind == k,
+    };
     let by_name;
     let src = if let Some(b) = src.get("brand") {
         let kits = crate::routes::brandhub::accessible_kits(s, u.id).await.map_err(|e| Fail::Other(e.to_string()))?;
@@ -158,20 +189,28 @@ async fn import_image(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
         src
     };
     if let Some(id) = src.get("asset").and_then(Value::as_str) {
-        if let Some(a) = doc_assets.get(id) {
+        if let Some(a) = doc_assets.get(id).filter(|a| fits(&a["kind"])) {
             return Ok(a.clone());
         }
         let a = pg::json_one(
             &s.pool,
-            "SELECT id, kind, sha256, mime, width, height, name FROM assets WHERE id = $1 AND trashed_at IS NULL
+            "SELECT id, kind, sha256, mime, width, height, name, duration_ms, has_audio FROM assets WHERE id = $1 AND trashed_at IS NULL
        AND (owner_id = $2 OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2))",
             &[pg::text(id), pg::uuid(u.id)],
         )
         .await?;
         let Some(a) = a else {
-            return tool_err(format!("No image asset {id}. Use list_uploads or get_brand_kit for asset ids."));
+            return tool_err(format!("No {} asset {id}. Use list_uploads or get_brand_kit for asset ids.", kind_word(want)));
         };
-        return Ok(json!({ "id": a["id"], "kind": a["kind"], "sha256": a["sha256"], "mime": a["mime"], "w": a["width"], "h": a["height"], "name": a["name"] }));
+        if !fits(&a["kind"]) {
+            return tool_err(format!("{id} is a {} file, not a {}.", a["kind"].as_str().unwrap_or("other"), kind_word(want)));
+        }
+        let mut r = json!({ "id": a["id"], "kind": a["kind"], "sha256": a["sha256"], "mime": a["mime"], "w": a["width"], "h": a["height"], "name": a["name"] });
+        if want != "image" {
+            r["durationMs"] = a["duration_ms"].clone();
+            r["hasAudio"] = a["has_audio"].clone();
+        }
+        return Ok(media_ref(r, want));
     }
     need(u, "assets:write")?;
     let run = async {
@@ -183,12 +222,12 @@ async fn import_image(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
             let Some(p) = crate::stock::PROVIDERS.iter().copied().find(|p| p.id() == pid && p.enabled(s)) else {
                 return tool_err(format!("Unknown media provider {pid}."));
             };
-            let kind = st.get("type").and_then(Value::as_str).unwrap_or("image");
+            let kind = st.get("type").and_then(Value::as_str).unwrap_or(want);
             let m = p.media(s, kind, st["id"].as_str().unwrap_or("")).await.map_err(Fail::Other)?;
             crate::routes::content::download(&m.url, |h| p.host_allowed(h), &file).await.map_err(Fail::Other)?;
             attribution = Some(m.attribution);
             name = m.filename;
-            source = if kind == "image" { "stock" } else { "gif" };
+            source = if kind == "gif" || kind == "sticker" { "gif" } else { "stock" };
         } else {
             let url = src["url"].as_str().unwrap_or("");
             crate::routes::content::download(url, |_| true, &file).await.map_err(Fail::Other)?;
@@ -209,17 +248,17 @@ async fn import_image(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
         match r {
             crate::routes::assets::Ingest::Error { error, message, .. } => tool_err(message.unwrap_or_else(|| error.to_owned())),
             crate::routes::assets::Ingest::Asset(a) => {
-                if a["kind"] != "image" && a["kind"] != "svg" {
-                    return tool_err("That file is not an image.");
+                if !fits(&a["kind"]) {
+                    return tool_err(format!("That file is not {}.", if want == "image" { "an image" } else if want == "video" { "a video" } else { "a sound" }));
                 }
-                Ok(a)
+                Ok(media_ref(a, want))
             }
         }
     };
     match run.await {
         Ok(a) => Ok(a),
         Err(Fail::Tool(m)) => Err(Fail::Tool(m)),
-        Err(Fail::Other(m)) => tool_err(format!("Couldn’t import the image: {m}")),
+        Err(Fail::Other(m)) => tool_err(format!("Couldn’t import the {}: {m}", kind_word(want))),
     }
 }
 
@@ -445,6 +484,10 @@ pub(super) async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]
             if view::truthy(k.get("voice")) {
                 m.insert("voice".into(), k["voice"].clone());
             }
+            // How the brand moves (ms, px): edit_design's animation operations use these as their defaults.
+            if k["motion"].as_object().is_some_and(|m| !m.is_empty()) {
+                m.insert("motion".into(), k["motion"].clone());
+            }
             // The kit's brand book: only its outline here; get_brand_guidelines returns the text.
             if let Some(o) = k["id"].as_str().and_then(|id| outlines.get(id)).filter(|o| !o.is_empty()) {
                 m.insert("guidelines".into(), json!({ "sections": o, "read": "Call get_brand_guidelines { brand_kit } and follow them before designing." }));
@@ -560,7 +603,7 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                 .take(30)
                 .map(|i| {
                     let mut m = Map::new();
-                    for k in ["provider", "id", "title", "w", "h", "thumb", "license"] {
+                    for k in ["provider", "id", "title", "w", "h", "thumb", "license", "duration"] {
                         if let Some(v) = i.get(k) {
                             m.insert(k.into(), v.clone());
                         }
@@ -576,14 +619,37 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
         "list_uploads" => {
             need(u, "designs:read")?;
             let q = trimmed_query(a).map(|q| like_escape(&q));
+            // Images by default; videos and sounds for add_video and add_audio.
+            let kinds = match a.get("type").and_then(Value::as_str) {
+                Some("video") => "kind = 'video'",
+                Some("audio") => "kind = 'audio'",
+                Some("all") => "kind IN ('image','svg','video','audio')",
+                _ => "kind IN ('image','svg')",
+            };
             let rows = pg::json_rows(
                 &s.pool,
-                "SELECT id, name, kind, width, height, created_at FROM assets WHERE owner_id = $1 AND trashed_at IS NULL AND kind IN ('image','svg') AND source <> 'emoji'
-       AND ($2::text IS NULL OR name ILIKE '%' || $2 || '%' ESCAPE '\\') ORDER BY created_at DESC LIMIT $3",
+                &format!("SELECT id, name, kind, width, height, duration_ms, created_at FROM assets WHERE owner_id = $1 AND trashed_at IS NULL AND {kinds} AND source <> 'emoji'
+       AND ($2::text IS NULL OR name ILIKE '%' || $2 || '%' ESCAPE '\\') ORDER BY created_at DESC LIMIT $3"),
                 &[pg::uuid(u.id), pg::opt_text(q), pg::Arg::Int(Some(a.get("limit").and_then(Value::as_f64).unwrap_or(30.0) as i64))],
             )
             .await?;
-            let list: Vec<Value> = rows.iter().map(|r| json!({ "asset": r["id"], "name": r["name"], "w": r["width"], "h": r["height"], "uploaded": r["created_at"] })).collect();
+            let list: Vec<Value> = rows
+                .iter()
+                .map(|r| {
+                    let mut o = json!({ "asset": r["id"], "name": r["name"], "w": r["width"], "h": r["height"], "uploaded": r["created_at"] });
+                    if r["kind"] == "video" || r["kind"] == "audio" {
+                        o["kind"] = r["kind"].clone();
+                        o["duration"] = super::motion::secs(view::num(&r["duration_ms"]));
+                        if r["kind"] == "audio"
+                            && let Some(m) = o.as_object_mut()
+                        {
+                            m.remove("w");
+                            m.remove("h");
+                        }
+                    }
+                    o
+                })
+                .collect();
             Ok(text(&json!({ "uploads": list })))
         }
         "upload_image" => upload_image(s, u, a).await,
@@ -853,6 +919,16 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             if let Some(r) = super::brand::rules(s, u.id, &id).await? {
                 out.insert("brand".into(), r.view());
             }
+            // Timing problems of the pages shown (and of the whole video).
+            let shown: Option<Vec<String>> = page_id.clone().map(|p| vec![p]);
+            let video = super::motion::video_checks(&json, &typed, shown.as_deref());
+            if !video.is_empty() {
+                out.insert("videoCheck".into(), Value::Array(video));
+            }
+            let motion = super::brand::motion_kit(s, u.id, &id, &json).await?;
+            if motion.m.as_object().is_some_and(|m| !m.is_empty()) {
+                out.insert("motion".into(), json!({ "kit": motion.name, "rules": motion.m, "note": "Animations and page transitions in edit_design take these as their defaults (times in ms, travel in px)." }));
+            }
             // Text that strays from the kit's fonts and text styles, on the pages shown.
             if let Some(k) = super::brand::style_kit(s, u.id, &id, &json).await? {
                 let issues = k.check(text_elements(&json, &typed, page_id.as_deref()).iter().map(|(i, e)| (i.as_str(), *e)));
@@ -875,26 +951,55 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             need(u, "designs:read")?;
             let id = a["design_id"].as_str().unwrap_or("").to_owned();
             access(s, u, &id, Role::View).await?;
+            let timed = a.get("time").is_some() || a.get("frames").is_some() || a.get("times").is_some();
+            // The design is read when a page number must be resolved or the page's length is needed.
+            let typed = if matches!(a.get("page"), Some(Value::Number(_))) || timed {
+                match live::read_doc(s, &id, u.token_id).await? {
+                    Some(ydoc) => Some(snapshot(&ydoc)?.1),
+                    None => None,
+                }
+            } else {
+                None
+            };
             let page_id = match a.get("page") {
                 Some(Value::String(p)) => Value::String(p.clone()),
-                Some(p @ Value::Number(n)) => {
-                    let found = match live::read_doc(s, &id, u.token_id).await? {
-                        Some(ydoc) => {
-                            let (_, typed) = snapshot(&ydoc)?;
-                            view::sorted_page_ids(&typed).get((n.as_f64().unwrap_or(0.0) as usize).wrapping_sub(1)).cloned()
-                        }
-                        None => None,
-                    };
-                    match found {
-                        Some(pid) => Value::String(pid),
-                        None => return tool_err(format!("No page {}.", page_label(p))),
-                    }
-                }
+                Some(p @ Value::Number(n)) => match typed.as_ref().and_then(|t| view::sorted_page_ids(t).get((n.as_f64().unwrap_or(0.0) as usize).wrapping_sub(1)).cloned()) {
+                    Some(pid) => Value::String(pid),
+                    None => return tool_err(format!("No page {}.", page_label(p))),
+                },
                 _ => Value::Null,
             };
-            let res = render(s, "/internal/page-png", &json!({ "designId": id, "pageId": page_id, "w": a.get("width").cloned().unwrap_or(json!(1024)) }), 120_000).await?;
+            if !timed {
+                let res = render(s, "/internal/page-png", &json!({ "designId": id, "pageId": page_id, "w": a.get("width").cloned().unwrap_or(json!(1024)) }), 120_000).await?;
+                let png = res.bytes().await.map_err(|e| Fail::Other(e.to_string()))?;
+                return Ok(json!({ "content": [{ "type": "image", "data": base64::engine::general_purpose::STANDARD.encode(&png), "mimeType": "image/png" }] }));
+            }
+            // Moments of the page's playback: one (`time`), evenly spread frames ending on its last moment (`frames`), or
+            // the given ones (`times`), in seconds of page time.
+            let len = typed.as_ref().map_or(oc_schema::timeline::DEFAULT_PAGE_MS, |t| {
+                let tl = oc_schema::timeline::timeline_of(t, true);
+                let pid = page_id.as_str().map(str::to_owned).or_else(|| view::sorted_page_ids(t).first().cloned());
+                tl.spans.iter().find(|sp| Some(sp.page.id.to_string()) == pid).map_or(oc_schema::timeline::DEFAULT_PAGE_MS, |sp| sp.duration_ms)
+            });
+            let times: Vec<f64> = if let Some(t) = a.get("time").and_then(Value::as_f64) {
+                vec![t * 1000.0]
+            } else if let Some(ts) = a.get("times").and_then(Value::as_array) {
+                ts.iter().filter_map(Value::as_f64).map(|t| t * 1000.0).collect()
+            } else {
+                let n = a.get("frames").and_then(Value::as_f64).unwrap_or(6.0).clamp(2.0, 12.0) as usize;
+                (1..=n).map(|i| (len * i as f64 / n as f64).round()).collect()
+            };
+            let one = times.len() == 1;
+            let w = a.get("width").and_then(Value::as_f64).unwrap_or(if one { 1024.0 } else { (2400.0 / times.len().min(4) as f64).min(360.0).floor() });
+            let res = render(s, "/internal/page-png", &json!({ "designId": id, "pageId": page_id, "w": w, "timesMs": times }), 180_000).await?;
             let png = res.bytes().await.map_err(|e| Fail::Other(e.to_string()))?;
-            Ok(json!({ "content": [{ "type": "image", "data": base64::engine::general_purpose::STANDARD.encode(&png), "mimeType": "image/png" }] }))
+            let at: Vec<String> = times.iter().map(|t| format!("{} s", crate::js::num((t.clamp(0.0, len) / 10.0).round() / 100.0))).collect();
+            let note = if one {
+                format!("The page at {} of its {} s.", at[0], crate::js::num((len / 10.0).round() / 100.0))
+            } else {
+                format!("Frames at {} (left to right, then the next row) of the page's {} s. Videos show their poster frame.", at.join(", "), crate::js::num((len / 10.0).round() / 100.0))
+            };
+            Ok(json!({ "content": [{ "type": "text", "text": note }, { "type": "image", "data": base64::engine::general_purpose::STANDARD.encode(&png), "mimeType": "image/png" }] }))
         }
         "export_design" => {
             need(u, "exports")?;
@@ -908,6 +1013,9 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                 body.insert("pages".into(), Value::Array(p.iter().map(|x| super::edit::jnum(x.as_f64().unwrap_or(0.0) - 1.0)).collect()));
             }
             body.insert("scale".into(), a.get("scale").cloned().unwrap_or(json!(1)));
+            if let Some(w) = a.get("width") {
+                body.insert("width".into(), w.clone());
+            }
             body.insert("quality".into(), json!(90));
             body.insert("transparent".into(), json!(false));
             body.insert("embeds".into(), json!(crate::routes::docs::embed_allow_list(s, Some(u.id), &id).await?));
@@ -959,6 +1067,7 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
     let id = a["design_id"].as_str().unwrap_or("").to_owned();
     let agent = agent_for(s, u, &id).await?;
     let ops = a["operations"].as_array().cloned().unwrap_or_default();
+    let ops_in = ops.clone();
     // The team's brand controls, as the editor applies them to its pickers: nothing is applied if an operation breaks one.
     if let Some(r) = super::brand::rules(s, u.id, &id).await?
         && let Some(m) = r.check(&ops)
@@ -972,13 +1081,15 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
     };
     let mut images = HashMap::new();
     for (i, op) in ops.iter().enumerate() {
-        let src = match op["op"].as_str() {
-            Some("add_image") => op.get("source"),
-            Some("update") => op.get("image"),
-            _ => None,
+        let (src, want) = match op["op"].as_str() {
+            Some("add_image") => (op.get("source"), "image"),
+            Some("update") => (op.get("image"), "image"),
+            Some("add_video") => (op.get("source"), "video"),
+            Some("add_audio") => (op.get("source"), "audio"),
+            _ => (None, "image"),
         };
         if let Some(src) = src {
-            match import_image(s, u, src, &doc_assets).await {
+            match import_media(s, u, src, &doc_assets, want).await {
                 Ok(img) => {
                     images.insert(i, img);
                 }
@@ -986,6 +1097,10 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
             }
         }
     }
+    let kit = match live::read_doc(s, &id, u.token_id).await? {
+        Some(ydoc) => super::brand::motion_kit(s, u.id, &id, &oc_crdt::from_y_value(&ydoc)).await?,
+        None => super::motion::Kit::default(),
+    };
     let actor = format!("ai:{}", agent.token_id);
     let now = s.now_ms() as f64;
     let r = live::change(
@@ -993,7 +1108,7 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
         &id,
         &agent,
         move |ydoc| {
-            let ctx = EditContext { ydoc, actor, images, now };
+            let ctx = EditContext { ydoc, actor, images, now, kit };
             let res = run_edits(&ops, &ctx);
             let pages = {
                 use yrs::{Map as _, Transact as _};
@@ -1036,12 +1151,18 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
     if v.applied > 0
         && let Some(ydoc) = live::read_doc(s, &id, u.token_id).await?
     {
-        let (json, _) = snapshot(&ydoc)?;
+        let (json, typed) = snapshot(&ydoc)?;
         if let Some(k) = super::brand::style_kit(s, u.id, &id, &json).await? {
             let issues = k.check(v.touched.iter().filter_map(|t| json["elements"].get(t).map(|e| (t.as_str(), e))));
             if !issues.is_empty() {
                 check.get_or_insert_with(Vec::new).extend(issues);
             }
+        }
+        // Timing: text on screen too briefly to read, the parts of a Reels or Stories video the app covers, length.
+        let pages: Vec<String> = v.touched.iter().filter_map(|t| oc_schema::tree::page_of(&typed.pages, &typed.elements, t).map(str::to_owned)).chain(v.page_id.clone()).collect();
+        let issues = super::motion::video_checks(&json, &typed, if timing_only(&ops_in) { None } else { Some(&pages) });
+        if !issues.is_empty() {
+            check.get_or_insert_with(Vec::new).extend(issues);
         }
     }
     let next = match &check {
@@ -1061,6 +1182,12 @@ async fn edit_design(s: &AppState, u: &BearerUser, a: &Value) -> R {
         res["isError"] = json!(v.applied == 0);
     }
     Ok(res)
+}
+
+/// Whether a batch changes only design-wide timing (page lengths, transitions, sound, captions), so the video checks
+/// look at every page.
+fn timing_only(ops: &[Value]) -> bool {
+    ops.iter().all(|o| matches!(o["op"].as_str(), Some("update_page" | "add_audio" | "update_audio" | "remove_audio" | "set_captions" | "move_page" | "delete_page")))
 }
 
 /// Error results.

@@ -1302,7 +1302,8 @@
       "updatedAt": "<ts>",
       "voice": "",
       "workspaceId": "00000000-0000-4000-8000-000000001001",
-      "textStyles": []
+      "textStyles": [],
+      "motion": {}
      }
     },
     "headers": {

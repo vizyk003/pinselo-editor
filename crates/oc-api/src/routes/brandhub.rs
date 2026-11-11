@@ -25,7 +25,7 @@ pub fn routes() -> Router<AppState> {
 
 // ---------------------------------------------------------------- shared helpers
 
-pub const KIT_COLS: &str = r#"k.id, k.workspace_id AS "workspaceId", k.name, k.is_default AS "isDefault", k.colors, k.palettes, k.fonts, k.logos, k.photos, k.graphics, k.voice, k.text_styles AS "textStyles", k.updated_at AS "updatedAt""#;
+pub const KIT_COLS: &str = r#"k.id, k.workspace_id AS "workspaceId", k.name, k.is_default AS "isDefault", k.colors, k.palettes, k.fonts, k.logos, k.photos, k.graphics, k.voice, k.text_styles AS "textStyles", k.motion, k.updated_at AS "updatedAt""#;
 
 /// `defaultKit(workspaceId)`: the workspace's default kit as a row (`KIT_COLS`).
 pub async fn default_kit(state: &AppState, workspace_id: uuid::Uuid) -> Result<Option<serde_json::Value>, sqlx::Error> {
@@ -37,10 +37,11 @@ pub async fn save_kit(state: &AppState, workspace_id: uuid::Uuid, user_id: uuid:
     let kid = id.map_or_else(|| oc_db::uuid().to_string(), str::to_owned);
     let js = |k: &str| crate::http::jsjson::stringify(kit.get(k).unwrap_or(&serde_json::Value::Null));
     sqlx::query(
-        "INSERT INTO brand_kits(id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by, text_styles, updated_at)
-     VALUES ($1::uuid,$2,$3, NOT EXISTS (SELECT 1 FROM brand_kits WHERE workspace_id = $2 AND is_default), $4::jsonb,$5::jsonb,$6::jsonb,$7::jsonb,$8::jsonb,$9::jsonb,$10,$11, COALESCE($12::jsonb, '[]'), now())
+        "INSERT INTO brand_kits(id, workspace_id, name, is_default, colors, palettes, fonts, logos, photos, graphics, voice, created_by, text_styles, motion, updated_at)
+     VALUES ($1::uuid,$2,$3, NOT EXISTS (SELECT 1 FROM brand_kits WHERE workspace_id = $2 AND is_default), $4::jsonb,$5::jsonb,$6::jsonb,$7::jsonb,$8::jsonb,$9::jsonb,$10,$11, COALESCE($12::jsonb, '[]'), COALESCE($13::jsonb, '{}'), now())
      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, colors = EXCLUDED.colors, palettes = EXCLUDED.palettes, fonts = EXCLUDED.fonts, logos = EXCLUDED.logos,
-       photos = EXCLUDED.photos, graphics = EXCLUDED.graphics, voice = EXCLUDED.voice, text_styles = COALESCE($12::jsonb, brand_kits.text_styles), updated_at = now()",
+       photos = EXCLUDED.photos, graphics = EXCLUDED.graphics, voice = EXCLUDED.voice, text_styles = COALESCE($12::jsonb, brand_kits.text_styles),
+       motion = COALESCE($13::jsonb, brand_kits.motion), updated_at = now()",
     )
     .bind(&kid)
     .bind(workspace_id)
@@ -54,6 +55,7 @@ pub async fn save_kit(state: &AppState, workspace_id: uuid::Uuid, user_id: uuid:
     .bind(kit.get("voice").and_then(serde_json::Value::as_str))
     .bind(user_id)
     .bind(kit.get("textStyles").filter(|v| v.is_array()).map(crate::http::jsjson::stringify))
+    .bind(kit.get("motion").filter(|v| v.is_object()).map(crate::http::jsjson::stringify))
     .execute(&state.pool)
     .await?;
     Ok(kid)
@@ -118,6 +120,33 @@ pub fn text_style() -> z::Schema {
     ])
 }
 
+/// Entrance animations an assistant can ask for (edit_design's `animation.in.type`), and the kit's `motion` defaults.
+pub const MOTION_IN: [&str; 14] = ["fade", "rise", "drop", "slide-left", "slide-right", "slide-up", "slide-down", "scale", "zoom", "pop", "wipe", "draw", "typewriter", "blur"];
+/// Exit animations (`animation.out.type`).
+pub const MOTION_OUT: [&str; 8] = ["fade", "rise", "drop", "slide", "scale", "zoom", "wipe", "blur"];
+/// Page transitions, plus "none".
+pub const MOTION_TRANSITIONS: [&str; 15] = ["none", "fade", "dissolve", "slide", "push", "cover", "reveal", "zoom", "wipe", "iris", "split", "flip", "blur", "spin", "drop"];
+
+/// A kit's motion rules (times in ms, travel in px): the defaults the AI connector's animation operations use, so a
+/// brand's videos move in its own style. `enter` is the default entrance, `text` the one for text, `draw` how lines draw
+/// in, `exit` the default exit, `stagger` the gap between elements that appear one after another, `transition` the page
+/// transition, and `bounce: false` rules out overshooting animations.
+pub fn motion() -> z::Schema {
+    let ms = || z::num().min(0.0).max(10_000.0).optional();
+    let easing = || z::enumeration(oc_schema::elements::ANIM_EASINGS).optional();
+    let enter = || z::obj([("type", z::enumeration(&MOTION_IN).optional()), ("duration", ms()), ("easing", easing()), ("distance", z::num().min(0.0).max(2000.0).optional())]).optional();
+    z::obj([
+        ("enter", enter()),
+        ("text", enter()),
+        ("draw", z::obj([("duration", ms()), ("easing", easing())]).optional()),
+        ("exit", z::obj([("type", z::enumeration(&MOTION_OUT).optional()), ("duration", ms())]).optional()),
+        ("stagger", ms()),
+        ("transition", z::obj([("type", z::enumeration(&MOTION_TRANSITIONS).optional()), ("duration", ms())]).optional()),
+        ("bounce", z::bool().optional()),
+        ("note", z::str().max(1000.0).optional()),
+    ])
+}
+
 /// `KitBody` (`partial`: `KitBody.partial()`, whose defaults still apply in zod 4) plus `workspaceId` when
 /// `extend` (the create route).
 pub fn kit_body(partial: bool, extend: bool) -> z::Schema {
@@ -132,10 +161,11 @@ pub fn kit_body(partial: bool, extend: bool) -> z::Schema {
         ("graphics", z::array(asset_id()).max(200.0).default(json!([]))),
         ("voice", z::str().max(4000.0).default(json!(""))),
         ("textStyles", z::array(text_style()).max(MAX_TEXT_STYLES as f64).default(json!([]))),
+        ("motion", motion().default(json!({}))),
     ];
     if extend {
-        let [a, b, c, d, e, f, g, h, i] = fields;
-        z::obj([a, b, c, d, e, f, g, h, i, ("workspaceId", z::str().uuid().optional())])
+        let [a, b, c, d, e, f, g, h, i, j] = fields;
+        z::obj([a, b, c, d, e, f, g, h, i, j, ("workspaceId", z::str().uuid().optional())])
     } else {
         z::obj(fields)
     }
@@ -247,7 +277,7 @@ async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) 
     if k.role != Some("edit") {
         return Ok(forbidden());
     }
-    let cur = pg::json_one(&s.pool, "SELECT name, colors, palettes, fonts, logos, photos, graphics, voice, text_styles AS \"textStyles\" FROM brand_kits WHERE id = $1::uuid", &[pg::text(&id)]).await?;
+    let cur = pg::json_one(&s.pool, "SELECT name, colors, palettes, fonts, logos, photos, graphics, voice, text_styles AS \"textStyles\", motion FROM brand_kits WHERE id = $1::uuid", &[pg::text(&id)]).await?;
     let mut next = cur.and_then(|c| c.as_object().cloned()).unwrap_or_default();
     // Only the fields actually sent: the schema's defaults would otherwise empty the rest of the kit.
     let sent = req.body().and_then(Value::as_object);
