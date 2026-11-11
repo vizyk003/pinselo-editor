@@ -21,6 +21,8 @@ const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.g
 const startOfWeek = (d: Date) => addDays(startOfDay(d), -((d.getDay() + 6) % 7));
 const timeFmt = (iso: string) => new Date(iso).toLocaleTimeString(getLocale(), { hour: 'numeric', minute: '2-digit' });
 const editable = isEditable;
+/** "P-001 · " before the design title, unless the title already starts with the post ID. */
+const refPrefix = (p: SocialPost) => (p.fields.ref && !(p.designTitle ?? '').startsWith(p.fields.ref) ? `${p.fields.ref} · ` : '');
 /** Statuses the review filter offers. */
 const REVIEW_FILTERS = ['in_review', 'changes_requested', 'approved', 'failed'] as const;
 
@@ -209,7 +211,7 @@ function PostPill({ post, accounts, onOpen }: { post: SocialPost; accounts: Soci
       <img className="thumb" src={thumbUrl(post.designId)} alt="" loading="lazy" />
       <span className="txt">
         <b>{post.scheduledAt ? timeFmt(post.scheduledAt) : t('No time')}</b>
-        <span>{post.fields.ref ? `${post.fields.ref} · ` : ''}{post.designTitle}</span>
+        <span>{refPrefix(post)}{post.designTitle}</span>
       </span>
       <Nets post={post} accounts={accounts} />
     </button>
@@ -229,7 +231,7 @@ function PostList({ posts, accounts, onOpen }: { posts: SocialPost[]; accounts: 
             <img src={thumbUrl(p.designId)} alt="" loading="lazy" />
             <div className="meta">
               <div className="row" style={{ gap: 10, flexWrap: 'wrap' }}>
-                <b>{p.fields.ref ? `${p.fields.ref} · ` : ''}{p.designTitle}</b>
+                <b>{refPrefix(p)}{p.designTitle}</b>
                 <span className={`status-dot ${p.status}`}>{t(STATUS_LABEL[p.status])}</span>
                 <span className="faint" style={{ fontSize: 12 }}>
                   {p.scheduledAt ? new Date(p.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'medium', timeStyle: 'short' }) : t('No time')}
@@ -282,7 +284,7 @@ function PostDetails({ post, accounts, onClose, onChanged }: { post: SocialPost;
     return <ScheduleDialog designId={post.designId} title={post.designTitle ?? ''} pageCount={design?.page_count ?? Math.max(1, ...post.pages.map((p) => p + 1))} post={post} onClose={() => setEditing(false)} onSaved={onChanged} />;
   }
   return (
-    <Modal title={`${post.fields.ref ? `${post.fields.ref} · ` : ''}${post.designTitle ?? t('Scheduled post')}`} onClose={onClose} size="lg">
+    <Modal title={`${refPrefix(post)}${post.designTitle ?? t('Scheduled post')}`} onClose={onClose} size="lg">
       <div className="planner-form">
         <div className="row" style={{ gap: 14, alignItems: 'flex-start' }}>
           <img src={thumbUrl(post.designId)} alt="" style={{ width: 120, borderRadius: 10, background: 'var(--surface-3)' }} />
