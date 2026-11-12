@@ -455,6 +455,47 @@ fn tool_schema(name: &str) -> Option<Schema> {
             .concat(),
         ),
         "list_designs" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(50.0).optional())]),
+        "list_planner_posts" => z::obj([
+            (
+                "status",
+                z::enumeration(&[
+                    "draft",
+                    "in_review",
+                    "changes_requested",
+                    "approved",
+                    "scheduled",
+                    "publishing",
+                    "published",
+                    "failed",
+                ])
+                .optional(),
+            ),
+            ("from", z::str().datetime_offset().optional()),
+            ("to", z::str().datetime_offset().optional()),
+            ("team", z::str().max(200.0).optional()),
+        ]),
+        "get_planner_post" => z::obj([("post", z::str().min(1.0).max(200.0))]),
+        "create_planner_post" | "update_planner_post" => {
+            let mut f: Vec<(&str, z::Schema)> = vec![
+                (
+                    "channels",
+                    z::array(z::enumeration(&["instagram", "facebook"]))
+                        .max(2.0)
+                        .optional(),
+                ),
+                ("scheduled_at", z::str().datetime_offset().optional()),
+                ("timezone", z::str().max(64.0).optional()),
+                ("caption", z::str().max(70_000.0).optional()),
+                ("fields", z::record(z::str().max(20_000.0)).optional()),
+                ("submit", z::bool().optional()),
+            ];
+            if name == "create_planner_post" {
+                f.insert(0, ("design", z::str().min(1.0).max(500.0)));
+            } else {
+                f.insert(0, ("post", z::str().min(1.0).max(200.0)));
+            }
+            z::obj_vec(f)
+        }
         "list_size_presets" => z::obj([("query", z::str().max(80.0).optional())]),
         "search_templates" => z::obj([("query", z::str().max(200.0).optional()), ("limit", z::num().int().min(1.0).max(40.0).optional())]),
         "search_media" => z::obj([
@@ -532,9 +573,10 @@ fn tool_schema(name: &str) -> Option<Schema> {
     })
 }
 
-pub const TOOLS: [&str; 22] = [
+pub const TOOLS: [&str; 26] = [
     "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link",
     "get_brand_kit", "get_brand_guidelines", "create_brand_kit", "update_brand_kit", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
+    "list_planner_posts", "get_planner_post", "create_planner_post", "update_planner_post",
 ];
 
 /// `getDotPath(path)` of the SDK.

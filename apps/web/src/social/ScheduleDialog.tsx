@@ -1,15 +1,15 @@
 /** Schedule a design to social networks (A16): pages, format, accounts, caption + hashtags, date/time + zone. */
-import { CalendarClock, Hash, Plus, Trash2, X as XIcon } from 'lucide-react';
+import { CalendarClock, Hash, Plus, Send, Trash2, X as XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import { ApiError } from '../api';
 import { Modal, useToast } from '../components/ui';
 import { t, tn } from '../i18n';
 import {
-  charCount, composeText, isoToZoned, localTz, PROVIDER_COLOR, socialApi, suggestHashtags, timeZones, zonedToIso,
-  type Provider, type SocialAccount, type SocialPost,
+  CHANNEL_LABEL, charCount, composeText, EDITORIAL_FIELDS, isoToZoned, TRANSLATION_FIELD, localTz, PROVIDER_COLOR, socialApi, suggestHashtags, timeZones, zonedToIso,
+  type Channel, type Provider, type Publisher, type SocialAccount, type SocialPost,
 } from './api';
-import { AccountBadge } from './AccountBadge';
+import { AccountBadge, ChannelLogo } from './AccountBadge';
 import './planner.css';
 
 export interface ScheduleProps {
@@ -46,6 +46,11 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
   const [tz, setTz] = useState(post?.timezone ?? localTz());
   const [when, setWhen] = useState(() => isoToZoned((post?.scheduledAt ? new Date(post.scheduledAt) : defaultWhen(initialAt)).toISOString(), post?.timezone ?? localTz()));
   const [options, setOptions] = useState<Record<string, unknown>>(post?.options ?? {});
+  const [publisher, setPublisher] = useState<Publisher>(post?.publisher ?? 'pinselo');
+  const [channels, setChannels] = useState<Channel[]>(post?.channels ?? ['instagram']);
+  const [fields, setFields] = useState<Record<string, string>>(post?.fields ?? {});
+  const external = publisher === 'external';
+  const wasApproved = !!post?.approvedAt && (post.status === 'approved' || post.status === 'scheduled');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
 
@@ -61,7 +66,7 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
   const zones = useMemo(timeZones, []);
   const suggestions = useMemo(() => suggestHashtags(texts, title).filter((s) => !tags.some((x) => x.toLowerCase() === s.toLowerCase())), [texts, title, tags]);
   const text = composeText(caption, tags);
-  const chosen = (accounts ?? []).filter((a) => selected.includes(a.id));
+  const chosen = external ? [] : (accounts ?? []).filter((a) => selected.includes(a.id));
   const limitsOf = (a: SocialAccount) => providers.find((p) => p.id === a.provider)?.limits;
   const pageList = pages.length ? pages : [...Array(pageCount).keys()];
 
@@ -87,19 +92,24 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
     setTagInput('');
   };
 
-  const save = async (status: 'draft' | 'scheduled') => {
+  const save = async (status: 'draft' | 'scheduled' | 'in_review') => {
     setErr('');
-    if (status === 'scheduled' && !selected.length) return setErr(t('Pick at least one account.'));
+    if (status !== 'draft' && external && !channels.length) return setErr(t('Pick Instagram, Facebook or both.'));
+    if (status !== 'draft' && !external && !selected.length) return setErr(t('Pick at least one account.'));
     let scheduledAt: string | null = null;
     if (when) {
       scheduledAt = zonedToIso(when, tz);
-      if (status === 'scheduled' && new Date(scheduledAt).getTime() < Date.now() - 60_000) return setErr(t('Pick a time in the future.'));
-    } else if (status === 'scheduled') return setErr(t('Pick a date and time.'));
+      if (status !== 'draft' && !external && new Date(scheduledAt).getTime() < Date.now() - 60_000) return setErr(t('Pick a time in the future.'));
+    } else if (status !== 'draft') return setErr(t('Pick a date and time.'));
     setBusy(true);
     try {
-      const body = { pages: format === 'mp4' ? [] : pages, format, caption, hashtags: tags, accounts: selected, options, scheduledAt, timezone: tz, status };
-      const r = post ? await socialApi.update(post.id, body) : await socialApi.create({ designId, ...body });
-      toast(status === 'draft' ? t('Draft saved') : t('Scheduled for {when}', { when: new Date(r.post.scheduledAt!).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) }));
+      const body = {
+        pages: format === 'mp4' ? [] : pages, format, caption, hashtags: tags, accounts: external ? [] : selected, options, scheduledAt, timezone: tz, status,
+        channels: external ? channels : [], fields,
+      };
+      const r = post ? await socialApi.update(post.id, body) : await socialApi.create({ designId, publisher, ...body });
+      toast(status === 'draft' ? t('Draft saved') : status === 'in_review' ? t('Sent for review')
+        : t('Scheduled for {when}', { when: new Date(r.post.scheduledAt!).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) }));
       onSaved?.(r.post);
       onClose();
     } catch (e) {
@@ -116,6 +126,32 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
   return (
     <Modal title={post ? t('Edit scheduled post') : t('Schedule to social')} onClose={onClose} size="lg">
       <div className="planner-form">
+        {!post && (
+          <div className="field">
+            <span>{t('Publish with')}</span>
+            <div className="segmented">
+              <button type="button" className={!external ? 'on' : ''} onClick={() => setPublisher('pinselo')}>{t('Pinselo (connected accounts)')}</button>
+              <button type="button" className={external ? 'on' : ''} onClick={() => setPublisher('external')}>{t('Your own publisher')}</button>
+            </div>
+            {external && <span className="faint" style={{ fontSize: 12 }}>{t('Your publishing tool posts it through the API once it is approved. Pinselo itself won’t post it.')}</span>}
+          </div>
+        )}
+        {wasApproved && <p className="warn-list" style={{ margin: 0 }}>{t('This post is approved. Saving changes sends it back to review.')}</p>}
+
+        {external ? (
+          <div className="field">
+            <span>{t('Post to')}</span>
+            <div className="chips">
+              {(['instagram', 'facebook'] as const).map((c) => (
+                <button key={c} type="button" className={`chip acct-chip ${channels.includes(c) ? 'active' : ''}`} aria-pressed={channels.includes(c)}
+                  onClick={() => setChannels(channels.includes(c) ? channels.filter((x) => x !== c) : [...channels, c])}>
+                  <ChannelLogo channel={c} size={20} />
+                  <span>{CHANNEL_LABEL[c]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
         <div className="field">
           <span>{t('Post to')}</span>
           {!accounts ? <div className="spinner" /> : (
@@ -131,6 +167,7 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
             </div>
           )}
         </div>
+        )}
 
         <div className="row wrap" style={{ gap: 16 }}>
           <div className="field">
@@ -158,6 +195,10 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
         <label className="field">
           <span>{t('Caption')}</span>
           <textarea className="input" rows={5} value={caption} onChange={(e) => setCaption(e.target.value)} placeholder={t('Write a caption…')} />
+        </label>
+        <label className="field">
+          <span>{t(TRANSLATION_FIELD.label)} <span className="faint">{t('— for review, not posted')}</span></span>
+          <textarea className="input" rows={3} value={fields[TRANSLATION_FIELD.key] ?? ''} onChange={(e) => setFields({ ...fields, [TRANSLATION_FIELD.key]: e.target.value })} />
         </label>
         {chosen.length > 0 && (
           <div className="char-counts">
@@ -210,7 +251,21 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
           </label>
         </div>
 
-        {(pinterest || youtube || tiktok) && (
+        <details className="net-options" open={EDITORIAL_FIELDS.some((f) => fields[f.key])}>
+          <summary>{t('Editorial details')}</summary>
+          <div className="row wrap" style={{ gap: 12 }}>
+            {EDITORIAL_FIELDS.map((f) => (
+              <label key={f.key} className="field" style={{ flex: f.multiline ? '1 1 100%' : '1 1 180px' }}>
+                <span>{t(f.label)}</span>
+                {f.multiline
+                  ? <textarea className="input" rows={2} value={fields[f.key] ?? ''} onChange={(e) => setFields({ ...fields, [f.key]: e.target.value })} />
+                  : <input className="input" value={fields[f.key] ?? ''} onChange={(e) => setFields({ ...fields, [f.key]: e.target.value })} />}
+              </label>
+            ))}
+          </div>
+        </details>
+
+        {!external && (pinterest || youtube || tiktok) && (
           <details className="net-options" open>
             <summary>{t('Network options')}</summary>
             {pinterest && (
@@ -257,9 +312,20 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
             {format !== 'mp4' && tn(pageList.length, '{n} image', '{n} images')}
           </div>
           <button type="button" className="btn" disabled={busy} onClick={() => save('draft')}>{t('Save draft')}</button>
-          <button type="button" className="btn primary" disabled={busy || blocking || !selected.length} onClick={() => save('scheduled')}>
-            <CalendarClock size={16} /> {busy ? t('Saving…') : t('Schedule')}
-          </button>
+          {external || wasApproved ? (
+            <button type="button" className="btn primary" disabled={busy || (external ? !channels.length : blocking || !selected.length)} onClick={() => save('in_review')}>
+              <Send size={16} /> {busy ? t('Saving…') : t('Submit for review')}
+            </button>
+          ) : (
+            <>
+              <button type="button" className="btn" disabled={busy || blocking || !selected.length} onClick={() => save('in_review')}>
+                <Send size={16} /> {t('Submit for review')}
+              </button>
+              <button type="button" className="btn primary" disabled={busy || blocking || !selected.length} onClick={() => save('scheduled')}>
+                <CalendarClock size={16} /> {busy ? t('Saving…') : t('Schedule')}
+              </button>
+            </>
+          )}
         </div>
       </div>
     </Modal>

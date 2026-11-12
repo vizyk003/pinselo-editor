@@ -195,7 +195,10 @@ async fn import_media(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
         let a = pg::json_one(
             &s.pool,
             "SELECT id, kind, sha256, mime, width, height, name, duration_ms, has_audio FROM assets WHERE id = $1 AND trashed_at IS NULL
-       AND (owner_id = $2 OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2))",
+       AND (owner_id = $2 OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2)
+            -- A brand kit's logos, photos and graphics are for everyone who can see the kit, wherever they were uploaded.
+            OR EXISTS (SELECT 1 FROM brand_kits k JOIN memberships m ON m.workspace_id = k.workspace_id AND m.user_id = $2
+                       WHERE k.logos ? assets.id OR k.photos ? assets.id OR k.graphics ? assets.id))",
             &[pg::text(id), pg::uuid(u.id)],
         )
         .await?;
@@ -539,6 +542,119 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             )
             .await?;
             Ok(text(&json!({ "designs": rows.iter().map(|r| design_summary(r, &s.cfg.web_origin)).collect::<Vec<_>>() })))
+        }
+        "list_planner_posts" => {
+            need(u, "designs:read")?;
+            // One brand at a time: a team by name or id, or "personal" for posts outside every team.
+            let want = opt_str(a, "team").map(|t| crate::js::trim(&t).to_lowercase()).filter(|t| !t.is_empty());
+            let personal = want.as_deref() == Some("personal");
+            let team: Option<uuid::Uuid> = match want.as_deref().filter(|_| !personal) {
+                Some(t) => {
+                    let teams: Vec<(uuid::Uuid, String)> = sqlx::query_as(
+                        "SELECT w.id, w.name FROM workspaces w JOIN memberships m ON m.workspace_id = w.id
+                         WHERE m.user_id = $1 AND NOT w.personal ORDER BY w.name",
+                    )
+                    .bind(u.id)
+                    .fetch_all(&s.pool)
+                    .await
+                    .map_err(ApiError::from)?;
+                    match teams.iter().find(|(id, name)| id.to_string() == t || name.to_lowercase() == t) {
+                        Some((id, _)) => Some(*id),
+                        None => {
+                            let names: Vec<&str> = teams.iter().map(|(_, n)| n.as_str()).collect();
+                            return tool_err(if names.is_empty() {
+                                "The user has no teams. Leave team out, or pass \"personal\".".to_owned()
+                            } else {
+                                format!("No team {t}. The user's teams: {}. Pass one of them, or \"personal\".", names.join(", "))
+                            });
+                        }
+                    }
+                }
+                None => None,
+            };
+            let rows: Vec<oc_social::publish::PostRow> = sqlx::query_as(
+                "SELECT p.* FROM social_posts p
+                 WHERE (p.owner_id = $1 OR p.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))
+                   AND ($2::text IS NULL OR p.status = $2)
+                   AND ($3::timestamptz IS NULL OR p.scheduled_at >= $3::timestamptz)
+                   AND ($4::timestamptz IS NULL OR p.scheduled_at < $4::timestamptz)
+                   AND ($5::uuid IS NULL OR p.workspace_id = $5)
+                   AND (NOT $6 OR p.workspace_id IS NULL)
+                 ORDER BY p.scheduled_at NULLS LAST, p.created_at LIMIT 200",
+            )
+            .bind(u.id)
+            .bind(opt_str(a, "status"))
+            .bind(opt_str(a, "from"))
+            .bind(opt_str(a, "to"))
+            .bind(team)
+            .bind(personal)
+            .fetch_all(&s.pool)
+            .await
+            .map_err(ApiError::from)?;
+            let mut posts = Vec::with_capacity(rows.len());
+            for p in &rows {
+                posts.push(crate::routes::v1_planner::out(s, p).await?);
+            }
+            Ok(text(&json!({ "posts": posts })))
+        }
+        "get_planner_post" => {
+            need(u, "designs:read")?;
+            let key = opt_str(a, "post").unwrap_or_default();
+            match crate::routes::v1_planner::find_for(s, u.id, None, &key).await? {
+                Ok(Some(p)) => Ok(text(
+                    &json!({ "post": crate::routes::v1_planner::out(s, &p).await? }),
+                )),
+                Ok(None) => tool_err(format!("No planner post {key}.")),
+                Err(()) => tool_err(format!(
+                    "Several posts use the post ID {key}; use the post's id."
+                )),
+            }
+        }
+        "create_planner_post" | "update_planner_post" => {
+            need(u, "designs:write")?;
+            // The planner's web rules apply as they are: an assistant drafts and submits, a person approves.
+            let mut body = Map::new();
+            for (from, to) in [
+                ("channels", "channels"),
+                ("scheduled_at", "scheduledAt"),
+                ("timezone", "timezone"),
+                ("caption", "caption"),
+                ("fields", "fields"),
+            ] {
+                if let Some(v) = a.get(from) {
+                    body.insert(to.into(), v.clone());
+                }
+            }
+            if a.get("submit").and_then(Value::as_bool) == Some(true) {
+                body.insert("status".into(), json!("in_review"));
+            }
+            let outcome = if name == "create_planner_post" {
+                body.insert("designId".into(), a["design"].clone());
+                body.insert("publisher".into(), json!("external"));
+                body.insert("format".into(), json!("jpg"));
+                body.entry("status").or_insert(json!("draft"));
+                crate::routes::social::create_post_as(s, u.id, Some(&Value::Object(body)), None)
+                    .await?
+            } else {
+                let key = opt_str(a, "post").unwrap_or_default();
+                let post = match crate::routes::v1_planner::find_for(s, u.id, None, &key).await? {
+                    Ok(Some(p)) => p,
+                    Ok(None) => return tool_err(format!("No planner post {key}.")),
+                    Err(()) => {
+                        return tool_err(format!(
+                            "Several posts use the post ID {key}; use the post's id."
+                        ));
+                    }
+                };
+                crate::routes::social::update_post_as(s, u.id, post, Some(&Value::Object(body)))
+                    .await?
+            };
+            match outcome {
+                Ok(p) => Ok(text(
+                    &json!({ "post": crate::routes::v1_planner::out(s, &p).await? }),
+                )),
+                Err(refusal) => tool_err(refusal.message()),
+            }
         }
         "list_size_presets" => {
             let q = opt_str(a, "query").map(|q| crate::js::trim(&q.to_lowercase()).to_owned());

@@ -3291,11 +3291,19 @@
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008002",
@@ -3304,21 +3312,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "published",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008003",
@@ -3327,21 +3348,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "publishing",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Steampost0000000",
        "designTitle": "Team post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008004",
@@ -3350,22 +3384,35 @@
        "ownerId": "00000000-0000-4000-8000-000000000002",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002",
         "00000000-0000-4000-8000-000000007001"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": "X: rate limited",
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008005",
@@ -3374,6 +3421,7 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {
         "00000000-0000-4000-8000-000000007001": {
          "at": "2025-01-01T00:00:00.000Z",
@@ -3388,18 +3436,30 @@
        },
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "failed",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Draft #idea",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008001",
@@ -3408,11 +3468,16 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": null,
        "status": "draft",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3445,11 +3510,19 @@
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008002",
@@ -3458,21 +3531,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "published",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008003",
@@ -3481,21 +3567,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "publishing",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Steampost0000000",
        "designTitle": "Team post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008004",
@@ -3504,22 +3603,35 @@
        "ownerId": "00000000-0000-4000-8000-000000000002",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002",
         "00000000-0000-4000-8000-000000007001"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": "X: rate limited",
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008005",
@@ -3528,6 +3640,7 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {
         "00000000-0000-4000-8000-000000007001": {
          "at": "2025-01-01T00:00:00.000Z",
@@ -3542,18 +3655,30 @@
        },
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "failed",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Draft #idea",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008001",
@@ -3562,11 +3687,16 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": null,
        "status": "draft",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3600,11 +3730,19 @@
         "00000000-0000-4000-8000-000000007002",
         "00000000-0000-4000-8000-000000007001"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": "X: rate limited",
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008005",
@@ -3613,6 +3751,7 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {
         "00000000-0000-4000-8000-000000007001": {
          "at": "2025-01-01T00:00:00.000Z",
@@ -3627,8 +3766,12 @@
        },
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "failed",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3661,11 +3804,19 @@
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Steampost0000000",
        "designTitle": "Team post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008004",
@@ -3674,11 +3825,16 @@
        "ownerId": "00000000-0000-4000-8000-000000000002",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       }
      ]
     },
@@ -3767,11 +3923,19 @@
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Steampost0000000",
        "designTitle": "Team post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008004",
@@ -3780,21 +3944,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000002",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sbobspost0000000",
        "designTitle": "Bob post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008006",
@@ -3803,11 +3980,16 @@
        "ownerId": "00000000-0000-4000-8000-000000000002",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "draft",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3935,13 +4117,14 @@
       },
       {
        "code": "invalid_value",
-       "message": "Invalid option: expected one of \"draft\"|\"scheduled\"",
+       "message": "Invalid option: expected one of \"draft\"|\"scheduled\"|\"in_review\"",
        "path": [
         "status"
        ],
        "values": [
         "draft",
-        "scheduled"
+        "scheduled",
+        "in_review"
        ]
       }
      ]
@@ -4236,11 +4419,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007002"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx https://example.test/pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [],
       "id": "{{urlPost}}",
@@ -4249,9 +4438,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-03T09:00:00.000Z",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "Europe/Berlin",
       "updatedAt": "<ts>"
      }
@@ -4300,11 +4492,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007006"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Launch day",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sgatedpost000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [
        "launch",
@@ -4316,9 +4514,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000003",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-03T09:00:00.000Z",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "Europe/Berlin",
       "updatedAt": "<ts>"
      }
@@ -4371,11 +4572,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007006"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Launch day",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sgatedpost000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [
        "launch",
@@ -4387,9 +4594,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000003",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": null,
       "status": "draft",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "Europe/Berlin",
       "updatedAt": "<ts>"
      }
@@ -4790,11 +5000,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007002"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Launch day",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [
        "launch",
@@ -4811,9 +5027,12 @@
        2
       ],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-03T09:00:00.000Z",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "UTC",
       "updatedAt": "<ts>"
      }
@@ -4866,11 +5085,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007003"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Launch day",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Steampost0000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [
        "launch",
@@ -4882,9 +5107,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-03T09:00:00.000Z",
       "status": "draft",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "europe/berlin",
       "updatedAt": "<ts>"
      }
@@ -5476,11 +5704,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007002"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Moved",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [],
       "id": "{{newPost}}",
@@ -5489,9 +5723,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-04T10:00:00.000Z",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "UTC",
       "updatedAt": "<ts>"
      }
@@ -5532,11 +5769,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007002"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Same time",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [],
       "id": "{{newPost}}",
@@ -5545,9 +5788,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-04T10:00:00.000Z",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "UTC",
       "updatedAt": "<ts>"
      }
@@ -5584,11 +5830,17 @@
     "body": {
      "post": {
       "accounts": [],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "jpg",
       "hashtags": [],
       "id": "{{newPost}}",
@@ -5597,9 +5849,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": null,
       "status": "draft",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "UTC",
       "updatedAt": "<ts>"
      }
@@ -5985,11 +6240,17 @@
        "00000000-0000-4000-8000-000000007002",
        "00000000-0000-4000-8000-000000007001"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "2025-01-01T00:00:00.000Z",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [
        "a",
@@ -6001,6 +6262,7 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {
        "00000000-0000-4000-8000-000000007001": {
         "at": "2025-01-01T00:00:00.000Z",
@@ -6010,6 +6272,8 @@
       },
       "scheduledAt": "2025-01-05T09:00:00.000Z",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "UTC",
       "updatedAt": "<ts>"
      }
@@ -6531,11 +6795,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007002"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Draft #idea",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "2025-01-01T00:00:00.000Z",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [],
       "id": "00000000-0000-4000-8000-000000008001",
@@ -6544,9 +6814,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "<ts>",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "UTC",
       "updatedAt": "<ts>"
      }
@@ -6580,11 +6853,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007006"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Launch day",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sgatedpost000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "png",
       "hashtags": [
        "launch",
@@ -6596,9 +6875,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000003",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "<ts>",
       "status": "scheduled",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "Europe/Berlin",
       "updatedAt": "<ts>"
      }
@@ -6651,11 +6933,17 @@
       "accounts": [
        "00000000-0000-4000-8000-000000007001"
       ],
+      "approvedAt": null,
+      "approvedBy": null,
+      "approvedVersion": null,
       "caption": "Launch day",
+      "channels": [],
+      "claimedAt": null,
       "createdAt": "<ts>",
       "designId": "Sadapost00000000",
       "designTitle": null,
       "error": null,
+      "fields": {},
       "format": "mp4",
       "hashtags": [
        "launch",
@@ -6667,9 +6955,12 @@
       "ownerId": "00000000-0000-4000-8000-000000000001",
       "pages": [],
       "publishedAt": null,
+      "publisher": "pinselo",
       "results": {},
       "scheduledAt": "2025-01-03T09:00:00.000Z",
       "status": "draft",
+      "submittedAt": null,
+      "submittedBy": null,
       "timezone": "Europe/Berlin",
       "updatedAt": "<ts>"
      }
@@ -7018,11 +7309,19 @@
        "accounts": [
         "00000000-0000-4000-8000-000000007006"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Launch day",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "<ts>",
        "designId": "Sgatedpost000000",
        "designTitle": "Gated post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [
         "launch",
@@ -7034,21 +7333,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000003",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-03T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "Europe/Berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": "00000000-0000-4000-8000-000000005001",
+       "workspaceName": "Agency"
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Launch day",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "<ts>",
        "designId": "Steampost0000000",
        "designTitle": "Team post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [
         "launch",
@@ -7060,21 +7372,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-03T09:00:00.000Z",
        "status": "draft",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "europe/berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007001"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Launch day",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "<ts>",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "mp4",
        "hashtags": [
         "launch",
@@ -7086,21 +7411,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-03T09:00:00.000Z",
        "status": "draft",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "Europe/Berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008002",
@@ -7109,21 +7447,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "published",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008003",
@@ -7132,21 +7483,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "publishing",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007003"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Hello",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Steampost0000000",
        "designTitle": "Team post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008004",
@@ -7155,22 +7519,35 @@
        "ownerId": "00000000-0000-4000-8000-000000000002",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002",
         "00000000-0000-4000-8000-000000007001"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [
         "a",
@@ -7182,6 +7559,7 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {
         "00000000-0000-4000-8000-000000007001": {
          "at": "2025-01-01T00:00:00.000Z",
@@ -7191,18 +7569,30 @@
        },
        "scheduledAt": "2025-01-05T09:00:00.000Z",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007002"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Draft #idea",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "2025-01-01T00:00:00.000Z",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [],
        "id": "00000000-0000-4000-8000-000000008001",
@@ -7211,21 +7601,34 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "<ts>",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
         "00000000-0000-4000-8000-000000007006"
        ],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "Launch day",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "<ts>",
        "designId": "Sgatedpost000000",
        "designTitle": "Gated post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "png",
        "hashtags": [
         "launch",
@@ -7237,19 +7640,32 @@
        "ownerId": "00000000-0000-4000-8000-000000000003",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": "<ts>",
        "status": "scheduled",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "Europe/Berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": "00000000-0000-4000-8000-000000005001",
+       "workspaceName": "Agency"
       },
       {
        "accounts": [],
+       "approvedAt": null,
+       "approvedBy": null,
+       "approvedByName": null,
+       "approvedVersion": null,
        "caption": "",
+       "channels": [],
+       "claimedAt": null,
        "createdAt": "<ts>",
        "designId": "Sadapost00000000",
        "designTitle": "Ada post",
+       "designVersion": 1,
        "error": null,
+       "fields": {},
        "format": "jpg",
        "hashtags": [],
        "id": "{{newPost}}",
@@ -7258,11 +7674,16 @@
        "ownerId": "00000000-0000-4000-8000-000000000001",
        "pages": [],
        "publishedAt": null,
+       "publisher": "pinselo",
        "results": {},
        "scheduledAt": null,
        "status": "draft",
+       "submittedAt": null,
+       "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },

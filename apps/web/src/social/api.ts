@@ -25,16 +25,28 @@ export interface SocialAccount {
   id: string; provider: ProviderId; displayName: string; handle: string | null; avatarUrl: string | null; status: 'ok' | 'reauth';
   workspaceId: string | null; mine?: boolean; boards?: Array<{ id: string; name: string }>;
 }
-export type PostStatus = 'draft' | 'scheduled' | 'publishing' | 'published' | 'failed';
-export interface TargetResult { status: 'published' | 'failed' | 'retrying'; url?: string | null; error?: string; note?: string; at: string }
+export type PostStatus = 'draft' | 'in_review' | 'changes_requested' | 'approved' | 'scheduled' | 'publishing' | 'published' | 'failed';
+/** Who publishes a post: Pinselo through connected accounts, or an outside tool through /v1/planner. */
+export type Publisher = 'pinselo' | 'external';
+export type Channel = 'instagram' | 'facebook';
+export interface TargetResult { status: 'published' | 'failed' | 'retrying' | 'unknown'; id?: string; url?: string | null; error?: string; note?: string; at: string }
 export interface SocialPost {
   id: string; designId: string; designTitle: string | null; pages: number[]; format: 'png' | 'jpg' | 'mp4'; caption: string; hashtags: string[];
   accounts: string[]; options: Record<string, unknown>; scheduledAt: string | null; timezone: string; status: PostStatus;
   results: Record<string, TargetResult>; error: string | null; publishedAt: string | null; createdAt: string; ownerId: string;
+  publisher: Publisher; channels: Channel[]; fields: Record<string, string>;
+  submittedBy: string | null; submittedAt: string | null;
+  approvedBy: string | null; approvedByName?: string | null; approvedAt: string | null; approvedVersion: number | null;
+  /** The design's current content version (list endpoint). */
+  designVersion?: number | null;
+  /** The team (brand) the post belongs to, through its design; null for a personal post (list endpoint). */
+  workspaceId?: string | null; workspaceName?: string | null;
+  claimedAt: string | null;
 }
 export interface PostInput {
   designId: string; pages: number[]; format: 'png' | 'jpg' | 'mp4'; caption: string; hashtags: string[]; accounts: string[];
-  options?: Record<string, unknown>; scheduledAt: string | null; timezone: string; status: 'draft' | 'scheduled';
+  options?: Record<string, unknown>; scheduledAt: string | null; timezone: string; status?: 'draft' | 'scheduled' | 'in_review';
+  publisher?: Publisher; channels?: Channel[]; fields?: Record<string, string>;
 }
 export interface PostEvent { id: number; accountId: string | null; kind: string; message: string | null; createdAt: string }
 
@@ -44,14 +56,36 @@ export const socialApi = {
   connect: (provider: ProviderId, creds?: { identifier: string; password: string }) => req<{ url?: string; ok?: boolean }>('POST', `/api/social/connect/${provider}`, creds ?? {}),
   updateAccount: (id: string, b: { workspaceId?: string | null; defaultBoardId?: string }) => req('PATCH', `/api/social/accounts/${id}`, b),
   disconnect: (id: string) => req('DELETE', `/api/social/accounts/${id}`),
-  posts: (q: { from?: string; to?: string; account?: string; designId?: string } = {}) =>
+  posts: (q: { from?: string; to?: string; account?: string; designId?: string; status?: string; workspace?: string } = {}) =>
     req<{ posts: SocialPost[] }>('GET', `/api/social/posts?${new URLSearchParams(Object.entries(q).filter(([, v]) => v) as [string, string][])}`),
   create: (b: PostInput) => req<{ post: SocialPost }>('POST', '/api/social/posts', b),
   update: (id: string, b: Partial<Omit<PostInput, 'designId'>>) => req<{ post: SocialPost }>('PATCH', `/api/social/posts/${id}`, b),
   publishNow: (id: string) => req<{ post: SocialPost }>('POST', `/api/social/posts/${id}/publish-now`),
   remove: (id: string) => req('DELETE', `/api/social/posts/${id}`),
   events: (id: string) => req<{ events: PostEvent[] }>('GET', `/api/social/posts/${id}/events`),
+  submit: (id: string) => req<{ post: SocialPost }>('POST', `/api/social/posts/${id}/submit`),
+  approve: (id: string) => req<{ post: SocialPost }>('POST', `/api/social/posts/${id}/approve`),
+  requestChanges: (id: string, note: string) => req<{ post: SocialPost }>('POST', `/api/social/posts/${id}/request-changes`, { note }),
 };
+
+/** Editorial fields a post can carry (shown in the post dialog and details, in this order). */
+export const EDITORIAL_FIELDS: Array<{ key: string; label: string; multiline?: boolean }> = [
+  { key: 'ref', label: tk('Post ID') },
+  { key: 'formatLabel', label: tk('Post format') },
+  { key: 'pillar', label: tk('Pillar') },
+  { key: 'source', label: tk('Source') },
+  { key: 'topic', label: tk('Topic and hook'), multiline: true },
+  { key: 'factIds', label: tk('Fact IDs') },
+  { key: 'reviewerNote', label: tk('Reviewer note'), multiline: true },
+];
+
+/** Shown beside the caption for reviewers who don't read the post's language; never posted. */
+export const TRANSLATION_FIELD = { key: 'translationHu', label: tk('Hungarian translation') };
+
+export const CHANNEL_LABEL: Record<Channel, string> = { instagram: 'Instagram', facebook: 'Facebook' };
+
+/** A person can still change the post (not while it is being published, not once it is). */
+export const isEditable = (p: SocialPost) => p.status !== 'publishing' && p.status !== 'published';
 
 export const PROVIDER_COLOR: Record<ProviderId, string> = {
   local: '#64748b', facebook: '#1877f2', instagram: '#e1306c', linkedin: '#0a66c2', pinterest: '#e60023', x: '#111111',
@@ -62,7 +96,8 @@ export const PROVIDER_SHORT: Record<ProviderId, string> = {
 };
 
 export const STATUS_LABEL: Record<PostStatus, string> = {
-  draft: tk('Draft'), scheduled: tk('Scheduled'), publishing: tk('Publishing'), published: tk('Published'), failed: tk('Failed'),
+  draft: tk('Draft'), in_review: tk('In review'), changes_requested: tk('Changes requested'), approved: tk('Approved'),
+  scheduled: tk('Scheduled'), publishing: tk('Publishing'), published: tk('Published'), failed: tk('Failed'),
 };
 
 // ---------------------------------------------------------------- time zones

@@ -59,6 +59,18 @@
 .status-dot.failed { color: #dc2626; }
 .status-dot.publishing { color: #d97706; }
 .status-dot.draft { color: var(--text-3); }
+.status-dot.in_review { color: #7c3aed; }
+.status-dot.changes_requested { color: #c2410c; }
+.status-dot.approved { color: #0d9488; }
+.post-pill.in_review { border-color: color-mix(in srgb, #7c3aed 55%, var(--border)); }
+.post-pill.changes_requested { border-color: color-mix(in srgb, #c2410c 60%, var(--border)); background: color-mix(in srgb, #c2410c 7%, var(--surface)); }
+.post-pill.approved { border-color: color-mix(in srgb, #0d9488 55%, var(--border)); }
+.team-tag { padding: 1px 8px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 11px; font-weight: 600; white-space: nowrap; }
+.chan-badge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 3px; border-radius: 4px; color: #fff; font-size: 9px; font-weight: 700; }
+.review-box { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 10px; background: var(--surface-2); }
+.fields-table { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 13px; }
+.fields-table dt { color: var(--text-3); }
+.fields-table dd { margin: 0; white-space: pre-wrap; }
 .post-list { display: flex; flex-direction: column; gap: 8px; }
 .post-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
 .post-row img { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; background: var(--surface-3); }
@@ -84,3 +96,35 @@
   .post-pill .txt, .post-pill .nets { display: none; }
   .event-log li { grid-template-columns: 1fr; }
 }
+
+/* The creative in post details: every slide, large, opens the editor. */
+.slides { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x mandatory; }
+.slides .slide { position: relative; padding: 0; border: 0; cursor: zoom-in; flex: 0 0 auto; width: 240px; border-radius: 10px; overflow: hidden; background: var(--surface-3); scroll-snap-align: start; outline-offset: 2px; }
+.slides .slide img { display: block; width: 100%; height: auto; min-height: 120px; }
+.slides .slide:hover img { filter: brightness(0.92); }
+.slides .slide-n { position: absolute; right: 6px; bottom: 6px; padding: 1px 6px; border-radius: 6px; background: rgb(0 0 0 / 0.55); color: #fff; font-size: 11px; font-weight: 600; }
+
+.post-row .thumb-btn { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 8px; overflow: hidden; flex: 0 0 auto; }
+.post-row .thumb-btn img { display: block; }
+.lightbox { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; background: rgb(10 12 20 / 0.88); }
+.lightbox-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #fff; }
+.lightbox-bar .faint { color: rgb(255 255 255 / 0.7); }
+.lightbox-bar .btn.ghost { color: #fff; }
+.lightbox-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 16px 24px; }
+.lightbox-stage img { max-width: min(92vw, 1080px); max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgb(0 0 0 / 0.45); background: #fff; cursor: default; }
+.lightbox-nav { flex: 0 0 auto; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgb(255 255 255 / 0.15); color: #fff; cursor: pointer; }
+.lightbox-nav:disabled { opacity: 0.3; cursor: default; }
+.lightbox-nav:hover:not(:disabled) { background: rgb(255 255 255 / 0.28); }
+
+.channel-logos { display: inline-flex; align-items: center; gap: 4px; }
+.channel-logo { display: block; flex: 0 0 auto; border-radius: 6px; }
+.caption-pair { display: grid; gap: 10px; }
+.caption-pair.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 720px) { .caption-pair.two { grid-template-columns: 1fr; } }
+.caption-box { position: relative; padding: 12px; white-space: pre-wrap; font-size: 14px; }
+.caption-box.translation { background: var(--surface-2); }
+.lang-tag { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-3); }
+
+.post-row .title-link { padding: 0; border: 0; background: none; font: inherit; font-weight: 700; color: inherit; text-align: left; cursor: pointer; }
+.post-row .title-link:hover, .post-row .title-link:focus-visible { text-decoration: underline; }
+.post-row .cap.clickable { cursor: pointer; }

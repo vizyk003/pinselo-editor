@@ -272,10 +272,22 @@ async fn read_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) -
 
 async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
     let u = require_user(&s, &req).await?;
-    let patch = kit_body(true, false).parse(req.body())?;
+    let mut patch = kit_body(true, true).parse(req.body())?;
     let Some(k) = own_kit(&s, u.id, &id).await?.filter(|k| k.role.is_some()) else { return Ok(not_found()) };
     if k.role != Some("edit") {
         return Ok(forbidden());
+    }
+    // `workspaceId` moves the kit to another of the user's workspaces (a personal kit into a team, say). It keeps
+    // its id, so designs made with it stay linked. The mover must be able to edit kits on both sides.
+    let move_to = patch.as_object_mut().and_then(|p| p.remove("workspaceId")).and_then(|w| w.as_str().and_then(|w| Uuid::parse_str(w).ok())).filter(|w| *w != k.workspace_id);
+    if let Some(to) = move_to {
+        if kit_role(&s, u.id, to).await? != Some("edit") {
+            return Ok(reply::json(403, json!({ "error": "forbidden", "message": "Only owners, admins and designers can add brand kits to a team." })));
+        }
+        let n: i32 = sqlx::query_scalar("SELECT count(*)::int AS n FROM brand_kits WHERE workspace_id = $1").bind(to).fetch_optional(&s.pool).await?.unwrap_or(0);
+        if n >= MAX_BRAND_KITS {
+            return Ok(reply::json(402, json!({ "error": "upgrade_required", "feature": "brandKits", "message": format!("You can have up to {MAX_BRAND_KITS} brand kits.") })));
+        }
     }
     let cur = pg::json_one(&s.pool, "SELECT name, colors, palettes, fonts, logos, photos, graphics, voice, text_styles AS \"textStyles\", motion FROM brand_kits WHERE id = $1::uuid", &[pg::text(&id)]).await?;
     let mut next = cur.and_then(|c| c.as_object().cloned()).unwrap_or_default();
@@ -296,6 +308,20 @@ async fn patch_kit(State(s): State<AppState>, Path(id): Path<String>, req: Req) 
     save_kit(&s, k.workspace_id, u.id, &Value::Object(next), Some(&id)).await?;
     if !changed.is_empty() {
         audit(&s, &req, u.id, Some(k.workspace_id), "brand.kit_updated", Some(id.clone()), Some(json!({ "changed": changed }))).await?;
+    }
+    if let Some(to) = move_to {
+        let mut t = s.pool.begin().await?;
+        // It becomes the default where it lands only if that workspace has none; the one it leaves keeps one default.
+        sqlx::query("UPDATE brand_kits SET workspace_id = $2, is_default = NOT EXISTS (SELECT 1 FROM brand_kits WHERE workspace_id = $2 AND is_default), updated_at = now() WHERE id = $1::uuid")
+            .bind(&id)
+            .bind(to)
+            .execute(&mut *t)
+            .await?;
+        if k.is_default {
+            pg::exec(&mut *t, "UPDATE brand_kits SET is_default = true WHERE id = (SELECT id FROM brand_kits WHERE workspace_id = $1 ORDER BY created_at LIMIT 1)", &[pg::uuid(k.workspace_id)]).await?;
+        }
+        t.commit().await?;
+        audit(&s, &req, u.id, Some(to), "brand.kit_moved", Some(id.clone()), Some(json!({ "from": k.workspace_id.to_string(), "to": to.to_string() }))).await?;
     }
     Ok(Reply::json(json!({ "ok": true })))
 }

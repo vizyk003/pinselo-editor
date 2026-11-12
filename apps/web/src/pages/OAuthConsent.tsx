@@ -21,6 +21,9 @@ export const SCOPE_TEXT: Record<string, string> = {
   'designs:write': tk('Create and edit designs'),
   'assets:write': tk('Upload images to your account'),
   exports: tk('Export and download your designs'),
+  'planner:read': tk('See posts in your Content Planner'),
+  'planner:write': tk('Draft and edit posts in your Content Planner (never approve them)'),
+  'planner:publish': tk('Publish approved posts and report the results'),
 };
 
 const ERROR_TEXT: Record<string, string> = {
