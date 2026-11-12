@@ -472,6 +472,7 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ),
             ("from", z::str().datetime_offset().optional()),
             ("to", z::str().datetime_offset().optional()),
+            ("team", z::str().max(200.0).optional()),
         ]),
         "get_planner_post" => z::obj([("post", z::str().min(1.0).max(200.0))]),
         "create_planner_post" | "update_planner_post" => {

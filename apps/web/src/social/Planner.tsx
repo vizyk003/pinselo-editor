@@ -1,9 +1,9 @@
-/** Content Planner (A16): month/week calendar with drag-to-reschedule, list view, account filter. */
+/** Content Planner (A16): month/week calendar with drag-to-reschedule, list view, team (brand), status and account filters. */
 import { CalendarDays, CalendarRange, Check, ChevronLeft, ChevronRight, ExternalLink, List, MessageSquareWarning, Palette, Plus, Send, Pencil, Trash2, X as XIcon } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate, useSearchParams } from 'react-router';
-import { api, ApiError, thumbUrl, type DesignSummary } from '../api';
+import { api, ApiError, teamApi, thumbUrl, type DesignSummary, type Workspace } from '../api';
 import { EmptyState, Modal, PageHeader, useToast } from '../components/ui';
 import { fmtDate, getLocale, t } from '../i18n';
 import { CHANNEL_LABEL, EDITORIAL_FIELDS, isEditable, PROVIDER_COLOR, socialApi, STATUS_LABEL, type PostEvent, type SocialAccount, type SocialPost } from './api';
@@ -14,6 +14,9 @@ import './planner.css';
 type View = 'month' | 'week' | 'list';
 const DAY = 86_400_000;
 const VIEW_KEY = 'oc.planner.view';
+/** The team (brand) the planner shows: a workspace id, `personal`, or empty for everything. */
+const TEAM_KEY = 'oc.planner.team';
+const PERSONAL = 'personal';
 
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
@@ -40,6 +43,10 @@ export function PlannerPage() {
   const [cursor, setCursor] = useState(() => startOfDay(new Date()));
   const [accounts, setAccounts] = useState<SocialAccount[]>([]);
   const [filter, setFilter] = useState('');
+  const [teams, setTeams] = useState<Workspace[]>([]);
+  const [team, setTeam] = useState(() => {
+    try { return localStorage.getItem(TEAM_KEY) ?? ''; } catch { return ''; }
+  });
   const [statusFilter, setStatusFilter] = useState('');
   const [posts, setPosts] = useState<SocialPost[] | null>(null);
   const [open, setOpen] = useState<SocialPost | null>(null);
@@ -68,10 +75,22 @@ export function PlannerPage() {
     return { from: null, to: null, days: [] };
   }, [view, cursor]);
 
+  useEffect(() => {
+    try { localStorage.setItem(TEAM_KEY, team); } catch { /* storage blocked */ }
+  }, [team]);
+  useEffect(() => {
+    void teamApi.list().then((r) => {
+      const list = r.workspaces.filter((w) => !w.personal);
+      setTeams(list);
+      // A remembered team the person has since left: show everything again.
+      setTeam((cur) => (cur && cur !== PERSONAL && !list.some((w) => w.id === cur) ? '' : cur));
+    }).catch(() => {});
+  }, []);
+
   const load = useCallback(async () => {
-    const r = await socialApi.posts({ from: range.from?.toISOString(), to: range.to?.toISOString(), account: filter || undefined, status: statusFilter || undefined });
+    const r = await socialApi.posts({ from: range.from?.toISOString(), to: range.to?.toISOString(), account: filter || undefined, status: statusFilter || undefined, workspace: team || undefined });
     setPosts(r.posts);
-  }, [range.from, range.to, filter, statusFilter]);
+  }, [range.from, range.to, filter, statusFilter, team]);
 
   useEffect(() => {
     void load().catch(() => setPosts([]));
@@ -122,6 +141,8 @@ export function PlannerPage() {
   };
 
   const visible = posts ?? [];
+  // With a team chosen, the account filter offers that team's accounts (and any its posts already use).
+  const shownAccounts = !team ? accounts : accounts.filter((a) => a.id === filter || (team === PERSONAL ? !a.workspaceId : a.workspaceId === team) || visible.some((p) => p.accounts.includes(a.id)));
   const dayPosts = (d: Date) => visible.filter((p) => p.scheduledAt && sameDay(new Date(p.scheduledAt), d)).sort((a, b) => a.scheduledAt!.localeCompare(b.scheduledAt!));
   const today = new Date();
   const dows = [...Array(7).keys()].map((i) => addDays(startOfWeek(today), i).toLocaleDateString(getLocale(), { weekday: 'short' }));
@@ -148,19 +169,26 @@ export function PlannerPage() {
           </>
         )}
         <div className="grow" />
+        {teams.length > 0 && (
+          <select className="input" style={{ width: 'auto', minWidth: 170 }} value={team} onChange={(e) => { setTeam(e.target.value); setFilter(''); }} aria-label={t('Filter by team')}>
+            <option value="">{t('All teams')}</option>
+            {teams.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}
+            <option value={PERSONAL}>{t('Personal')}</option>
+          </select>
+        )}
         <select className="input" style={{ width: 'auto', minWidth: 170 }} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} aria-label={t('Filter by status')}>
           <option value="">{t('All statuses')}</option>
           {REVIEW_FILTERS.map((st) => <option key={st} value={st}>{st === 'in_review' ? t('Needs approval') : t(STATUS_LABEL[st])}</option>)}
         </select>
         <select className="input" style={{ width: 'auto', minWidth: 200 }} value={filter} onChange={(e) => setFilter(e.target.value)} aria-label={t('Filter by account')}>
           <option value="">{t('All accounts')}</option>
-          {accounts.map((a) => <option key={a.id} value={a.id}>{a.provider === 'local' ? t('Download & remind') : `${a.displayName}${a.handle ? ` (@${a.handle})` : ''}`}</option>)}
+          {shownAccounts.map((a) => <option key={a.id} value={a.id}>{a.provider === 'local' ? t('Download & remind') : `${a.displayName}${a.handle ? ` (@${a.handle})` : ''}`}</option>)}
         </select>
         <Link className="btn ghost" to="/settings/accounts">{t('Connected accounts')}</Link>
       </div>
 
       {posts === null ? <div className="spinner" /> : view === 'list' ? (
-        <PostList posts={visible} accounts={accounts} onOpen={(p) => { setRejecting(false); setOpen(p); }}
+        <PostList posts={visible} accounts={accounts} showTeam={!team && teams.length > 0} onOpen={(p) => { setRejecting(false); setOpen(p); }}
           onReject={(p) => { setRejecting(true); setOpen(p); }}
           onApprove={async (p) => {
             try {
@@ -210,7 +238,7 @@ export function PlannerPage() {
       )}
 
       {open && <PostDetails post={open} accounts={accounts} rejecting={rejecting} onClose={() => { setOpen(null); setRejecting(false); }} onChanged={() => { setOpen(null); setRejecting(false); void load(); }} />}
-      {creating && <PickDesign at={creating} onClose={() => setCreating(null)} onSaved={() => void load()} />}
+      {creating && <PickDesign at={creating} team={teams.find((w) => w.id === team)} onClose={() => setCreating(null)} onSaved={() => void load()} />}
     </div>
     </>
   );
@@ -240,7 +268,7 @@ function PostPill({ post, accounts, onOpen }: { post: SocialPost; accounts: Soci
         e.dataTransfer.setData('application/x-oc-post', post.id);
         e.dataTransfer.effectAllowed = 'move';
       }}
-      title={`${post.designTitle ?? ''} — ${t(STATUS_LABEL[post.status])}`}>
+      title={`${post.designTitle ?? ''} — ${t(STATUS_LABEL[post.status])}${post.workspaceName ? ` · ${post.workspaceName}` : ''}`}>
       <img className="thumb" src={thumbUrl(post.designId)} alt="" loading="lazy" />
       <span className="txt">
         <b>{post.scheduledAt ? timeFmt(post.scheduledAt) : t('No time')}</b>
@@ -251,8 +279,8 @@ function PostPill({ post, accounts, onOpen }: { post: SocialPost; accounts: Soci
   );
 }
 
-function PostList({ posts, accounts, onOpen, onApprove, onReject }: {
-  posts: SocialPost[]; accounts: SocialAccount[]; onOpen: (p: SocialPost) => void; onApprove: (p: SocialPost) => void; onReject: (p: SocialPost) => void;
+function PostList({ posts, accounts, showTeam, onOpen, onApprove, onReject }: {
+  posts: SocialPost[]; accounts: SocialAccount[]; showTeam: boolean; onOpen: (p: SocialPost) => void; onApprove: (p: SocialPost) => void; onReject: (p: SocialPost) => void;
 }) {
   const nav = useNavigate();
   const [viewing, setViewing] = useState<SocialPost | null>(null);
@@ -274,6 +302,7 @@ function PostList({ posts, accounts, onOpen, onApprove, onReject }: {
                   {p.scheduledAt ? new Date(p.scheduledAt).toLocaleString(getLocale(), { dateStyle: 'medium', timeStyle: 'short' }) : t('No time')}
                 </span>
                 <Nets post={p} accounts={accounts} size={18} />
+                {showTeam && p.workspaceName && <span className="team-tag">{p.workspaceName}</span>}
               </div>
               <span className="cap clickable" onClick={() => onOpen(p)}>{p.caption || <i className="faint">{t('No caption')}</i>}</span>
               {p.status === 'failed' && p.error && <span className="error" style={{ fontSize: 12 }}>{p.error}</span>}
@@ -479,20 +508,21 @@ function PostDetails({ post, accounts, onClose, onChanged, rejecting = false }: 
   );
 }
 
-/** "Schedule a post" from the Planner: pick one of your designs first. */
-function PickDesign({ at, onClose, onSaved }: { at: Date; onClose: () => void; onSaved: () => void }) {
+/** "Schedule a post" from the Planner: pick one of your designs first. With a team chosen in the planner, only that
+ *  team's designs are offered: a post belongs to the team its design is in, so it stays in the list being viewed. */
+function PickDesign({ at, team, onClose, onSaved }: { at: Date; team?: Workspace; onClose: () => void; onSaved: () => void }) {
   const [designs, setDesigns] = useState<DesignSummary[] | null>(null);
   const [q, setQ] = useState('');
   const [picked, setPicked] = useState<DesignSummary | null>(null);
   useEffect(() => {
-    void api.designs().then((r) => setDesigns(r.designs)).catch(() => setDesigns([]));
-  }, []);
+    void api.designs(team ? { filter: 'team', workspace: team.id } : {}).then((r) => setDesigns(r.designs)).catch(() => setDesigns([]));
+  }, [team]);
   if (picked) {
     return <ScheduleDialog designId={picked.id} title={picked.title} pageCount={picked.page_count || 1} video={picked.surface === 'video'} initialAt={at} onClose={onClose} onSaved={onSaved} />;
   }
   const list = (designs ?? []).filter((d) => !d.trashed_at && d.title.toLowerCase().includes(q.toLowerCase())).slice(0, 60);
   return (
-    <Modal title={t('Choose a design to schedule')} onClose={onClose} size="lg">
+    <Modal title={team ? t('Choose a {team} design to schedule', { team: team.name }) : t('Choose a design to schedule')} onClose={onClose} size="lg">
       <input className="input" placeholder={t('Search your designs')} value={q} onChange={(e) => setQ(e.target.value)} autoFocus />
       {!designs ? <div className="spinner" /> : !list.length ? <div className="empty">{t('No designs found.')}</div> : (
         <div className="network-grid" style={{ maxHeight: 420, overflow: 'auto' }}>

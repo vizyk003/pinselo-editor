@@ -2880,5 +2880,8 @@
  "Hungarian translation": "Ungarische Übersetzung",
  "Posted text": "Veröffentlichter Text",
  "{n} slides · click to enlarge": "{n} Folien · zum Vergrößern klicken",
- "— for review, not posted": "— zur Prüfung, wird nicht veröffentlicht"
+ "— for review, not posted": "— zur Prüfung, wird nicht veröffentlicht",
+ "All teams": "Alle Teams",
+ "Filter by team": "Nach Team filtern",
+ "Choose a {team} design to schedule": "{team}-Design zum Planen auswählen"
 }

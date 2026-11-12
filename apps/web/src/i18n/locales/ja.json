@@ -2829,5 +2829,8 @@
  "Hungarian translation": "ハンガリー語訳",
  "Posted text": "投稿されるテキスト",
  "{n} slides · click to enlarge": "{n} 枚 · クリックで拡大",
- "— for review, not posted": "— 確認用(投稿されません)"
+ "— for review, not posted": "— 確認用(投稿されません)",
+ "All teams": "すべてのチーム",
+ "Filter by team": "チームで絞り込み",
+ "Choose a {team} design to schedule": "スケジュールする{team}のデザインを選択"
 }

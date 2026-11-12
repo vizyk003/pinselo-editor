@@ -84,12 +84,19 @@ pub(crate) async fn find_for(
     Ok(Ok(rows.into_iter().next()))
 }
 
-/// A post as the API returns it: the web app's shape plus the design's current version and the post's `ref`.
+/// A post as the API returns it: the web app's shape plus the design's current version, the post's `ref` and the
+/// team (brand) it belongs to (`null` for a personal post).
 pub(crate) async fn out(s: &AppState, p: &PostRow) -> Result<Value, ApiError> {
     let mut v = public_post(p, None);
     v["designVersion"] = json!(crate::routes::v1_export::content_version(s, &p.design_id).await?);
     v["ref"] = p.fields.0.get("ref").cloned().unwrap_or(Value::Null);
     v["designUrl"] = json!(format!("{}/design/{}", s.cfg.web_origin, p.design_id));
+    let team: Option<String> = match p.workspace_id {
+        Some(w) => sqlx::query_scalar("SELECT name FROM workspaces WHERE id = $1").bind(w).fetch_optional(&s.pool).await?,
+        None => None,
+    };
+    v["workspaceId"] = json!(p.workspace_id.map(|w| w.to_string()));
+    v["workspaceName"] = json!(team);
     Ok(v)
 }
 

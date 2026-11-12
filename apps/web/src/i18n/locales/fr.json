@@ -2929,5 +2929,8 @@
  "Hungarian translation": "Traduction hongroise",
  "Posted text": "Texte publié",
  "{n} slides · click to enlarge": "{n} diapositives · cliquez pour agrandir",
- "— for review, not posted": "— pour relecture, non publié"
+ "— for review, not posted": "— pour relecture, non publié",
+ "All teams": "Toutes les équipes",
+ "Filter by team": "Filtrer par équipe",
+ "Choose a {team} design to schedule": "Choisir un design de {team} à programmer"
 }

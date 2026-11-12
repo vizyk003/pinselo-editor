@@ -3319,7 +3319,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -3353,7 +3355,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -3387,7 +3391,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
@@ -3433,7 +3439,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -3467,7 +3475,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3528,7 +3538,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -3562,7 +3574,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -3596,7 +3610,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
@@ -3642,7 +3658,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -3676,7 +3694,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3749,7 +3769,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -3810,7 +3832,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       }
      ]
     },
@@ -3927,7 +3951,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
@@ -3961,7 +3987,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },
@@ -7312,7 +7340,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "Europe/Berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": "00000000-0000-4000-8000-000000005001",
+       "workspaceName": "Agency"
       },
       {
        "accounts": [
@@ -7349,7 +7379,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "europe/berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
@@ -7386,7 +7418,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "Europe/Berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -7420,7 +7454,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -7454,7 +7490,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -7488,7 +7526,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "2025-01-01T00:00:00.000Z"
+       "updatedAt": "2025-01-01T00:00:00.000Z",
+       "workspaceId": "00000000-0000-4000-8000-000000005000",
+       "workspaceName": "Studio"
       },
       {
        "accounts": [
@@ -7532,7 +7572,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -7566,7 +7608,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       },
       {
        "accounts": [
@@ -7603,7 +7647,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "Europe/Berlin",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": "00000000-0000-4000-8000-000000005001",
+       "workspaceName": "Agency"
       },
       {
        "accounts": [],
@@ -7635,7 +7681,9 @@
        "submittedAt": null,
        "submittedBy": null,
        "timezone": "UTC",
-       "updatedAt": "<ts>"
+       "updatedAt": "<ts>",
+       "workspaceId": null,
+       "workspaceName": null
       }
      ]
     },

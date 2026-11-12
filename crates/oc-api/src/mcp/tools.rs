@@ -545,18 +545,49 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
         }
         "list_planner_posts" => {
             need(u, "designs:read")?;
+            // One brand at a time: a team by name or id, or "personal" for posts outside every team.
+            let want = opt_str(a, "team").map(|t| crate::js::trim(&t).to_lowercase()).filter(|t| !t.is_empty());
+            let personal = want.as_deref() == Some("personal");
+            let team: Option<uuid::Uuid> = match want.as_deref().filter(|_| !personal) {
+                Some(t) => {
+                    let teams: Vec<(uuid::Uuid, String)> = sqlx::query_as(
+                        "SELECT w.id, w.name FROM workspaces w JOIN memberships m ON m.workspace_id = w.id
+                         WHERE m.user_id = $1 AND NOT w.personal ORDER BY w.name",
+                    )
+                    .bind(u.id)
+                    .fetch_all(&s.pool)
+                    .await
+                    .map_err(ApiError::from)?;
+                    match teams.iter().find(|(id, name)| id.to_string() == t || name.to_lowercase() == t) {
+                        Some((id, _)) => Some(*id),
+                        None => {
+                            let names: Vec<&str> = teams.iter().map(|(_, n)| n.as_str()).collect();
+                            return tool_err(if names.is_empty() {
+                                "The user has no teams. Leave team out, or pass \"personal\".".to_owned()
+                            } else {
+                                format!("No team {t}. The user's teams: {}. Pass one of them, or \"personal\".", names.join(", "))
+                            });
+                        }
+                    }
+                }
+                None => None,
+            };
             let rows: Vec<oc_social::publish::PostRow> = sqlx::query_as(
                 "SELECT p.* FROM social_posts p
                  WHERE (p.owner_id = $1 OR p.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))
                    AND ($2::text IS NULL OR p.status = $2)
                    AND ($3::timestamptz IS NULL OR p.scheduled_at >= $3::timestamptz)
                    AND ($4::timestamptz IS NULL OR p.scheduled_at < $4::timestamptz)
+                   AND ($5::uuid IS NULL OR p.workspace_id = $5)
+                   AND (NOT $6 OR p.workspace_id IS NULL)
                  ORDER BY p.scheduled_at NULLS LAST, p.created_at LIMIT 200",
             )
             .bind(u.id)
             .bind(opt_str(a, "status"))
             .bind(opt_str(a, "from"))
             .bind(opt_str(a, "to"))
+            .bind(team)
+            .bind(personal)
             .fetch_all(&s.pool)
             .await
             .map_err(ApiError::from)?;

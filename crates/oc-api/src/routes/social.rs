@@ -488,6 +488,7 @@ async fn delete_account(State(s): State<AppState>, Path(id): Path<String>, req: 
 struct ListedPost {
     approver_name: Option<String>,
     design_version: Option<i64>,
+    workspace_name: Option<String>,
     #[sqlx(flatten)]
     post: PostRow,
     design_title: Option<String>,
@@ -501,18 +502,23 @@ async fn list_posts(State(s): State<AppState>, req: Req) -> ApiResult {
         ("account", z::str().uuid().optional()),
         ("designId", z::str().max(64.0).optional()),
         ("status", z::str().max(20.0).optional()),
+        // One brand at a time: a team's id, or `personal` for posts outside every team.
+        ("workspace", z::str().max(36.0).optional()),
     ])
     .parse(Some(&req.query))?;
     let qs = |k: &str| q.get(k).and_then(Value::as_str).map(str::to_owned);
     let rows: Vec<ListedPost> = sqlx::query_as(
-        "SELECT p.*, d.title AS design_title, ua.name AS approver_name, d.content_version AS design_version FROM social_posts p JOIN designs d ON d.id = p.design_id
+        "SELECT p.*, d.title AS design_title, ua.name AS approver_name, d.content_version AS design_version, w.name AS workspace_name
+         FROM social_posts p JOIN designs d ON d.id = p.design_id
          LEFT JOIN users ua ON ua.id = p.approved_by
+         LEFT JOIN workspaces w ON w.id = p.workspace_id
          WHERE (p.owner_id = $1 OR p.workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $1))
            AND ($2::timestamptz IS NULL OR p.scheduled_at IS NULL OR p.scheduled_at >= $2::timestamptz)
            AND ($3::timestamptz IS NULL OR p.scheduled_at IS NULL OR p.scheduled_at < $3::timestamptz)
            AND ($4::uuid IS NULL OR $4::uuid = ANY(p.accounts))
            AND ($5::text IS NULL OR p.design_id = $5)
            AND ($6::text IS NULL OR p.status = $6)
+           AND ($7::text IS NULL OR ($7 = 'personal' AND p.workspace_id IS NULL) OR p.workspace_id::text = $7)
          ORDER BY p.scheduled_at NULLS LAST, p.created_at, p.id LIMIT 1000",
     )
     .bind(u.id)
@@ -521,12 +527,15 @@ async fn list_posts(State(s): State<AppState>, req: Req) -> ApiResult {
     .bind(qs("account"))
     .bind(qs("designId"))
     .bind(qs("status"))
+    .bind(qs("workspace").map(|w| w.to_lowercase()))
     .fetch_all(&s.pool)
     .await?;
     Ok(Reply::json(json!({ "posts": rows.iter().map(|r| {
         let mut v = public_post(&r.post, r.design_title.as_deref());
         v["approvedByName"] = json!(r.approver_name);
         v["designVersion"] = json!(r.design_version);
+        v["workspaceId"] = json!(r.post.workspace_id.map(|w| w.to_string()));
+        v["workspaceName"] = json!(r.workspace_name);
         v
     }).collect::<Vec<_>>() })))
 }

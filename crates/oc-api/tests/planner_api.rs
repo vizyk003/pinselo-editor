@@ -316,3 +316,140 @@ async fn review_and_external_publishing() {
         std::panic::resume_unwind(e.into_panic());
     }
 }
+
+/// One person, several brands: each brand is a team, and the planner lists one team at a time (web app and AI
+/// connector), or personal posts only.
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn brands_stay_apart() {
+    let _serial = SERIAL.lock().await;
+    let Some(db) = TestDb::create().await else {
+        eprintln!("OC_DATABASE_URL not set: skipping");
+        return;
+    };
+    let url = db.url.clone();
+    let task = tokio::spawn(async move {
+        let pool = sqlx::postgres::PgPoolOptions::new().max_connections(3).connect(&url).await.expect("connect test db");
+        let data = std::env::temp_dir().join(format!("oc-planner-test-{}", Uuid::new_v4().simple()));
+        std::fs::create_dir_all(&data).expect("data dir");
+        let env: HashMap<String, String> = [("NODE_ENV", "development"), ("OC_DATABASE_URL", url.as_str()), ("OC_DATA_DIR", data.to_str().expect("dir")), ("OC_SECRET", SECRET), ("OC_WEB_ORIGIN", WEB), ("OC_API_URL", API)]
+            .map(|(k, v)| (k.to_owned(), v.to_owned()))
+            .into_iter()
+            .collect();
+        let clock: oc_api::state::Clock = Arc::new(|| CLOCK);
+        let s = AppState::new(oc_api::AppOptions { env, pool: pool.clone(), store: None, clock: Some(clock) }).await.expect("app state");
+        let pw = || oc_api::auth::NewUser { password: Some("correct horse battery 42"), verified: true, ..Default::default() };
+        let ada = oc_api::auth::create_user(&s, "ada@example.test", "Ada", pw()).await.expect("ada").id;
+        let eve = oc_api::auth::create_user(&s, "eve@example.test", "Eve", pw()).await.expect("eve").id;
+
+        // Ada runs two brands; Eve only works on the second.
+        let (unihop, bakery) = (Uuid::new_v4(), Uuid::new_v4());
+        sqlx::query("INSERT INTO workspaces(id, name, personal) VALUES ($1, 'UniHop', false), ($2, 'Corner Bakery', false)").bind(unihop).bind(bakery).execute(&pool).await.expect("ws");
+        sqlx::query("INSERT INTO memberships(workspace_id, user_id, role) VALUES ($1, $3, 'owner'), ($2, $3, 'owner'), ($2, $4, 'designer')").bind(unihop).bind(bakery).bind(ada).bind(eve).execute(&pool).await.expect("members");
+        let writer = token(&pool, ada, &["designs:write"], None).await;
+        let ca = login(&s, "ada@example.test").await;
+        let a = [("cookie", ca.as_str())];
+        // The same post ID in two brands is fine: numbering is per team. A personal post belongs to no brand.
+        for (title, team, r) in [("UniHop fees", Some(unihop), "P-001"), ("Bakery opening", Some(bakery), "P-001"), ("Private note", None, "N-001")] {
+            let d = send(&s, "POST", "/v1/designs", &[("authorization", &format!("Bearer {writer}"))], Some(json!({ "title": title, "width": 1080, "height": 1350 }))).await;
+            assert_eq!(d.status, 201, "{:?}", d.body);
+            let id = d.body["id"].as_str().expect("id").to_owned();
+            if let Some(t) = team {
+                sqlx::query("UPDATE designs SET workspace_id = $2 WHERE id = $1").bind(&id).bind(t).execute(&pool).await.expect("move");
+            }
+            let p = send(&s, "POST", "/api/social/posts", &a, Some(json!({ "designId": id, "publisher": "external", "channels": ["instagram"], "format": "jpg",
+                "caption": title, "scheduledAt": "2030-01-05T17:00:00.000Z", "timezone": "Europe/Budapest", "status": "in_review", "fields": { "ref": r } }))).await;
+            assert_eq!(p.status, 200, "{title}: {:?}", p.body);
+        }
+
+        // Web app: everything, one team, or personal posts only; each post names its team.
+        let captions = |v: &Value| {
+            let mut c: Vec<String> = v["posts"].as_array().expect("posts").iter().map(|p| p["caption"].as_str().expect("caption").to_owned()).collect();
+            c.sort_unstable();
+            c
+        };
+        let r = send(&s, "GET", "/api/social/posts", &a, None).await;
+        assert_eq!(captions(&r.body), ["Bakery opening", "Private note", "UniHop fees"]);
+        let r = send(&s, "GET", &format!("/api/social/posts?workspace={unihop}"), &a, None).await;
+        assert_eq!(captions(&r.body), ["UniHop fees"]);
+        assert_eq!((r.body["posts"][0]["workspaceId"].as_str(), r.body["posts"][0]["workspaceName"].as_str()), (Some(unihop.to_string().as_str()), Some("UniHop")));
+        let r = send(&s, "GET", "/api/social/posts?workspace=personal", &a, None).await;
+        assert_eq!(captions(&r.body), ["Private note"]);
+        assert_eq!(r.body["posts"][0]["workspaceId"], Value::Null);
+        assert_eq!(captions(&send(&s, "GET", "/api/social/posts?workspace=nonsense", &a, None).await.body), Vec::<String>::new());
+        // The filter never widens what someone may see: Eve is not in UniHop.
+        let ce = login(&s, "eve@example.test").await;
+        let e = [("cookie", ce.as_str())];
+        assert_eq!(captions(&send(&s, "GET", &format!("/api/social/posts?workspace={unihop}"), &e, None).await.body), Vec::<String>::new());
+        assert_eq!(captions(&send(&s, "GET", "/api/social/posts", &e, None).await.body), ["Bakery opening"]);
+
+        // Filing a design in a team folder takes its posts into that team. Ada may approve in UniHop, so her
+        // approval carries over; Eve is only a designer in the bakery, so hers goes back to review there.
+        let folder = async |team: Uuid, owner: Uuid| {
+            let id = Uuid::new_v4();
+            sqlx::query("INSERT INTO folders(id, workspace_id, owner_id, name) VALUES ($1, $2, $3, 'Posts')").bind(id).bind(team).bind(owner).execute(&pool).await.expect("folder");
+            id
+        };
+        let personal_post = async |cookie: &[(&str, &str)], who: Uuid, title: &str, r: &str| {
+            let w = token(&pool, who, &["designs:write"], None).await;
+            let d = send(&s, "POST", "/v1/designs", &[("authorization", &format!("Bearer {w}"))], Some(json!({ "title": title, "width": 1080, "height": 1350 }))).await;
+            assert_eq!(d.status, 201, "{:?}", d.body);
+            let design = d.body["id"].as_str().expect("id").to_owned();
+            let p = send(&s, "POST", "/api/social/posts", cookie, Some(json!({ "designId": design, "publisher": "external", "channels": ["instagram"], "format": "jpg",
+                "caption": title, "scheduledAt": "2030-01-06T17:00:00.000Z", "timezone": "Europe/Budapest", "status": "in_review", "fields": { "ref": r } }))).await;
+            assert_eq!(p.status, 200, "{title}: {:?}", p.body);
+            let post = p.body["post"]["id"].as_str().expect("post id").to_owned();
+            let ok = send(&s, "POST", &format!("/api/social/posts/{post}/approve"), cookie, None).await;
+            assert_eq!(ok.status, 200, "{title}: {:?}", ok.body);
+            (design, post)
+        };
+        let team_of = async |post: &str| -> Option<Uuid> { sqlx::query_scalar("SELECT workspace_id FROM social_posts WHERE id = $1::uuid").bind(post).fetch_one(&pool).await.expect("team") };
+        let (uni_folder, bakery_folder) = (folder(unihop, ada).await, folder(bakery, ada).await);
+        let (design, post) = personal_post(&a, ada, "Moved in", "P-002").await;
+        assert_eq!(team_of(&post).await, None);
+        let r = send(&s, "PATCH", &format!("/api/designs/{design}"), &a, Some(json!({ "folderId": uni_folder }))).await;
+        assert_eq!(r.status, 200, "{:?}", r.body);
+        assert_eq!((team_of(&post).await, status_of(&pool, &post).await.as_str()), (Some(unihop), "approved"));
+        assert_eq!(captions(&send(&s, "GET", &format!("/api/social/posts?workspace={unihop}"), &a, None).await.body), ["Moved in", "UniHop fees"]);
+        let (design, post) = personal_post(&e, eve, "Eve's draft", "P-002").await;
+        let r = send(&s, "PATCH", &format!("/api/designs/{design}"), &e, Some(json!({ "folderId": bakery_folder }))).await;
+        assert_eq!(r.status, 200, "{:?}", r.body);
+        assert_eq!((team_of(&post).await, status_of(&pool, &post).await.as_str()), (Some(bakery), "in_review"));
+        // A post ID the team already uses: the design and its post stay where they were.
+        let (design, post) = personal_post(&a, ada, "Clash", "P-001").await;
+        let r = send(&s, "PATCH", &format!("/api/designs/{design}"), &a, Some(json!({ "folderId": uni_folder }))).await;
+        assert_eq!((r.status, r.body["error"].as_str()), (409, Some("duplicate_ref")), "{:?}", r.body);
+        assert_eq!(team_of(&post).await, None);
+        let filed: Option<Uuid> = sqlx::query_scalar("SELECT folder_id FROM designs WHERE id = $1").bind(&design).fetch_one(&pool).await.expect("design");
+        assert_eq!(filed, None);
+        let _ = sqlx::query("DELETE FROM social_posts WHERE fields->>'ref' = 'P-002' OR caption = 'Clash'").execute(&pool).await.expect("tidy");
+
+        // AI connector: a team by name (any case) or id, "personal", and a helpful error for an unknown team.
+        let mcp = token(&pool, ada, &["designs:read"], None).await;
+        let auth = format!("Bearer {mcp}");
+        let mh = [("authorization", auth.as_str()), ("accept", "application/json, text/event-stream")];
+        let list = async |args: Value| {
+            let r = send(&s, "POST", "/mcp", &mh, Some(json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": { "name": "list_planner_posts", "arguments": args } }))).await;
+            assert_eq!(r.status, 200, "{:?}", r.body);
+            r.body["result"].clone()
+        };
+        let parsed = |res: &Value| -> Value { serde_json::from_str(res["content"][0]["text"].as_str().expect("text")).expect("json") };
+        assert_eq!(captions(&parsed(&list(json!({})).await)), ["Bakery opening", "Private note", "UniHop fees"]);
+        let by_name = parsed(&list(json!({ "team": " corner bakery " })).await);
+        assert_eq!(captions(&by_name), ["Bakery opening"]);
+        assert_eq!((by_name["posts"][0]["workspaceName"].as_str(), by_name["posts"][0]["ref"].as_str()), (Some("Corner Bakery"), Some("P-001")));
+        assert_eq!(captions(&parsed(&list(json!({ "team": unihop.to_string() })).await)), ["UniHop fees"]);
+        assert_eq!(captions(&parsed(&list(json!({ "team": "personal" })).await)), ["Private note"]);
+        let unknown = list(json!({ "team": "Acme" })).await;
+        assert_eq!(unknown["isError"], true, "{unknown:?}");
+        let msg = unknown["content"][0]["text"].as_str().expect("text");
+        assert!(msg.contains("Corner Bakery, UniHop"), "{msg}");
+
+        pool.close().await;
+        let _ = std::fs::remove_dir_all(&data);
+    })
+    .await;
+    db.drop_db().await;
+    if let Err(e) = task {
+        std::panic::resume_unwind(e.into_panic());
+    }
+}

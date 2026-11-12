@@ -446,7 +446,7 @@ For teams that post approved designs with their own tool (for example their own 
 | `POST /v1/planner/posts/{id}/claim` | `planner:publish` | Locks an approved, due external post: `status` becomes `publishing`, the answer carries a `claimToken`. A second claim answers `409 not_claimable`. If the design changed since approval, the post goes back to review and the claim answers `409 version_changed`. |
 | `POST /v1/planner/posts/{id}/results` | `planner:publish` | `{ claimToken, results: { instagram: { status: "published" \| "failed" \| "unknown", id, url, error } }, images?, done }`. With `done: true` the post becomes `published` when every channel is published, otherwise `failed` with the reasons. Published and `unknown` results are kept when the post is fixed and approved again, so a publisher retries only the missing channels. |
 
-Tokens limited to a workspace may hold the three planner scopes. A post claimed over an hour ago and never finished can be pulled back with Request changes.
+Every post carries `workspaceId` and `workspaceName`: the team (brand) it belongs to through its design, or `null` for a personal post. Use one team per brand and give each brand's publisher a token limited to that team, so it only ever sees its own posts. Tokens limited to a workspace may hold the three planner scopes. A post claimed over an hour ago and never finished can be pulled back with Request changes.
 
 ## Webhook deliveries
 

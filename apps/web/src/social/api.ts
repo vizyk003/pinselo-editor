@@ -39,6 +39,8 @@ export interface SocialPost {
   approvedBy: string | null; approvedByName?: string | null; approvedAt: string | null; approvedVersion: number | null;
   /** The design's current content version (list endpoint). */
   designVersion?: number | null;
+  /** The team (brand) the post belongs to, through its design; null for a personal post (list endpoint). */
+  workspaceId?: string | null; workspaceName?: string | null;
   claimedAt: string | null;
 }
 export interface PostInput {
@@ -54,7 +56,7 @@ export const socialApi = {
   connect: (provider: ProviderId, creds?: { identifier: string; password: string }) => req<{ url?: string; ok?: boolean }>('POST', `/api/social/connect/${provider}`, creds ?? {}),
   updateAccount: (id: string, b: { workspaceId?: string | null; defaultBoardId?: string }) => req('PATCH', `/api/social/accounts/${id}`, b),
   disconnect: (id: string) => req('DELETE', `/api/social/accounts/${id}`),
-  posts: (q: { from?: string; to?: string; account?: string; designId?: string; status?: string } = {}) =>
+  posts: (q: { from?: string; to?: string; account?: string; designId?: string; status?: string; workspace?: string } = {}) =>
     req<{ posts: SocialPost[] }>('GET', `/api/social/posts?${new URLSearchParams(Object.entries(q).filter(([, v]) => v) as [string, string][])}`),
   create: (b: PostInput) => req<{ post: SocialPost }>('POST', '/api/social/posts', b),
   update: (id: string, b: Partial<Omit<PostInput, 'designId'>>) => req<{ post: SocialPost }>('PATCH', `/api/social/posts/${id}`, b),
