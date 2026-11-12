@@ -352,16 +352,16 @@ fn back(s: &AppState, params: &[(&str, &str)]) -> Reply {
 
 async fn callback(State(s): State<AppState>, Path(provider): Path<String>, req: Req) -> ApiResult {
     let qs = |k: &str| req.query.get(k).and_then(Value::as_str).filter(|v| !v.is_empty()).map(str::to_owned);
-    let st: Option<(Uuid, String, String)> = match req.query.get("state").filter(|v| !matches!(v, Value::Null) && v.as_str() != Some("")) {
+    let st: Option<(Uuid, String, String, Option<Uuid>)> = match req.query.get("state").filter(|v| !matches!(v, Value::Null) && v.as_str() != Some("")) {
         Some(Value::String(state)) => {
-            sqlx::query_as("DELETE FROM social_oauth_states WHERE state = $1 AND created_at > now() - interval '15 minutes' RETURNING user_id, provider, code_verifier")
+            sqlx::query_as("DELETE FROM social_oauth_states WHERE state = $1 AND created_at > now() - interval '15 minutes' RETURNING user_id, provider, code_verifier, workspace_id")
                 .bind(state)
                 .fetch_optional(&s.pool)
                 .await?
         }
         _ => None,
     };
-    let Some((user_id, st_provider, verifier)) = st.filter(|st| st.1 == provider) else {
+    let Some((user_id, st_provider, verifier, team)) = st.filter(|st| st.1 == provider) else {
         return Ok(back(&s, &[("error", "The connection request expired. Try again.")]));
     };
     let _ = st_provider;
@@ -370,7 +370,19 @@ async fn callback(State(s): State<AppState>, Path(provider): Path<String>, req: 
         let msg = req.query.get("error_description").and_then(Value::as_str).map(str::to_owned).or(req.query.get("error").and_then(Value::as_str).map(str::to_owned)).unwrap_or_else(|| "Access was not granted.".into());
         return Ok(back(&s, &[("error", &msg)]));
     };
-    let h = http(&s);
+    let mut h = http(&s);
+    // A login started for a team with its own Meta app finishes through the same app.
+    let mut app = None;
+    if let Some(ws) = team {
+        match oc_social::apps::workspace_meta_app(&s.pool, &s.cfg.secret, ws).await {
+            Ok(Some(a)) => {
+                h = a.http(&h);
+                app = Some(a);
+            }
+            Ok(None) => return Ok(back(&s, &[("error", "The team’s Meta app was removed. Set it up again.")])),
+            Err(e) => return Ok(back(&s, &[("error", &e.message)])),
+        }
+    }
     let p = ExchangeParams { code, redirect_uri: redirect_uri(&s, &provider), code_verifier: verifier };
     let Some(a) = oc_social::adapter(&provider) else { return Ok(back(&s, &[("error", "This network is not configured.")])) };
     let fut = a.exchange(&h, &p);
@@ -380,7 +392,12 @@ async fn callback(State(s): State<AppState>, Path(provider): Path<String>, req: 
         Err(e) => return Ok(back(&s, &[("error", &e.message)])),
     };
     match save_accounts(&s.pool, &s.cfg.secret, user_id, &provider, &accounts).await {
-        Ok(_) => {}
+        Ok(ids) => {
+            // Record the app the tokens came from (none: the server-wide app), and share team logins with the team.
+            if oc_social::apps::link_accounts(&s.pool, &ids, team, app.as_ref(), "oauth").await.is_err() {
+                return Ok(back(&s, &[("error", "Connecting the account failed.")]));
+            }
+        }
         Err(SaveAccountsError::Refused(e)) => return Ok(back(&s, &[("error", &e.message)])),
         Err(_) => return Ok(back(&s, &[("error", "Connecting the account failed.")])),
     }
@@ -414,7 +431,23 @@ async fn connect(State(s): State<AppState>, Path(provider): Path<String>, req: R
     use base64::Engine as _;
     let u = require_user(&s, &req).await?;
     let Some(a) = oc_social::adapter(&provider).filter(|a| a.id() != "local") else { return Ok(reply::json(404, json!({ "error": "unknown_provider" }))) };
-    let h = http(&s);
+    let mut h = http(&s);
+    // Facebook / Instagram login for a team that has its own Meta app: the login runs through that app, and the
+    // callback shares the accounts with the team. Owners and admins only.
+    let mut team: Option<Uuid> = None;
+    if matches!(a.id(), "facebook" | "instagram")
+        && let Some(w) = req.body().and_then(|b| b.get("workspaceId")).and_then(Value::as_str).filter(|w| !w.is_empty())
+    {
+        let Ok(ws) = Uuid::parse_str(w) else { return Ok(reply::json(404, json!({ "error": "not_found" }))) };
+        let r = crate::routes::teams::team_role(&s, u.id, ws).await?;
+        if r.as_deref().is_none_or(|r| crate::routes::teams::rank(r) < crate::routes::teams::rank("admin")) {
+            return Ok(reply::json(403, json!({ "error": "forbidden" })));
+        }
+        let app = oc_social::apps::workspace_meta_app(&s.pool, &s.cfg.secret, ws).await.map_err(|e| ApiError::internal(&e.message))?;
+        let Some(app) = app else { return Ok(reply::json(400, json!({ "error": "no_app", "message": "Set up the team’s Meta app first." }))) };
+        h = app.http(&h);
+        team = Some(ws);
+    }
     if !a.configured(&h) {
         return Ok(reply::json(501, json!({ "error": "not_configured", "message": format!("{} isn’t configured on this server. Set {}.", a.label(), a.env().join(" and ")) })));
     }
@@ -440,7 +473,14 @@ async fn connect(State(s): State<AppState>, Path(provider): Path<String>, req: R
     }
     let b64 = |n: usize| base64::engine::general_purpose::URL_SAFE_NO_PAD.encode(auth::random_bytes(n));
     let (state, verifier) = (b64(24), b64(48));
-    pg::exec(&s.pool, "INSERT INTO social_oauth_states(state, user_id, provider, code_verifier) VALUES ($1,$2,$3,$4)", &[pg::text(&state), pg::uuid(u.id), pg::text(a.id()), pg::text(&verifier)]).await?;
+    sqlx::query("INSERT INTO social_oauth_states(state, user_id, provider, code_verifier, workspace_id) VALUES ($1,$2,$3,$4,$5)")
+        .bind(&state)
+        .bind(u.id)
+        .bind(a.id())
+        .bind(&verifier)
+        .bind(team)
+        .execute(&s.pool)
+        .await?;
     let p = AuthorizeParams { state, redirect_uri: redirect_uri(&s, a.id()), code_challenge: oc_social::http::pkce_challenge(&verifier) };
     let Some(url) = a.authorize_url(&h, &p) else { return Err(ApiError::internal("authorizeUrl is not a function")) };
     Ok(Reply::json(json!({ "url": url })))

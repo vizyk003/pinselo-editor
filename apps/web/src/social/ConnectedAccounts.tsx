@@ -7,6 +7,7 @@ import { Modal, useToast } from '../components/ui';
 import { t } from '../i18n';
 import { socialApi, type Provider, type SocialAccount } from './api';
 import { AccountBadge, ProviderMark } from './AccountBadge';
+import { TeamMetaApps } from './TeamMetaApps';
 import './planner.css';
 
 export function ConnectedAccountsTab() {
@@ -54,8 +55,14 @@ export function ConnectedAccountsTab() {
                   <b>{a.provider === 'local' ? t('Download & remind') : a.displayName}</b>
                   <span className="faint" style={{ fontSize: 12 }}>
                     {a.provider === 'local' ? t('Built in: at the scheduled time you get an email and a notification with the files and caption.') : `${label(a.provider)}${a.handle ? ` · @${a.handle}` : ''}`}
+                    {a.workspaceApp && ` · ${t('Team Meta app')}`}
+                    {a.connectedVia === 'system_user' && ` · ${t('System user')}`}
                   </span>
-                  {a.status === 'reauth' && <span className="error" style={{ fontSize: 12 }}><AlertTriangle size={12} /> {t('Access expired — reconnect to keep posting.')}</span>}
+                  {a.status === 'reauth' && <span className="error" style={{ fontSize: 12 }}><AlertTriangle size={12} /> {
+                    a.workspaceApp || a.connectedVia === 'system_user'
+                      ? t('Access expired — reconnect it under Team Meta apps.')
+                      : t('Access expired — reconnect to keep posting.')
+                  }</span>}
                 </div>
                 {a.provider !== 'local' && a.mine && teams.length > 0 && (
                   <select className="input" style={{ width: 'auto' }} value={a.workspaceId ?? ''} aria-label={t('Share with a team')}
@@ -68,7 +75,7 @@ export function ConnectedAccountsTab() {
                     {teams.map((w) => <option key={w.id} value={w.id}>{t('Shared with {team}', { team: w.name })}</option>)}
                   </select>
                 )}
-                {a.provider !== 'local' && a.status === 'reauth' && a.mine && (
+                {a.provider !== 'local' && a.status === 'reauth' && a.mine && !a.workspaceApp && a.connectedVia !== 'system_user' && (
                   <button className="btn sm" onClick={() => { const p = providers.find((x) => x.id === a.provider); if (p) void connect(p); }}>{t('Reconnect')}</button>
                 )}
                 {a.provider !== 'local' && a.mine && (
@@ -84,6 +91,7 @@ export function ConnectedAccountsTab() {
           </div>
         )}
       </section>
+      <TeamMetaApps teams={teams} onConnected={() => void reload()} />
       <section className="box">
         <h2>{t('Connect a network')}</h2>
         <div className="network-grid">

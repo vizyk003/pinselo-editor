@@ -152,6 +152,15 @@ All optional, read by api and worker. Set a network's credentials to make it ava
 | `OC_BLUESKY_SERVICE` | `https://bsky.social` | Bluesky service. Bluesky needs no server credentials |
 | `OC_BLUESKY_DISABLED` | Off | `1` hides Bluesky |
 
+A team can also bring its own Meta app (Settings → Connected accounts → Team Meta apps): its owners and admins
+enter the app ID, app secret and Graph API version, which Pinselo checks with Meta and stores sealed with
+`OC_SECRET`. That team's Facebook and Instagram accounts are then connected and published through its app,
+not through `OC_FACEBOOK_CLIENT_ID`. They connect with Facebook login, or with a pasted Meta system-user token
+for Pages the business owns. A pasted token must belong to the team's app and carry the publishing
+permissions; Pinselo keeps each Page's own token, not the system-user token. Removing or replacing the app
+marks its accounts for reconnecting. The server-wide variables above stay the default for everyone else and
+may be left empty.
+
 ## Media and content safety
 
 All optional.

@@ -597,7 +597,9 @@ async fn publish_target(
     render: &dyn Render,
 ) -> Result<(), PublishError> {
     let account_id = row.id;
-    if !a.configured(&s.http) {
+    // The workspace's own Meta app when the account was connected through one, else the server-wide app.
+    let http = crate::apps::http_for_account(&s.pool, &s.http, &s.cfg.secret, row).await?;
+    if !a.configured(&http) {
         return Err(PublishError::new(format!("{} isn’t configured on this server.", a.label())));
     }
     let video = post.format == "mp4";
@@ -641,7 +643,7 @@ async fn publish_target(
             handle: row.handle.clone(),
             meta: row.meta.0.clone(),
         },
-        tokens: tokens_for(&s.pool, &s.http, &s.cfg.secret, row, false, s.now_ms() as f64).await?,
+        tokens: tokens_for(&s.pool, &http, &s.cfg.secret, row, false, s.now_ms() as f64).await?,
         media: files,
         kind,
         text: text.to_string(),
@@ -649,12 +651,12 @@ async fn publish_target(
         options,
         title: info.title.clone(),
     };
-    let res = match a.publish(&s.http, &ctx).await {
+    let res = match a.publish(&http, &ctx).await {
         Ok(r) => r,
         // A 401 can mean the token was revoked early: refresh once and try again.
         Err(e) if e.status == Some(401) && a.has_refresh() => {
-            ctx.tokens = tokens_for(&s.pool, &s.http, &s.cfg.secret, row, true, s.now_ms() as f64).await?;
-            a.publish(&s.http, &ctx).await?
+            ctx.tokens = tokens_for(&s.pool, &http, &s.cfg.secret, row, true, s.now_ms() as f64).await?;
+            a.publish(&http, &ctx).await?
         }
         Err(e) => return Err(e),
     };

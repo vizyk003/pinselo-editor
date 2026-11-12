@@ -31,6 +31,10 @@ pub struct AccountRow {
     pub status: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    /// The workspace Meta app the account was connected through (`None`: the server-wide app).
+    pub social_app_id: Option<Uuid>,
+    /// `'oauth'` (provider login) or `'system_user'` (a pasted Meta system-user token).
+    pub connected_via: String,
 }
 
 /// `publicAccount(r, me)`: the client-safe shape (never includes tokens). `mine` only when `me` is given,
@@ -51,6 +55,13 @@ pub fn public_account(r: &AccountRow, me: Option<Uuid>) -> Value {
         m.insert("mine".into(), Value::from(r.user_id == me));
     }
     m.insert("createdAt".into(), Value::from(oc_js::iso_string(&r.created_at)));
+    // Only for accounts connected another way than by login, so the existing shape stays as it was.
+    if r.connected_via != "oauth" {
+        m.insert("connectedVia".into(), Value::from(r.connected_via.clone()));
+    }
+    if r.social_app_id.is_some() {
+        m.insert("workspaceApp".into(), Value::from(true));
+    }
     if let Some(b @ Value::Array(_)) = r.meta.0.get("boards") {
         m.insert("boards".into(), b.clone());
     }
