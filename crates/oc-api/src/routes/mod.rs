@@ -25,6 +25,7 @@ pub mod search;
 pub mod sharing;
 pub mod sites;
 pub mod social;
+pub mod social_apps;
 pub mod supabase;
 pub mod teams;
 pub mod upload_links;

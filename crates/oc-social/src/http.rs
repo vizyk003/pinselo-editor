@@ -75,6 +75,14 @@ impl Http {
         Http::with_env(move |name| map.get(name).cloned())
     }
 
+    /// The same client with `vars` taking precedence over its environment (a workspace's own Meta app over
+    /// the server-wide one). Every other variable, the URL rewrite and the poll settings are kept.
+    pub fn with_env_overlay(mut self, vars: HashMap<String, String>) -> Self {
+        let base = self.env.clone();
+        self.env = Arc::new(move |name| vars.get(name).cloned().or_else(|| base(name)));
+        self
+    }
+
     /// Rewrite every request URL (applied right before sending, also to URLs returned by providers).
     pub fn with_url_rewrite(mut self, f: impl Fn(&str) -> String + Send + Sync + 'static) -> Self {
         self.rewrite = Some(Arc::new(f));

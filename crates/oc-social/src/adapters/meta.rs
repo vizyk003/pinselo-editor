@@ -4,7 +4,11 @@
 //!             video: POST graph-video /{page}/videos (file_url)
 //!   Instagram: POST /{ig}/media (image_url | REELS video_url | CAROUSEL children) → /{ig}/media_publish
 //!
-//! Env: OC_FACEBOOK_CLIENT_ID, OC_FACEBOOK_CLIENT_SECRET (Meta app), optional OC_FACEBOOK_GRAPH_VERSION.
+//! Env: OC_FACEBOOK_CLIENT_ID, OC_FACEBOOK_CLIENT_SECRET (Meta app), optional OC_FACEBOOK_GRAPH_VERSION. A team
+//! workspace can bring its own app (`crate::apps`), which overlays these three for its accounts.
+//!
+//! Two ways to connect: Facebook login (OAuth), or a pasted Meta system-user token ([`connect_system_user`]) for
+//! Pages a business owns, checked with `debug_token` against the workspace's app.
 
 use std::time::Duration;
 
@@ -22,6 +26,10 @@ const ENV: &[&str] = &["OC_FACEBOOK_CLIENT_ID", "OC_FACEBOOK_CLIENT_SECRET"];
 fn version(http: &Http) -> String {
     http.env("OC_FACEBOOK_GRAPH_VERSION")
         .unwrap_or_else(|| "v23.0".into())
+}
+/// `https://graph.facebook.com/<version>` for this environment (a workspace app may set the version).
+pub fn graph_base(http: &Http) -> String {
+    graph(http)
 }
 fn graph(http: &Http) -> String {
     format!("https://graph.facebook.com/{}", version(http))
@@ -140,7 +148,11 @@ async fn fb_exchange(
     p: &ExchangeParams,
 ) -> Result<Vec<ConnectedAccount>, PublishError> {
     let token = user_token(http, p).await?;
-    let list = pages(http, token.as_deref()).await?;
+    fb_accounts(pages(http, token.as_deref()).await?)
+}
+
+/// Each Page as a connected Facebook account, with its own (non-expiring) Page token.
+fn fb_accounts(list: Vec<Value>) -> Result<Vec<ConnectedAccount>, PublishError> {
     if list.is_empty() {
         return Err(PublishError::new(
             "No Facebook Pages found. Make sure you manage a Page and granted access to it.",
@@ -170,8 +182,12 @@ async fn ig_exchange(
     p: &ExchangeParams,
 ) -> Result<Vec<ConnectedAccount>, PublishError> {
     let token = user_token(http, p).await?;
-    let list: Vec<Value> = pages(http, token.as_deref())
-        .await?
+    ig_accounts(pages(http, token.as_deref()).await?)
+}
+
+/// Each Page's linked Instagram professional account, published with that Page's token.
+fn ig_accounts(all: Vec<Value>) -> Result<Vec<ConnectedAccount>, PublishError> {
+    let list: Vec<Value> = all
         .into_iter()
         .filter(|pg| truthy(pg.get("instagram_business_account")))
         .collect();
@@ -211,6 +227,78 @@ async fn post(
 
 fn id_of(r: &Fetched) -> String {
     js_string(r.body.get("id"))
+}
+
+// ---------------------------------------------------------------- system-user tokens
+
+/// The permissions a system-user token needs to publish to each kind of account.
+pub fn required_scopes(provider: &str) -> &'static [&'static str] {
+    match provider {
+        "instagram" => &["instagram_basic", "instagram_content_publish", "pages_show_list"],
+        _ => &["pages_manage_posts", "pages_read_engagement", "pages_show_list"],
+    }
+}
+
+/// Connect with a pasted Meta system-user token (Business Settings → System users → Generate token) instead of
+/// Facebook login. `http` carries the workspace's app (`crate::apps::MetaApp::http`). The token is checked with
+/// `debug_token` (app access token `id|secret`): it must be valid, belong to that app, and hold the publishing
+/// permissions. The accounts are the Pages assigned to the system user (or their Instagram accounts), each stored
+/// with its own Page token, exactly like Facebook login stores them. The system-user token itself is not kept.
+pub async fn connect_system_user(
+    http: &Http,
+    provider: &str,
+    token: &str,
+) -> Result<Vec<ConnectedAccount>, PublishError> {
+    if provider != "facebook" && provider != "instagram" {
+        return Err(PublishError::new("System-user tokens connect Facebook Pages and Instagram accounts only."));
+    }
+    let (cid, cs) = (id(http), secret(http));
+    if cid.is_empty() || cs.is_empty() {
+        return Err(PublishError::new("Set up the workspace’s Meta app first."));
+    }
+    let app_token = format!("{cid}|{cs}");
+    let url = with_query(
+        &format!("{}/debug_token", graph(http)),
+        &[("input_token", Some(token)), ("access_token", Some(app_token.as_str()))],
+    );
+    let r = http.call(&url, Req::get()).await?;
+    let data = non_null(r.body.get("data")).cloned().unwrap_or(Value::Null);
+    if data.get("is_valid").and_then(Value::as_bool) != Some(true) {
+        let why = non_null(data.get("error"))
+            .and_then(|e| e.get("message"))
+            .map(|m| js_string(Some(m)))
+            .unwrap_or_else(|| "Meta says it is not valid".into());
+        return Err(PublishError::new(format!("That token can’t be used: {why}.")));
+    }
+    let token_app = js_string(data.get("app_id"));
+    if token_app != cid {
+        return Err(PublishError::new(format!(
+            "That token belongs to Meta app {token_app}, not to this workspace’s app {cid}. Generate it for the workspace’s app."
+        )));
+    }
+    let scopes: Vec<String> = match non_null(data.get("scopes")) {
+        Some(Value::Array(a)) => a.iter().map(|v| js_string(Some(v))).collect(),
+        _ => Vec::new(),
+    };
+    let missing: Vec<&str> = required_scopes(provider)
+        .iter()
+        .copied()
+        .filter(|s| !scopes.iter().any(|x| x == s))
+        .collect();
+    if !missing.is_empty() {
+        return Err(PublishError::new(format!(
+            "The token lacks {}. Generate a new one with {} ticked.",
+            missing.join(", "),
+            if missing.len() == 1 { "it" } else { "them" }
+        )));
+    }
+    let list = pages(http, Some(token)).await?;
+    if list.is_empty() {
+        return Err(PublishError::new(
+            "The system user has no Pages. In Business Settings, assign the Page to the system user (Manage Page), then try again.",
+        ));
+    }
+    if provider == "facebook" { fb_accounts(list) } else { ig_accounts(list) }
 }
 
 // ---------------------------------------------------------------- Facebook Pages

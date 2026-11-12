@@ -187,6 +187,9 @@ The dialog also has **Make owner**, to transfer a design, and **Remove everyone'
 
 - **File > Publish as website** puts the design online as a website.
 - **Schedule** sends the design to connected social accounts. Scheduled posts appear in **Content Planner**.
+- A team can publish to Facebook and Instagram through its own Meta app. In **Settings > Connected accounts >
+  Team Meta apps**, an owner or admin enters the app's ID and secret, then connects the team's Pages and
+  Instagram accounts with Facebook login or a Meta system-user token. Everyone in the team can then schedule to them.
 
 ## Presenting
 

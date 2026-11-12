@@ -7,10 +7,12 @@
 //! * [`text`]: caption composition and per-network text rules.
 //! * [`store`]: `social_accounts` persistence (encrypted tokens, refresh-on-use, visibility).
 //! * [`publish`]: the `publish` job, scheduling and the sweep.
+//! * [`apps`]: a team workspace's own Meta app, overlaid on the adapters' environment.
 //!
 //! Database rows, JSON shapes, messages and HTTP requests are identical to the TypeScript implementation.
 
 pub mod adapters;
+pub mod apps;
 pub mod crypto;
 pub mod http;
 pub mod imagesize;

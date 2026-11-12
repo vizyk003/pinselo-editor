@@ -24,7 +24,14 @@ export interface Provider {
 export interface SocialAccount {
   id: string; provider: ProviderId; displayName: string; handle: string | null; avatarUrl: string | null; status: 'ok' | 'reauth';
   workspaceId: string | null; mine?: boolean; boards?: Array<{ id: string; name: string }>;
+  /** Set when connected with a pasted Meta system-user token (absent: provider login). */
+  connectedVia?: 'system_user';
+  /** True when the account publishes through its team's own Meta app. */
+  workspaceApp?: boolean;
 }
+/** A team's own Meta app (never includes the secret). */
+export interface MetaApp { provider: 'meta'; appId: string; appName: string | null; graphVersion: string | null; updatedAt: string }
+export interface TeamMetaApp { app: MetaApp | null; accounts: number; serverApp: boolean; canManage: boolean }
 export type PostStatus = 'draft' | 'in_review' | 'changes_requested' | 'approved' | 'scheduled' | 'publishing' | 'published' | 'failed';
 /** Who publishes a post: Pinselo through connected accounts, or an outside tool through /v1/planner. */
 export type Publisher = 'pinselo' | 'external';
@@ -54,6 +61,15 @@ export const socialApi = {
   providers: () => req<{ providers: Provider[] }>('GET', '/api/social/providers'),
   accounts: () => req<{ accounts: SocialAccount[] }>('GET', '/api/social/accounts'),
   connect: (provider: ProviderId, creds?: { identifier: string; password: string }) => req<{ url?: string; ok?: boolean }>('POST', `/api/social/connect/${provider}`, creds ?? {}),
+  /** Facebook / Instagram login through a team's own Meta app; the accounts are shared with the team. */
+  connectForTeam: (provider: 'facebook' | 'instagram', workspaceId: string) => req<{ url: string }>('POST', `/api/social/connect/${provider}`, { workspaceId }),
+  metaApp: (workspaceId: string) => req<TeamMetaApp>('GET', `/api/workspaces/${workspaceId}/meta-app`),
+  saveMetaApp: (workspaceId: string, b: { appId: string; appSecret?: string; graphVersion?: string | null }) =>
+    req<{ app: MetaApp }>('PUT', `/api/workspaces/${workspaceId}/meta-app`, b),
+  removeMetaApp: (workspaceId: string) => req('DELETE', `/api/workspaces/${workspaceId}/meta-app`),
+  /** Connect the Pages (or their Instagram accounts) a Meta system-user token can manage. */
+  connectSystemUser: (workspaceId: string, provider: 'facebook' | 'instagram', token: string) =>
+    req<{ accounts: SocialAccount[] }>('POST', `/api/workspaces/${workspaceId}/meta-app/accounts`, { provider, token }),
   updateAccount: (id: string, b: { workspaceId?: string | null; defaultBoardId?: string }) => req('PATCH', `/api/social/accounts/${id}`, b),
   disconnect: (id: string) => req('DELETE', `/api/social/accounts/${id}`),
   posts: (q: { from?: string; to?: string; account?: string; designId?: string; status?: string; workspace?: string } = {}) =>
