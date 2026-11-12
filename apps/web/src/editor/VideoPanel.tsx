@@ -110,6 +110,15 @@ export function VideoPanel() {
             </select>
           </div>
           <div className="row">
+            <label className="row" style={{ fontSize: 13 }}>
+              <input type="checkbox" checked={Boolean(track.style.highlight)} onChange={(e) => {
+                const { highlight: _, ...style } = track.style;
+                editor.setCaptions({ ...track, style: e.target.checked ? { ...style, highlight: '#ffd60a' } : style });
+              }} /> {t('Highlight each word as it is spoken')}
+            </label>
+            {track.style.highlight && <SwatchInput value={track.style.highlight} onChange={(c) => editor.setCaptions({ ...track, style: { ...track.style, highlight: c } }, true)} title={t('Highlight colour')} doc={editor.doc} />}
+          </div>
+          <div className="row">
             <button className="btn ghost sm" onClick={() => srt(false)}><Download size={13} /> .srt</button>
             <button className="btn ghost sm" onClick={() => srt(true)}><Download size={13} /> .vtt</button>
           </div>

@@ -3086,6 +3086,17 @@
  "{n} slides · click to enlarge": "{n} شرائح · انقر للتكبير",
  "— for review, not posted": "— للمراجعة، لا يُنشر",
  "All teams": "كل الفرق",
+ "Amount ({value}%)": "المقدار ({value}٪)",
  "Filter by team": "تصفية حسب الفريق",
- "Choose a {team} design to schedule": "اختر تصميمًا من {team} لجدولته"
+ "Choose a {team} design to schedule": "اختر تصميمًا من {team} لجدولته",
+ "Highlight colour": "لون التمييز",
+ "Highlight each word as it is spoken": "تمييز كل كلمة عند نطقها",
+ "Moves the photo or clip slowly inside its box while it is on screen, so stills feel like footage.": "يحرّك الصورة أو المقطع ببطء داخل إطاره ما دام ظاهرًا على الشاشة، فتبدو الصور الثابتة كأنها لقطات مصوّرة.",
+ "Pan down": "تحريك لأسفل",
+ "Pan left": "تحريك لليسار",
+ "Pan right": "تحريك لليمين",
+ "Pan up": "تحريك لأعلى",
+ "Picture movement": "حركة الصورة",
+ "Slow zoom in": "تقريب بطيء",
+ "Slow zoom out": "تبعيد بطيء"
 }

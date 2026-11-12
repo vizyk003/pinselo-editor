@@ -123,6 +123,8 @@ export interface CaptionTrack {
         color: string;
         background: string;
         position: 'bottom' | 'top' | 'middle';
+        /** Colour of the word being spoken: a cue's words light up one after another. Unset: one colour. */
+        highlight?: string;
     };
     visible: boolean;
 }

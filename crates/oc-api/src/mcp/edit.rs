@@ -962,6 +962,16 @@ impl Run<'_> {
                             track["style"][key] = v.clone();
                         }
                     }
+                    // The colour the word being spoken lights up in; null goes back to one colour.
+                    match st.get("highlight") {
+                        Some(Value::Null) => {
+                            if let Some(o) = track["style"].as_object_mut() {
+                                o.remove("highlight");
+                            }
+                        }
+                        Some(v) => track["style"]["highlight"] = v.clone(),
+                        None => {}
+                    }
                 }
                 if let Some(v) = op.get("visible") {
                     track["visible"] = v.clone();
@@ -1519,6 +1529,47 @@ mod motion_tests {
         let (res, doc) = run(&ydoc, json!([{ "op": "update_audio", "id": song, "fit": true }]), vec![], json!({}));
         assert!(res.error.is_none());
         assert_eq!(doc["meta"]["audio"][0]["durationMs"], 8500);
+    }
+
+    #[test]
+    fn photos_move_one_thing_loops_and_spoken_words_light_up() {
+        let ydoc = design(1080.0, 1920.0);
+        let photo = json!({ "id": "photo00000000001", "kind": "image", "sha256": "ef", "mime": "image/jpeg", "w": 2000, "h": 3000, "name": "Team" });
+        let ops = json!([
+            { "op": "update_page", "page": 1, "duration": 3 },
+            { "op": "add_image", "ref": "bg", "source": { "asset": "photo00000000001" }, "x": 0, "y": 0, "w": 1080, "h": 1920, "panZoom": { "type": "zoom-in", "amount": 0.15, "focus": { "x": 0.5, "y": 0.3 } } },
+            { "op": "add_text", "ref": "cta", "text": "Try it", "x": 80, "y": 900, "w": 400, "animation": { "in": { "type": "fade" }, "loop": { "type": "pulse" } } },
+            { "op": "set_captions", "cues": [{ "start": 0, "end": 3, "text": "Meet the team" }], "style": { "highlight": "#ffd60a" } }
+        ]);
+        // What assistants send passes the tool's input validation as it is.
+        let args = json!({ "design_id": "d1", "operations": ops });
+        super::super::schema::validate("edit_design", Some(&args)).expect("valid input");
+        let (res, doc) = run(&ydoc, ops, vec![(1, photo)], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        let el = |r: &str| doc["elements"][id(r).as_str()].clone();
+        assert_eq!(el("bg")["panZoom"], json!({ "fromY": 0.3, "toY": 0.3, "from": 1, "to": 1.15 }));
+        assert_eq!(el("cta")["emphasis"], json!({ "preset": "pulse", "periodMs": 1600 }));
+        assert_eq!(el("cta")["anim"]["preset"], "fade");
+        // Stored where the renderer reads them.
+        let bg = typed.elements.get(id("bg").as_str()).and_then(|e| e.base()).expect("image");
+        assert_eq!(bg.pan_zoom.as_ref().map(|p| (p.from, p.to, p.to_y)), Some((1.0, 1.15, Some(0.3))));
+        assert_eq!(typed.meta.captions.as_ref().and_then(|c| c.style.highlight.as_deref()), Some("#ffd60a"));
+        // get_design shows them as they were written.
+        let tl = super::super::motion::timeline_view(&doc, &typed);
+        assert_eq!(tl["captions"]["style"]["highlight"], "#ffd60a");
+        assert_eq!(Value::Object(super::super::motion::element_view(&el("bg")))["panZoom"], json!({ "type": "zoom-in", "amount": 0.15, "focus": { "x": 0.5, "y": 0.3 } }));
+
+        // Text has no picture to move; null takes the movement and the highlight off again.
+        let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("cta"), "panZoom": {} }]), vec![], json!({}));
+        assert!(res.error.as_ref().is_some_and(|e| e.2.contains("panZoom is for images")), "{:?}", res.error);
+        let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("bg"), "panZoom": null }, { "op": "update", "id": id("cta"), "animation": { "loop": null } }, { "op": "set_captions", "style": { "highlight": null } }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert!(doc["elements"][id("bg").as_str()].get("panZoom").is_none_or(Value::is_null));
+        assert!(doc["elements"][id("cta").as_str()].get("emphasis").is_none_or(Value::is_null));
+        assert_eq!(doc["elements"][id("cta").as_str()]["anim"]["preset"], "fade");
+        assert!(doc["meta"]["captions"]["style"].get("highlight").is_none());
     }
 
     #[test]

@@ -2882,6 +2882,17 @@
  "{n} slides · click to enlarge": "{n} Folien · zum Vergrößern klicken",
  "— for review, not posted": "— zur Prüfung, wird nicht veröffentlicht",
  "All teams": "Alle Teams",
+ "Amount ({value}%)": "Stärke ({value} %)",
  "Filter by team": "Nach Team filtern",
- "Choose a {team} design to schedule": "{team}-Design zum Planen auswählen"
+ "Choose a {team} design to schedule": "{team}-Design zum Planen auswählen",
+ "Highlight colour": "Hervorhebungsfarbe",
+ "Highlight each word as it is spoken": "Jedes Wort hervorheben, während es gesprochen wird",
+ "Moves the photo or clip slowly inside its box while it is on screen, so stills feel like footage.": "Bewegt das Foto oder den Clip langsam in seinem Rahmen, solange es zu sehen ist, sodass Standbilder wie Filmaufnahmen wirken.",
+ "Pan down": "Nach unten schwenken",
+ "Pan left": "Nach links schwenken",
+ "Pan right": "Nach rechts schwenken",
+ "Pan up": "Nach oben schwenken",
+ "Picture movement": "Bildbewegung",
+ "Slow zoom in": "Langsam heranzoomen",
+ "Slow zoom out": "Langsam herauszoomen"
 }

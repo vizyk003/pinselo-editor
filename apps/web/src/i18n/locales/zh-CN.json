@@ -2831,6 +2831,17 @@
  "{n} slides · click to enlarge": "{n} 张 · 点击放大",
  "— for review, not posted": "— 仅供审阅,不发布",
  "All teams": "所有团队",
+ "Amount ({value}%)": "幅度({value}%)",
  "Filter by team": "按团队筛选",
- "Choose a {team} design to schedule": "选择要排期的{team}设计"
+ "Choose a {team} design to schedule": "选择要排期的{team}设计",
+ "Highlight colour": "高亮颜色",
+ "Highlight each word as it is spoken": "逐词高亮正在说的词",
+ "Moves the photo or clip slowly inside its box while it is on screen, so stills feel like footage.": "在显示期间让照片或片段在其边框内缓慢移动,使静态图片看起来像视频画面。",
+ "Pan down": "向下平移",
+ "Pan left": "向左平移",
+ "Pan right": "向右平移",
+ "Pan up": "向上平移",
+ "Picture movement": "画面运动",
+ "Slow zoom in": "缓慢放大",
+ "Slow zoom out": "缓慢缩小"
 }

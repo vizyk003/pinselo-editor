@@ -1664,7 +1664,7 @@
            ]
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -1854,7 +1854,7 @@
            "minimum": 0
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -2016,7 +2016,7 @@
            ]
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -2239,7 +2239,18 @@
            "maxLength": 500
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "panZoom": {
+           "description": "{ type, amount, focus } the picture moves slowly inside its box while it shows, exactly as on update",
            "anyOf": [
             {
              "type": "object"
@@ -2399,7 +2410,7 @@
            "description": "Hex colour, #rrggbb or #rrggbbaa"
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -2576,7 +2587,7 @@
            "description": "Hex colour, #rrggbb or #rrggbbaa"
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -2709,7 +2720,7 @@
            "description": "Hex colour, #rrggbb or #rrggbbaa"
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -3234,6 +3245,104 @@
                 {
                  "type": "null"
                 }
+               ]
+              },
+              "loop": {
+               "description": "A small movement that repeats once the entrance has finished, for as long as the element shows: use it sparingly, on one thing per scene (a button, a badge, a sticker); null removes it",
+               "anyOf": [
+                {
+                 "type": "object",
+                 "properties": {
+                  "type": {
+                   "description": "pulse (grows and shrinks a little), heartbeat, float (drifts up and down), swing, wiggle, bounce, flicker, spin. Default: pulse",
+                   "type": "string",
+                   "enum": [
+                    "pulse",
+                    "wiggle",
+                    "bounce",
+                    "flicker",
+                    "spin",
+                    "heartbeat",
+                    "float",
+                    "swing"
+                   ]
+                  },
+                  "period": {
+                   "description": "Seconds for one round (default 1.6; spin 3)",
+                   "type": "number",
+                   "minimum": 0.2,
+                   "maximum": 30
+                  },
+                  "intensity": {
+                   "description": "How strong, 0.25–2 (default 1)",
+                   "type": "number",
+                   "minimum": 0.25,
+                   "maximum": 2
+                  }
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "panZoom": {
+           "description": "Images, videos and frames holding a photo: the picture moves slowly inside its box for as long as the element shows (a Ken Burns move), so a still photo reads as footage. The box, its corners and its outline stay put. null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "type": {
+               "description": "zoom-in (default), zoom-out, or pan-left / pan-right / pan-up / pan-down: the view travels that way across the picture",
+               "type": "string",
+               "enum": [
+                "zoom-in",
+                "zoom-out",
+                "pan-left",
+                "pan-right",
+                "pan-up",
+                "pan-down"
+               ]
+              },
+              "amount": {
+               "description": "How far it zooms, as a fraction: 0.12 ends 12% closer (default 0.12; pans stay 0.15 closer so there is picture to travel across). Keep it between 0.05 and 0.25 for a calm move",
+               "type": "number",
+               "minimum": 0.01,
+               "maximum": 3
+              },
+              "focus": {
+               "description": "The point the zoom holds on, in fractions of the picture as cropped (default its centre): a face, a product",
+               "type": "object",
+               "properties": {
+                "x": {
+                 "type": "number",
+                 "minimum": 0,
+                 "maximum": 1
+                },
+                "y": {
+                 "type": "number",
+                 "minimum": 0,
+                 "maximum": 1
+                }
+               },
+               "required": [
+                "x",
+                "y"
+               ]
+              },
+              "easing": {
+               "description": "linear (default: steady, right for a move that runs the whole scene) or ease (starts and ends gently)",
+               "type": "string",
+               "enum": [
+                "linear",
+                "ease"
                ]
               }
              }
@@ -4104,7 +4213,18 @@
            "minimum": 0
           },
           "animation": {
-           "description": "{ in, out } entrance and exit in seconds, exactly as on update; null removes",
+           "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "panZoom": {
+           "description": "{ type, amount, focus } the picture moves slowly inside its box while it shows, exactly as on update",
            "anyOf": [
             {
              "type": "object"
@@ -4397,6 +4517,18 @@
               "middle",
               "top"
              ]
+            },
+            "highlight": {
+             "description": "Colour the word being spoken lights up in, one word after another across the cue (the karaoke look of Reels and TikTok captions); null goes back to one colour",
+             "anyOf": [
+              {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              },
+              {
+               "type": "null"
+              }
+             ]
             }
            }
           },
@@ -4664,7 +4796,7 @@
   {
    "name": "export_design",
    "title": "Export design",
-   "description": "Export a design to a file and get a download link (valid for 24 hours). MP4 and GIF play the pages given (default: all visible pages) at their durations; MP4 comes out at the design's own size unless scale or width says otherwise.",
+   "description": "Export a design to a file and get a download link (valid for 24 hours). MP4 and GIF play the pages given (default: all visible pages) at their durations; MP4 comes out at the design's own size unless scale or width says otherwise. A video renders in the background: when it takes longer than about 25 seconds the answer is { status: \"rendering\", export_id, progress } instead of the link, and calling export_design again with the same arguments plus that export_id waits for it and returns the link. Asking again without export_id joins the same render and does not start a second one.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -4705,6 +4837,11 @@
       "type": "integer",
       "minimum": 16,
       "maximum": 3840
+     },
+     "export_id": {
+      "description": "MP4 and GIF: the export_id of an answer that said status \"rendering\", to wait for that video and get its link",
+      "type": "string",
+      "maxLength": 64
      }
     },
     "required": [

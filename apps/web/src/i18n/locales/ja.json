@@ -2831,6 +2831,17 @@
  "{n} slides · click to enlarge": "{n} 枚 · クリックで拡大",
  "— for review, not posted": "— 確認用(投稿されません)",
  "All teams": "すべてのチーム",
+ "Amount ({value}%)": "量({value}%)",
  "Filter by team": "チームで絞り込み",
- "Choose a {team} design to schedule": "スケジュールする{team}のデザインを選択"
+ "Choose a {team} design to schedule": "スケジュールする{team}のデザインを選択",
+ "Highlight colour": "ハイライトの色",
+ "Highlight each word as it is spoken": "話されている単語を順にハイライト",
+ "Moves the photo or clip slowly inside its box while it is on screen, so stills feel like footage.": "表示されている間、写真やクリップを枠の中でゆっくり動かし、静止画を映像のように見せます。",
+ "Pan down": "下へパン",
+ "Pan left": "左へパン",
+ "Pan right": "右へパン",
+ "Pan up": "上へパン",
+ "Picture movement": "画像の動き",
+ "Slow zoom in": "ゆっくりズームイン",
+ "Slow zoom out": "ゆっくりズームアウト"
 }

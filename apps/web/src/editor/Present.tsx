@@ -181,7 +181,7 @@ export function Present({ onExit }: { onExit: () => void }) {
       const span = sp(page.id);
       pool.current?.sync(editor.doc, (span?.startMs ?? 0) + Math.min(t, pageMs - 1), t < pageMs);
       const els = childrenOf(editor.doc, page.id);
-      const timed = els.some((e) => videoSlots(e).length > 0 || e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes) || Boolean(editor.doc.meta.audio?.length || editor.doc.meta.captions?.cues.length);
+      const timed = els.some((e) => videoSlots(e).length > 0 || e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes || e.panZoom) || Boolean(editor.doc.meta.audio?.length || editor.doc.meta.captions?.cues.length);
       const settle = Math.max(pageSettleMs(page, els), page.transition?.durationMs ?? 0, timed ? pageMs : 0, (steps.current.at(-1) ?? 0) + 3000);
       const animating = timed || t < pageSettleMs(page, els) + 50 || steps.current.some((s) => s >= 0 && t < s + 3000);
       const pw = Math.max(1, Math.round(w * z * dpr));

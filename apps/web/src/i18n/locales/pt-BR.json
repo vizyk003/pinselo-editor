@@ -2931,6 +2931,17 @@
  "{n} slides · click to enlarge": "{n} slides · clique para ampliar",
  "— for review, not posted": "— para revisão, não é publicado",
  "All teams": "Todas as equipes",
+ "Amount ({value}%)": "Intensidade ({value}%)",
  "Filter by team": "Filtrar por equipe",
- "Choose a {team} design to schedule": "Escolha um design de {team} para agendar"
+ "Choose a {team} design to schedule": "Escolha um design de {team} para agendar",
+ "Highlight colour": "Cor do destaque",
+ "Highlight each word as it is spoken": "Destacar cada palavra enquanto é falada",
+ "Moves the photo or clip slowly inside its box while it is on screen, so stills feel like footage.": "Move a foto ou o clipe lentamente dentro do quadro enquanto está na tela, para que imagens estáticas pareçam filmagens.",
+ "Pan down": "Panorâmica para baixo",
+ "Pan left": "Panorâmica para a esquerda",
+ "Pan right": "Panorâmica para a direita",
+ "Pan up": "Panorâmica para cima",
+ "Picture movement": "Movimento da imagem",
+ "Slow zoom in": "Zoom lento para perto",
+ "Slow zoom out": "Zoom lento para longe"
 }

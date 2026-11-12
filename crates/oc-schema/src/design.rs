@@ -237,6 +237,10 @@ pub struct CaptionStyle {
     pub color: String,
     pub background: String,
     pub position: CaptionPosition,
+    /// Colour of the word being spoken: the cue's words light up one after another across its time. Unset: the
+    /// whole cue shows in `color`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub highlight: Option<String>,
     #[serde(flatten)]
     pub extra: Extra,
 }

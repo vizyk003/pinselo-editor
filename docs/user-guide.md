@@ -108,6 +108,18 @@ Use **Add page** in the page strip, or ⌘Enter. A page's menu has **Rename page
 
 The status bar has **Notes** for speaker notes, **Timeline** for video and audio editing, zoom and **Grid view**.
 
+### Video
+
+A design plays its pages one after another, each for its own length. Open **Timeline** in the status bar to see the pages, the soundtrack and the captions on one time ruler, play the design, and drag the end of a page to change how long it lasts. **Split** cuts the selected video, or the page, at the playhead.
+
+**Animate** in the toolbar sets how things move:
+
+- With nothing selected, it sets the page's animation and the transition from the page before.
+- With an element selected, it sets its entrance, an **Emphasis (loops)** that keeps it moving, an **Exit animation** and a **Motion path**.
+- With a photo, a video or a photo frame selected, **Picture movement** moves the picture slowly inside its box for as long as it is on screen: **Slow zoom in**, **Slow zoom out**, or a pan left, right, up or down. The box, its rounded corners and its border stay where they are, and **Amount** sets how far the picture travels. Use it on photos that stay on screen for a few seconds, so the video does not look like a slideshow. Images and PDFs you download show the photo as you cropped it.
+
+The **Video** panel holds the **Soundtrack** (music and voice-over) and the **Captions**. Add a caption at the playhead, then set its text and times. Captions have a size, a colour, a background and a position. Turn on **Highlight each word as it is spoken** to light up the words of each caption one after another in a second colour, the way captions look in Reels and TikTok videos; it works best with short captions of two to five words.
+
 ### Resizing
 
 **File > Resize** changes the design's size. The dialog also makes copies in other sizes: pick one or more sizes, and each becomes a new design in **Projects** while this one stays as it is. Turn on **Scale content to fit the new size** to scale the content with the page.
@@ -215,7 +227,7 @@ Choose **Download** in the top bar, then pick a **File type**. The format that s
 | **JPG** | The smallest image file. Has a **Quality** slider. |
 | **PDF Standard** | Documents and email, with selectable text. |
 | **PDF Print** | Professional printing. See [Print export](#print-export). |
-| **MP4 Video** | Animations and transitions, at 720p, 1080p or 4K. |
+| **MP4 Video** | Animations and transitions, at 720p, 1080p or 4K. Colours play as they look in the editor. |
 | **GIF** | A short animated loop. |
 | **PowerPoint (PPTX)** | Editable slides. |
 | **SVG** | Scalable vector with editable text. |

@@ -4,9 +4,9 @@
 //! MP4/GIF export agree frame-for-frame (ADR-0035: time is an explicit evaluator input; no wall clock).
 
 use oc_schema::design::{Page, TransitionKind};
-use oc_schema::elements::{AnimDirection, AnimEasing, AnimPreset, AnimUnit, Element, ElementAnim, ElementEmphasis, EmphasisPreset, Keyframes, MotionEasing};
+use oc_schema::elements::{AnimDirection, AnimEasing, AnimPreset, AnimUnit, Element, ElementAnim, ElementEmphasis, EmphasisPreset, Keyframes, MotionEasing, PanZoom};
 use oc_schema::keyframes::keyframe_value;
-use oc_schema::primitives::Extra;
+use oc_schema::primitives::{Extra, StoredRect};
 use oc_schema::timeline::Window;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -433,6 +433,30 @@ pub fn motion_at_time(el: &Element, page: &Page, index: usize, t: f64, window: W
     Some(m)
 }
 
+/// How far a pan and zoom may go in (4 = a quarter of the crop fills the box).
+pub const PAN_ZOOM_MAX: f64 = 4.0;
+
+/// The crop a pan and zoom shows at page time `t`: `crop` narrowed by the scale and held on the focus point, both
+/// running from their start to their end values across the element's visibility window. The crop keeps its aspect
+/// and never leaves the stored crop, so the picture stays inside its box and its outline.
+pub fn pan_zoom_crop(crop: &StoredRect, pz: &PanZoom, t: f64, window: Window) -> StoredRect {
+    let span = window.end - window.start;
+    let mut p = if span > 0.0 { min(1.0, max(0.0, (t - window.start) / span)) } else { 1.0 };
+    if pz.easing == Some(MotionEasing::Ease) {
+        p = if p < 0.5 { 2.0 * p * p } else { 1.0 - pow(-2.0 * p + 2.0, 2.0) / 2.0 };
+    }
+    let lerp = |a: f64, b: f64| a + (b - a) * p;
+    let scale = |v: f64| if v.is_finite() { min(PAN_ZOOM_MAX, max(1.0, v)) } else { 1.0 };
+    let focus = |v: Option<f64>| v.filter(|v| v.is_finite()).map_or(0.5, |v| min(1.0, max(0.0, v)));
+    // Scale runs geometrically, so the picture grows at a steady rate instead of slowing as it gets closer.
+    let (a, b) = (scale(pz.from), scale(pz.to));
+    let s = a * pow(b / a, p);
+    let fx = lerp(focus(pz.from_x), focus(pz.to_x));
+    let fy = lerp(focus(pz.from_y), focus(pz.to_y));
+    let (w, h) = (crop.w / s, crop.h / s);
+    StoredRect { x: crop.x + (crop.w - w) * fx, y: crop.y + (crop.h - h) * fy, w, h, extra: crop.extra.clone() }
+}
+
 /// Point at fraction p (0..1) along a flat [x0,y0,x1,y1,…] polyline, by arc length.
 pub fn point_along(pts: &[f64], p: f64) -> (f64, f64) {
     let mut segs: Vec<f64> = Vec::new();
@@ -608,6 +632,29 @@ mod tests {
         // Without a distance the travel follows the element size.
         let m = evaluate_preset(&AnimPreset::Rise, 50.0, 100.0, (600.0, 200.0), &PresetOpts { easing: Some(AnimEasing::Linear), ..Default::default() });
         assert!((m.dy - 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn pan_zoom_narrows_the_crop_and_stays_inside_it() {
+        let crop = StoredRect { x: 0.1, y: 0.2, w: 0.8, h: 0.6, extra: Extra::new() };
+        let w = Window { start: 1000.0, end: 5000.0 };
+        let pz = PanZoom { from: 1.0, to: 1.21, from_x: None, from_y: None, to_x: None, to_y: None, easing: None, extra: Extra::new() };
+        // Before and at its start: the crop as stored.
+        assert_eq!(pan_zoom_crop(&crop, &pz, 0.0, w), crop);
+        assert_eq!(pan_zoom_crop(&crop, &pz, 1000.0, w), crop);
+        // Halfway: 1.1× (geometric), about the centre.
+        let c = pan_zoom_crop(&crop, &pz, 3000.0, w);
+        assert!((c.w - 0.8 / 1.1).abs() < 1e-9 && (c.h - 0.6 / 1.1).abs() < 1e-9);
+        assert!(((c.x + c.w / 2.0) - 0.5).abs() < 1e-9 && ((c.y + c.h / 2.0) - 0.5).abs() < 1e-9);
+        // A pan: zoomed in throughout, the focus travelling from the left edge to the right one.
+        let pan = PanZoom { from: 1.25, to: 1.25, from_x: Some(0.0), to_x: Some(1.0), ..pz.clone() };
+        let (a, b) = (pan_zoom_crop(&crop, &pan, 1000.0, w), pan_zoom_crop(&crop, &pan, 5000.0, w));
+        assert!((a.x - 0.1).abs() < 1e-9 && ((b.x + b.w) - 0.9).abs() < 1e-9 && (a.w - 0.64).abs() < 1e-9);
+        // Values out of range are held inside the crop.
+        let wild = PanZoom { from: 0.2, to: 99.0, to_x: Some(7.0), ..pz };
+        let c = pan_zoom_crop(&crop, &wild, 5000.0, w);
+        assert!(c.x >= 0.1 - 1e-9 && c.x + c.w <= 0.9 + 1e-9 && (c.w - 0.2).abs() < 1e-9);
+        assert_eq!(pan_zoom_crop(&crop, &wild, 1000.0, w), crop);
     }
 
     #[test]

@@ -298,6 +298,28 @@ pub struct MotionPath {
     pub extra: Extra,
 }
 
+/// Pan and zoom (MV-012): the picture of an image, video or photo frame moves inside its box for as long as the
+/// element is on screen (a "Ken Burns" move). Scales are relative to the stored crop (1 = the crop as set, 1.2 = 20%
+/// closer); focus points are where the zoom holds on, in fractions of the crop (0.5, 0.5 = its centre).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PanZoom {
+    pub from: f64,
+    pub to: f64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from_x: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from_y: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to_x: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to_y: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub easing: Option<MotionEasing>,
+    #[serde(flatten)]
+    pub extra: Extra,
+}
+
 /// When an element is visible on its page (page time, ms). Omitted = whole page.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -438,6 +460,8 @@ pub struct ElementBase {
     pub anim_out: Option<ElementAnimOut>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub motion_path: Option<MotionPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pan_zoom: Option<PanZoom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timing: Option<ElementTiming>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1204,7 +1228,7 @@ from_variant!(
 /// Fields stored at the top level of an element map (everything else is type-specific `props`).
 pub const BASE_KEYS: &[&str] = &[
     "id", "type", "parentId", "z", "xf", "opacity", "blend", "visible", "lock", "name", "role", "link", "altText",
-    "decorative", "effects", "anim", "emphasis", "keyframes", "animOut", "motionPath", "timing", "origin",
+    "decorative", "effects", "anim", "emphasis", "keyframes", "animOut", "motionPath", "panZoom", "timing", "origin",
     "dataBinding", "deleted", "ext",
 ];
 

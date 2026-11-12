@@ -126,6 +126,20 @@ export interface MotionPath {
     delayMs: number;
     easing: 'linear' | 'ease';
 }
+/**
+ * Pan and zoom (MV-012): the picture of an image, video or photo frame moves inside its box for as long as the element
+ * is on screen. Scales are relative to the stored crop (1 = as set, 1.2 = 20% closer); focus points are fractions of
+ * the crop (0.5, 0.5 = its centre).
+ */
+export interface PanZoom {
+    from: number;
+    to: number;
+    fromX?: number;
+    fromY?: number;
+    toX?: number;
+    toY?: number;
+    easing?: 'linear' | 'ease';
+}
 /** When an element is visible on its page (page time, ms). Omitted = whole page. */
 export interface ElementTiming {
     startMs: number;
@@ -157,6 +171,7 @@ export interface ElementBase {
     keyframes?: Keyframes;
     animOut?: ElementAnimOut;
     motionPath?: MotionPath;
+    panZoom?: PanZoom;
     timing?: ElementTiming;
     origin?: DesignOrigin;
     /** Bulk create (ED-090): the data column that fills this element (text, or image URL / upload name). */
@@ -479,5 +494,5 @@ export type ElementOf<T extends ElementType> = Extract<Element, {
     type: T;
 }>;
 /** Fields stored at the top level of an element map (everything else is type-specific `props`). */
-export declare const BASE_KEYS: readonly ["id", "type", "parentId", "z", "xf", "opacity", "blend", "visible", "lock", "name", "role", "link", "altText", "decorative", "effects", "anim", "emphasis", "keyframes", "animOut", "motionPath", "timing", "origin", "dataBinding", "deleted", "ext"];
+export declare const BASE_KEYS: readonly ["id", "type", "parentId", "z", "xf", "opacity", "blend", "visible", "lock", "name", "role", "link", "altText", "decorative", "effects", "anim", "emphasis", "keyframes", "animOut", "motionPath", "panZoom", "timing", "origin", "dataBinding", "deleted", "ext"];
 export declare function isContainer(el: Element): el is GroupEl;

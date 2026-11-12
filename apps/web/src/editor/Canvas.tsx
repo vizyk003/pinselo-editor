@@ -5,7 +5,7 @@
 import { ANCHORS, anchorPoint, apply, hitTest, multiply, worldMatrix, worldQuad } from '@oc/engine';
 import { pageSlots, screenToScene, type Editor, type Handle, type HitTarget, type Mods, type NodePart } from '@oc/engine';
 import { VectorOverlay } from './VectorOverlay';
-import { pageSettleMs, resolvePage, smoothPath, tableGeometry, type DisplayList } from '@oc/engine';
+import { pageDurationMs, pageSettleMs, resolvePage, smoothPath, tableGeometry, type DisplayList } from '@oc/engine';
 import { cellRect, childrenOf, locateTime, sortedPages, toCss, type AssetRef, type DesignDoc, type Element, type ElementId, type Mat2D, type PageId, type TableEl, type TextEl, type Vec2 } from '@oc/engine';
 import { Lock } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
@@ -184,7 +184,10 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
         hit = { v, dl: resolvePage(v, pageId, { timeMs: elapsed }), editing: null };
         dlCache.current.set(pageId, { ...hit, v: null as unknown as DesignDoc });
         const page = v.pages[pageId]!;
-        if (elapsed > pageSettleMs(page, childrenOf(v, pageId)) + 400) queueMicrotask(() => editor.stopPreview());
+        // Entrances settle; a picture that pans and zooms keeps moving for the whole page, so preview all of it.
+        const kids = childrenOf(v, pageId);
+        const end = kids.some((e) => e.panZoom) ? pageDurationMs(v, page) : pageSettleMs(page, kids) + 400;
+        if (elapsed > end) queueMicrotask(() => editor.stopPreview());
         else dirty.current = true;
       } else if (!hit || hit.v !== v || hit.editing !== (editor.state.editingText?.id ?? null)) {
         const editing = editor.state.editingText?.id ?? null;

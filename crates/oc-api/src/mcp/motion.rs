@@ -153,16 +153,152 @@ fn anim_out(spec: &Value, kit: &Kit) -> (Value, Option<f64>) {
     (json!({ "preset": preset, "durationMs": super::edit::jnum(duration) }), f(spec, "at"))
 }
 
-/// The time fields of an `add_*`, `update` or `animate` operation as an element patch (`anim`, `animOut`, `timing`;
+/// `animation.loop` → the element's `emphasis`: a small movement that repeats once the entrance has finished.
+fn anim_loop(spec: &Value, kit: &Kit) -> Result<Value, String> {
+    let kind = s(spec, "type").unwrap_or("pulse");
+    if kit.no_bounce() && kind == "bounce" {
+        return Err(format!("{} rules out bouncing animations (bounce: false); loop with pulse or float instead.", kit.rule()));
+    }
+    let period = f(spec, "period").map(ms).unwrap_or(if kind == "spin" { 3000.0 } else { 1600.0 });
+    let mut e = json!({ "preset": kind, "periodMs": super::edit::jnum(period) });
+    if let Some(k) = f(spec, "intensity") {
+        e["intensity"] = super::edit::jnum(k);
+    }
+    Ok(e)
+}
+
+/// Whether an element holds a picture that can pan and zoom inside its box.
+fn has_picture(el: &Value) -> bool {
+    match el["type"].as_str() {
+        Some("image" | "video") => true,
+        Some("frame") => el["content"].is_object(),
+        Some("shape") => el["fills"].as_array().is_some_and(|fs| fs.iter().any(|p| p["k"] == "image")),
+        _ => false,
+    }
+}
+
+/// Zoom of a `panZoom` that only pans: enough spare picture either side to travel across.
+const PAN_ZOOM: f64 = 0.15;
+/// How far a `panZoom` zooms when no amount is given: slow enough to read as a camera move, not an effect.
+const ZOOM: f64 = 0.12;
+
+/// `panZoom` → the element's `panZoom` (the picture moves inside its box for as long as the element shows).
+pub fn pan_zoom(spec: &Value, el: &Value) -> Result<Value, String> {
+    if !has_picture(el) {
+        return Err("panZoom is for images, videos and frames or shapes holding a photo: it moves the picture inside its box. Animate other elements with animation.".into());
+    }
+    let kind = s(spec, "type").unwrap_or("zoom-in");
+    let pan = kind.starts_with("pan-");
+    let amount = f(spec, "amount").unwrap_or(if pan { PAN_ZOOM } else { ZOOM });
+    let far = super::edit::jnum(((1.0 + amount) * 1000.0).round() / 1000.0);
+    let (fx, fy) = (f(&spec["focus"], "x"), f(&spec["focus"], "y"));
+    let mut p = Map::new();
+    let mut set = |k: &str, v: Option<f64>| {
+        if let Some(v) = v.filter(|v| (*v - 0.5).abs() > 1e-9) {
+            p.insert(k.into(), super::edit::jnum(v));
+        }
+    };
+    let (from, to) = match kind {
+        "zoom-out" => (far, json!(1)),
+        "zoom-in" => (json!(1), far),
+        // A pan holds its zoom and carries the view across the picture, to the side it is named after.
+        _ => (far.clone(), far),
+    };
+    match kind {
+        "pan-left" => {
+            set("fromX", Some(1.0));
+            set("toX", Some(0.0));
+            set("fromY", fy);
+            set("toY", fy);
+        }
+        "pan-right" => {
+            set("fromX", Some(0.0));
+            set("toX", Some(1.0));
+            set("fromY", fy);
+            set("toY", fy);
+        }
+        "pan-up" => {
+            set("fromY", Some(1.0));
+            set("toY", Some(0.0));
+            set("fromX", fx);
+            set("toX", fx);
+        }
+        "pan-down" => {
+            set("fromY", Some(0.0));
+            set("toY", Some(1.0));
+            set("fromX", fx);
+            set("toX", fx);
+        }
+        _ => {
+            set("fromX", fx);
+            set("toX", fx);
+            set("fromY", fy);
+            set("toY", fy);
+        }
+    }
+    p.insert("from".into(), from);
+    p.insert("to".into(), to);
+    if s(spec, "easing") == Some("ease") {
+        p.insert("easing".into(), json!("ease"));
+    }
+    Ok(Value::Object(p))
+}
+
+/// A stored `panZoom` as assistants write it.
+fn pan_zoom_view(pz: &Value) -> Value {
+    let (from, to) = (num(&pz["from"]), num(&pz["to"]));
+    let at = |k: &str| f(pz, k).unwrap_or(0.5);
+    let (fx, tx, fy, ty) = (at("fromX"), at("toX"), at("fromY"), at("toY"));
+    let amount = |v: f64| super::edit::jnum(((v - 1.0) * 1000.0).round() / 1000.0);
+    let same = |a: f64, b: f64| (a - b).abs() < 1e-9;
+    let (kind, amt, focus) = if same(from, to) && same(fy, ty) && !same(fx, tx) {
+        (if tx < fx { "pan-left" } else { "pan-right" }, amount(to), (0.5, fy))
+    } else if same(from, to) && same(fx, tx) && !same(fy, ty) {
+        (if ty < fy { "pan-up" } else { "pan-down" }, amount(to), (fx, 0.5))
+    } else if to >= from {
+        ("zoom-in", amount(to), (tx, ty))
+    } else {
+        ("zoom-out", amount(from), (fx, fy))
+    };
+    let mut o = json!({ "type": kind, "amount": amt });
+    if !same(focus.0, 0.5) || !same(focus.1, 0.5) {
+        o["focus"] = json!({ "x": super::edit::jnum(focus.0), "y": super::edit::jnum(focus.1) });
+    }
+    if s(pz, "easing") == Some("ease") {
+        o["easing"] = json!("ease");
+    }
+    o
+}
+
+/// The time fields of an `add_*`, `update` or `animate` operation as an element patch (`anim`, `animOut`, `emphasis`,
+/// `panZoom`, `timing`;
 /// `null` removes). `el` is the element as stored (or about to be added); `extra_delay_s` staggers `animate`.
 pub fn element_patch(op: &Value, el: &Value, kit: &Kit, extra_delay_s: f64) -> Result<Map<String, Value>, String> {
     let mut p = Map::new();
     let anim = op.get("animation");
-    let (spec_in, spec_out) = match anim {
-        Some(Value::Null) => (Some(&Value::Null), Some(&Value::Null)),
-        Some(a) => (a.get("in"), a.get("out")),
-        None => (op.get("in"), op.get("out")),
+    let (spec_in, spec_out, spec_loop) = match anim {
+        Some(Value::Null) => (Some(&Value::Null), Some(&Value::Null), Some(&Value::Null)),
+        Some(a) => (a.get("in"), a.get("out"), a.get("loop")),
+        None => (op.get("in"), op.get("out"), None),
     };
+    match spec_loop {
+        Some(Value::Null) => {
+            p.insert("emphasis".into(), Value::Null);
+        }
+        Some(spec) => {
+            p.insert("emphasis".into(), anim_loop(spec, kit)?);
+        }
+        None => {}
+    }
+    match op.get("panZoom") {
+        Some(Value::Null) => {
+            p.insert("panZoom".into(), Value::Null);
+        }
+        Some(spec) => {
+            p.insert("panZoom".into(), pan_zoom(spec, el)?);
+        }
+        None => {}
+    }
     match spec_in {
         Some(Value::Null) => {
             p.insert("anim".into(), Value::Null);
@@ -221,7 +357,7 @@ pub fn element_patch(op: &Value, el: &Value, kit: &Kit, extra_delay_s: f64) -> R
 
 /// Whether an operation sets any time field of an element.
 pub fn has_element_time(op: &Value) -> bool {
-    ["animation", "visibleFrom", "visibleTo"].iter().any(|k| op.get(*k).is_some())
+    ["animation", "panZoom", "visibleFrom", "visibleTo"].iter().any(|k| op.get(*k).is_some())
 }
 
 /// `duration` and `transition` of `add_page` / `update_page` as a page patch (`null` removes).
@@ -307,17 +443,24 @@ pub fn element_view(el: &Value) -> Map<String, Value> {
         }
         anim.insert("out".into(), Value::Object(x));
     }
+    if let Some(em) = el.get("emphasis").filter(|e| e.is_object()) {
+        let mut l = json!({ "type": em["preset"], "period": secs(num(&em["periodMs"])) });
+        if let Some(k) = f(em, "intensity") {
+            l["intensity"] = super::edit::jnum(k);
+        }
+        anim.insert("loop".into(), l);
+    }
     if !anim.is_empty() {
         o.insert("animation".into(), Value::Object(anim));
+    }
+    if let Some(pz) = el.get("panZoom").filter(|p| p.is_object()) {
+        o.insert("panZoom".into(), pan_zoom_view(pz));
     }
     if let Some(st) = f(&el["timing"], "startMs").filter(|v| *v > 0.0) {
         o.insert("visibleFrom".into(), secs(st));
     }
     if let Some(e) = f(&el["timing"], "endMs") {
         o.insert("visibleTo".into(), secs(e));
-    }
-    if truthy(el.get("emphasis")) {
-        o.insert("emphasis".into(), el["emphasis"]["preset"].clone());
     }
     o
 }
@@ -351,7 +494,7 @@ pub fn is_timed(doc: &Value) -> bool {
     if pages.map(|(_, p)| p).any(|p| p["durationMs"].is_number() || p["transition"].is_object() || p["anim"].is_object()) {
         return true;
     }
-    doc["elements"].as_object().into_iter().flatten().any(|(_, e)| e["deleted"] != true && (e["anim"].is_object() || e["animOut"].is_object() || e["timing"].is_object() || e["type"] == "video"))
+    doc["elements"].as_object().into_iter().flatten().any(|(_, e)| e["deleted"] != true && (e["anim"].is_object() || e["animOut"].is_object() || e["timing"].is_object() || e["panZoom"].is_object() || e["type"] == "video"))
 }
 
 /// The design's timeline (seconds): page spans, soundtrack and captions.
@@ -394,11 +537,19 @@ pub fn timeline_view(doc: &Value, typed: &oc_schema::DesignDoc) -> Value {
         let st = &cap["style"];
         out["captions"] = json!({
             "visible": cap["visible"] != false,
-            "style": { "font": st["family"], "size": st["size"], "color": st["color"], "background": st["background"], "position": st["position"] },
+            "style": caption_style_view(st),
             "cues": cues.iter().map(|c| json!({ "start": secs(num(&c["startMs"])), "end": secs(num(&c["endMs"])), "text": c["text"] })).collect::<Vec<_>>(),
         });
     }
     out
+}
+
+fn caption_style_view(st: &Value) -> Value {
+    let mut o = json!({ "font": st["family"], "size": st["size"], "color": st["color"], "background": st["background"], "position": st["position"] });
+    if st["highlight"].is_string() {
+        o["highlight"] = st["highlight"].clone();
+    }
+    o
 }
 
 // ---------------------------------------------------------------- video checks
@@ -642,6 +793,36 @@ mod tests {
         assert!(element_patch(&json!({ "visibleTo": 2, "animation": { "out": { "at": 1 } } }), &el, &Kit::default(), 0.0).is_err());
         let p = element_patch(&json!({ "animation": null }), &cur, &Kit::default(), 0.0).unwrap();
         assert_eq!((p["anim"].clone(), p["animOut"].clone(), p.contains_key("timing")), (Value::Null, Value::Null, false));
+    }
+
+    #[test]
+    fn pictures_pan_and_zoom_and_elements_loop() {
+        let img = json!({ "type": "image" });
+        let p = element_patch(&json!({ "panZoom": {} }), &img, &Kit::default(), 0.0).unwrap();
+        assert_eq!(p["panZoom"], json!({ "from": 1, "to": 1.12 }));
+        let p = element_patch(&json!({ "panZoom": { "type": "zoom-out", "amount": 0.2, "focus": { "x": 0.3, "y": 0.5 } } }), &img, &Kit::default(), 0.0).unwrap();
+        assert_eq!(p["panZoom"], json!({ "fromX": 0.3, "toX": 0.3, "from": 1.2, "to": 1 }));
+        let p = element_patch(&json!({ "panZoom": { "type": "pan-left", "easing": "ease" } }), &json!({ "type": "video" }), &Kit::default(), 0.0).unwrap();
+        assert_eq!(p["panZoom"], json!({ "fromX": 1, "toX": 0, "from": 1.15, "to": 1.15, "easing": "ease" }));
+        // Only elements holding a picture; null removes.
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "text" }), &Kit::default(), 0.0).unwrap_err().contains("images, videos"));
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "frame" }), &Kit::default(), 0.0).is_err());
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "frame", "content": { "asset": "a" } }), &Kit::default(), 0.0).is_ok());
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "shape", "fills": [{ "k": "image", "asset": "a" }] }), &Kit::default(), 0.0).is_ok());
+        assert_eq!(element_patch(&json!({ "panZoom": null }), &img, &Kit::default(), 0.0).unwrap()["panZoom"], Value::Null);
+        // Loops become the emphasis; animation null clears it with the rest.
+        let p = element_patch(&json!({ "animation": { "loop": { "type": "float", "period": 2.4, "intensity": 0.5 } } }), &img, &Kit::default(), 0.0).unwrap();
+        assert_eq!(p["emphasis"], json!({ "preset": "float", "periodMs": 2400, "intensity": 0.5 }));
+        assert!(!p.contains_key("anim"));
+        assert_eq!(element_patch(&json!({ "animation": null }), &img, &Kit::default(), 0.0).unwrap()["emphasis"], Value::Null);
+        assert!(element_patch(&json!({ "animation": { "loop": { "type": "bounce" } } }), &img, &kit(json!({ "bounce": false })), 0.0).is_err());
+        // And read back as written.
+        for spec in [json!({ "type": "zoom-in", "amount": 0.12 }), json!({ "type": "zoom-out", "amount": 0.2, "focus": { "x": 0.3, "y": 0.5 } }), json!({ "type": "pan-left", "amount": 0.15, "easing": "ease" }), json!({ "type": "pan-down", "amount": 0.15, "focus": { "x": 0.2, "y": 0.5 } })] {
+            let stored = pan_zoom(&spec, &img).unwrap();
+            assert_eq!(pan_zoom_view(&stored), spec);
+        }
+        let el = json!({ "type": "image", "emphasis": { "preset": "pulse", "periodMs": 1600 }, "panZoom": { "from": 1, "to": 1.12 } });
+        assert_eq!(Value::Object(element_view(&el)), json!({ "animation": { "loop": { "type": "pulse", "period": 1.6 } }, "panZoom": { "type": "zoom-in", "amount": 0.12 } }));
     }
 
     #[test]

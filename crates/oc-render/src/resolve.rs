@@ -12,7 +12,7 @@ use oc_schema::primitives::BlendMode;
 use oc_schema::factory::{grid_cell_box, text_body};
 use oc_schema::primitives::{ColorValue, Extra, GradientStop, ImageFit, ImagePaint, LinearPaint, Paint, Rect, StoredRect, Stroke, StrokeAlign, StrokeCap, StrokeJoin, Xf};
 use oc_schema::svg::recolor_key;
-use oc_schema::text::{BackgroundTextEffect, RunStyleOverride, TextAlign, TextBody, TextEffect};
+use oc_schema::text::{BackgroundTextEffect, Run, RunStyleOverride, TextAlign, TextBody, TextEffect};
 use oc_schema::timeline::{element_window, media_source_time, page_duration_ms, video_source_time};
 use oc_schema::tree::{Elements, children_of, sorted_pages, truthy};
 use serde::Deserialize;
@@ -21,7 +21,7 @@ use serde_json::{Map, Value};
 use crate::builders::{chart_items, draw_items, form_items, table_items};
 use crate::displaylist::{DLItem, DisplayList, PathStroke, ResolvedPaint, TextFit};
 use crate::jsfmt::{max, min, num_to_string};
-use crate::motion::{IDENTITY_MOTION, MotionState, motion_at_time};
+use crate::motion::{IDENTITY_MOTION, MotionState, motion_at_time, pan_zoom_crop};
 use crate::qr::{self, Ecc};
 use crate::text_units::reveal_units;
 
@@ -263,6 +263,15 @@ impl<'a> Resolver<'a> {
         }
     }
 
+    /// The crop of an element's picture at the render time: its pan and zoom applied while the page plays, the stored
+    /// crop otherwise (still pages, thumbnails and the editor at rest show the picture as it was cropped).
+    fn moving_crop(&self, el: &Element, crop: StoredRect) -> StoredRect {
+        match (self.opts.time_ms, el.base().and_then(|b| b.pan_zoom.as_ref())) {
+            (Some(t), Some(pz)) if crop.w > 0.0 && crop.h > 0.0 => pan_zoom_crop(&crop, pz, t, element_window(el, self.page_ms)),
+            _ => crop,
+        }
+    }
+
     fn emit(&mut self, raw: &'a Element, depth: usize, motion: &MotionState) {
         if depth > 64 || raw.id().is_some_and(|id| self.opts.skip.contains(id)) {
             return;
@@ -323,6 +332,7 @@ impl<'a> Resolver<'a> {
                     if !under.is_empty() {
                         self.push(DLItem::Path { path: path.clone(), fills: under.iter().map(|p| resolve_paint(p, bbox)).collect(), stroke: None, src_el: id.clone() });
                     }
+                    let crop = self.moving_crop(&el, crop);
                     self.push(DLItem::Image { asset: photo.asset.clone(), dst: bbox, crop, edits: None, clip: Some(path.clone()), src_el: id.clone() });
                     if !over.is_empty() || stroke.is_some() {
                         self.push(DLItem::Path { path, fills: over.iter().map(|p| resolve_paint(p, bbox)).collect(), stroke, src_el: id });
@@ -394,7 +404,8 @@ impl<'a> Resolver<'a> {
                     _ => None,
                 });
                 let edge = border.as_ref().map(|_| clip.clone().unwrap_or_else(|| shape_path("rect", bbox.w, bbox.h, &oc_geometry::Params::new(), None)));
-                self.push(DLItem::Image { asset: asset.clone(), dst: bbox, crop: im.crop.clone(), edits: im.edits.clone(), clip, src_el: id.clone() });
+                let crop = self.moving_crop(&el, im.crop.clone());
+                self.push(DLItem::Image { asset: asset.clone(), dst: bbox, crop, edits: im.edits.clone(), clip, src_el: id.clone() });
                 self.asset(asset);
                 if let (Some(o), Some(path)) = (border, edge) {
                     let paint = Paint::Solid(oc_schema::primitives::SolidPaint { color: o.color.clone(), extra: Extra::new() });
@@ -408,10 +419,11 @@ impl<'a> Resolver<'a> {
                     Some(c) if c.video.is_some() => {
                         let video = c.video.as_ref().expect("video");
                         let src = self.opts.time_ms.and_then(|t| media_source_time(&el, video, t, self.page_ms));
+                        let crop = self.moving_crop(&el, c.crop.clone());
                         self.push(DLItem::Video {
                             asset: c.asset.clone(),
                             dst: bbox,
-                            crop: c.crop.clone(),
+                            crop,
                             source_time_ms: src,
                             clip: Some(clip),
                             key: Some(id.clone()),
@@ -421,7 +433,8 @@ impl<'a> Resolver<'a> {
                         self.asset(format!("{}/poster", c.asset));
                     }
                     Some(c) => {
-                        self.push(DLItem::Image { asset: c.asset.clone(), dst: bbox, crop: c.crop.clone(), edits: c.edits.clone(), clip: Some(clip), src_el: id.clone() });
+                        let crop = self.moving_crop(&el, c.crop.clone());
+                        self.push(DLItem::Image { asset: c.asset.clone(), dst: bbox, crop, edits: c.edits.clone(), clip: Some(clip), src_el: id.clone() });
                         self.asset(c.asset.clone());
                     }
                     None => self.push(DLItem::Path { path: clip, fills: vec![resolve_paint(&fr.placeholder_fill, bbox)], stroke: None, src_el: id.clone() }),
@@ -573,7 +586,8 @@ impl<'a> Resolver<'a> {
             Element::Video(v) => {
                 let clip = v.corner_radius.filter(|r| crate::jsfmt::truthy(*r)).map(|r| shape_path("rect", bbox.w, bbox.h, &rect_params(r), None));
                 let src = self.opts.time_ms.and_then(|t| video_source_time(v, t, self.page_ms));
-                self.push(DLItem::Video { asset: v.asset.clone(), dst: bbox, crop: v.crop.clone(), source_time_ms: src, clip, key: None, src_el: id, edits: v.edits.clone() });
+                let crop = self.moving_crop(&el, v.crop.clone());
+                self.push(DLItem::Video { asset: v.asset.clone(), dst: bbox, crop, source_time_ms: src, clip, key: None, src_el: id, edits: v.edits.clone() });
                 self.asset(format!("{}/poster", v.asset));
             }
             Element::Unknown(_) => {
@@ -592,6 +606,64 @@ impl<'a> Resolver<'a> {
 }
 
 /// Resolve a page of a design into a display list (`resolvePage`).
+/// The word of a caption being spoken at fraction `p` (0..1) of its cue, as a byte range of `text`. Cues carry no
+/// word timings, so each word takes a share of the cue in proportion to its length (plus the pause after it).
+pub fn caption_word_at(text: &str, p: f64) -> Option<(usize, usize)> {
+    let mut words: Vec<(usize, usize)> = Vec::new();
+    let mut start: Option<usize> = None;
+    for (i, ch) in text.char_indices() {
+        match (ch.is_whitespace(), start) {
+            (true, Some(s)) => {
+                words.push((s, i));
+                start = None;
+            }
+            (false, None) => start = Some(i),
+            _ => {}
+        }
+    }
+    if let Some(s) = start {
+        words.push((s, text.len()));
+    }
+    let weight = |&(a, b): &(usize, usize)| text[a..b].chars().count() as f64 + 1.0;
+    let total: f64 = words.iter().map(weight).sum();
+    let at = min(1.0, max(0.0, if p.is_finite() { p } else { 0.0 })) * total;
+    let mut acc = 0.0;
+    for w in &words {
+        acc += weight(w);
+        if at < acc {
+            return Some(*w);
+        }
+    }
+    words.last().copied()
+}
+
+/// A caption's text; with a highlight colour, the word being spoken at fraction `p` of the cue takes it.
+fn caption_body(text: &str, style: &RunStyleOverride, highlight: Option<&str>, p: f64) -> TextBody {
+    let mut body = text_body(text, style, TextAlign::Center);
+    let Some((color, (a, b))) = highlight.filter(|h| !h.is_empty()).zip(caption_word_at(text, p)) else { return body };
+    let lit = RunStyleOverride { fill: Some(Paint::solid_color(hexc(color))), ..Default::default() };
+    // Paragraphs are the text's lines: find the one holding the word and split its run around it.
+    let mut line_start = 0;
+    for (line, para) in text.split('\n').zip(body.paragraphs.iter_mut()) {
+        let line_end = line_start + line.len();
+        if a >= line_start && b <= line_end {
+            let (x, y) = (a - line_start, b - line_start);
+            let mut runs = Vec::new();
+            if x > 0 {
+                runs.push(Run::plain(&line[..x]));
+            }
+            runs.push(Run { style: lit, ..Run::plain(&line[x..y]) });
+            if y < line.len() {
+                runs.push(Run::plain(&line[y..]));
+            }
+            para.runs = runs;
+            break;
+        }
+        line_start = line_end + 1;
+    }
+    body
+}
+
 pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> DisplayList {
     let (w, h) = (doc.meta.dims.w, doc.meta.dims.h);
     let mut dl = DisplayList::new(w, h);
@@ -646,7 +718,7 @@ pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> Di
         };
         dl.items.push(DLItem::Text {
             key: format!("caption:{}", cue.id),
-            body: text_body(&cue.text, &style, TextAlign::Center),
+            body: caption_body(&cue.text, &style, cap.style.highlight.as_deref(), (ct - cue.start_ms) / (cue.end_ms - cue.start_ms)),
             bbox: Rect { x: (w - bw) / 2.0, y, w: bw, h: size * 2.6 },
             effect: Some(TextEffect::Background(BackgroundTextEffect {
                 color: hexc(&cap.style.background),
@@ -661,4 +733,30 @@ pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> Di
         });
     }
     dl
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn caption_words_light_up_in_turn() {
+        let text = "Fresh ideas\nevery week";
+        let word = |p: f64| caption_word_at(text, p).map(|(a, b)| &text[a..b]);
+        // Each word's share of the cue follows its length: 6 + 6 + 6 + 5 of 23.
+        assert_eq!((word(0.0), word(0.25), word(0.3), word(0.55), word(0.8), word(1.0)), (Some("Fresh"), Some("Fresh"), Some("ideas"), Some("every"), Some("week"), Some("week")));
+        assert_eq!(caption_word_at("  ", 0.5), None);
+        // Outside the cue (a time before its start, a cue of no length) the ends hold.
+        assert_eq!((word(-3.0), word(f64::NAN), word(9.0)), (Some("Fresh"), Some("Fresh"), Some("week")));
+
+        let style = RunStyleOverride::default();
+        let runs = |b: &TextBody| b.paragraphs.iter().map(|p| p.runs.iter().map(|r| (r.text.clone(), r.style.fill.is_some())).collect::<Vec<_>>()).collect::<Vec<_>>();
+        let s = |t: &str, lit: bool| (t.to_owned(), lit);
+        // The lit word is its own run in its line; the other line is untouched.
+        assert_eq!(runs(&caption_body(text, &style, Some("#ffd60a"), 0.3)), vec![vec![s("Fresh ", false), s("ideas", true)], vec![s("every week", false)]]);
+        assert_eq!(runs(&caption_body(text, &style, Some("#ffd60a"), 0.6)), vec![vec![s("Fresh ideas", false)], vec![s("every", true), s(" week", false)]]);
+        // No highlight colour: the cue as one colour.
+        assert_eq!(caption_body(text, &style, None, 0.3), text_body(text, &style, TextAlign::Center));
+        assert_eq!(caption_body(text, &style, Some(""), 0.3), text_body(text, &style, TextAlign::Center));
+    }
 }

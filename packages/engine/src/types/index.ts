@@ -12,7 +12,7 @@ export type {
   EmphasisPreset, FormEl, FormField, FormFieldKind, FormRow, FrameCategory, FrameClip, FrameEl, FrameLibraryItem,
   FrameOverlay, GradientStop, GridCell, GridEl, GroupEl, Id, ImageAdjust, ImageEditStack, ImageEl,
   ImageFilterPreset, Keyframe, KeyframeEase, KeyframeProp, Keyframes, LineAttach, LineEl, LineMarker, LinkTarget,
-  LockMask, Mat2D, MediaClip, Migrator, MotionPath, Page, PageId, PageSpan, Paint, Paragraph, ParagraphAttrs,
+  LockMask, Mat2D, MediaClip, Migrator, MotionPath, Page, PageId, PanZoom, PageSpan, Paint, Paragraph, ParagraphAttrs,
   PreflightCode, PreflightFix, PreflightIssue, PreflightResult, PreflightTarget, PresetCategoryId, PresetGroup,
   PrintCatalog, PrintProduct, PrintSize, QrEl, Rect, Rgba, Run, RunStyle, SemanticRole, ShapeEl, ShapeKind,
   SizePreset, Stroke, Surface, SvgColorUse, TableCell, TableEdge, TableEl,

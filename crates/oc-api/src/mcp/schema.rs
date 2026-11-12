@@ -106,10 +106,30 @@ fn anim_in() -> Schema {
 fn anim_out() -> Schema {
     z::obj([("type", z::enumeration(&hub::MOTION_OUT).optional()), ("at", secs().optional()), ("duration", z::num().min(0.01).max(30.0).optional())])
 }
-/// When an element moves and shows: `animation` (`null` removes both), `visibleFrom` / `visibleTo` (`null` clears).
+/// `animation.loop`: a small movement that repeats once the entrance has finished.
+fn anim_loop() -> Schema {
+    z::obj([
+        ("type", z::enumeration(oc_schema::elements::EMPHASIS_PRESETS).optional()),
+        ("period", z::num().min(0.2).max(30.0).optional()),
+        ("intensity", z::num().min(0.25).max(2.0).optional()),
+    ])
+}
+/// `panZoom`: the picture of an image, video or photo frame moves inside its box while the element shows.
+fn pan_zoom() -> Schema {
+    let unit = || z::num().min(0.0).max(1.0);
+    z::obj([
+        ("type", z::enumeration(&["zoom-in", "zoom-out", "pan-left", "pan-right", "pan-up", "pan-down"]).optional()),
+        ("amount", z::num().min(0.01).max(3.0).optional()),
+        ("focus", z::obj([("x", unit()), ("y", unit())]).optional()),
+        ("easing", z::enumeration(&["linear", "ease"]).optional()),
+    ])
+}
+/// When an element moves and shows: `animation` (`null` removes all of it), `panZoom`, `visibleFrom` / `visibleTo`
+/// (`null` clears).
 fn timing() -> Vec<(&'static str, Schema)> {
     vec![
-        ("animation", z::obj([("in", anim_in().nullable().optional()), ("out", anim_out().nullable().optional())]).nullable().optional()),
+        ("animation", z::obj([("in", anim_in().nullable().optional()), ("out", anim_out().nullable().optional()), ("loop", anim_loop().nullable().optional())]).nullable().optional()),
+        ("panZoom", pan_zoom().nullable().optional()),
         ("visibleFrom", secs().nullable().optional()),
         ("visibleTo", secs().nullable().optional()),
     ]
@@ -331,6 +351,7 @@ fn op_schema(op: &str) -> Schema {
                     ("color", color().optional()),
                     ("background", color().optional()),
                     ("position", z::enumeration(&["bottom", "middle", "top"]).optional()),
+                    ("highlight", color().nullable().optional()),
                 ])
                 .optional(),
             ),
@@ -344,7 +365,7 @@ fn op_schema(op: &str) -> Schema {
                 ("start", secs().optional()),
                 ("stagger", z::num().min(0.0).max(10.0).optional()),
             ]);
-            f.extend(timing().into_iter().filter(|(k, _)| *k != "animation"));
+            f.extend(timing().into_iter().filter(|(k, _)| *k != "animation" && *k != "panZoom"));
         }
         "delete_page" => f.push(("page", page_ref())),
         "move_page" => f.extend([("page", page_ref()), ("after", page_ref().nullable())]),
@@ -553,6 +574,7 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ("pages", z::array(z::num().int().min(1.0)).optional()),
             ("scale", z::num().min(0.25).max(4.0).optional()),
             ("width", z::num().int().min(16.0).max(3840.0).optional()),
+            ("export_id", z::str().max(64.0).optional()),
         ]),
         "undo_ai_changes" => z::obj([("design_id", z::str())]),
         "bulk_create" => z::obj([

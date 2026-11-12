@@ -1,5 +1,5 @@
 /** Toolbar sections for animation, tables, charts and freehand strokes. */
-import { BORDER_PRESETS, canUnmerge, sliceColor, tableGeometry, TABLE_STYLE_PRESETS, tableStyleSwatch, type BorderPreset, type TableStylePreset, clipLengthMs, type VideoEl, CHART_COLORS, CHART_KINDS, hex, solid, toHex, type AnimPreset, ANIM_PRESETS, type AnimDirection, type AnimUnit, EMPHASIS_PRESETS, type EmphasisPreset, TRANSITION_KINDS, type TransitionKind, type ChartEl, type ChartKind, type DrawEl, type Element, type Page, type TableEl } from '@oc/engine';
+import { BORDER_PRESETS, canUnmerge, sliceColor, tableGeometry, TABLE_STYLE_PRESETS, tableStyleSwatch, type BorderPreset, type TableStylePreset, clipLengthMs, type VideoEl, CHART_COLORS, CHART_KINDS, hex, solid, toHex, type AnimPreset, ANIM_PRESETS, type AnimDirection, type AnimUnit, EMPHASIS_PRESETS, type EmphasisPreset, TRANSITION_KINDS, type TransitionKind, type ChartEl, type ChartKind, type DrawEl, type Element, type Page, type PanZoom, type TableEl } from '@oc/engine';
 import { AlignCenter, AlignLeft, AlignRight, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd, AlignVerticalJustifyStart, SlidersHorizontal, Table, TableCellsMerge, TableCellsSplit, Volume2, VolumeX, Repeat, Scissors, Maximize, Film, BarChart3, Columns3, Minus, Play, Plus, Rows3, Sparkle, Trash2, Wand2 } from 'lucide-react';
 import { useState } from 'react';
 import { PopoverButton } from '../components/ui';
@@ -381,6 +381,67 @@ export function VideoControls({ el }: { el: VideoEl }) {
   );
 }
 
+type PanZoomKind = 'zoom-in' | 'zoom-out' | 'pan-left' | 'pan-right' | 'pan-up' | 'pan-down';
+const PAN_ZOOM_LABEL: Record<PanZoomKind, string> = {
+  'zoom-in': tk('Slow zoom in'), 'zoom-out': tk('Slow zoom out'), 'pan-left': tk('Pan left'), 'pan-right': tk('Pan right'), 'pan-up': tk('Pan up'), 'pan-down': tk('Pan down'),
+};
+
+/** Whether an element holds a picture that can pan and zoom inside its box. */
+function hasPicture(el: Element): boolean {
+  if (el.type === 'image' || el.type === 'video') return true;
+  if (el.type === 'frame') return Boolean(el.content);
+  return el.type === 'shape' && el.fills.some((f) => f.k === 'image');
+}
+
+/** A pan and zoom of a kind: zooms run between the picture as cropped and `amount` closer; pans hold that zoom and cross the picture. */
+function panZoomOf(kind: PanZoomKind, amount: number): PanZoom {
+  const far = Math.round((1 + amount) * 1000) / 1000;
+  switch (kind) {
+    case 'zoom-in': return { from: 1, to: far };
+    case 'zoom-out': return { from: far, to: 1 };
+    case 'pan-left': return { from: far, to: far, fromX: 1, toX: 0 };
+    case 'pan-right': return { from: far, to: far, fromX: 0, toX: 1 };
+    case 'pan-up': return { from: far, to: far, fromY: 1, toY: 0 };
+    case 'pan-down': return { from: far, to: far, fromY: 0, toY: 1 };
+  }
+}
+
+function panZoomKind(pz: PanZoom): PanZoomKind {
+  const [fx, tx, fy, ty] = [pz.fromX ?? 0.5, pz.toX ?? 0.5, pz.fromY ?? 0.5, pz.toY ?? 0.5];
+  if (pz.from === pz.to && fx !== tx) return tx < fx ? 'pan-left' : 'pan-right';
+  if (pz.from === pz.to && fy !== ty) return ty < fy ? 'pan-up' : 'pan-down';
+  return pz.to >= pz.from ? 'zoom-in' : 'zoom-out';
+}
+
+/** Pan and zoom of the selected pictures: the photo or clip moves inside its box for as long as it is on screen. */
+function PictureMovement({ sel }: { sel: Element[] }) {
+  const { editor } = useEd();
+  const state = useEditorState();
+  const pz = sel[0]!.panZoom;
+  const kind = pz ? panZoomKind(pz) : null;
+  const amount = pz ? Math.max(pz.from, pz.to) - 1 : 0.12;
+  const set = (k: PanZoomKind | null, a: number) => {
+    editor.updateSelected(() => ({ panZoom: k ? panZoomOf(k, a) : null }), false, false);
+    setTimeout(() => editor.previewAnimation(state.activePageId), 30);
+  };
+  return (
+    <>
+      <label className="field">{t('Picture movement')}
+        <select className="input" value={kind ?? 'none'} onChange={(e) => set(e.target.value === 'none' ? null : (e.target.value as PanZoomKind), e.target.value.startsWith('pan') ? Math.max(amount, 0.15) : amount)}>
+          <option value="none">{t('None')}</option>
+          {(Object.keys(PAN_ZOOM_LABEL) as PanZoomKind[]).map((k) => <option key={k} value={k}>{t(PAN_ZOOM_LABEL[k])}</option>)}
+        </select>
+      </label>
+      {kind && (
+        <label className="field">{t('Amount ({value}%)', { value: Math.round(amount * 100) })}
+          <input type="range" min={0.04} max={0.6} step={0.02} value={amount} onChange={(e) => editor.updateSelected(() => ({ panZoom: panZoomOf(kind, +e.target.value) }))} />
+        </label>
+      )}
+      {!kind && <p className="faint" style={{ margin: 0, fontSize: 12 }}>{t('Moves the photo or clip slowly inside its box while it is on screen, so stills feel like footage.')}</p>}
+    </>
+  );
+}
+
 /** Exit animation + motion path, shown inside Animate for elements. */
 export function ExitAndPath({ sel }: { sel: Element[] }) {
   const { editor } = useEd();
@@ -408,6 +469,7 @@ export function ExitAndPath({ sel }: { sel: Element[] }) {
           <option value="arc">{t('Arc')}</option><option value="zigzag">{t('Zig-zag')}</option><option value="circle">{t('Loop around')}</option>
         </select>
       </label>
+      {sel.every(hasPicture) && <PictureMovement sel={sel} />}
     </>
   );
 }

@@ -631,7 +631,7 @@ impl Editor {
         let raw = doc.raw_el(id)?;
         let nid = self.fresh_id();
         let mut m = Map::new();
-        for k in ["parentId", "z", "opacity", "blend", "visible", "name", "role", "link", "altText", "decorative", "effects", "anim", "emphasis", "keyframes", "animOut", "motionPath", "timing"] {
+        for k in ["parentId", "z", "opacity", "blend", "visible", "name", "role", "link", "altText", "decorative", "effects", "anim", "emphasis", "keyframes", "animOut", "motionPath", "panZoom", "timing"] {
             if let Some(v) = raw.get(k) {
                 m.insert(k.into(), v.clone());
             }

@@ -1122,6 +1122,11 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             let id = a["design_id"].as_str().unwrap_or("").to_owned();
             access(s, u, &id, Role::View).await?;
             let format = a["format"].as_str().unwrap_or("").to_owned();
+            // Videos take from seconds to minutes to render, longer than one tool call may last: they run as a
+            // background export that this call waits on for a while and a later call picks up.
+            if format == "mp4" || format == "gif" {
+                return export_video(s, u, &id, &format, a).await;
+            }
             let mut body = Map::new();
             body.insert("designId".into(), json!(id));
             body.insert("format".into(), json!(format));
@@ -1162,6 +1167,96 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             })))
         }
         _ => tool_err(format!("MCP error -32602: Tool {name} not found")),
+    }
+}
+
+/// How long one `export_design` call waits for a video before answering "still rendering": well inside the time a
+/// connector or a proxy in front of the API gives a single request.
+const VIDEO_WAIT: Duration = Duration::from_secs(25);
+
+/// The `export` job of a video as the render worker reads it: the pages as 0-based indices, and the size as scale
+/// (default 1: the design's own size) or width.
+fn video_job_payload(user: uuid::Uuid, design_id: &str, format: &str, a: &Value, embeds: Value) -> Value {
+    let mut p = Map::new();
+    p.insert("designId".into(), json!(design_id));
+    p.insert("userId".into(), json!(user.to_string()));
+    p.insert("format".into(), json!(format));
+    if let Some(pages) = a.get("pages").and_then(Value::as_array).filter(|p| !p.is_empty()) {
+        p.insert("pages".into(), Value::Array(pages.iter().map(|x| super::edit::jnum(x.as_f64().unwrap_or(0.0) - 1.0)).collect()));
+    }
+    if format == "mp4" {
+        match a.get("width").filter(|w| w.is_number()) {
+            Some(w) => p.insert("width".into(), w.clone()),
+            None => p.insert("scale".into(), a.get("scale").filter(|v| v.is_number()).cloned().unwrap_or(json!(1))),
+        };
+    }
+    p.insert("embeds".into(), embeds);
+    Value::Object(p)
+}
+
+/// What `export_design` answers while a video is still rendering.
+fn video_pending(job: &oc_jobs::Job) -> Value {
+    json!({
+        "status": "rendering",
+        "export_id": job.id.to_string(),
+        "progress": super::edit::jnum((f64::from(job.progress) * 100.0).round() / 100.0),
+        "label": job.label.clone().unwrap_or_default(),
+        "next": "The video is still rendering. Call export_design again with the same arguments plus this export_id to get the download link; each call waits up to 25 seconds.",
+    })
+}
+
+/// A video export: queued for the render worker (or joined, when the same export is already under way, or named by
+/// `export_id`), waited on for [`VIDEO_WAIT`], and answered with the download link or with the id to ask again with.
+async fn export_video(s: &AppState, u: &BearerUser, design_id: &str, format: &str, a: &Value) -> R {
+    let db = |e: sqlx::Error| Fail::Other(e.to_string());
+    let job_id: uuid::Uuid = match a.get("export_id").and_then(Value::as_str) {
+        Some(e) => match uuid::Uuid::parse_str(e) {
+            Ok(id) => id,
+            Err(_) => return tool_err(format!("No export {e}. Leave export_id out to start a new one.")),
+        },
+        None => {
+            let payload = video_job_payload(u.id, design_id, format, a, json!(crate::routes::docs::embed_allow_list(s, Some(u.id), design_id).await?));
+            // Asked twice (a retry, a call that timed out on the way back): the render under way answers both.
+            let running: Option<uuid::Uuid> =
+                sqlx::query_scalar("SELECT id FROM jobs WHERE owner_id = $1 AND queue = 'export' AND status IN ('queued','running') AND payload = $2 ORDER BY created_at DESC LIMIT 1")
+                    .bind(u.id)
+                    .bind(sqlx::types::Json(&payload))
+                    .fetch_optional(&s.pool)
+                    .await
+                    .map_err(db)?;
+            match running {
+                Some(id) => id,
+                None => {
+                    let active: Option<i32> = sqlx::query_scalar("SELECT count(*)::int AS n FROM jobs WHERE owner_id = $1 AND queue = 'export' AND status IN ('queued','running')").bind(u.id).fetch_optional(&s.pool).await.map_err(db)?;
+                    if active.unwrap_or(0) >= 3 {
+                        return tool_err("Three exports of yours are still rendering. Wait for one to finish, then export again.");
+                    }
+                    oc_jobs::enqueue(&s.pool, "export", &payload, oc_jobs::EnqueueOpts { owner_id: Some(u.id), max_attempts: Some(2), ..Default::default() }).await.map_err(db)?
+                }
+            }
+        }
+    };
+    let deadline = tokio::time::Instant::now() + VIDEO_WAIT;
+    loop {
+        let job = oc_jobs::get_job(&s.pool, job_id).await.map_err(db)?;
+        // Only the caller's own export of this design.
+        let Some(job) = job.filter(|j| j.queue == "export" && j.owner_id == Some(u.id) && j.payload.0["designId"].as_str() == Some(design_id)) else {
+            return tool_err(format!("No export {job_id} of this design. Leave export_id out to start a new one."));
+        };
+        match job.status {
+            oc_jobs::JobStatus::Done => {
+                let r = job.result.as_ref().map(|r| r.0.clone()).unwrap_or_default();
+                let (Some(sha), Some(name), Some(ty)) = (r["sha"].as_str(), r["filename"].as_str(), r["type"].as_str()) else {
+                    return tool_err("The export finished without a file. Export again.");
+                };
+                return Ok(text(&json!({ "file": name, "size": r["size"], "downloadUrl": super::files::signed_file_url(s, sha, name, ty, &super::files::FileOwner { user_id: u.id, grant_id: u.grant_id }) })));
+            }
+            oc_jobs::JobStatus::Failed | oc_jobs::JobStatus::Cancelled => {
+                return tool_err(format!("Rendering failed: {}", crate::js::take(job.error.as_deref().unwrap_or("the export was cancelled"), 300)));
+            }
+            _ if tokio::time::Instant::now() >= deadline => return Ok(text(&video_pending(&job))),
+            _ => tokio::time::sleep(Duration::from_millis(700)).await,
+        }
     }
 }
 
@@ -1486,5 +1581,28 @@ mod guidelines_tests {
     fn no_guidelines() {
         let v = guidelines_view(json!("PF"), &[], None);
         assert!(v["note"].as_str().unwrap().contains("no written guidelines"));
+    }
+}
+
+#[cfg(test)]
+mod video_export_tests {
+    use super::*;
+
+    #[test]
+    fn a_video_export_is_queued_as_the_render_worker_reads_it() {
+        let user = uuid::Uuid::nil();
+        // Page numbers become indices; MP4 comes out at the design's own size unless a size is given.
+        let p = video_job_payload(user, "d1", "mp4", &json!({ "design_id": "d1", "format": "mp4", "pages": [2, 3] }), json!(["youtube.com"]));
+        assert_eq!(p, json!({ "designId": "d1", "userId": user.to_string(), "format": "mp4", "pages": [1, 2], "scale": 1, "embeds": ["youtube.com"] }));
+        // A width wins over a scale; a GIF has its own size.
+        let p = video_job_payload(user, "d1", "mp4", &json!({ "scale": 2, "width": 720 }), json!([]));
+        assert_eq!((p["width"].clone(), p.get("scale")), (json!(720), None));
+        let p = video_job_payload(user, "d1", "gif", &json!({ "scale": 2, "pages": [] }), json!([]));
+        assert_eq!(p, json!({ "designId": "d1", "userId": user.to_string(), "format": "gif", "embeds": [] }));
+        // The same request queues the same payload, so a repeated call finds the render under way.
+        let a = json!({ "design_id": "d1", "format": "mp4", "width": 1080 });
+        assert_eq!(video_job_payload(user, "d1", "mp4", &a, json!([])), video_job_payload(user, "d1", "mp4", &a, json!([])));
+        // The id to ask again with passes the tool's input validation.
+        super::super::schema::validate("export_design", Some(&json!({ "design_id": "d1", "format": "mp4", "export_id": "3f2b6c1e-0000-4000-8000-000000000000" }))).expect("valid input");
     }
 }

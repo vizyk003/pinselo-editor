@@ -78,10 +78,10 @@ fn visible(el: &Element) -> bool {
     }
 }
 
-/// `e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes`.
+/// `e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes || e.panZoom`.
 fn has_motion(el: &Element) -> bool {
     match el {
-        Element::Unknown(m) => ["timing", "animOut", "motionPath", "emphasis", "keyframes"]
+        Element::Unknown(m) => ["timing", "animOut", "motionPath", "emphasis", "keyframes", "panZoom"]
             .iter()
             .any(|k| raw_truthy(m, k)),
         _ => el.base().is_some_and(|b| {
@@ -90,6 +90,7 @@ fn has_motion(el: &Element) -> bool {
                 || b.motion_path.is_some()
                 || b.emphasis.is_some()
                 || b.keyframes.is_some()
+                || b.pan_zoom.is_some()
         }),
     }
 }
@@ -348,7 +349,9 @@ impl Mp4Sink<'_> {
             s("-i"),
             s("-"),
             s("-vf"),
-            format!("crop={ew}:{eh}:0:0"),
+            // Colours: converted with the BT.709 matrix and tagged as such. Left to ffmpeg's defaults the frames are
+            // converted with BT.601 and carry no tags, and players (which assume BT.709 for HD) shift every colour.
+            format!("crop={ew}:{eh}:0:0,scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,setparams=colorspace=bt709:color_primaries=bt709:color_trc=bt709:range=tv"),
             s("-c:v"),
             s("libx264"),
             s("-pix_fmt"),
@@ -575,7 +578,7 @@ mod tests {
         let cue = |id: &str, a: f64, b: f64| CaptionCue { id: id.into(), start_ms: a, end_ms: b, text: id.into(), extra: Extra::new() };
         d.meta.captions = Some(CaptionTrack {
             cues: vec![cue("one", 0.0, 1800.0), cue("two", 2000.0, 3800.0), cue("three", 4000.0, 5800.0)],
-            style: CaptionStyle { family: "Inter".into(), size: 40.0, color: "#ffffff".into(), background: "#000000".into(), position: CaptionPosition::Bottom, extra: Extra::new() },
+            style: CaptionStyle { family: "Inter".into(), size: 40.0, color: "#ffffff".into(), background: "#000000".into(), position: CaptionPosition::Bottom, highlight: None, extra: Extra::new() },
             visible: true,
             extra: Extra::new(),
         });

@@ -734,10 +734,26 @@ pub struct ExportJob {
     pub format: String,
     #[serde(default)]
     pub quality: Option<String>,
+    /// Videos: the pages that play, as 0-based indices in page order (default: every visible page).
+    #[serde(default)]
+    pub pages: Option<Vec<i64>>,
+    /// MP4: output pixels per design px, or the width in px (which wins). With neither, `quality` sets the size.
+    #[serde(default)]
+    pub scale: Option<f64>,
+    #[serde(default)]
+    pub width: Option<f64>,
     #[serde(default)]
     pub embeds: Option<Vec<String>>,
     #[serde(default)]
     pub print: Option<JobPrint>,
+}
+
+/// The ids of the pages picked by 0-based index, in the order given; indices past the end are dropped.
+fn pages_at(doc: &oc_schema::DesignDoc, ix: &[i64]) -> Vec<String> {
+    let all = sorted_pages(&doc.pages);
+    ix.iter()
+        .filter_map(|i| usize::try_from(*i).ok().and_then(|i| all.get(i)).map(|p| p.id.to_string()))
+        .collect()
 }
 
 /// The job's `print` field: the same options as the sync export's.
@@ -784,11 +800,21 @@ pub async fn run_export(
             bytes.len(),
         ));
     }
-    let Some(doc) = svc.load_doc(&b.design_id, &embeds, None).await? else {
+    let Some(mut doc) = svc.load_doc(&b.design_id, &embeds, None).await? else {
         return Err(SvcError::Other("design not found".into()));
     };
     let name = safe_name(&doc.meta.title);
     let _ = ctx.progress(0.0, Some("Preparing")).await;
+    // Videos play only the pages asked for (without a choice: the visible pages), as the direct export does.
+    if matches!(b.format.as_str(), "mp4" | "gif" | "m4a")
+        && let Some(ix) = b.pages.as_ref().filter(|p| !p.is_empty())
+    {
+        let picked = pages_at(&doc, ix);
+        if picked.is_empty() {
+            return Err(SvcError::Other("The design has none of the pages asked for.".into()));
+        }
+        keep_pages(&mut doc, &picked);
+    }
     let pages: Vec<String> = sorted_pages(&doc.pages)
         .iter()
         .map(|p| p.id.to_string())
@@ -799,12 +825,17 @@ pub async fn run_export(
             let deps = svc.video_deps(&media);
             let mp4 = b.format == "mp4";
             let quality = VideoQuality::parse(b.quality.as_deref().unwrap_or("1080p"));
+            // A size given as scale or width (the AI connector) wins over the quality presets of the editor.
+            let sized = (b.scale.is_some() || b.width.is_some()).then(|| video_size_scale(&doc, b.width, b.scale));
             let (cb, rx) = progress_channel();
             let d = &doc;
             // The callback (and with it the channel's sender) is dropped when the export ends, which ends the pump.
             let work = async move {
                 if mp4 {
-                    export_mp4(deps, d, quality, None, Some(&cb)).await
+                    match sized {
+                        Some(k) => export_mp4_at(deps, d, k, None, Some(&cb)).await,
+                        None => export_mp4(deps, d, quality, None, Some(&cb)).await,
+                    }
                 } else {
                     export_gif(deps, d, Some(&cb)).await
                 }
@@ -850,6 +881,24 @@ pub async fn run_export(
 #[cfg(test)]
 mod video_size_tests {
     use super::video_size_scale;
+
+    #[test]
+    fn export_jobs_pick_pages_by_index() {
+        let mut d = oc_schema::factory::empty_design(&oc_schema::presets::preset_design_init(None, &Default::default()).meta_init());
+        let first = d.pages.values().next().unwrap().clone();
+        d.pages.clear();
+        for (i, id) in ["p1", "p2", "p3"].iter().enumerate() {
+            let mut p = first.clone();
+            p.id = (*id).into();
+            p.order = format!("a{i}");
+            d.pages.insert((*id).into(), p);
+        }
+        assert_eq!(super::pages_at(&d, &[2, 0]), vec!["p3".to_owned(), "p1".to_owned()]);
+        assert!(super::pages_at(&d, &[7, -1]).is_empty());
+        // What the AI connector queues: pages and a size next to the format.
+        let job: super::ExportJob = serde_json::from_value(serde_json::json!({ "designId": "d", "userId": "u", "format": "mp4", "pages": [0, 1], "scale": 1 })).unwrap();
+        assert_eq!((job.pages, job.scale, job.width, job.quality), (Some(vec![0, 1]), Some(1.0), None, None));
+    }
 
     #[test]
     fn videos_come_out_at_the_design_size_unless_asked() {

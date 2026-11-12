@@ -1000,3 +1000,100 @@ fn quality_scales() {
     );
     assert_eq!(VideoQuality::parse("bogus"), VideoQuality::P1080);
 }
+
+// ------------------------------------------------------------------ colour, pan and zoom, spoken-word captions
+
+/// A one-page 540×960 video on `background` (#rrggbb as 0..1 channels) that lasts `ms`.
+fn reel(background: [f64; 3], ms: f64) -> Value {
+    let [r, g, b] = background;
+    json!({
+        "meta": { "schemaVersion": 1, "minClientSchema": 1, "layoutVersion": 1, "surface": "video", "dims": { "w": 540, "h": 960, "unit": "px", "dpi": 96 }, "lang": "en", "title": "reel", "epoch": 0 },
+        "pages": { "pg00000000000000": { "id": "pg00000000000000", "order": "a0", "background": [{ "k": "solid", "color": { "space": "srgb", "r": r, "g": g, "b": b, "a": 1 } }], "durationMs": ms } },
+        "elements": {},
+        "assets": {},
+    })
+}
+
+fn export_real(doc: &DesignDoc, tag: &str) -> (Tmp, PathBuf) {
+    let host = Host::new();
+    let r = OcRenderer::new(&host);
+    let m = Media::new();
+    let tmp = tmp_root(tag);
+    let deps = VideoDeps { renderer: &r, host: &host, media: &m, spawner: &SystemSpawner, tmp: &tmp };
+    let mp4 = block_on(export_mp4(deps, doc, VideoQuality::P720, None, None)).unwrap();
+    let file = tmp.join(format!("{tag}.mp4"));
+    std::fs::write(&file, &mp4).unwrap();
+    // `OC_VIDEO_OUT=<dir>` keeps the exports for a look.
+    if let Some(dir) = std::env::var_os("OC_VIDEO_OUT") {
+        std::fs::write(Path::new(&dir).join(format!("{tag}.mp4")), &mp4).unwrap();
+    }
+    (tmp, file)
+}
+
+/// Brand colours survive the export: the stream says BT.709 (what players assume for HD) and was converted with it.
+/// Untagged BT.601, ffmpeg's default for RGB input, plays this red as #f34a42.
+#[test]
+fn real_export_is_bt709_and_keeps_colours() {
+    if !has_ffmpeg() {
+        eprintln!("real_export_is_bt709_and_keeps_colours: ffmpeg not installed, skipped");
+        return;
+    }
+    let want = [0xe6u8, 0x39, 0x46];
+    let doc: DesignDoc = serde_json::from_value(reel(want.map(|c| f64::from(c) / 255.0), 300.0)).unwrap();
+    let (_tmp, file) = export_real(&doc, "colour");
+    let o = std::process::Command::new("ffprobe")
+        .args(["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=color_space,color_primaries,color_transfer,color_range", "-of", "json"])
+        .arg(&file)
+        .output()
+        .unwrap();
+    let j: Value = serde_json::from_slice(&o.stdout).unwrap();
+    let s = &j["streams"][0];
+    assert_eq!((&s["color_space"], &s["color_primaries"], &s["color_transfer"], &s["color_range"]), (&json!("bt709"), &json!("bt709"), &json!("bt709"), &json!("tv")));
+    // Decoded the way a player does for HD: with the BT.709 matrix, whatever the tags say.
+    let o = std::process::Command::new("ffmpeg")
+        .args(["-hide_banner", "-loglevel", "error", "-i"])
+        .arg(&file)
+        .args(["-frames:v", "1", "-vf", "scale=in_color_matrix=bt709:out_range=pc,format=rgb24,scale=2:2", "-f", "rawvideo", "-"])
+        .output()
+        .unwrap();
+    let got = &o.stdout[..3];
+    for (g, w) in got.iter().zip(want) {
+        assert!((i32::from(*g) - i32::from(w)).abs() <= 5, "plays as #{:02x}{:02x}{:02x}, the design says #e63946", got[0], got[1], got[2]);
+    }
+}
+
+/// A photo with a pan and zoom keeps moving inside its box for the whole page, and a caption with a highlight colour
+/// lights its words up one after another.
+#[test]
+fn real_export_moves_pictures_and_lights_up_spoken_words() {
+    if !has_ffmpeg() {
+        eprintln!("real_export_moves_pictures_and_lights_up_spoken_words: ffmpeg not installed, skipped");
+        return;
+    }
+    let mut d = reel([0.06, 0.09, 0.16], 2000.0);
+    d["assets"] = json!({ "photo": { "id": "photo", "kind": "image", "sha256": "0".repeat(64), "mime": "image/jpeg", "w": 320, "h": 200, "name": "photo" } });
+    // Cover crop of a 320×200 photo in a 460×460 card with rounded corners.
+    d["elements"] = json!({ "im00000000000000": {
+        "id": "im00000000000000", "type": "image", "parentId": "pg00000000000000", "z": "a0", "opacity": 1,
+        "xf": { "x": 40, "y": 150, "w": 460, "h": 460, "rot": 0 }, "asset": "photo", "crop": { "x": 0.1875, "y": 0, "w": 0.625, "h": 1 }, "cornerRadius": 36,
+        "panZoom": { "from": 1, "to": 1.5, "toX": 0.3, "toY": 0.4 },
+    } });
+    d["meta"]["captions"] = json!({
+        "visible": true,
+        "style": { "family": "Inter", "size": 40, "color": "#ffffff", "background": "#00000000", "position": "bottom", "highlight": "#ffd60a" },
+        "cues": [{ "id": "c1", "startMs": 0, "endMs": 2000, "text": "Fresh ideas every week" }],
+    });
+    let doc: DesignDoc = serde_json::from_value(d).unwrap();
+    let (_tmp, file) = export_real(&doc, "pan-zoom");
+    // Frames at 160×90: rows 14..57 hold the photo, the caption sits below row 75.
+    let (a, b) = (grab(&file, 0.1), grab(&file, 1.8));
+    let diff = |rows: std::ops::Range<usize>| -> f64 {
+        let (lo, hi) = (rows.start * 160 * 3, rows.end * 160 * 3);
+        a[lo..hi].iter().zip(&b[lo..hi]).map(|(x, y)| (f64::from(*x) - f64::from(*y)).abs()).sum::<f64>() / (hi - lo) as f64
+    };
+    assert!(diff(16..55) > 4.0, "the photo did not move: mean change {:.2}", diff(16..55));
+    // The picture stays in its box: the page above it is the same at both times.
+    assert!(diff(0..12) < 1.0, "the page around the photo changed: {:.2}", diff(0..12));
+    // The lit word moved from the first to the last, so the caption changed too.
+    assert!(diff(76..88) > 0.5, "the caption highlight did not move: {:.2}", diff(76..88));
+}
