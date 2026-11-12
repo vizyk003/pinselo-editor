@@ -195,7 +195,10 @@ async fn import_media(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
         let a = pg::json_one(
             &s.pool,
             "SELECT id, kind, sha256, mime, width, height, name, duration_ms, has_audio FROM assets WHERE id = $1 AND trashed_at IS NULL
-       AND (owner_id = $2 OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2))",
+       AND (owner_id = $2 OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2)
+            -- A brand kit's logos, photos and graphics are for everyone who can see the kit, wherever they were uploaded.
+            OR EXISTS (SELECT 1 FROM brand_kits k JOIN memberships m ON m.workspace_id = k.workspace_id AND m.user_id = $2
+                       WHERE k.logos ? assets.id OR k.photos ? assets.id OR k.graphics ? assets.id))",
             &[pg::text(id), pg::uuid(u.id)],
         )
         .await?;

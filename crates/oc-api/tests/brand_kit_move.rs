@@ -91,6 +91,59 @@ async fn a_kit_moves_between_workspaces() {
         let (_, body, _) = send(&s, "GET", &format!("/api/brand-kits/{}", ids[1]), &b, None).await;
         assert_eq!((body["kit"]["name"].as_str(), body["kit"]["canEdit"].as_bool()), (Some("UniHop.eu"), Some(false)));
 
+        // The kit's logo was uploaded to Ada's personal space. Bob's AI assistant can place it, because he can see
+        // the kit; an upload of Ada's that is in no kit stays out of his reach.
+        for id in ["KitLogo000000001", "Private000000001"] {
+            sqlx::query("INSERT INTO assets(id, workspace_id, owner_id, sha256, mime, kind, bytes, width, height, name) VALUES ($1, $2, $3, $4, 'image/png', 'image', 1234, 400, 200, 'logo.png')")
+                .bind(id)
+                .bind(personal)
+                .bind(ada)
+                .bind(format!("{:064x}", id.len() + id.as_bytes()[0] as usize))
+                .execute(&pool)
+                .await
+                .expect("asset");
+        }
+        let (status, body, _) = send(&s, "PATCH", &format!("/api/brand-kits/{}", ids[1]), &a, Some(json!({ "logos": ["KitLogo000000001"] }))).await;
+        assert_eq!(status, 200, "{body:?}");
+        let bearer = format!("oc_pat_{}", Uuid::new_v4().simple());
+        sqlx::query("INSERT INTO api_tokens(id, user_id, name, token_sha256, prefix, scopes, workspace_id) VALUES ($1,$2,'test',$3,$4,$5,NULL)")
+            .bind(Uuid::new_v4())
+            .bind(bob)
+            .bind(oc_api::auth::sha(&bearer))
+            .bind(&bearer[..12])
+            .bind(vec!["designs:read".to_owned(), "designs:write".to_owned()])
+            .execute(&pool)
+            .await
+            .expect("token");
+        let call = async |method: &str, url: &str, body: Value| -> (u16, Value) {
+            let req = axum::http::Request::builder()
+                .method(method)
+                .uri(url)
+                .header("x-forwarded-for", "198.51.100.7")
+                .header("authorization", format!("Bearer {bearer}"))
+                .header("accept", "application/json, text/event-stream")
+                .header("content-type", "application/json")
+                .body(Body::from(body.to_string()))
+                .expect("request");
+            let res = oc_api::app(s.clone()).oneshot(req).await.expect("response");
+            let status = res.status().as_u16();
+            let raw = res.into_body().collect().await.expect("body").to_bytes().to_vec();
+            (status, serde_json::from_slice(&raw).unwrap_or(Value::Null))
+        };
+        let (status, d) = call("POST", "/v1/designs", json!({ "title": "Bob's post", "width": 1080, "height": 1350 })).await;
+        assert_eq!(status, 201, "{d:?}");
+        let design = d["id"].as_str().expect("id").to_owned();
+        let place = async |asset: &str| {
+            let (status, r) = call("POST", "/mcp", json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": { "name": "edit_design", "arguments": {
+                "design_id": design, "operations": [{ "op": "add_image", "source": { "asset": asset }, "x": 40, "y": 40, "w": 400, "h": 200 }] } } })).await;
+            assert_eq!(status, 200, "{r:?}");
+            r["result"].clone()
+        };
+        let placed = place("KitLogo000000001").await;
+        assert_ne!(placed["isError"], true, "{placed:?}");
+        let refused = place("Private000000001").await;
+        assert_eq!(refused["isError"], true, "{refused:?}");
+
         // Moving her default kit too: it is not the default where a default exists, and her personal space has none left.
         let (status, body, _) = send(&s, "PATCH", &format!("/api/brand-kits/{}", ids[0]), &a, Some(json!({ "workspaceId": team, "name": "Everyday brand" }))).await;
         assert_eq!(status, 200, "{body:?}");
