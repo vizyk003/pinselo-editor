@@ -4749,7 +4749,7 @@
   {
    "name": "list_planner_posts",
    "title": "List planner posts",
-   "description": "Posts in the user's Content Planner (own and team), soonest first: date, status (draft, in_review, changes_requested, approved, publishing, published, failed), channels, caption and editorial fields such as the post ID.",
+   "description": "Posts in the user's Content Planner (own and team), soonest first: date, status (draft, in_review, changes_requested, approved, publishing, published, failed), channels, caption, the team (brand) each post belongs to and editorial fields such as the post ID. When the user manages several brands, pass team so only that brand's posts are listed.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -4778,6 +4778,11 @@
       "format": "date-time",
       "description": "Only posts scheduled before this time",
       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+     },
+     "team": {
+      "description": "Only this team's (brand's) posts: the team's name or id, or \"personal\" for posts outside every team",
+      "type": "string",
+      "maxLength": 200
      }
     }
    },
@@ -4868,7 +4873,7 @@
        "type": "string",
        "maxLength": 20000
       },
-      "description": "Editorial fields: ref (post ID such as P-001), formatLabel, pillar, source, topic, factIds, reviewerNote"
+      "description": "Editorial fields: ref (post ID such as P-001), formatLabel, pillar, source, topic, factIds, reviewerNote, translationHu (Hungarian translation of the caption for the reviewer; never posted)"
      },
      "submit": {
       "type": "boolean",
@@ -4938,7 +4943,7 @@
        "type": "string",
        "maxLength": 20000
       },
-      "description": "Editorial fields: ref (post ID such as P-001), formatLabel, pillar, source, topic, factIds, reviewerNote"
+      "description": "Editorial fields: ref (post ID such as P-001), formatLabel, pillar, source, topic, factIds, reviewerNote, translationHu (Hungarian translation of the caption for the reviewer; never posted). They replace the post's fields, so pass the ones to keep too"
      },
      "submit": {
       "type": "boolean",
