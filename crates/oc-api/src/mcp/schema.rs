@@ -475,6 +475,9 @@ fn tool_schema(name: &str) -> Option<Schema> {
             ("team", z::str().max(200.0).optional()),
         ]),
         "get_planner_post" => z::obj([("post", z::str().min(1.0).max(200.0))]),
+        "list_social_accounts" => z::obj([("team", z::str().max(200.0).optional())]),
+        "check_publishing_limit" => z::obj([("account", z::str().min(1.0).max(200.0))]),
+        "get_post_results" => z::obj([("post", z::str().min(1.0).max(200.0))]),
         "create_planner_post" | "update_planner_post" => {
             let mut f: Vec<(&str, z::Schema)> = vec![
                 (
@@ -488,6 +491,8 @@ fn tool_schema(name: &str) -> Option<Schema> {
                 ("caption", z::str().max(70_000.0).optional()),
                 ("fields", z::record(z::str().max(20_000.0)).optional()),
                 ("submit", z::bool().optional()),
+                ("accounts", z::array(z::str().uuid()).min(1.0).max(30.0).optional()),
+                ("format", z::enumeration(&["jpg", "png", "mp4"]).optional()),
             ];
             if name == "create_planner_post" {
                 f.insert(0, ("design", z::str().min(1.0).max(500.0)));
@@ -573,10 +578,10 @@ fn tool_schema(name: &str) -> Option<Schema> {
     })
 }
 
-pub const TOOLS: [&str; 26] = [
+pub const TOOLS: [&str; 29] = [
     "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link",
     "get_brand_kit", "get_brand_guidelines", "create_brand_kit", "update_brand_kit", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
-    "list_planner_posts", "get_planner_post", "create_planner_post", "update_planner_post",
+    "list_planner_posts", "get_planner_post", "create_planner_post", "update_planner_post", "list_social_accounts", "check_publishing_limit", "get_post_results",
 ];
 
 /// `getDotPath(path)` of the SDK.

@@ -527,6 +527,43 @@ fn page_label(p: &Value) -> String {
 }
 
 /// Run one tool (arguments already validated).
+/// `team` of the planner and account tools: one brand at a time.
+pub(super) enum TeamFilter {
+    All,
+    /// Outside every team.
+    Personal,
+    Team(uuid::Uuid),
+}
+
+/// The `team` argument: a team by name or id, "personal", or nothing (every brand).
+pub(super) async fn resolve_team(s: &AppState, u: &BearerUser, a: &Value) -> Result<TeamFilter, Fail> {
+    let Some(want) = opt_str(a, "team").map(|t| crate::js::trim(&t).to_lowercase()).filter(|t| !t.is_empty()) else {
+        return Ok(TeamFilter::All);
+    };
+    if want == "personal" {
+        return Ok(TeamFilter::Personal);
+    }
+    let teams: Vec<(uuid::Uuid, String)> = sqlx::query_as(
+        "SELECT w.id, w.name FROM workspaces w JOIN memberships m ON m.workspace_id = w.id
+         WHERE m.user_id = $1 AND NOT w.personal ORDER BY w.name",
+    )
+    .bind(u.id)
+    .fetch_all(&s.pool)
+    .await
+    .map_err(ApiError::from)?;
+    match teams.iter().find(|(id, name)| id.to_string() == want || name.to_lowercase() == want) {
+        Some((id, _)) => Ok(TeamFilter::Team(*id)),
+        None => {
+            let names: Vec<&str> = teams.iter().map(|(_, n)| n.as_str()).collect();
+            tool_err(if names.is_empty() {
+                "The user has no teams. Leave team out, or pass \"personal\".".to_owned()
+            } else {
+                format!("No team {want}. The user's teams: {}. Pass one of them, or \"personal\".", names.join(", "))
+            })
+        }
+    }
+}
+
 pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
     match name {
         "get_design_guide" => Ok(text(&json!(super::guide::guide(s.cfg.brand.name)))),
@@ -543,34 +580,15 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             .await?;
             Ok(text(&json!({ "designs": rows.iter().map(|r| design_summary(r, &s.cfg.web_origin)).collect::<Vec<_>>() })))
         }
+        "list_social_accounts" => super::publishing::list(s, u, a).await,
+        "check_publishing_limit" => super::publishing::limit(s, u, a).await,
+        "get_post_results" => super::publishing::results(s, u, a).await,
         "list_planner_posts" => {
             need(u, "designs:read")?;
-            // One brand at a time: a team by name or id, or "personal" for posts outside every team.
-            let want = opt_str(a, "team").map(|t| crate::js::trim(&t).to_lowercase()).filter(|t| !t.is_empty());
-            let personal = want.as_deref() == Some("personal");
-            let team: Option<uuid::Uuid> = match want.as_deref().filter(|_| !personal) {
-                Some(t) => {
-                    let teams: Vec<(uuid::Uuid, String)> = sqlx::query_as(
-                        "SELECT w.id, w.name FROM workspaces w JOIN memberships m ON m.workspace_id = w.id
-                         WHERE m.user_id = $1 AND NOT w.personal ORDER BY w.name",
-                    )
-                    .bind(u.id)
-                    .fetch_all(&s.pool)
-                    .await
-                    .map_err(ApiError::from)?;
-                    match teams.iter().find(|(id, name)| id.to_string() == t || name.to_lowercase() == t) {
-                        Some((id, _)) => Some(*id),
-                        None => {
-                            let names: Vec<&str> = teams.iter().map(|(_, n)| n.as_str()).collect();
-                            return tool_err(if names.is_empty() {
-                                "The user has no teams. Leave team out, or pass \"personal\".".to_owned()
-                            } else {
-                                format!("No team {t}. The user's teams: {}. Pass one of them, or \"personal\".", names.join(", "))
-                            });
-                        }
-                    }
-                }
-                None => None,
+            let (team, personal) = match resolve_team(s, u, a).await? {
+                TeamFilter::All => (None, false),
+                TeamFilter::Personal => (None, true),
+                TeamFilter::Team(t) => (Some(t), false),
             };
             let rows: Vec<oc_social::publish::PostRow> = sqlx::query_as(
                 "SELECT p.* FROM social_posts p
@@ -625,13 +643,32 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                     body.insert(to.into(), v.clone());
                 }
             }
+            // Connected accounts: Pinselo publishes the post itself (after a person approves it).
+            let accounts = a.get("accounts").and_then(Value::as_array).filter(|l| !l.is_empty()).cloned();
+            if let Some(list) = &accounts {
+                body.insert("accounts".into(), Value::Array(list.clone()));
+            }
+            // A Reel goes out as MP4, everything else as JPEG pages (unless `format` says otherwise).
+            let reel = a.get("fields").and_then(|f| f.get("formatLabel")).and_then(Value::as_str).is_some_and(|l| l.trim().eq_ignore_ascii_case("reel"));
+            let format = opt_str(a, "format").or_else(|| reel.then(|| "mp4".to_owned()));
+            if let Some(f) = &format {
+                body.insert("format".into(), json!(f));
+            }
+            // Never "scheduled": an assistant drafts or submits; a person approves; the worker publishes.
             if a.get("submit").and_then(Value::as_bool) == Some(true) {
                 body.insert("status".into(), json!("in_review"));
             }
             let outcome = if name == "create_planner_post" {
                 body.insert("designId".into(), a["design"].clone());
-                body.insert("publisher".into(), json!("external"));
-                body.insert("format".into(), json!("jpg"));
+                if accounts.is_some() {
+                    if a.get("channels").is_some() {
+                        return tool_err("Pass accounts (Pinselo publishes) or channels (an outside publisher), not both.");
+                    }
+                    body.insert("publisher".into(), json!("pinselo"));
+                } else {
+                    body.insert("publisher".into(), json!("external"));
+                }
+                body.entry("format").or_insert(json!("jpg"));
                 body.entry("status").or_insert(json!("draft"));
                 crate::routes::social::create_post_as(s, u.id, Some(&Value::Object(body)), None)
                     .await?

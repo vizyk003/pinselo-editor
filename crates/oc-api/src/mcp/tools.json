@@ -4826,7 +4826,7 @@
   {
    "name": "create_planner_post",
    "title": "Create planner post",
-   "description": "Draft a post in the Content Planner for the team's own publisher (Instagram and/or Facebook). Pass submit: true to send it for review. Only a person can approve it.",
+   "description": "Draft a post in the Content Planner. With accounts (from list_social_accounts), Pinselo publishes it to them; with channels, the team's outside publisher posts it to Instagram and/or Facebook. Pass submit: true to send it for review. Only a person can approve it, and nothing is published before that.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -4847,7 +4847,7 @@
        ]
       },
       "maxItems": 2,
-      "description": "Where the team's publisher posts it"
+      "description": "Where an outside publisher posts it (leave out when you pass accounts)"
      },
      "scheduled_at": {
       "type": "string",
@@ -4878,6 +4878,25 @@
      "submit": {
       "type": "boolean",
       "description": "true sends the post for review (a person approves it in the planner)"
+     },
+     "accounts": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "format": "uuid"
+      },
+      "minItems": 1,
+      "maxItems": 30,
+      "description": "Connected account ids from list_social_accounts: Pinselo publishes the post to them once a person approves it. Leave out for a post an outside publisher posts (channels)."
+     },
+     "format": {
+      "type": "string",
+      "enum": [
+       "jpg",
+       "png",
+       "mp4"
+      ],
+      "description": "How Pinselo exports the design for accounts: jpg pages (default), png, or mp4. A post whose formatLabel is Reel defaults to mp4."
      }
     },
     "required": [
@@ -4896,7 +4915,7 @@
   {
    "name": "update_planner_post",
    "title": "Update planner post",
-   "description": "Change a Content Planner post (caption, date, channels, editorial fields). An approved post goes back to review. Pass submit: true to send a draft or a post with requested changes for review.",
+   "description": "Change a Content Planner post (caption, date, accounts or channels, editorial fields). An approved post goes back to review. Pass submit: true to send a draft or a post with requested changes for review.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -4917,7 +4936,7 @@
        ]
       },
       "maxItems": 2,
-      "description": "Where the team's publisher posts it"
+      "description": "Where an outside publisher posts it (leave out when you pass accounts)"
      },
      "scheduled_at": {
       "type": "string",
@@ -4948,6 +4967,25 @@
      "submit": {
       "type": "boolean",
       "description": "true sends the post for review (a person approves it in the planner)"
+     },
+     "accounts": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "format": "uuid"
+      },
+      "minItems": 1,
+      "maxItems": 30,
+      "description": "Connected account ids from list_social_accounts: Pinselo publishes the post to them once a person approves it. Leave out for a post an outside publisher posts (channels)."
+     },
+     "format": {
+      "type": "string",
+      "enum": [
+       "jpg",
+       "png",
+       "mp4"
+      ],
+      "description": "How Pinselo exports the design for accounts: jpg pages (default), png, or mp4. A post whose formatLabel is Reel defaults to mp4."
      }
     },
     "required": [
@@ -4958,6 +4996,86 @@
     "readOnlyHint": false,
     "destructiveHint": false,
     "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "list_social_accounts",
+   "title": "List social accounts",
+   "description": "The connected social accounts the user can schedule to (own and shared with their teams): network, name, handle, team, whether it can publish now or needs reconnecting, and whether it uses the team's own Meta app. Use the ids as accounts in create_planner_post. Read-only.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "team": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Only this team's (brand's) accounts: the team's name or id, or \"personal\" for accounts outside every team"
+     }
+    }
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "check_publishing_limit",
+   "title": "Check publishing limit",
+   "description": "How much of a network's 24-hour posting limit an account has used: Instagram's API quota (images, carousels and Reels all count) or a Facebook Page's 30 reels. Read-only.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "account": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "The account's id, @handle or name (list_social_accounts)"
+     }
+    },
+    "required": [
+     "account"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": true
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
+   "name": "get_post_results",
+   "title": "Get post results",
+   "description": "What a planner post did once published: each account's outcome, link and error, and for Instagram its reach, saves, likes, comments and shares. Read-only.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "post": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "The post's id or its post ID (fields.ref)"
+     }
+    },
+    "required": [
+     "post"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "openWorldHint": true
    },
    "execution": {
     "taskSupport": "forbidden"

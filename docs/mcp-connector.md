@@ -259,6 +259,26 @@ A brand kit's `motion` sets the defaults, in milliseconds and px: `enter` (`type
 
 `screenshot_page` with a time draws animations, timing and captions as in the video. Videos show their poster frame, and page transitions are not drawn.
 
+### Content Planner
+
+An assistant drafts posts and sends them for review. Only a person approves a post, and nothing is published
+before that.
+
+| Tool | Scope | Arguments | Returns |
+|---|---|---|---|
+| `list_planner_posts` | `designs:read` | `status`, `from`, `to`, `team` (name, id, or `personal`) | Posts, soonest first: status, date, caption, accounts or channels, team, editorial fields. |
+| `get_planner_post` | `designs:read` | `post` (required: id or post ID such as `P-001`) | The post, with its approval and results. |
+| `create_planner_post` | `designs:write` | `design` (required), `accounts` or `channels`, `scheduled_at`, `timezone`, `caption`, `fields`, `format`, `submit` | The new post: a draft, or `in_review` with `submit: true`. |
+| `update_planner_post` | `designs:write` | `post` (required), the fields of `create_planner_post` except `design` | The changed post. An approved post goes back to review. |
+| `list_social_accounts` | `designs:read` | `team` | Connected accounts you can schedule to: `id`, `network`, `name`, `handle`, `team`, `status`, `connected_via`, `team_meta_app`, `can_publish`. |
+| `check_publishing_limit` | `designs:read` | `account` (required: id, @handle or name) | Instagram: the 24-hour API quota (`used`, `total`, `remaining`); every API post counts, Reels included. Facebook: reels on the Page in 24 hours (Meta allows 30). |
+| `get_post_results` | `designs:read` | `post` (required) | Each account's `status`, `url`, `error` and `post_id`; for Instagram also `numbers` (reach, saves, likes, comments, shares). |
+
+With `accounts` (ids from `list_social_accounts`), Pinselo publishes the post to them at its time once a person
+approves it. With `channels`, the team's outside publisher posts it through [`/v1/planner`](api.md). A post takes
+one or the other. A post whose `formatLabel` is `Reel` exports as MP4 unless `format` says otherwise; others
+export as JPEG pages.
+
 ## How edits reach the editor
 
 The assistant joins the design as a live collaborator. Anyone with the design open sees its avatar, a **{name} is editing** label and its changes as they happen.

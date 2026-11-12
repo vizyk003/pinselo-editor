@@ -18,6 +18,7 @@ mod guide;
 mod layout;
 mod live;
 mod motion;
+mod publishing;
 mod schema;
 mod tools;
 mod view;
