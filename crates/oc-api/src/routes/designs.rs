@@ -264,12 +264,41 @@ async fn move_design(s: &AppState, user_id: Uuid, id: &str, folder_id: Option<Uu
         _ => return Ok(Some(Failure::new(403, "forbidden"))),
     }
     // Moving into a team folder makes the design part of that team (CO-042).
-    pg::exec(
-        &s.pool,
-        "UPDATE designs SET folder_id = $2, workspace_id = CASE WHEN $3::boolean THEN workspace_id ELSE $4::uuid END WHERE id = $1",
-        &[pg::text(id), pg::uuid(fid), Arg::Bool(Some(f.personal)), pg::uuid(f.workspace_id)],
-    )
-    .await?;
+    let mut t = s.pool.begin().await?;
+    sqlx::query("UPDATE designs SET folder_id = $2, workspace_id = CASE WHEN $3::boolean THEN workspace_id ELSE $4::uuid END WHERE id = $1")
+        .bind(id)
+        .bind(fid)
+        .bind(f.personal)
+        .bind(f.workspace_id)
+        .execute(&mut *t)
+        .await?;
+    if !f.personal {
+        // Its Content Planner posts go with it, so the team sees them. An approval only carries over when the
+        // person moving the design could have given it in that team; otherwise the post waits for review there.
+        let approver = matches!(f.role.as_deref(), Some("owner" | "admin"));
+        let moved = sqlx::query(
+            "UPDATE social_posts SET workspace_id = $2, updated_at = now(),
+               status = CASE WHEN NOT $3 AND approved_at IS NOT NULL AND status IN ('approved', 'scheduled') THEN 'in_review' ELSE status END,
+               approved_by = CASE WHEN $3 THEN approved_by END, approved_at = CASE WHEN $3 THEN approved_at END,
+               approved_version = CASE WHEN $3 THEN approved_version END,
+               claim_token = CASE WHEN $3 THEN claim_token END, claimed_at = CASE WHEN $3 THEN claimed_at END
+             WHERE design_id = $1 AND workspace_id IS DISTINCT FROM $2",
+        )
+        .bind(id)
+        .bind(f.workspace_id)
+        .bind(approver)
+        .execute(&mut *t)
+        .await;
+        match moved {
+            Ok(_) => {}
+            // Post IDs are unique per team (social_posts_ref): the design stays where it was.
+            Err(e) if e.as_database_error().and_then(|d| d.code()).as_deref() == Some("23505") => {
+                return Ok(Some(Failure::msg(409, "duplicate_ref", "A post in that team already uses the same post ID as one of this design's posts.")));
+            }
+            Err(e) => return Err(e.into()),
+        }
+    }
+    t.commit().await?;
     Ok(None)
 }
 
