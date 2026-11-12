@@ -355,8 +355,7 @@ impl oc_render::VideoFrames for FrameMap {
 }
 
 /// `composeTransition(r, a, b, tf)`: the transition frame drawn like Present mode over black, both frames placed
-/// at the origin unfiltered (CanvasKit `drawImage(img, 0, 0, null)`: nearest sampling). The result has the size of
-/// the incoming frame.
+/// at the origin. The result has the size of the incoming frame.
 pub fn compose_frames(prev: &Rgba, next: &Rgba, t: &TransitionSpec) -> RenderResult<Rgba> {
     use oc_render::raster::Canvas;
     use oc_render::raster::transition::{Side, draw_transition};
@@ -383,15 +382,26 @@ pub fn compose_frames(prev: &Rgba, next: &Rgba, t: &TransitionSpec) -> RenderRes
         let Some(r) = SkRect::from_xywh(0.0, 0.0, img.width() as f32, img.height() as f32) else {
             return;
         };
+        // A page that only moves keeps its pixels; one that is scaled, flipped or turned is smoothed, or its text
+        // and thin lines shimmer from frame to frame.
+        let m = cv.transform();
+        let moved_only = (m.sx - 1.0).abs() < 1e-6
+            && (m.sy - 1.0).abs() < 1e-6
+            && m.kx.abs() < 1e-6
+            && m.ky.abs() < 1e-6;
         let paint = Paint {
             shader: Pattern::new(
                 img.as_ref(),
                 SpreadMode::Pad,
-                FilterQuality::Nearest,
+                if moved_only {
+                    FilterQuality::Nearest
+                } else {
+                    FilterQuality::Bilinear
+                },
                 1.0,
                 Transform::identity(),
             ),
-            anti_alias: false,
+            anti_alias: !moved_only,
             ..Default::default()
         };
         cv.fill_rect(r, &paint);

@@ -239,7 +239,7 @@ Arguments are validated before anything runs, and images are imported before the
 
 Times are in seconds. Pages play one after another in videos, GIFs and auto-playing presentations.
 
-- **Page timing:** `duration` (0.1 to 600; `null` is automatic: 5 s, or as long as the page's videos) and `transition` (`{ type, duration, direction }`; `type` is a page transition such as `fade`, `slide`, `push` or `wipe`, and `none` or `null` cuts). A transition is how the page comes in from the one before.
+- **Page timing:** `duration` (0.1 to 600; `null` is automatic: 5 s, or as long as the page's videos) and `transition` (`{ type, duration, direction }`; `type` is a page transition such as `fade`, `slide`, `push` or `wipe`, and `none` or `null` cuts). A transition is how the page comes in from the one before: `dissolve` blends the two pages, `fade` goes through black (the old page fades out, then the new one fades in), and in a `slide` the new page moves over the old one while a `push` moves both.
 - **`animation`:** `{ in, out, loop }`; `null` removes all three, and `null` for one of them removes that one.
   - `in`: `type` (`fade`, `rise`, `drop`, `slide-left`, `slide-right`, `slide-up`, `slide-down`, `scale`, `zoom`, `pop`, `wipe`, `draw`, `typewriter`, `blur`), `delay` (from when the element appears), `duration`, `easing` (`linear`, `ease`, `ease-in`, `ease-out`, `ease-in-out`), `direction`, `distance` (px of travel for `rise`, `drop` and slides), and for text `by` (`element`, `line`, `word`, `letter`) with `stagger`. `draw` reveals a line from its first point to its last.
   - `out`: `type` (`fade`, `rise`, `drop`, `slide`, `scale`, `zoom`, `wipe`, `blur`), `at` (the page second it starts, which sets `visibleTo` to `at + duration`) and `duration`.

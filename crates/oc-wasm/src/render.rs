@@ -361,13 +361,14 @@ impl RenderTarget {
         Ok(())
     }
 
-    /// Push a layer composited with `alpha` and (when > 0) a Gaussian blur of σ = `blur` local units.
+    /// Push a layer composited with `alpha` and (when > 0) a Gaussian blur of σ = `blur` local units, clamped at the
+    /// clip (as oc-render's `draw_transition` blurs a page: it keeps its colour up to the edge).
     #[wasm_bindgen(js_name = saveLayer)]
     pub fn save_layer(&mut self, alpha: f32, blur: f32) -> Result<(), JsError> {
         let c = self.c()?;
         let m = c.transform();
         let (sx, sy) = (m.sx.hypot(m.ky), m.kx.hypot(m.sy));
-        let filters = if blur > 0.0 { vec![Filter::Blur { sx: blur * sx, sy: blur * sy }] } else { Vec::new() };
+        let filters = if blur > 0.0 { vec![Filter::BlurClamp { sx: blur * sx, sy: blur * sy, bounds: c.clip_bounds() }] } else { Vec::new() };
         c.save_layer(LayerPaint { opacity: alpha.clamp(0.0, 1.0), filters, ..Default::default() });
         Ok(())
     }

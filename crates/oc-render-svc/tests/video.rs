@@ -12,6 +12,10 @@
 //!   (ffprobe) and its decoded frames match the TS file's perceptually.
 //!
 //! The tests that run ffmpeg are skipped (with a note) when it is not installed.
+//!
+//! A deliberate change to how page transitions look rewrites the frames it changes (and only those) with
+//! `OC_VIDEO_UPDATE=1 cargo test -p oc-render-svc --test video`: the composed frames of the MP4 plans and the
+//! decoded frames of the real export. Everything else stays frozen and is still compared.
 
 mod common;
 
@@ -47,6 +51,18 @@ fn golden(rel: &str) -> Value {
     let s = std::fs::read_to_string(&p)
         .unwrap_or_else(|e| panic!("read {}: {e} (run `pnpm golden render-video`)", p.display()));
     serde_json::from_str(&s).expect("golden json")
+}
+
+/// `OC_VIDEO_UPDATE=1`: rewrite the transition frames that changed instead of failing on them.
+fn updating() -> bool {
+    std::env::var("OC_VIDEO_UPDATE").is_ok_and(|v| v == "1")
+}
+
+fn write_golden(rel: &str, g: &Value) {
+    let p = dir().join(rel);
+    std::fs::write(&p, serde_json::to_string(g).expect("golden json") + "\n")
+        .unwrap_or_else(|e| panic!("write {}: {e}", p.display()));
+    eprintln!("{rel}: updated");
 }
 
 fn design(name: &str) -> DesignDoc {
@@ -672,8 +688,9 @@ fn check_plan(file: &str) {
         return;
     }
     let n = file;
-    let g = golden(&format!("plans/{n}"));
-    let name = g["name"].as_str().unwrap();
+    let mut g = golden(&format!("plans/{n}"));
+    let name = g["name"].as_str().unwrap().to_string();
+    let name = name.as_str();
     let doc = design(name);
     let quality = VideoQuality::parse(g["quality"].as_str().unwrap());
     let fps = g["fps"].as_f64();
@@ -693,7 +710,7 @@ fn check_plan(file: &str) {
     };
     block_on(export_mp4(deps, &doc, quality, fps, Some(&cb)))
         .unwrap_or_else(|e| panic!("{n}: {e}"));
-    let mp4 = &g["mp4"];
+    let mp4 = g["mp4"].clone();
     assert_json(
         &argv_json(&sp.take()),
         &mp4["argv"],
@@ -717,9 +734,15 @@ fn check_plan(file: &str) {
         "{n}: frame count"
     );
     let (mut worst, mut composed, mut i) = ((0.0f64, 0i64), 0usize, 0usize);
+    // The runs as they stand after this pass (the same ones, unless OC_VIDEO_UPDATE rewrote a transition frame).
+    let mut runs: Vec<Value> = Vec::new();
+    let mut rewritten = 0usize;
     for run in mp4["frames"].as_array().unwrap() {
         let want: Vec<i64> = serde_json::from_value(run["sig"].clone()).unwrap();
         let crc = run["crc"].as_u64().unwrap() as u32;
+        if run["kind"] == "r" {
+            runs.push(run.clone());
+        }
         for _ in 0..run["n"].as_u64().unwrap() {
             let (sig, c) = &frames[i];
             if run["kind"] == "r" {
@@ -728,15 +751,35 @@ fn check_plan(file: &str) {
                 let d: Vec<i64> = sig.iter().zip(&want).map(|(a, b)| (a - b).abs()).collect();
                 let mean = d.iter().sum::<i64>() as f64 / d.len() as f64;
                 let max = *d.iter().max().unwrap();
+                let same = mean <= TRANSITION_MEAN_TOL && max <= TRANSITION_MAX_TOL;
                 assert!(
-                    mean <= TRANSITION_MEAN_TOL && max <= TRANSITION_MAX_TOL,
+                    same || updating(),
                     "{n}: transition frame {i}: mean |Δ| {mean:.2}, max {max}\n  ours   {sig:?}\n  theirs {want:?}"
                 );
-                worst = (worst.0.max(mean), worst.1.max(max));
+                let mut one = run.clone();
+                one["n"] = json!(1);
+                if same {
+                    worst = (worst.0.max(mean), worst.1.max(max));
+                } else {
+                    one["sig"] = json!(sig);
+                    one["crc"] = json!(c);
+                    rewritten += 1;
+                }
+                // Equal frames in a row are one run.
+                match runs.last_mut() {
+                    Some(last) if last["kind"] == "c" && last["sig"] == one["sig"] && last["crc"] == one["crc"] => {
+                        last["n"] = json!(last["n"].as_u64().unwrap() + 1);
+                    }
+                    _ => runs.push(one),
+                }
                 composed += 1;
             }
             i += 1;
         }
+    }
+    if rewritten > 0 {
+        g["mp4"]["frames"] = Value::Array(runs);
+        write_golden(&format!("plans/{n}"), &g);
     }
     // Audio.
     let total = timeline_of(&doc, false).total_ms;
@@ -941,7 +984,7 @@ fn real_export_matches_ts() {
         eprintln!("real_export_matches_ts: ffmpeg not installed, skipped");
         return;
     }
-    let g = golden("real.json");
+    let mut g = golden("real.json");
     let doc = design(g["name"].as_str().unwrap());
     let host = Host::new();
     let r = OcRenderer::new(&host);
@@ -972,7 +1015,8 @@ fn real_export_matches_ts() {
     same_probe(&probe(&fv), &g["mp4"]["probe"], "mp4");
     same_probe(&probe(&fa), &g["m4a"]["probe"], "m4a");
     let mut report = Vec::new();
-    for f in g["mp4"]["frames"].as_array().unwrap() {
+    let mut rewritten = 0usize;
+    for f in g["mp4"]["frames"].as_array_mut().unwrap() {
         let t = f["t"].as_f64().unwrap();
         let ours = grab(&fv, t);
         let theirs = b64d(f["rgb"].as_str().unwrap());
@@ -980,11 +1024,18 @@ fn real_export_matches_ts() {
         let de = mean_delta_e(&ours, &theirs);
         report.push(format!("{t}s ΔE {de:.2}"));
         assert!(
-            de <= REAL_FRAME_TOL,
+            de <= REAL_FRAME_TOL || updating(),
             "frame at {t}s: mean ΔE {de:.2} > {REAL_FRAME_TOL}"
         );
+        if de > REAL_FRAME_TOL {
+            f["rgb"] = json!(base64::engine::general_purpose::STANDARD.encode(&ours));
+            rewritten += 1;
+        }
     }
     eprintln!("real export: {}", report.join(", "));
+    if rewritten > 0 {
+        write_golden("real.json", &g);
+    }
 }
 
 #[test]

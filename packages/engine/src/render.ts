@@ -61,7 +61,9 @@ export interface ResolveOptions {
 }
 
 export interface TransitionLayer {
-  alpha: number; dx: number; dy: number; scale: number; rot: number; sx: number; blur: number;
+  alpha: number; dx: number; dy: number; scale: number; rot: number; sx: number;
+  /** Blur radius as a fraction of the page's shorter side. */
+  blur: number;
   /** Visible region of this layer, page fractions. */
   clip?: { kind: 'rect'; x: number; y: number; w: number; h: number } | { kind: 'circle'; r: number };
 }
@@ -268,8 +270,10 @@ export function drawTransition<C extends TransitionCanvas>(c: C, w: number, h: n
     c.translate(-w / 2, -h / 2);
     if (l.clip?.kind === 'rect') c.clipRect(l.clip.x * w, l.clip.y * h, l.clip.w * w, l.clip.h * h);
     if (l.clip?.kind === 'circle') c.clipCircle(w / 2, h / 2, l.clip.r * Math.hypot(w, h));
-    const layered = l.alpha < 1 || l.blur > 0.1;
-    if (layered) c.saveLayer(Math.max(0, Math.min(1, l.alpha)), l.blur > 0.1 ? l.blur : 0);
+    // Blur is a fraction of the shorter side; below a tenth of a page pixel it is not worth a layer.
+    const blur = l.blur * Math.min(w, h);
+    const layered = l.alpha < 1 || blur > 0.1;
+    if (layered) c.saveLayer(Math.max(0, Math.min(1, l.alpha)), blur > 0.1 ? blur : 0);
     drawPage(which, c);
     if (layered) c.restore();
     c.restore();

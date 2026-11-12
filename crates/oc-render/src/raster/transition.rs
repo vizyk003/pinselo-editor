@@ -44,11 +44,14 @@ pub fn draw_transition(c: &mut Canvas, w: f64, h: f64, f: &TransitionFrame, mut 
             },
             None => {}
         }
-        let layered = l.alpha < 1.0 || l.blur > 0.1;
+        // Blur is a fraction of the shorter side; below a tenth of a page pixel it is not worth a layer.
+        let blur = l.blur * w.min(h);
+        let layered = l.alpha < 1.0 || blur > 0.1;
         if layered {
             let m = c.transform();
             let (sx, sy) = super::axis_scales(&m);
-            let filters = if l.blur > 0.1 { vec![Filter::Blur { sx: l.blur as f32 * sx, sy: l.blur as f32 * sy }] } else { Vec::new() };
+            // Clamped at the clip: a blurred page keeps its colour up to the frame's edge instead of fading out there.
+            let filters = if blur > 0.1 { vec![Filter::BlurClamp { sx: blur as f32 * sx, sy: blur as f32 * sy, bounds: c.clip_bounds() }] } else { Vec::new() };
             c.save_layer(LayerPaint { opacity: l.alpha.clamp(0.0, 1.0) as f32, filters, ..Default::default() });
         }
         draw_page(side, c);

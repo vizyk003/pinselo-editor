@@ -518,11 +518,24 @@ pub fn text_unit_count(el: &Element, a: &ElementAnim) -> f64 {
     }
 }
 
-/// Transition overlay progress for a page that started `t` ms ago (1 = fully visible).
+/// Transition progress for a page that started `t` ms ago (1 = fully visible), eased the way its kind moves.
 pub fn transition_progress(page: &Page, t: f64) -> f64 {
     match &page.transition {
         None => 1.0,
-        Some(tr) => ease_out_cubic(min(1.0, max(0.0, t / max(1.0, tr.duration_ms)))),
+        Some(tr) => transition_ease(&tr.kind, min(1.0, max(0.0, t / max(1.0, tr.duration_ms)))),
+    }
+}
+
+/// Easing of a transition kind over its linear time `x` (0..1). One curve does not suit them all: a blend or a
+/// page that travels starts and ends gently, a page that arrives over a still one only slows down, and a drop
+/// keeps its own bounce.
+fn transition_ease(kind: &TransitionKind, x: f64) -> f64 {
+    match kind {
+        TransitionKind::Cover | TransitionKind::Zoom | TransitionKind::Spin => ease_out_cubic(x),
+        TransitionKind::Drop => x,
+        TransitionKind::Slide | TransitionKind::Push | TransitionKind::Reveal | TransitionKind::Flip => ease(Some(&AnimEasing::EaseInOut), x),
+        // Blends and reveals: a sine, gentler than the cubic at both ends.
+        _ => 0.5 - 0.5 * (std::f64::consts::PI * x).cos(),
     }
 }
 
@@ -544,6 +557,7 @@ pub struct TransitionLayer {
     pub scale: f64,
     pub rot: f64,
     pub sx: f64,
+    /// Blur radius as a fraction of the page's shorter side, so it looks the same at every export size.
     pub blur: f64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub clip: Option<TransitionClip>,
@@ -564,21 +578,33 @@ pub struct TransitionFrame {
     pub next_first: Option<bool>,
 }
 
-/// Layers at eased progress `p` (0..1) of a transition.
+/// Layers at eased progress `p` (0..1) of a transition. The outgoing page stays on screen until the incoming one
+/// has replaced it: nothing cuts to the black behind the pages.
 pub fn transition_frame(kind: &TransitionKind, p: f64, direction: Option<&AnimDirection>) -> TransitionFrame {
     let (vx, vy) = dir_vec(direction, AnimDirection::Left);
     let l = TransitionLayer::default;
     let fr = |prev: Option<TransitionLayer>, next: TransitionLayer| TransitionFrame { prev, next, next_first: None };
     let rect = |x: f64, y: f64, w: f64, h: f64| Some(TransitionClip::Rect { x, y, w, h });
     match kind {
-        TransitionKind::Fade | TransitionKind::Other(_) => fr(None, TransitionLayer { alpha: p, ..l() }),
-        TransitionKind::Dissolve => fr(Some(l()), TransitionLayer { alpha: p, ..l() }),
-        TransitionKind::Slide | TransitionKind::Push => {
-            fr(Some(TransitionLayer { dx: -p * vx, dy: -p * vy, ..l() }), TransitionLayer { dx: (1.0 - p) * vx, dy: (1.0 - p) * vy, ..l() })
+        // Through black: the old page fades out, then the new one fades in.
+        TransitionKind::Fade | TransitionKind::Other(_) => {
+            if p < 0.5 {
+                fr(Some(TransitionLayer { alpha: 1.0 - p * 2.0, ..l() }), TransitionLayer { alpha: 0.0, ..l() })
+            } else {
+                fr(None, TransitionLayer { alpha: p * 2.0 - 1.0, ..l() })
+            }
         }
+        TransitionKind::Dissolve => fr(Some(l()), TransitionLayer { alpha: p, ..l() }),
+        // The new page slides over the old one, which gives way more slowly and darkens (depth).
+        TransitionKind::Slide => fr(
+            Some(TransitionLayer { dx: -p * vx * SLIDE_PARALLAX, dy: -p * vy * SLIDE_PARALLAX, alpha: 1.0 - p * SLIDE_DIM, ..l() }),
+            TransitionLayer { dx: (1.0 - p) * vx, dy: (1.0 - p) * vy, ..l() },
+        ),
+        TransitionKind::Push => fr(Some(TransitionLayer { dx: -p * vx, dy: -p * vy, ..l() }), TransitionLayer { dx: (1.0 - p) * vx, dy: (1.0 - p) * vy, ..l() }),
         TransitionKind::Cover => fr(Some(l()), TransitionLayer { dx: (1.0 - p) * vx, dy: (1.0 - p) * vy, ..l() }),
         TransitionKind::Reveal => TransitionFrame { prev: Some(TransitionLayer { dx: -p * vx, dy: -p * vy, ..l() }), next: l(), next_first: Some(true) },
-        TransitionKind::Zoom => fr(None, TransitionLayer { alpha: p, scale: 0.85 + 0.15 * p, ..l() }),
+        // The camera moves in: the old page grows a little behind the new one, which arrives from smaller.
+        TransitionKind::Zoom => fr(Some(TransitionLayer { scale: 1.0 + 0.08 * p, ..l() }), TransitionLayer { alpha: p, scale: 0.85 + 0.15 * p, ..l() }),
         TransitionKind::Wipe => {
             let clip = if vx > 0.0 {
                 rect(1.0 - p, 0.0, p, 1.0)
@@ -591,28 +617,39 @@ pub fn transition_frame(kind: &TransitionKind, p: f64, direction: Option<&AnimDi
             };
             fr(Some(l()), TransitionLayer { clip, ..l() })
         }
-        TransitionKind::Iris => fr(Some(l()), TransitionLayer { clip: Some(TransitionClip::Circle { r: p * 0.75 }), ..l() }),
+        // The radius is a fraction of the page diagonal: half of it reaches the corners exactly at the end.
+        TransitionKind::Iris => fr(Some(l()), TransitionLayer { clip: Some(TransitionClip::Circle { r: p * 0.5 }), ..l() }),
         TransitionKind::Split => {
             let clip = if vy != 0.0 { rect(0.0, 0.5 - p / 2.0, 1.0, p) } else { rect(0.5 - p / 2.0, 0.0, p, 1.0) };
             fr(Some(l()), TransitionLayer { clip, ..l() })
         }
+        // A card turning over: it draws back a little while edge-on.
         TransitionKind::Flip => {
+            let scale = 1.0 - 0.1 * (std::f64::consts::PI * p).sin();
             if p < 0.5 {
-                fr(Some(TransitionLayer { sx: max(0.01, 1.0 - p * 2.0), ..l() }), TransitionLayer { alpha: 0.0, ..l() })
+                fr(Some(TransitionLayer { sx: max(0.01, 1.0 - p * 2.0), scale, ..l() }), TransitionLayer { alpha: 0.0, ..l() })
             } else {
-                fr(None, TransitionLayer { sx: max(0.01, p * 2.0 - 1.0), ..l() })
+                fr(None, TransitionLayer { sx: max(0.01, p * 2.0 - 1.0), scale, ..l() })
             }
         }
-        TransitionKind::Blur => {
-            fr(Some(TransitionLayer { blur: p * 24.0, alpha: 1.0 - p, ..l() }), TransitionLayer { alpha: p, blur: (1.0 - p) * 24.0, ..l() })
-        }
-        TransitionKind::Spin => fr(
-            Some(TransitionLayer { alpha: 1.0 - p, ..l() }),
-            TransitionLayer { alpha: p, rot: (1.0 - p) * -180.0, scale: 0.4 + 0.6 * p, ..l() },
+        // A focus pull. Both pages are drawn larger while blurred, so their soft edges stay outside the frame, and
+        // the old page stays opaque under the new one: the picture never darkens.
+        TransitionKind::Blur => fr(
+            Some(TransitionLayer { blur: p * BLUR_MAX, scale: 1.0 + BLUR_GROW * p, ..l() }),
+            TransitionLayer { alpha: p, blur: (1.0 - p) * BLUR_MAX, scale: 1.0 + BLUR_GROW * (1.0 - p), ..l() },
         ),
+        TransitionKind::Spin => fr(Some(l()), TransitionLayer { alpha: p, rot: (1.0 - p) * -180.0, scale: 0.4 + 0.6 * p, ..l() }),
         TransitionKind::Drop => fr(Some(l()), TransitionLayer { dy: -(1.0 - ease_out_bounce(p)), ..l() }),
     }
 }
+
+/// How far the old page travels in a slide, as a share of the new page's travel, and how much it darkens.
+const SLIDE_PARALLAX: f64 = 0.3;
+const SLIDE_DIM: f64 = 0.35;
+/// Strongest blur of the blur transition, as a fraction of the page's shorter side (24 px on a 1080 px page), and
+/// how much a fully blurred page grows to keep its edges out of the frame.
+const BLUR_MAX: f64 = 24.0 / 1080.0;
+const BLUR_GROW: f64 = 0.14;
 
 /// Number of click build steps on a page (0 = none).
 pub fn click_step_count(els: &[&Element]) -> f64 {
@@ -655,6 +692,66 @@ mod tests {
         let c = pan_zoom_crop(&crop, &wild, 5000.0, w);
         assert!(c.x >= 0.1 - 1e-9 && c.x + c.w <= 0.9 + 1e-9 && (c.w - 0.2).abs() < 1e-9);
         assert_eq!(pan_zoom_crop(&crop, &wild, 1000.0, w), crop);
+    }
+
+    fn page_with(kind: &str, ms: f64) -> Page {
+        serde_json::from_value(serde_json::json!({ "id": "p", "order": "a0", "background": [], "transition": { "kind": kind, "durationMs": ms } })).unwrap()
+    }
+
+    #[test]
+    fn transitions_run_their_whole_length() {
+        for kind in oc_schema::design::TRANSITION_KINDS {
+            let p = page_with(kind, 600.0);
+            assert_eq!(transition_progress(&p, 0.0), 0.0, "{kind}");
+            assert_eq!(transition_progress(&p, 600.0), 1.0, "{kind}");
+            // Never backwards, and still under way in the last fifth (one curve used to finish them all early).
+            let mut last = 0.0;
+            for i in 0..=60 {
+                let v = transition_progress(&p, f64::from(i) * 10.0);
+                assert!(v >= last - 1e-12, "{kind} at {i}");
+                last = v;
+            }
+            let late = transition_progress(&p, 480.0);
+            assert!(late < 0.995, "{kind}: {late} at four fifths");
+        }
+        // Pages that travel start gently: a tenth of the way in, a push has barely moved.
+        assert!(transition_progress(&page_with("push", 600.0), 60.0) < 0.01);
+        assert_eq!(transition_progress(&page_with("drop", 600.0), 150.0), 0.25);
+    }
+
+    #[test]
+    fn transitions_never_cut_to_black() {
+        // Until the new page covers the frame, the old one is still drawn: at full strength, or fading out itself.
+        for kind in oc_schema::design::TRANSITION_KINDS {
+            let k = TransitionKind::parse(kind);
+            let f = transition_frame(&k, 0.1, None);
+            let prev = f.prev.unwrap_or_else(|| panic!("{kind}: the old page is gone at the start"));
+            assert!(prev.alpha > 0.6, "{kind}: old page at {}", prev.alpha);
+        }
+        // Fade goes through black: the old page out, then the new one in.
+        let (a, b) = (transition_frame(&TransitionKind::Fade, 0.25, None), transition_frame(&TransitionKind::Fade, 0.75, None));
+        assert_eq!((a.prev.unwrap().alpha, a.next.alpha), (0.5, 0.0));
+        assert_eq!((b.prev, b.next.alpha), (None, 0.5));
+        // Blends keep the old page opaque under the new one, so the picture does not darken half way.
+        for k in [TransitionKind::Dissolve, TransitionKind::Blur, TransitionKind::Spin, TransitionKind::Zoom] {
+            let f = transition_frame(&k, 0.5, None);
+            assert_eq!((f.prev.unwrap().alpha, f.next.alpha), (1.0, 0.5), "{k:?}");
+        }
+        // A blurred page is drawn larger than the frame; sharp again, it is back to its size.
+        let f = transition_frame(&TransitionKind::Blur, 1.0, None);
+        assert_eq!((f.next.scale, f.next.blur), (1.0, 0.0));
+        assert!(transition_frame(&TransitionKind::Blur, 0.5, None).next.scale > 1.0);
+    }
+
+    #[test]
+    fn slide_and_circle_use_the_whole_frame() {
+        // A slide moves the old page less than the new one (a push moves both alike).
+        let s = transition_frame(&TransitionKind::Slide, 0.5, Some(&AnimDirection::Left));
+        let p = transition_frame(&TransitionKind::Push, 0.5, Some(&AnimDirection::Left));
+        assert_eq!((s.next.dx, p.next.dx), (0.5, 0.5));
+        assert!(s.prev.as_ref().unwrap().dx.abs() < p.prev.as_ref().unwrap().dx.abs());
+        // The circle reaches the corners (half the diagonal) only at the end.
+        assert_eq!(transition_frame(&TransitionKind::Iris, 1.0, None).next.clip, Some(TransitionClip::Circle { r: 0.5 }));
     }
 
     #[test]
