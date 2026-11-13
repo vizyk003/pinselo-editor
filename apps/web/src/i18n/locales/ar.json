@@ -3111,7 +3111,7 @@
  "Facebook Pages": "صفحات Facebook",
  "Find the App ID and App secret in the Meta app dashboard under App settings → Basic. Pinselo checks them with Meta before saving.": "تجد معرّف التطبيق والمفتاح السري في لوحة تطبيق Meta ضمن إعدادات التطبيق ← أساسي. يتحقق Pinselo منهما لدى Meta قبل الحفظ.",
  "Graph API version": "إصدار Graph API",
- "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.": "في إعدادات الأعمال في Meta ← مستخدمو النظام، أنشئ رمزًا لتطبيق الفريق وأسند الصفحات إلى مستخدم النظام. يحتفظ Pinselo برمز كل صفحة الخاص بها، لا بهذا الرمز.",
+ "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.": "في إعدادات الأعمال في Meta ← مستخدمو النظام، أنشئ رمزًا لتطبيق الفريق وأسند الصفحات وحسابات Instagram إلى مستخدم النظام. يحفظ Pinselo الرموز التي يحتاجها مشفّرة.",
  "Log in for Instagram": "تسجيل الدخول لـ Instagram",
  "Log in with Facebook": "تسجيل الدخول باستخدام Facebook",
  "Meta app for {team}": "تطبيق Meta لـ {team}",

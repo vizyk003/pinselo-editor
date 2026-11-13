@@ -207,6 +207,26 @@ async fn team_meta_app() {
         let r = send(&s, "GET", "/api/social/accounts", &bob_c, None).await;
         assert_eq!(r.body["accounts"].as_array().map(|a| a.iter().filter(|x| x["provider"] != "local").count()), Some(2), "{:?}", r.body);
 
+        // ---- an Instagram account assigned to the system user directly (no Page link), as UniHop's is
+        fake.set_default(&format!("{GRAPH}/me/accounts"), &json!({ "json": { "data": [{ "id": "1438856472642415", "name": "UniHop", "access_token": "PAGE-TOKEN-UNIHOP" }] } }));
+        fake.set_default(&format!("{GRAPH}/me/assigned_instagram_accounts"), &json!({ "status": 400, "json": { "error": { "message": "(#100) Unsupported request", "code": 100 } } }));
+        let r = send(&s, "POST", &accounts_url, &ada_c, Some(connect("instagram"))).await;
+        assert!(r.body["message"].as_str().unwrap_or("").contains("Unsupported request"), "nothing reachable: Meta's reason is shown: {:?}", r.body);
+        fake.set_default(&format!("{GRAPH}/me/assigned_instagram_accounts"), &json!({ "json": { "data": [] } }));
+        let r = send(&s, "POST", &accounts_url, &ada_c, Some(connect("instagram"))).await;
+        assert!(r.body["message"].as_str().unwrap_or("").contains("assign the Instagram account to the system user"), "{:?}", r.body);
+        fake.set_default(&format!("{GRAPH}/me/assigned_instagram_accounts"), &json!({ "json": { "data": [{ "id": "17841440769007273", "username": "unihop.eu", "name": "Unihop" }] } }));
+        let r = send(&s, "POST", &accounts_url, &ada_c, Some(connect("instagram"))).await;
+        assert_eq!(r.status, 200, "{:?}", r.body);
+        assert_eq!((r.body["accounts"][0]["handle"].as_str(), r.body["accounts"][0]["displayName"].as_str()), (Some("unihop.eu"), Some("Unihop")));
+        let assigned: oc_social::store::AccountRow = sqlx::query_as("SELECT * FROM social_accounts WHERE provider = 'instagram'").fetch_one(&pool).await.expect("ig row");
+        let t = oc_social::crypto::open_tokens(assigned.tokens.as_deref().expect("tokens"), SECRET).expect("open");
+        assert_eq!(t.access_token, SU_TOKEN, "no Page token for it: it publishes with the system-user token, like postr");
+        assert_eq!(assigned.meta.0["assigned"], true);
+        assert_eq!((assigned.workspace_id, assigned.connected_via.as_str()), (Some(team), "system_user"));
+        let assigned_req = fake.requests(&format!("{GRAPH}/me/assigned_instagram_accounts")).pop().expect("request");
+        assert_eq!(assigned_req["headers"]["authorization"], format!("Bearer {SU_TOKEN}").as_str());
+
         // ---- publishing uses the account's app (its ID, secret and Graph version), others the server's
         let base = oc_api::routes::social::http(&s);
         let h = oc_social::apps::http_for_account(&pool, &base, SECRET, &rows[0]).await.expect("http");
@@ -240,7 +260,7 @@ async fn team_meta_app() {
         let r = send(&s, "POST", &accounts_url, &ada_c, Some(connect("facebook"))).await;
         assert_eq!(r.body["error"], "no_app");
         let actions: Vec<String> = sqlx::query_scalar("SELECT action FROM audit_events WHERE action LIKE 'social.%' ORDER BY id").fetch_all(&pool).await.expect("audit");
-        assert_eq!(actions, ["social.app.save", "social.app.save", "social.connect", "social.connect", "social.app.delete"]);
+        assert_eq!(actions, ["social.app.save", "social.app.save", "social.connect", "social.connect", "social.connect", "social.app.delete"]);
 
         pool.close().await;
         let _ = std::fs::remove_dir_all(&data);

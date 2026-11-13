@@ -2956,7 +2956,7 @@
  "Facebook Pages": "Pages Facebook",
  "Find the App ID and App secret in the Meta app dashboard under App settings → Basic. Pinselo checks them with Meta before saving.": "L’ID et la clé secrète de l’app se trouvent dans le tableau de bord de l’app Meta, sous Paramètres de l’app → Général. Pinselo les vérifie auprès de Meta avant l’enregistrement.",
  "Graph API version": "Version de l’API Graph",
- "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.": "Dans les paramètres Business de Meta → Utilisateurs système, générez un jeton pour l’app de l’équipe et attribuez les Pages à l’utilisateur système. Pinselo conserve le jeton propre à chaque Page, pas celui-ci.",
+ "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.": "Dans les paramètres Business de Meta → Utilisateurs système, générez un jeton pour l’app de l’équipe et attribuez les Pages et les comptes Instagram à l’utilisateur système. Pinselo conserve chiffrés les jetons dont il a besoin.",
  "Log in for Instagram": "Se connecter pour Instagram",
  "Log in with Facebook": "Se connecter avec Facebook",
  "Meta app for {team}": "App Meta de {team}",

@@ -242,8 +242,9 @@ pub fn required_scopes(provider: &str) -> &'static [&'static str] {
 /// Connect with a pasted Meta system-user token (Business Settings → System users → Generate token) instead of
 /// Facebook login. `http` carries the workspace's app (`crate::apps::MetaApp::http`). The token is checked with
 /// `debug_token` (app access token `id|secret`): it must be valid, belong to that app, and hold the publishing
-/// permissions. The accounts are the Pages assigned to the system user (or their Instagram accounts), each stored
-/// with its own Page token, exactly like Facebook login stores them. The system-user token itself is not kept.
+/// permissions. The accounts are the Pages assigned to the system user, each stored with its own Page token exactly
+/// like Facebook login stores them, or for Instagram: the accounts linked to those Pages (their Page's token) and
+/// the accounts assigned to the system user directly (the system-user token, sealed; it never expires).
 pub async fn connect_system_user(
     http: &Http,
     provider: &str,
@@ -293,12 +294,63 @@ pub async fn connect_system_user(
         )));
     }
     let list = pages(http, Some(token)).await?;
-    if list.is_empty() {
+    if provider == "facebook" {
+        if list.is_empty() {
+            return Err(PublishError::new(
+                "The system user has no Pages. In Business Settings, assign the Page to the system user (Manage Page), then try again.",
+            ));
+        }
+        return fb_accounts(list);
+    }
+    // Instagram: accounts linked to the system user's Pages publish with their Page's token. Accounts assigned to
+    // the system user directly (Business Settings → Instagram accounts), with no Page link, publish with the
+    // system-user token itself, which is then stored (sealed) for them.
+    let mut accounts = ig_accounts(list).unwrap_or_default();
+    match assigned_instagram(http, token).await {
+        Ok(assigned) => {
+            for a in assigned {
+                if !accounts.iter().any(|x| x.external_id == a.external_id) {
+                    accounts.push(a);
+                }
+            }
+        }
+        Err(e) if accounts.is_empty() => return Err(e),
+        Err(_) => {} // the Page-linked accounts are enough
+    }
+    if accounts.is_empty() {
         return Err(PublishError::new(
-            "The system user has no Pages. In Business Settings, assign the Page to the system user (Manage Page), then try again.",
+            "The system user can't reach any Instagram account. In Business Settings, assign the Instagram account to the system user (or link it to a Page the system user manages), then try again.",
         ));
     }
-    if provider == "facebook" { fb_accounts(list) } else { ig_accounts(list) }
+    Ok(accounts)
+}
+
+/// Instagram accounts assigned to the system user directly (`/me/assigned_instagram_accounts`).
+async fn assigned_instagram(http: &Http, token: &str) -> Result<Vec<ConnectedAccount>, PublishError> {
+    let url = with_query(
+        &format!("{}/me/assigned_instagram_accounts", graph(http)),
+        &[("fields", Some("id,username,name,profile_picture_url")), ("limit", Some("100"))],
+    );
+    let r = http.call(&url, Req::get().bearer(token)).await?;
+    let list = match non_null(r.body.get("data")) {
+        Some(Value::Array(a)) => a.clone(),
+        _ => Vec::new(),
+    };
+    Ok(list
+        .iter()
+        .map(|ig| {
+            let mut meta = Map::new();
+            meta.insert("assigned".into(), Value::Bool(true));
+            ConnectedAccount {
+                external_id: str_or_empty(ig.get("id")),
+                display_name: or_str(&[ig.get("name"), ig.get("username")], ""),
+                handle: opt_str(ig.get("username")),
+                avatar_url: opt_str(ig.get("profile_picture_url")),
+                tokens: Tokens { access_token: token.to_owned(), ..Tokens::default() },
+                meta: Some(meta),
+            }
+        })
+        .collect())
 }
 
 // ---------------------------------------------------------------- Facebook Pages

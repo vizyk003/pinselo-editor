@@ -1102,7 +1102,7 @@
  "In 7 days": "editor/Dialogs.tsx",
  "In 90 days": "pages/Developers.tsx",
  "In Claude, check the prefilled name and URL and select Add.": "components/ConnectAi.tsx",
- "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.": "social/TeamMetaApps.tsx",
+ "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.": "social/TeamMetaApps.tsx",
  "In a year": "pages/Developers.tsx",
  "In review": "social/api.ts",
  "In your language": "pages/Landing.tsx",

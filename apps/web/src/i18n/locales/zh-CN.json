@@ -2856,7 +2856,7 @@
  "Facebook Pages": "Facebook 公共主页",
  "Find the App ID and App secret in the Meta app dashboard under App settings → Basic. Pinselo checks them with Meta before saving.": "应用编号和应用密钥位于 Meta 应用面板的“应用设置”→“基本”中。Pinselo 会在保存前向 Meta 验证。",
  "Graph API version": "Graph API 版本",
- "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.": "在 Meta 商务设置 →“系统用户”中，为团队的应用生成口令，并将主页分配给该系统用户。Pinselo 保存的是每个主页自己的口令，而不是这个口令。",
+ "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.": "在 Meta 商务设置 →“系统用户”中，为团队的应用生成口令，并将主页和 Instagram 账号分配给该系统用户。Pinselo 会加密保存所需的口令。",
  "Log in for Instagram": "为 Instagram 登录",
  "Log in with Facebook": "使用 Facebook 登录",
  "Meta app for {team}": "{team} 的 Meta 应用",

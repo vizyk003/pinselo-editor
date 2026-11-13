@@ -156,8 +156,9 @@ A team can also bring its own Meta app (Settings → Connected accounts → Team
 enter the app ID, app secret and Graph API version, which Pinselo checks with Meta and stores sealed with
 `OC_SECRET`. That team's Facebook and Instagram accounts are then connected and published through its app,
 not through `OC_FACEBOOK_CLIENT_ID`. They connect with Facebook login, or with a pasted Meta system-user token
-for Pages the business owns. A pasted token must belong to the team's app and carry the publishing
-permissions; Pinselo keeps each Page's own token, not the system-user token. Removing or replacing the app
+for Pages and Instagram accounts the business owns. A pasted token must belong to the team's app and carry the
+publishing permissions. Pinselo keeps each Page's own token; an Instagram account assigned to the system user
+directly, with no Page link, publishes with the system-user token, which Pinselo then keeps sealed. Removing or replacing the app
 marks its accounts for reconnecting. The server-wide variables above stay the default for everyone else and
 may be left empty.
 

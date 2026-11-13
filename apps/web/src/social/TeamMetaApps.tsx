@@ -149,7 +149,7 @@ function TokenForm({ team, onClose, onDone }: { team: Workspace; onClose: () => 
         }
       }}>
         <p className="muted" style={{ margin: 0, fontSize: 13 }}>
-          {t('In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.')}{' '}
+          {t('In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.')}{' '}
           <a href="https://business.facebook.com/settings/system-users" target="_blank" rel="noreferrer">{t('Open Business Settings')} <ExternalLink size={12} /></a>
         </p>
         <div className="row" role="radiogroup" aria-label={t('Network')} style={{ gap: 8 }}>

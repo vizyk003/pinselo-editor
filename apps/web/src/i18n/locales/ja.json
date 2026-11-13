@@ -2856,7 +2856,7 @@
  "Facebook Pages": "Facebook ページ",
  "Find the App ID and App secret in the Meta app dashboard under App settings → Basic. Pinselo checks them with Meta before saving.": "アプリ ID と app secret は、Meta アプリのダッシュボードの「アプリの設定」→「ベーシック」にあります。保存する前に Pinselo が Meta で確認します。",
  "Graph API version": "Graph API のバージョン",
- "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.": "Meta のビジネス設定 →「システムユーザー」で、チームのアプリ用のトークンを生成し、ページをシステムユーザーに割り当ててください。Pinselo が保存するのは各ページのトークンで、このトークンではありません。",
+ "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.": "Meta のビジネス設定 →「システムユーザー」で、チームのアプリ用のトークンを生成し、ページと Instagram アカウントをシステムユーザーに割り当ててください。Pinselo は必要なトークンを暗号化して保存します。",
  "Log in for Instagram": "Instagram 用にログイン",
  "Log in with Facebook": "Facebook でログイン",
  "Meta app for {team}": "{team} の Meta アプリ",

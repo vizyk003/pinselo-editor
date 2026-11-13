@@ -2907,7 +2907,7 @@
  "Facebook Pages": "Facebook-Seiten",
  "Find the App ID and App secret in the Meta app dashboard under App settings → Basic. Pinselo checks them with Meta before saving.": "App-ID und App-Geheimcode findest du im Meta-App-Dashboard unter App-Einstellungen → Allgemeines. Pinselo prüft sie vor dem Speichern bei Meta.",
  "Graph API version": "Graph-API-Version",
- "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages to the system user. Pinselo keeps each Page’s own token, not this one.": "Erstelle in den Meta-Unternehmenseinstellungen → Systemnutzer ein Token für die App des Teams und weise die Seiten dem Systemnutzer zu. Pinselo speichert das eigene Token jeder Seite, nicht dieses.",
+ "In Meta Business Settings → System users, generate a token for the team’s app, and assign the Pages and Instagram accounts to the system user. Pinselo stores the tokens it needs encrypted.": "Erstelle in den Meta-Unternehmenseinstellungen → Systemnutzer ein Token für die App des Teams und weise dem Systemnutzer die Seiten und Instagram-Konten zu. Pinselo speichert die benötigten Tokens verschlüsselt.",
  "Log in for Instagram": "Für Instagram anmelden",
  "Log in with Facebook": "Mit Facebook anmelden",
  "Meta app for {team}": "Meta-App für {team}",
