@@ -167,6 +167,20 @@ async fn review_and_external_publishing() {
         assert_eq!((r.status, r.body["error"].as_str()), (400, Some("needs_approval")), "{:?}", r.body);
         let r = send(&s, "POST", "/api/social/posts", &b, Some(json!({ "designId": designs[0], "publisher": "external", "format": "jpg", "status": "in_review", "scheduledAt": "2020-11-16T17:00:00.000Z" }))).await;
         assert_eq!(r.body["error"], "no_channels");
+        // A video's cover: refused unless last_frame, first_frame or seconds; a numeric string is stored as a number;
+        // null goes back to the default (no key).
+        let r = send(&s, "POST", "/api/social/posts", &b, Some(json!({ "designId": designs[0], "publisher": "external", "channels": ["instagram"], "format": "mp4", "status": "draft", "options": { "cover": "middle" } }))).await;
+        assert_eq!((r.status, r.body["error"].as_str()), (400, Some("invalid_cover")), "{:?}", r.body);
+        let r = send(&s, "POST", "/api/social/posts", &b, Some(json!({ "designId": designs[0], "publisher": "external", "channels": ["instagram"], "format": "mp4", "status": "draft", "options": { "cover": "3.5" } }))).await;
+        assert_eq!((r.status, &r.body["post"]["options"]["cover"]), (200, &json!(3.5)), "{:?}", r.body);
+        let draft = r.body["post"]["id"].as_str().expect("id").to_owned();
+        let r = send(&s, "PATCH", &format!("/api/social/posts/{draft}"), &b, Some(json!({ "options": { "cover": null } }))).await;
+        assert_eq!((r.status, r.body["post"]["options"].get("cover")), (200, None), "{:?}", r.body);
+        let r = send(&s, "PATCH", &format!("/api/social/posts/{draft}"), &b, Some(json!({ "options": { "cover": -2 } }))).await;
+        assert_eq!((r.status, r.body["error"].as_str()), (400, Some("invalid_cover")), "{:?}", r.body);
+        let r = send(&s, "DELETE", &format!("/api/social/posts/{draft}"), &b, None).await;
+        assert_eq!(r.status, 200, "{:?}", r.body);
+
         let r = send(&s, "POST", "/api/social/posts", &b, Some(post_body(&designs[0], "P-001"))).await;
         assert_eq!(r.status, 200, "{:?}", r.body);
         let p1 = r.body["post"]["id"].as_str().expect("id").to_owned();

@@ -91,6 +91,7 @@ pub(crate) async fn out(s: &AppState, p: &PostRow) -> Result<Value, ApiError> {
     v["designVersion"] = json!(crate::routes::v1_export::content_version(s, &p.design_id).await?);
     v["ref"] = p.fields.0.get("ref").cloned().unwrap_or(Value::Null);
     v["designUrl"] = json!(format!("{}/design/{}", s.cfg.web_origin, p.design_id));
+    v["cover"] = crate::routes::social::cover_of(p);
     let team: Option<String> = match p.workspace_id {
         Some(w) => sqlx::query_scalar("SELECT name FROM workspaces WHERE id = $1").bind(w).fetch_optional(&s.pool).await?,
         None => None,

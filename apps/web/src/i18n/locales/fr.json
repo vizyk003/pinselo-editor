@@ -2976,5 +2976,15 @@
  "Team Meta apps": "Apps Meta des équipes",
  "Unchanged": "Inchangé",
  "Uses the server’s Meta app": "Utilise l’app Meta du serveur",
- "default": "par défaut"
+ "default": "par défaut",
+ "A moment in the video": "Un moment de la vidéo",
+ "A time past the end of the video uses the last frame.": "Un moment après la fin de la vidéo utilise la dernière image.",
+ "At {s} s": "À {s} s",
+ "Cover preview": "Aperçu de la couverture",
+ "First frame": "Première image",
+ "Last frame": "Dernière image",
+ "Seconds into the video": "Secondes dans la vidéo",
+ "The last frame that isn’t mid page transition.": "La dernière image qui n’est pas au milieu d’une transition de page.",
+ "seconds": "secondes",
+ "— shown on Instagram and Facebook": "— affichée sur Instagram et Facebook"
 }

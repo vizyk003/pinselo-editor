@@ -1,8 +1,10 @@
 //! Facebook Pages + Instagram professional accounts (Meta Graph API).
 //!
 //!   Facebook: POST /{page}/photos (url) · multi-photo: unpublished photos + /{page}/feed attached_media ·
-//!             video: POST graph-video /{page}/videos (file_url)
-//!   Instagram: POST /{ig}/media (image_url | REELS video_url | CAROUSEL children) → /{ig}/media_publish
+//!             video: POST graph-video /{page}/videos (file_url; with a cover: multipart + `thumb`, the JPEG)
+//!   Instagram: POST /{ig}/media (image_url | REELS video_url | CAROUSEL children) → /{ig}/media_publish.
+//!             Reels get their cover as `thumb_offset` (ms) and, when the frame was rendered, `cover_url` (which
+//!             Instagram uses instead of the offset).
 //!
 //! Env: OC_FACEBOOK_CLIENT_ID, OC_FACEBOOK_CLIENT_SECRET (Meta app), optional OC_FACEBOOK_GRAPH_VERSION. A team
 //! workspace can bring its own app (`crate::apps`), which overlays these three for its accounts.
@@ -15,7 +17,7 @@ use std::time::Duration;
 use serde_json::{Map, Value, json};
 
 use super::{first_media, kv, opt_str, or_str, str_or_empty};
-use crate::http::{Fetched, Http, Req, js_string, js_stringify, non_null, truthy, with_query};
+use crate::http::{Fetched, Http, Part, Req, js_string, js_stringify, non_null, truthy, with_query};
 use crate::types::{
     AdapterFuture, AuthKind, AuthorizeParams, ConnectedAccount, ExchangeParams, Limits, PostKind,
     PublishContext, PublishError, PublishResult, SocialAdapter, Tokens,
@@ -373,17 +375,26 @@ async fn fb_publish(http: &Http, ctx: &PublishContext) -> Result<PublishResult, 
     if ctx.kind == PostKind::Video {
         let v = first_media(ctx, "url")?;
         let url = format!("{}/{page}/videos", graph_video(http));
-        let r = post(
-            http,
-            &url,
-            token,
-            kv(&[
-                ("file_url", &v.url),
-                ("description", &ctx.text),
-                ("published", "true"),
-            ]),
-        )
-        .await?;
+        let data = kv(&[
+            ("file_url", &v.url),
+            ("description", &ctx.text),
+            ("published", "true"),
+        ]);
+        let r = match &ctx.cover {
+            None => post(http, &url, token, data).await?,
+            // The cover goes up with the video (`thumb`, the image's raw data), so it is set before anyone sees it.
+            Some(c) => {
+                let mut parts: Vec<Part> =
+                    data.into_iter().map(|(name, value)| Part::Text { name, value }).collect();
+                parts.push(Part::File {
+                    name: "thumb".into(),
+                    bytes: c.bytes.clone(),
+                    mime: c.mime.clone(),
+                    filename: c.filename.clone(),
+                });
+                http.call(&url, Req::post().bearer(token).multipart(parts)).await?
+            }
+        };
         let vid = id_of(&r);
         return Ok(PublishResult {
             url: Some(format!("https://www.facebook.com/{page}/videos/{vid}")),
@@ -528,12 +539,18 @@ async fn ig_publish(http: &Http, ctx: &PublishContext) -> Result<PublishResult, 
     let media_url = format!("{g}/{ig}/media");
     let container = if ctx.kind == PostKind::Video {
         let v = first_media(ctx, "url")?;
-        let data = kv(&[
+        let mut data = kv(&[
             ("media_type", "REELS"),
             ("video_url", &v.url),
             ("caption", &ctx.text),
             ("share_to_feed", "true"),
         ]);
+        if let Some(ms) = ctx.options.get("coverMs").and_then(Value::as_f64).filter(|m| m.is_finite() && *m >= 0.0) {
+            data.push(("thumb_offset".into(), format!("{}", ms.round() as u64)));
+        }
+        if let Some(c) = &ctx.cover {
+            data.push(("cover_url".into(), c.url.clone()));
+        }
         let c = id_of(&post(http, &media_url, token, data).await?);
         ig_ready(http, &c, token).await?;
         c

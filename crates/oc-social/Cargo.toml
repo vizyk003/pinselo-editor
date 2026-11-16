@@ -18,6 +18,7 @@ oc-js = { workspace = true }
 oc-storage = { workspace = true }
 oc-mail = { path = "../oc-platform/oc-mail" }
 oc-crdt = { path = "../oc-crdt" }
+oc-schema = { path = "../oc-schema" }
 tokio = { workspace = true }
 sqlx = { workspace = true }
 serde = { workspace = true }

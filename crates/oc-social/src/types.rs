@@ -73,9 +73,13 @@ pub struct PublishContext {
     /// Caption with hashtags appended.
     pub text: String,
     pub hashtags: Vec<String>,
-    /// Per-network extras from the post (pinterestBoardId, youtubeTitle, tiktokMode, durationMs, …).
+    /// Per-network extras from the post (pinterestBoardId, youtubeTitle, tiktokMode, durationMs, coverMs, …).
+    /// `coverMs`: where the cover frame of a video sits in it (ms), from the post's `cover` choice.
     pub options: Map<String, Value>,
     pub title: String,
+    /// Videos: the cover frame as JPEG (Instagram `cover_url`, Facebook `thumb`). `None` when it could not be made;
+    /// Instagram then still gets `thumb_offset` from `options.coverMs`.
+    pub cover: Option<MediaFile>,
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]

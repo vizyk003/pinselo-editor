@@ -658,8 +658,13 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             if a.get("submit").and_then(Value::as_bool) == Some(true) {
                 body.insert("status".into(), json!("in_review"));
             }
+            // `cover` (video posts) lives in the post's options; an update keeps the other options as they are.
+            let cover = a.get("cover").cloned();
             let outcome = if name == "create_planner_post" {
                 body.insert("designId".into(), a["design"].clone());
+                if let Some(c) = &cover {
+                    body.insert("options".into(), json!({ "cover": c }));
+                }
                 if accounts.is_some() {
                     if a.get("channels").is_some() {
                         return tool_err("Pass accounts (Pinselo publishes) or channels (an outside publisher), not both.");
@@ -683,6 +688,20 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                         ));
                     }
                 };
+                // The planner's update is a full replacement (what it leaves out goes back to the defaults); a tool call
+                // changes only what it passes.
+                let mut options = post.options.0.clone();
+                if let Some(c) = cover {
+                    options.insert("cover".into(), c);
+                }
+                body.insert("options".into(), Value::Object(options));
+                body.entry("caption").or_insert_with(|| json!(post.caption));
+                body.entry("timezone").or_insert_with(|| json!(post.timezone));
+                body.insert("pages".into(), json!(post.pages));
+                body.insert("hashtags".into(), json!(post.hashtags));
+                if !body.contains_key("accounts") {
+                    body.insert("accounts".into(), json!(post.accounts.iter().map(uuid::Uuid::to_string).collect::<Vec<_>>()));
+                }
                 crate::routes::social::update_post_as(s, u.id, post, Some(&Value::Object(body)))
                     .await?
             };

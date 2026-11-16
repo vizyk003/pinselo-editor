@@ -30,7 +30,7 @@ use crate::docx::{
     DepError, DepResult, DocxDeps, DocxError, DocxImage, DocxMeta, ImageType, export_docx,
 };
 use crate::renderer::{
-    ImageFormat, RasterOptions, RenderError, RenderFuture, RenderHost, Renderer, Rgba,
+    ImageFormat, RasterOptions, RenderError, RenderFuture, RenderHost, Renderer, Rgba, TransitionSpec,
 };
 
 /// Service settings (`@oc/config` values the render service reads).
@@ -590,6 +590,45 @@ impl Service {
         };
         let (w, h) = (f64::from(sheet.width), f64::from(sheet.height));
         let png = self.renderer.encode_png(&sheet).await?;
+        Ok(Some(PagePng { png, w, h }))
+    }
+
+    /// The cover a video post would get (`options.cover`, see [`oc_schema::cover`]) as PNG `width_px` wide: the frame of
+    /// the MP4 export it picks, drawn as the export draws it, with the transition blended in when the frame is in one.
+    /// Videos show their poster (publishing takes the real frame out of the MP4). `None` without the design or a page.
+    pub async fn render_cover(
+        &self,
+        design_id: &str,
+        cover: oc_schema::cover::Cover,
+        width_px: f64,
+    ) -> Result<Option<PagePng>, SvcError> {
+        use oc_schema::cover::{VIDEO_FPS, cover_frame};
+        let Some(doc) = self.load_doc(design_id, &[], None).await? else {
+            return Ok(None);
+        };
+        let Some(f) = cover_frame(&doc, cover, VIDEO_FPS) else {
+            return Ok(None);
+        };
+        let tl = oc_schema::timeline::timeline_of(&doc, false);
+        let span_of = |id: &str| tl.spans.iter().find(|s| &*s.page.id == id).map_or((0.0, 0.0), |s| (s.start_ms, s.duration_ms));
+        let scale = (2400f64.min(width_px.max(16.0)) / doc.meta.dims.w).clamp(0.05, 4.0);
+        let at = |start: f64, t: f64| RasterOptions { scale, time_ms: Some(t), caption_time_ms: Some(start + t), ..RasterOptions::default() };
+        let (start, _) = span_of(&f.page.id);
+        let mut frame = self.renderer.render_rgba(self, &doc, &f.page.id, &at(start, f.page_ms)).await?;
+        if let (Some(prev), Some(tr)) = (f.transition_from, f.page.transition.as_ref()) {
+            // The page being left shows its last frame under the transition, as in the export.
+            let (pstart, plen) = span_of(&prev.id);
+            let n = oc_schema::js::round((plen / 1000.0) * VIDEO_FPS).max(1.0);
+            let last = self.renderer.render_rgba(self, &doc, &prev.id, &at(pstart, ((n - 1.0) / VIDEO_FPS) * 1000.0)).await?;
+            let spec = TransitionSpec {
+                kind: tr.kind.as_str().to_string(),
+                progress: oc_render::motion::transition_progress(f.page, f.page_ms),
+                direction: tr.direction.as_ref().map(|d| d.as_str().to_string()),
+            };
+            frame = self.renderer.compose_transition(&last, &frame, &spec).await?;
+        }
+        let (w, h) = (f64::from(frame.width), f64::from(frame.height));
+        let png = self.renderer.encode_png(&frame).await?;
         Ok(Some(PagePng { png, w, h }))
     }
 

@@ -3131,5 +3131,15 @@
  "Team Meta apps": "تطبيقات Meta للفرق",
  "Unchanged": "دون تغيير",
  "Uses the server’s Meta app": "يستخدم تطبيق Meta الخاص بالخادم",
- "default": "الافتراضي"
+ "default": "الافتراضي",
+ "A moment in the video": "لحظة في الفيديو",
+ "A time past the end of the video uses the last frame.": "الوقت بعد نهاية الفيديو يستخدم الإطار الأخير.",
+ "At {s} s": "عند {s} ث",
+ "Cover preview": "معاينة الغلاف",
+ "First frame": "الإطار الأول",
+ "Last frame": "الإطار الأخير",
+ "Seconds into the video": "الثواني من بداية الفيديو",
+ "The last frame that isn’t mid page transition.": "الإطار الأخير الذي ليس في منتصف انتقال بين الصفحات.",
+ "seconds": "ثانية",
+ "— shown on Instagram and Facebook": "— تظهر على Instagram وFacebook"
 }

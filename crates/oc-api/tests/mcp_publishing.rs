@@ -135,6 +135,26 @@ async fn publisher_tools() {
         assert_eq!(row.3, vec![ig, fb]);
         let jobs: i64 = sqlx::query_scalar("SELECT count(*) FROM jobs WHERE payload->>'postId' = $1").bind(&post_id).fetch_one(&pool).await.expect("jobs");
         assert_eq!(jobs, 0, "nothing is queued to publish before a person approves");
+        // ---- cover: a video post's cover defaults to its last frame; a time is kept as given (past the end of the
+        // video, publishing clamps it to the last frame); the other options stay; anything else is refused
+        assert_eq!(r["post"]["cover"], "last_frame");
+        assert!(r["post"]["options"].get("cover").is_none(), "{r}");
+        sqlx::query("UPDATE social_posts SET options = '{\"tiktokMode\":\"inbox\"}' WHERE id = $1::uuid").bind(&post_id).execute(&pool).await.expect("options");
+        for (cover, want) in [(json!(2.5), json!(2.5)), (json!(600), json!(600)), (json!("first_frame"), json!("first_frame"))] {
+            let (err, r) = tool(&s, &token, "update_planner_post", json!({ "post": "P-009", "cover": cover })).await;
+            assert!(!err, "{r}");
+            assert_eq!((&r["post"]["cover"], &r["post"]["options"]["cover"], &r["post"]["options"]["tiktokMode"]), (&want, &want, &json!("inbox")));
+            // An update changes only what it passes: the caption and accounts stay.
+            assert_eq!((&r["post"]["caption"], &r["post"]["accounts"]), (&json!("Okurken çalışabilir misin?"), &json!([ig.to_string(), fb.to_string()])));
+        }
+        for bad in [json!("middle"), json!(-1)] {
+            let (err, r) = tool(&s, &token, "update_planner_post", json!({ "post": "P-009", "cover": bad })).await;
+            assert!(err, "{bad} is refused: {r}");
+        }
+        let (err, r) = tool(&s, &token, "update_planner_post", json!({ "post": "P-009", "cover": "last_frame" })).await;
+        assert!(!err && r["post"]["cover"] == "last_frame", "{r}");
+        let (err, r) = tool(&s, &token, "create_planner_post", json!({ "design": design, "accounts": [ig.to_string()], "format": "mp4", "cover": 1.5 })).await;
+        assert!(!err && r["post"]["cover"] == 1.5, "{r}");
 
         let (err, r) = tool(&s, &token, "create_planner_post", json!({ "design": design, "accounts": [ig.to_string()], "caption": "Taslak" })).await;
         assert!(!err, "{r}");

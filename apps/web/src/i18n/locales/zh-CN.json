@@ -2876,5 +2876,15 @@
  "Team Meta apps": "团队 Meta 应用",
  "Unchanged": "未更改",
  "Uses the server’s Meta app": "使用服务器的 Meta 应用",
- "default": "默认"
+ "default": "默认",
+ "A moment in the video": "视频中的某一时刻",
+ "A time past the end of the video uses the last frame.": "超过视频结尾的时间将使用最后一帧。",
+ "At {s} s": "第 {s} 秒",
+ "Cover preview": "封面预览",
+ "First frame": "第一帧",
+ "Last frame": "最后一帧",
+ "Seconds into the video": "视频中的秒数",
+ "The last frame that isn’t mid page transition.": "不处于页面过渡中的最后一帧。",
+ "seconds": "秒",
+ "— shown on Instagram and Facebook": "— 在 Instagram 和 Facebook 上显示"
 }

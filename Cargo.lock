@@ -3414,6 +3414,7 @@ dependencies = [
  "oc-jobs",
  "oc-js",
  "oc-mail",
+ "oc-schema",
  "oc-storage",
  "regex",
  "reqwest",

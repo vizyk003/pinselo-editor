@@ -332,6 +332,7 @@ fn ctx() -> PublishContext {
         hashtags: vec!["launch".into()],
         options: Map::new(),
         title: "Spring sale".into(),
+        cover: None,
     }
 }
 fn carousel() -> PublishContext {
@@ -641,6 +642,57 @@ async fn facebook_video_via_graph_video_file_url() {
         r.url.as_deref(),
         Some("https://www.facebook.com/EXT/videos/V1")
     );
+}
+
+#[tokio::test]
+async fn facebook_video_with_a_cover_uploads_the_frame_as_thumb() {
+    let m = mock(vec![route(
+        r"graph-video\.facebook\.com/v[\d.]+/EXT/videos",
+        |_| ok(json!({ "id": "V1" })),
+    )])
+    .await;
+    let c = PublishContext { cover: Some(jpg(5)), ..video() };
+    let r = FACEBOOK.publish(&m.http, &c).await.unwrap();
+    assert_eq!(
+        m.calls()[0].body,
+        json!({ "file_url": mp4().url, "description": "Hello #launch", "published": "true", "thumb": "<file 1005>" })
+    );
+    assert_eq!(r.external_id.as_deref(), Some("V1"));
+}
+
+#[tokio::test]
+async fn instagram_reels_take_the_cover_as_offset_and_image() {
+    let routes = || {
+        vec![
+            route(r"/EXT/media_publish", |_| ok(json!({ "id": "M2" }))),
+            route(r"/EXT/media$", |_| ok(json!({ "id": "R1" }))),
+            route(r"/R1\?fields=status_code", |_| ok(json!({ "status_code": "FINISHED" }))),
+            route(r"/M2\?fields=permalink", |_| ok(json!({ "permalink": "https://www.instagram.com/reel/x/" }))),
+        ]
+    };
+    // The default cover (the last frame of a 6 s video at 30 fps: frame 179) with its rendered JPEG.
+    let m = mock(routes()).await;
+    let c = PublishContext {
+        options: opts(json!({ "coverMs": 179.0 / 30.0 * 1000.0 })),
+        cover: Some(jpg(5)),
+        ..video()
+    };
+    INSTAGRAM.publish(&m.http, &c).await.unwrap();
+    assert_match(
+        &m.find(r"/media$").body,
+        &json!({ "media_type": "REELS", "video_url": mp4().url, "thumb_offset": "5967", "cover_url": jpg(5).url }),
+    );
+    // Without the JPEG the offset alone picks the frame.
+    let m = mock(routes()).await;
+    let c = PublishContext { options: opts(json!({ "coverMs": 2500 })), ..video() };
+    INSTAGRAM.publish(&m.http, &c).await.unwrap();
+    let body = m.find(r"/media$").body;
+    assert_eq!((body.get("thumb_offset"), body.get("cover_url")), (Some(&json!("2500")), None));
+    // A post published before covers existed sends neither.
+    let m = mock(routes()).await;
+    INSTAGRAM.publish(&m.http, &video()).await.unwrap();
+    let body = m.find(r"/media$").body;
+    assert_eq!((body.get("thumb_offset"), body.get("cover_url")), (None, None));
 }
 
 #[tokio::test]
@@ -1826,6 +1878,47 @@ async fn converts_png_to_jpeg_with_ffmpeg() {
     let e = oc_social::publish::png_to_jpeg("/nonexistent/ffmpeg", &png).await.unwrap_err();
     assert_eq!(e.message, "JPEG conversion failed: spawn /nonexistent/ffmpeg ENOENT");
     assert!(!e.transient);
+}
+
+/// The cover is exactly frame `index` of the MP4, colours intact: 6 black frames then 6 white ones.
+#[cfg(feature = "native")]
+#[tokio::test]
+async fn takes_the_cover_frame_out_of_the_mp4_with_ffmpeg() {
+    let has_ffmpeg = std::process::Command::new("ffmpeg").arg("-version").output().is_ok_and(|o| o.status.success());
+    if !has_ffmpeg {
+        return;
+    }
+    let dir = std::env::temp_dir().join(format!("oc-cover-test-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let out = dir.join("v.mp4");
+    let ok = std::process::Command::new("ffmpeg")
+        .args(["-hide_banner", "-loglevel", "error", "-y"])
+        .args(["-f", "lavfi", "-i", "color=c=black:s=64x64:r=30:d=0.2", "-f", "lavfi", "-i", "color=c=white:s=64x64:r=30:d=0.2"])
+        .args(["-filter_complex", "[0:v][1:v]concat=n=2:v=1,format=yuv420p", "-c:v", "libx264", "-r", "30"])
+        .arg(&out)
+        .status()
+        .unwrap();
+    assert!(ok.success());
+    let mp4 = std::fs::read(&out).unwrap();
+    let brightness = |jpg: &[u8]| -> u8 {
+        use std::io::Write as _;
+        let mut c = std::process::Command::new("ffmpeg")
+            .args(["-hide_banner", "-loglevel", "error", "-f", "mjpeg", "-i", "pipe:0", "-vf", "scale=1:1", "-f", "rawvideo", "-pix_fmt", "gray", "pipe:1"])
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .spawn()
+            .unwrap();
+        c.stdin.take().unwrap().write_all(jpg).unwrap();
+        c.wait_with_output().unwrap().stdout[0]
+    };
+    let last_black = oc_social::publish::video_frame_jpeg("ffmpeg", &mp4, 5).await.unwrap();
+    let first_white = oc_social::publish::video_frame_jpeg("ffmpeg", &mp4, 6).await.unwrap();
+    assert_eq!(&last_black[..3], &[0xff, 0xd8, 0xff]);
+    assert!(brightness(&last_black) < 30, "frame 5 is black");
+    assert!(brightness(&first_white) > 225, "frame 6 is white");
+    let e = oc_social::publish::video_frame_jpeg("ffmpeg", &mp4, 12).await.unwrap_err();
+    assert_eq!(e.message, "Cover frame failed: the video has no frame 12");
+    let _ = std::fs::remove_dir_all(&dir);
 }
 
 // ---------------------------------------------------------------- cross-language goldens

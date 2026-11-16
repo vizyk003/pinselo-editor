@@ -669,6 +669,15 @@ async fn scenario(pool: sqlx::PgPool, dir: &std::path::Path) {
     assert_eq!((r.status, &r.body[..4]), (StatusCode::OK, &b"\x89PNG"[..]));
     let dim = |o: usize| u32::from_be_bytes(r.body[o..o + 4].try_into().unwrap());
     assert_eq!((dim(16), dim(20)), (3 * 160 + 4 * 8, 90 + 2 * 8));
+    // A video post's cover: one frame (the default, the last one; or a time; past the end = the last frame).
+    for cover in [Value::Null, json!("first_frame"), json!(0.5), json!(600)] {
+        let r = call(&app, "POST", "/internal/page-png", t, json!({ "designId": "rreel00000000000", "w": 160, "cover": cover })).await;
+        assert_eq!((r.status, &r.body[..4]), (StatusCode::OK, &b"\x89PNG"[..]), "{cover}");
+        let dim = |o: usize| u32::from_be_bytes(r.body[o..o + 4].try_into().unwrap());
+        assert_eq!((dim(16), dim(20)), (160, 90), "{cover}");
+    }
+    let r = call(&app, "POST", "/internal/page-png", t, json!({ "designId": "rreel00000000000", "cover": "middle" })).await;
+    assert_eq!((r.status, r.json()["error"].clone()), (StatusCode::BAD_REQUEST, json!("invalid_cover")));
     let r = call(
         &app,
         "POST",

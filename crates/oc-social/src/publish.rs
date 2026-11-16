@@ -75,14 +75,20 @@ pub struct StoredMedia {
     pub height: f64,
     pub bytes: usize,
     pub page: Option<i64>,
+    /// A video's cover frame (JPEG) rather than a rendered page or video: where it sits in the video (ms).
+    pub cover_ms: Option<f64>,
 }
 
 impl StoredMedia {
     pub fn to_json(&self) -> Value {
-        json!({
+        let mut v = json!({
             "sha": self.sha, "mime": self.mime, "filename": self.filename, "width": num(self.width),
             "height": num(self.height), "bytes": self.bytes, "page": self.page,
-        })
+        });
+        if let Some(ms) = self.cover_ms {
+            v["coverMs"] = num(ms);
+        }
+        v
     }
 
     fn from_json(v: &Value) -> StoredMedia {
@@ -96,6 +102,7 @@ impl StoredMedia {
             height: f("height"),
             bytes: v.get("bytes").and_then(Value::as_u64).unwrap_or(0) as usize,
             page: v.get("page").and_then(Value::as_i64),
+            cover_ms: v.get("coverMs").and_then(Value::as_f64),
         }
     }
 }
@@ -226,6 +233,11 @@ pub trait Render: Send + Sync {
         format: &'a str,
         page: Option<i64>,
     ) -> BoxFuture<'a, Result<Vec<u8>, PublishError>>;
+
+    /// Frame `index` (0-based) of a rendered MP4 as JPEG: a video post's cover.
+    fn video_frame<'a>(&'a self, mp4: &'a [u8], index: u64) -> BoxFuture<'a, Result<Vec<u8>, PublishError>> {
+        Box::pin(video_frame_jpeg("ffmpeg", mp4, index))
+    }
 }
 
 impl<F> Render for F
@@ -323,6 +335,10 @@ impl Render for RenderService {
             }
         })
     }
+
+    fn video_frame<'a>(&'a self, mp4: &'a [u8], index: u64) -> BoxFuture<'a, Result<Vec<u8>, PublishError>> {
+        Box::pin(video_frame_jpeg(&self.ffmpeg, mp4, index))
+    }
 }
 
 /// PNG → JPEG (quality ≈ 92) through ffmpeg, which the render stack already requires.
@@ -360,6 +376,41 @@ pub async fn png_to_jpeg(ffmpeg: &str, png: &[u8]) -> Result<Vec<u8>, PublishErr
 #[cfg(not(feature = "native"))]
 pub async fn png_to_jpeg(ffmpeg: &str, _png: &[u8]) -> Result<Vec<u8>, PublishError> {
     Err(PublishError::new(format!("JPEG conversion failed: spawn {ffmpeg} ENOENT")))
+}
+
+/// Frame `index` of an MP4 as JPEG, exactly that frame (counted, not sought by time, so it is never a neighbour).
+/// The export encodes BT.709 at TV range; JPEG is BT.601 at full range, so the colours are converted to match.
+#[cfg(feature = "native")]
+pub async fn video_frame_jpeg(ffmpeg: &str, mp4: &[u8], index: u64) -> Result<Vec<u8>, PublishError> {
+    let path = std::env::temp_dir().join(format!("oc-cover-{}.mp4", Uuid::new_v4()));
+    tokio::fs::write(&path, mp4).await.map_err(|e| PublishError::new(format!("Cover frame failed: {e}")))?;
+    let filter = format!(
+        "select=eq(n\\,{index}),scale=in_color_matrix=bt709:in_range=tv:out_color_matrix=bt601:out_range=pc,format=yuvj420p"
+    );
+    let input = path.to_string_lossy().into_owned();
+    let out = tokio::process::Command::new(ffmpeg)
+        .args(["-hide_banner", "-loglevel", "error", "-i", &input, "-an", "-vf", &filter, "-frames:v", "1", "-q:v", "2", "-f", "mjpeg", "pipe:1"])
+        .stdin(std::process::Stdio::null())
+        .output()
+        .await;
+    let _ = tokio::fs::remove_file(&path).await;
+    let out = out.map_err(|e| {
+        let msg = if e.kind() == std::io::ErrorKind::NotFound { format!("spawn {ffmpeg} ENOENT") } else { e.to_string() };
+        PublishError::new(format!("Cover frame failed: {msg}"))
+    })?;
+    if out.status.success() && out.stdout.starts_with(&[0xff, 0xd8]) {
+        Ok(out.stdout)
+    } else {
+        let err = String::from_utf8_lossy(&out.stderr);
+        let why = if err.trim().is_empty() { format!("the video has no frame {index}") } else { slice_utf16(err.trim(), 200).to_owned() };
+        Err(PublishError::new(format!("Cover frame failed: {why}")))
+    }
+}
+
+/// Without the `native` feature there is no ffmpeg.
+#[cfg(not(feature = "native"))]
+pub async fn video_frame_jpeg(ffmpeg: &str, _mp4: &[u8], _index: u64) -> Result<Vec<u8>, PublishError> {
+    Err(PublishError::new(format!("Cover frame failed: spawn {ffmpeg} ENOENT")))
 }
 
 fn ext_of(mime: &str) -> Option<&'static str> {
@@ -457,7 +508,7 @@ async fn render_media(
         .media
         .0
         .iter()
-        .filter(|m| m.get("mime").and_then(Value::as_str) == Some(mime))
+        .filter(|m| m.get("mime").and_then(Value::as_str) == Some(mime) && m.get("coverMs").is_none())
         .map(StoredMedia::from_json)
         .collect();
     if !have.is_empty() {
@@ -477,6 +528,7 @@ async fn render_media(
             height: js_round(info.h),
             bytes: bytes.len(),
             page: None,
+            cover_ms: None,
         });
     } else {
         let pages: Vec<i64> = if post.pages.is_empty() {
@@ -499,6 +551,7 @@ async fn render_media(
                 height: h,
                 bytes: bytes.len(),
                 page: Some(p),
+                cover_ms: None,
             });
         }
     }
@@ -532,6 +585,80 @@ async fn load_files(s: &Social, list: &[StoredMedia]) -> Result<Vec<MediaFile>, 
         });
     }
     Ok(out)
+}
+
+/// Where `options.cover` puts a video post's cover in the MP4 publishing renders: `(frame, ms)`. Posts without a
+/// `cover` get the default, the last frame; `None` when the design has no visible page.
+pub async fn cover_frame_of(
+    pool: &sqlx::PgPool,
+    design_id: &str,
+    options: &Map<String, Value>,
+) -> Result<Option<(u64, f64)>, PublishError> {
+    use oc_schema::cover::{Cover, VIDEO_FPS, cover_frame};
+    let cover = Cover::parse(options.get("cover")).unwrap_or(Cover::LastFrame);
+    let state: Option<Vec<u8>> = sqlx::query_scalar("SELECT state FROM doc_state WHERE design_id = $1")
+        .bind(design_id)
+        .fetch_optional(pool)
+        .await
+        .map_err(tx)?;
+    let Some(state) = state else { return Ok(None) };
+    let doc = oc_crdt::decode_doc(&state).map_err(|e| PublishError::transient(e.to_string()))?;
+    Ok(cover_frame(&doc, cover, VIDEO_FPS).map(|f| (f.index, f.video_ms)))
+}
+
+/// The cover of a video post: `(ms in the video, the frame as JPEG)`. Made once and kept with the post's media (an
+/// edit clears both). Best effort: a cover that can't be made is logged and the video goes out without it.
+async fn video_cover(
+    s: &Social,
+    post: &mut PostRow,
+    info: &DesignInfo,
+    video: &MediaFile,
+    render: &dyn Render,
+) -> Result<(Option<f64>, Option<MediaFile>), PublishError> {
+    let kept = post.media.0.iter().map(StoredMedia::from_json).find(|m| m.cover_ms.is_some());
+    if let Some(m) = kept {
+        let ms = m.cover_ms;
+        return Ok((ms, load_files(s, &[m]).await?.pop()));
+    }
+    let (index, ms) = match cover_frame_of(&s.pool, &post.design_id, &post.options.0).await {
+        Ok(Some(f)) => f,
+        Ok(None) => return Ok((None, None)),
+        Err(e) => {
+            log_event(&s.pool, post.id, "cover", Some(&format!("No cover: {}", e.message)), None, None).await.map_err(tx)?;
+            return Ok((None, None));
+        }
+    };
+    let jpeg = match render.video_frame(&video.bytes, index).await {
+        Ok(b) => b,
+        Err(e) => {
+            log_event(&s.pool, post.id, "cover", Some(&e.message), Some(json!({ "coverMs": num(ms) })), None).await.map_err(tx)?;
+            return Ok((Some(ms), None));
+        }
+    };
+    let (w, h) = image_size(&jpeg).map_or((video.width, video.height), |(w, h)| (f64::from(w), f64::from(h)));
+    let sha = s.objects.put(&jpeg, Some("image/jpeg")).await.map_err(|e| PublishError::transient(e.to_string()))?;
+    let stored = StoredMedia {
+        sha,
+        mime: "image/jpeg".into(),
+        filename: format!("{}-cover.jpg", safe_name(&info.title)),
+        width: w,
+        height: h,
+        bytes: jpeg.len(),
+        page: None,
+        cover_ms: Some(ms),
+    };
+    post.media.0.push(stored.to_json());
+    sqlx::query("UPDATE social_posts SET media = $2, updated_at = now() WHERE id = $1")
+        .bind(post.id)
+        .bind(Json(&post.media.0))
+        .execute(&s.pool)
+        .await
+        .map_err(tx)?;
+    let secs = oc_js::number_to_string(js_round(ms / 10.0) / 100.0);
+    log_event(&s.pool, post.id, "cover", Some(&format!("Frame at {secs} s")), Some(json!({ "coverMs": num(ms) })), None)
+        .await
+        .map_err(tx)?;
+    Ok((Some(ms), load_files(s, &[stored]).await?.pop()))
 }
 
 /// `mediaMime(format, adapter)`: the media variant an adapter accepts (Instagram/TikTok want JPEG).
@@ -636,6 +763,18 @@ async fn publish_target(
     };
     let mut options = post.options.0.clone();
     options.insert("durationMs".into(), num(info.duration_ms));
+    // Instagram and Facebook take a cover for a video; the other networks pick their own.
+    let mut cover = None;
+    if video
+        && matches!(a.id(), "instagram" | "facebook")
+        && let Some(v) = files.first()
+    {
+        let (ms, jpeg) = video_cover(s, post, info, v, render).await?;
+        if let Some(ms) = ms {
+            options.insert("coverMs".into(), num(ms));
+        }
+        cover = jpeg;
+    }
     let mut ctx = PublishContext {
         account: AccountInfo {
             external_id: row.external_id.clone(),
@@ -650,6 +789,7 @@ async fn publish_target(
         hashtags: post.hashtags.clone(),
         options,
         title: info.title.clone(),
+        cover,
     };
     let res = match a.publish(&http, &ctx).await {
         Ok(r) => r,

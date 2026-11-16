@@ -10,6 +10,7 @@ import {
   type Channel, type Provider, type Publisher, type SocialAccount, type SocialPost,
 } from './api';
 import { AccountBadge, ChannelLogo } from './AccountBadge';
+import { type Cover, coverUrl, parseCover } from './cover';
 import './planner.css';
 
 export interface ScheduleProps {
@@ -46,6 +47,16 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
   const [tz, setTz] = useState(post?.timezone ?? localTz());
   const [when, setWhen] = useState(() => isoToZoned((post?.scheduledAt ? new Date(post.scheduledAt) : defaultWhen(initialAt)).toISOString(), post?.timezone ?? localTz()));
   const [options, setOptions] = useState<Record<string, unknown>>(post?.options ?? {});
+  // A video's cover: the choice lives in options.cover; the seconds are typed as text so "1." stays editable.
+  const cover = parseCover(options.cover);
+  const [coverSecs, setCoverSecs] = useState(typeof cover === 'number' ? String(cover) : '0');
+  const setCover = (c: Cover) => setOptions({ ...options, cover: c === 'last_frame' ? undefined : c });
+  // The preview follows the choice once typing pauses (each picture is a server render).
+  const [previewCover, setPreviewCover] = useState<Cover>(cover);
+  useEffect(() => {
+    const h = setTimeout(() => setPreviewCover(cover), 400);
+    return () => clearTimeout(h);
+  }, [cover]);
   const [publisher, setPublisher] = useState<Publisher>(post?.publisher ?? 'pinselo');
   const [channels, setChannels] = useState<Channel[]>(post?.channels ?? ['instagram']);
   const [fields, setFields] = useState<Record<string, string>>(post?.fields ?? {});
@@ -191,6 +202,39 @@ export function ScheduleDialog({ designId, title, pageCount, texts = [], video, 
             </div>
           )}
         </div>
+
+        {!external && format === 'mp4' && (
+          <div className="field cover-field">
+            <span>{t('Cover')} <span className="faint">{t('— shown on Instagram and Facebook')}</span></span>
+            <div className="row" style={{ gap: 12, alignItems: 'flex-start' }}>
+              <div className="col grow" style={{ gap: 6 }}>
+                <select className="input" aria-label={t('Cover')} value={typeof cover === 'number' ? 'time' : cover} onChange={(e) => {
+                  const v = e.target.value;
+                  setCover(v === 'time' ? parseCover(coverSecs) === 'last_frame' ? 0 : parseCover(coverSecs) : v as Cover);
+                }}>
+                  <option value="last_frame">{t('Last frame')}</option>
+                  <option value="first_frame">{t('First frame')}</option>
+                  <option value="time">{t('A moment in the video')}</option>
+                </select>
+                {typeof cover === 'number' && (
+                  <label className="row" style={{ gap: 6, alignItems: 'center' }}>
+                    <input className="input" type="number" min={0} step={0.1} style={{ width: 110 }} value={coverSecs} aria-label={t('Seconds into the video')}
+                      onChange={(e) => {
+                        setCoverSecs(e.target.value);
+                        const n = Number(e.target.value);
+                        if (e.target.value.trim() && Number.isFinite(n) && n >= 0) setCover(n);
+                      }} />
+                    <span className="faint">{t('seconds')}</span>
+                  </label>
+                )}
+                <span className="faint" style={{ fontSize: 12 }}>
+                  {cover === 'last_frame' ? t('The last frame that isn’t mid page transition.') : typeof cover === 'number' ? t('A time past the end of the video uses the last frame.') : ''}
+                </span>
+              </div>
+              <img className="cover-preview" src={coverUrl(designId, previewCover, 270)} alt={t('Cover preview')} />
+            </div>
+          </div>
+        )}
 
         <label className="field">
           <span>{t('Caption')}</span>

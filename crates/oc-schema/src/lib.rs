@@ -11,6 +11,7 @@
 mod macros;
 
 pub mod color;
+pub mod cover;
 pub mod design;
 pub mod doc_blocks;
 pub mod elements;

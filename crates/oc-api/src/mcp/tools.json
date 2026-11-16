@@ -5034,6 +5034,22 @@
        "mp4"
       ],
       "description": "How Pinselo exports the design for accounts: jpg pages (default), png, or mp4. A post whose formatLabel is Reel defaults to mp4."
+     },
+     "cover": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "last_frame",
+         "first_frame"
+        ]
+       },
+       {
+        "type": "number",
+        "minimum": 0
+       }
+      ],
+      "description": "Video posts (format mp4): the cover Instagram and Facebook show. \"last_frame\" (the default: the last frame that is not mid page transition), \"first_frame\", or a time in seconds (a time past the end of the video uses the last frame)."
      }
     },
     "required": [
@@ -5123,6 +5139,22 @@
        "mp4"
       ],
       "description": "How Pinselo exports the design for accounts: jpg pages (default), png, or mp4. A post whose formatLabel is Reel defaults to mp4."
+     },
+     "cover": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "last_frame",
+         "first_frame"
+        ]
+       },
+       {
+        "type": "number",
+        "minimum": 0
+       }
+      ],
+      "description": "Video posts (format mp4): the cover Instagram and Facebook show. \"last_frame\" (the default: the last frame that is not mid page transition), \"first_frame\", or a time in seconds (a time past the end of the video uses the last frame)."
      }
     },
     "required": [

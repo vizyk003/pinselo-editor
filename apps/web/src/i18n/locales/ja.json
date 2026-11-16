@@ -2876,5 +2876,15 @@
  "Team Meta apps": "チームの Meta アプリ",
  "Unchanged": "変更なし",
  "Uses the server’s Meta app": "サーバーの Meta アプリを使用",
- "default": "デフォルト"
+ "default": "デフォルト",
+ "A moment in the video": "動画内の時点",
+ "A time past the end of the video uses the last frame.": "動画の終わりより後の時間を指定すると、最後のフレームが使われます。",
+ "At {s} s": "{s} 秒",
+ "Cover preview": "カバーのプレビュー",
+ "First frame": "最初のフレーム",
+ "Last frame": "最後のフレーム",
+ "Seconds into the video": "動画の開始からの秒数",
+ "The last frame that isn’t mid page transition.": "ページ切り替えの途中ではない最後のフレーム。",
+ "seconds": "秒",
+ "— shown on Instagram and Facebook": "— Instagram と Facebook に表示されます"
 }

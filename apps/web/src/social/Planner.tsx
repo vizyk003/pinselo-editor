@@ -8,6 +8,7 @@ import { EmptyState, Modal, PageHeader, useToast } from '../components/ui';
 import { fmtDate, getLocale, t } from '../i18n';
 import { CHANNEL_LABEL, EDITORIAL_FIELDS, isEditable, PROVIDER_COLOR, socialApi, STATUS_LABEL, type PostEvent, type SocialAccount, type SocialPost } from './api';
 import { AccountBadge, ChannelLogo } from './AccountBadge';
+import { coverLabel, coverUrl, parseCover } from './cover';
 import { ScheduleDialog } from './ScheduleDialog';
 import './planner.css';
 
@@ -399,6 +400,12 @@ function PostDetails({ post, accounts, onClose, onChanged, rejecting = false }: 
             )}
             {post.error && <span className="error" style={{ fontSize: 13 }}>{post.error}</span>}
           </div>
+          {post.format === 'mp4' && !external && (
+            <figure className="cover-thumb">
+              <img src={coverUrl(post.designId, parseCover(post.cover ?? post.options.cover), 270, design?.updated_at)} alt={t('Cover preview')} loading="lazy" />
+              <figcaption>{t('Cover')}: {coverLabel(parseCover(post.cover ?? post.options.cover))}</figcaption>
+            </figure>
+          )}
         </div>
         {shownFields.length > 0 && (
           <dl className="fields-table">

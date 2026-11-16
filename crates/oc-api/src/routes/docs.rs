@@ -3,6 +3,8 @@
 //!
 //! * `GET /api/designs/:id/pages/:page` — a design page as PNG through the render service (viewers only), with
 //!   the TS's 200-entry in-process cache keyed by design version.
+//! * `GET /api/designs/:id/cover.png?cover=&w=` — the cover a video post of the design would get (`cover` as in a
+//!   planner post's `options.cover`; empty = the default, the last frame), same access and cache.
 //! * `POST /api/docs/import-docx` — Word → HTML for "Import into a new doc" (the editor turns the HTML into doc
 //!   blocks). The conversion is `oc_import::docx` (a port of the mammoth conversion with the route's style map);
 //!   pictures in the file become the user's uploads, external links to files are never followed.
@@ -21,7 +23,10 @@ use crate::routes::assets::{Ingest, IngestOpts, TempDir, ingest_file};
 pub const LIMITS: &[RouteLimit] = &[];
 
 pub fn routes() -> Router<AppState> {
-    Router::new().route("/api/designs/{id}/pages/{page}", get(page_png)).route("/api/docs/import-docx", post(import_docx))
+    Router::new()
+        .route("/api/designs/{id}/pages/{page}", get(page_png))
+        .route("/api/designs/{id}/cover.png", get(cover_png))
+        .route("/api/docs/import-docx", post(import_docx))
 }
 
 /// Small cache of rendered page pictures, keyed by design version.
@@ -74,9 +79,34 @@ async fn page_png(State(s): State<AppState>, Path((id, page)): Path<(String, Str
     if !PAGE_ID.is_match(&page_id) || !auth::at_least(auth::design_role(&s, Some(u.id), &id).await?, oc_auth::Role::View) {
         return Ok(not_found());
     }
-    let d: Option<chrono::DateTime<chrono::Utc>> = sqlx::query_scalar("SELECT updated_at FROM designs WHERE id = $1").bind(&id).fetch_optional(&s.pool).await?;
+    rendered_png(&s, &id, &page_id, json!({ "designId": id, "pageId": page_id, "w": w })).await
+}
+
+/// The cover a video post would get: `?cover=last_frame|first_frame|<seconds>` (empty = the default), `?w=` as for
+/// pages. Viewers of the design only; 400 `invalid_cover` for anything else.
+async fn cover_png(State(s): State<AppState>, Path(id): Path<String>, req: Req) -> ApiResult {
+    let u = require_user(&s, &req).await?;
+    let n = js_number(req.query.get("w"));
+    let n = if n.is_nan() || n == 0.0 { 800.0 } else { n };
+    let w = 64f64.max(2400f64.min(crate::js::round(n)));
+    let raw = req.query.get("cover").and_then(Value::as_str).map(crate::js::trim).filter(|c| !c.is_empty());
+    let cover = match oc_schema::cover::Cover::parse(raw.map(|c| json!(c)).as_ref()) {
+        Ok(c) => c.to_value(),
+        Err(why) => return Ok(reply::json(400, json!({ "error": "invalid_cover", "message": why }))),
+    };
+    if !auth::at_least(auth::design_role(&s, Some(u.id), &id).await?, oc_auth::Role::View) {
+        return Ok(not_found());
+    }
+    let tag = format!("cover={cover}");
+    rendered_png(&s, &id, &tag, json!({ "designId": id, "cover": cover, "w": w })).await
+}
+
+/// A picture from the render service's `page-png`, cached per design version under `tag` and the width.
+async fn rendered_png(s: &AppState, id: &str, tag: &str, body: Value) -> ApiResult {
+    let w = body.get("w").and_then(Value::as_f64).unwrap_or(800.0);
+    let d: Option<chrono::DateTime<chrono::Utc>> = sqlx::query_scalar("SELECT updated_at FROM designs WHERE id = $1").bind(id).fetch_optional(&s.pool).await?;
     let Some(updated) = d else { return Ok(not_found()) };
-    let key = format!("{id}:{page_id}:{}:{}", crate::js::num(w), updated.timestamp_millis());
+    let key = format!("{id}:{tag}:{}:{}", crate::js::num(w), updated.timestamp_millis());
     let cache = s.local::<PageCache>();
     let cc = |r: Reply| r.header("cache-control", "private, max-age=30");
     let hit = cache.0.lock().expect("page cache").0.get(&key).cloned();
@@ -88,7 +118,7 @@ async fn page_png(State(s): State<AppState>, Path((id, page)): Path<(String, Str
         .post(format!("{}/internal/page-png", s.cfg.render_url))
         .header("content-type", "application/json")
         .header(oc_auth::INTERNAL_HEADER, oc_auth::internal_token_with(&s.cfg.secret))
-        .body(crate::http::jsjson::stringify(&json!({ "designId": id, "pageId": page_id, "w": w })))
+        .body(crate::http::jsjson::stringify(&body))
         .send()
         .await
         .ok();

@@ -6,7 +6,7 @@
 //! | `GET /healthz` | `{ ok: true }` |
 //! | `POST /internal/thumbnail` | coalesced (1.2 s) first-page thumbnail → `designs.thumb_sha256` |
 //! | `POST /internal/doc-to-design` | Docs laid out onto editable pages (+ generated embed pictures) |
-//! | `POST /internal/page-png` | one page as PNG at a pixel width |
+//! | `POST /internal/page-png` | one page as PNG at a pixel width (or at moments of it, or a video post's cover) |
 //! | `POST /internal/site-build` | the website HTML |
 //! | `POST /internal/template-thumbnail` | template catalogue thumbnail → `templates.thumbnail` |
 //! | `POST /internal/export` | png/jpg/zip/svg/pdf/pdf-print/pdf-flat/pptx/docx/md/mp4/gif/m4a |
@@ -238,8 +238,16 @@ async fn page_png(State(st): State<AppState>, axum::Json(b): axum::Json<Value>) 
     let w = b.get("w").and_then(Value::as_f64).unwrap_or(800.0);
     // `timesMs`: moments of the page's playback (one frame, or a filmstrip); without it the settled page.
     let times: Vec<f64> = b.get("timesMs").and_then(Value::as_array).map(|a| a.iter().filter_map(Value::as_f64).collect()).unwrap_or_default();
+    // `cover`: the frame a video post's cover picks (`options.cover`; `null` = the default, the last frame).
+    let cover = match b.get("cover").map(|c| oc_schema::cover::Cover::parse(Some(c))) {
+        None => None,
+        Some(Ok(c)) => Some(c),
+        Some(Err(why)) => return json_response(StatusCode::BAD_REQUEST, json!({ "error": "invalid_cover", "message": why })),
+    };
     let _g = st.svc.serial.lock().await;
-    let r = if times.is_empty() {
+    let r = if let Some(c) = cover {
+        st.svc.render_cover(id, c, oc_schema::js::round(w)).await
+    } else if times.is_empty() {
         st.svc.render_page(id, str_of(&b, "pageId"), oc_schema::js::round(w)).await
     } else {
         st.svc.render_page_at(id, str_of(&b, "pageId"), oc_schema::js::round(w), &times).await

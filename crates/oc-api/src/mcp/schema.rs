@@ -514,6 +514,10 @@ fn tool_schema(name: &str) -> Option<Schema> {
                 ("submit", z::bool().optional()),
                 ("accounts", z::array(z::str().uuid()).min(1.0).max(30.0).optional()),
                 ("format", z::enumeration(&["jpg", "png", "mp4"]).optional()),
+                (
+                    "cover",
+                    z::union(vec![z::enumeration(&["last_frame", "first_frame"]), z::num().min(0.0)]).optional(),
+                ),
             ];
             if name == "create_planner_post" {
                 f.insert(0, ("design", z::str().min(1.0).max(500.0)));

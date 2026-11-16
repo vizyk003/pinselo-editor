@@ -259,6 +259,33 @@ fn clean_fields(v: Option<&Value>) -> Result<Option<Map<String, Value>>, ApiErro
     ))
 }
 
+/// `options` as stored: `cover` (a video's cover, see [`oc_schema::cover`]) checked and written the one way
+/// (`null` removes it: the default, the last frame). Refused when it is none of `"last_frame"`, `"first_frame"` or
+/// a time in seconds.
+pub(crate) fn clean_options(v: Option<&Value>) -> Result<Value, Refusal> {
+    let mut o = v.cloned().unwrap_or_else(|| json!({}));
+    if let Some(m) = o.as_object_mut()
+        && let Some(c) = m.get("cover")
+    {
+        if c.is_null() {
+            m.remove("cover");
+        } else {
+            let cover = oc_schema::cover::Cover::parse(Some(c))
+                .map_err(|why| Refusal(400, json!({ "error": "invalid_cover", "message": why })))?;
+            m.insert("cover".into(), cover.to_value());
+        }
+    }
+    Ok(o)
+}
+
+/// The cover a video post gets (its `options.cover`, else the default); `null` for other posts.
+pub(crate) fn cover_of(p: &PostRow) -> Value {
+    if p.format != "mp4" {
+        return Value::Null;
+    }
+    oc_schema::cover::Cover::parse(p.options.0.get("cover")).unwrap_or(oc_schema::cover::Cover::LastFrame).to_value()
+}
+
 /// The checks of an external post about to be reviewed or approved; `Some(reply)` refuses it.
 fn external_checks(channels: &[String], scheduled: bool) -> Option<Refusal> {
     if channels.is_empty() {
@@ -685,6 +712,10 @@ pub(crate) async fn create_post_as(
                 .collect()
         })
         .unwrap_or_default();
+    let options = match clean_options(b.get("options")) {
+        Ok(o) => o,
+        Err(r) => return Ok(Err(r)),
+    };
     let in_review = status == "in_review";
     let inserted = sqlx::query_as::<_, PostRow>(
         "INSERT INTO social_posts(id, owner_id, workspace_id, design_id, pages, format, caption, hashtags, accounts, options, scheduled_at, timezone, status,
@@ -700,7 +731,7 @@ pub(crate) async fn create_post_as(
     .bind(bs("caption"))
     .bind(clean_tags(&hashtags))
     .bind(uuids(&accounts)?)
-    .bind(crate::http::jsjson::stringify(b.get("options").unwrap_or(&json!({}))))
+    .bind(crate::http::jsjson::stringify(&options))
     .bind(&scheduled_at)
     .bind(valid_tz(&bs("timezone")))
     .bind(&status)
@@ -790,10 +821,10 @@ pub(crate) async fn update_post_as(
         .get("channels")
         .map_or_else(|| post.channels.clone(), |v| strings(Some(v)));
     let fields = clean_fields(b.get("fields"))?.unwrap_or_else(|| post.fields.0.clone());
-    let options = b
-        .get("options")
-        .cloned()
-        .unwrap_or_else(|| Value::Object(post.options.0.clone()));
+    let options = match clean_options(Some(b.get("options").unwrap_or(&Value::Object(post.options.0.clone())))) {
+        Ok(o) => o,
+        Err(r) => return Ok(Err(r)),
+    };
     let scheduled_at: Option<DateTime<Utc>> = match b.get("scheduledAt") {
         None => post.scheduled_at,
         Some(Value::String(t)) => Some(parse_time(t)?),

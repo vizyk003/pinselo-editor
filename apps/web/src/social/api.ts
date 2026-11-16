@@ -49,6 +49,8 @@ export interface SocialPost {
   /** The team (brand) the post belongs to, through its design; null for a personal post (list endpoint). */
   workspaceId?: string | null; workspaceName?: string | null;
   claimedAt: string | null;
+  /** Video posts: the cover (`options.cover`, else the default `'last_frame'`); null for other posts. */
+  cover?: 'last_frame' | 'first_frame' | number | null;
 }
 export interface PostInput {
   designId: string; pages: number[]; format: 'png' | 'jpg' | 'mp4'; caption: string; hashtags: string[]; accounts: string[];
