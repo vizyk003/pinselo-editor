@@ -143,7 +143,7 @@
   {
    "name": "list_uploads",
    "title": "List uploads",
-   "description": "Files the user uploaded: images (photos, logos) by default, or videos and sounds with type. Use an id with add_image, add_video or add_audio as { asset: id }.",
+   "description": "Files the user uploaded: images (photos, logos) by default, or videos and sounds with type, with their descriptions and tags when set (query searches names, descriptions and tags). Use an id with add_image, add_video or add_audio as { asset: id }.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -293,9 +293,51 @@
    }
   },
   {
+   "name": "describe_asset",
+   "title": "Describe an upload",
+   "description": "Say what an upload shows and what it suits, so you and other assistants can pick it later without opening it: a plain description (subject, place, people, time of day, light, camera movement, mood, good uses, anything to avoid) and search tags in lower case. Works on the user's own uploads and on the files of brand kits they can edit. get_brand_kit and list_uploads show both, and list_uploads searches them. Each field given replaces the old one. Look at the file first (screenshot it in a design) and describe only what is really there.",
+   "inputSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+     "asset": {
+      "description": "The asset id",
+      "type": "string",
+      "pattern": "^[0-9A-Za-z]{16}$"
+     },
+     "description": {
+      "description": "What it shows and what it is good for, in a few sentences",
+      "type": "string",
+      "maxLength": 1000
+     },
+     "tags": {
+      "description": "Search tags, lower case (place, subject, people, time of day, mood, use)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 40
+      },
+      "maxItems": 40
+     }
+    },
+    "required": [
+     "asset"
+    ]
+   },
+   "annotations": {
+    "readOnlyHint": false,
+    "destructiveHint": false,
+    "openWorldHint": false
+   },
+   "execution": {
+    "taskSupport": "forbidden"
+   }
+  },
+  {
    "name": "get_brand_kit",
    "title": "Brand kit",
-   "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name), videos (asset ids for add_video), brand voice, and the outline of the kit's written guidelines (its brand book; read them with get_brand_guidelines). textStyles says how each kind of text looks beyond its font (weight, italic, capitals, letterSpacing, lineHeight, a reference size, allowed colours); give each text the matching role and style. missingFonts lists kit fonts that aren't uploaded yet. Check this before designing for a brand, and pass the kit's name to create_design as brand_kit.",
+   "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name), videos (asset ids for add_video, with size, orientation, seconds and sound), each file's description and tags when set, brand voice, and the outline of the kit's written guidelines (its brand book; read them with get_brand_guidelines). textStyles says how each kind of text looks beyond its font (weight, italic, capitals, letterSpacing, lineHeight, a reference size, allowed colours); give each text the matching role and style. missingFonts lists kit fonts that aren't uploaded yet. Check this before designing for a brand, and pass the kit's name to create_design as brand_kit.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",

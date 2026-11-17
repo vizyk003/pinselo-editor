@@ -131,7 +131,8 @@ async fn a_kit_holds_videos() {
         let (err, r) = tool(&s, &ada_ai, "get_brand_kit", json!({})).await;
         assert!(!err, "{r}");
         let k = r["kits"].as_array().expect("kits").iter().find(|k| k["name"] == "UniHop.eu").expect("kit").clone();
-        assert_eq!(k["videos"], json!([{ "asset": "KitVideo00000001", "name": "campus-tour.mp4" }, { "asset": "KitVideo00000002", "name": "logo-sting.mov" }]), "{k}");
+        let named: Vec<(&str, &str, &str)> = k["videos"].as_array().expect("videos").iter().map(|v| (v["asset"].as_str().unwrap_or(""), v["name"].as_str().unwrap_or(""), v["orientation"].as_str().unwrap_or(""))).collect();
+        assert_eq!(named, vec![("KitVideo00000001", "campus-tour.mp4", "vertical"), ("KitVideo00000002", "logo-sting.mov", "vertical")], "{k}");
         let everyday = r["kits"].as_array().expect("kits").iter().find(|k| k["name"] == "Everyday").expect("kit").clone();
         assert!(everyday.get("videos").is_none(), "a kit without videos doesn't list any: {everyday}");
         let (err, r) = tool(&s, &ada_ai, "update_brand_kit", json!({ "brand_kit": "UniHop.eu", "add_videos": ["KitPhoto00000001"] })).await;
@@ -148,8 +149,34 @@ async fn a_kit_holds_videos() {
         assert!(!err, "{r}");
         assert_eq!(r["kit"]["videos"].as_array().map(Vec::len).or_else(|| r["videos"].as_array().map(Vec::len)), Some(1), "{r}");
 
+        // ---- describe_asset: Ada describes and tags her clip; get_brand_kit shows it with the clip's shape and length,
+        // and list_uploads finds it by a tag
+        let (err, r) = tool(&s, &ada_ai, "describe_asset", json!({
+            "asset": "KitVideo00000001", "description": "Students walking across a sunny campus, filmed from behind.",
+            "tags": ["Campus", " students ", "campus", "summer"],
+        })).await;
+        assert!(!err, "{r}");
+        assert_eq!(r["described"]["tags"], json!(["campus", "students", "summer"]), "trimmed, lower case, once each: {r}");
+        let (_, r) = tool(&s, &ada_ai, "get_brand_kit", json!({})).await;
+        let k = r["kits"].as_array().expect("kits").iter().find(|k| k["name"] == "UniHop.eu").expect("kit").clone();
+        assert_eq!(
+            k["videos"][0],
+            json!({ "asset": "KitVideo00000001", "name": "campus-tour.mp4", "description": "Students walking across a sunny campus, filmed from behind.",
+                    "tags": ["campus", "students", "summer"], "w": 1080, "h": 1920, "orientation": "vertical", "seconds": 8, "sound": false }),
+        );
+        assert!(k["photos"][0].get("orientation").is_none() && k["photos"][0].get("description").is_none(), "photos stay as they were: {k}");
+        let (_, r) = tool(&s, &ada_ai, "list_uploads", json!({ "type": "video", "query": "summer" })).await;
+        let found: Vec<&str> = r["uploads"].as_array().expect("uploads").iter().filter_map(|u| u["asset"].as_str()).collect();
+        assert_eq!(found, vec!["KitVideo00000001"], "{r}");
+        let (err, r) = tool(&s, &ada_ai, "describe_asset", json!({ "asset": "KitVideo00000001", "tags": [] })).await;
+        assert!(!err && r["described"].get("tags").is_none() && r["described"]["description"].is_string(), "tags cleared, description kept: {r}");
+        let (err, r) = tool(&s, &ada_ai, "describe_asset", json!({ "asset": "KitVideo00000001" })).await;
+        assert!(err, "{r}");
+
         // ---- Bob, a member, places the kit's clip in his design, though Ada uploaded it; her other uploads stay hers
         let bob_ai = bearer(&pool, bob).await;
+        let (err, r) = tool(&s, &bob_ai, "describe_asset", json!({ "asset": "KitVideo00000001", "description": "Bob's words" })).await;
+        assert!(err && r.as_str().unwrap_or("").contains("can edit a brand kit"), "a member who can't edit the kit can't describe its files: {r}");
         let (status, d, _) = send(&s, "POST", "/v1/designs", &bob_ai, Some(json!({ "title": "Bob's reel", "width": 1080, "height": 1920 }))).await;
         assert_eq!(status, 201, "{d:?}");
         let design = d["id"].as_str().expect("id").to_owned();

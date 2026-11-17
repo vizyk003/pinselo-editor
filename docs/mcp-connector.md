@@ -129,10 +129,11 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 | `list_size_presets` | none | `query` (up to 80 characters) | Presets: `id`, `label`, `group`, `type`, `w`, `h`, `unit`. |
 | `search_templates` | `designs:read` | `query` (up to 200 characters), `limit` (1 to 40, default 12) | Templates, including team templates, with `id`, `title`, `category`, `preset`, `size`, `tags` and `thumbnailUrl`. |
 | `search_media` | `designs:read` | `query` (required, 1 to 100 characters), `type` (`image`, `gif`, `sticker`, `video`, `audio`; default `image`), `page` (1 to 20) | Up to 30 stock results from the providers enabled on the server, with `duration` for clips and sounds when the provider gives it. |
-| `list_uploads` | `designs:read` | `query` (up to 100 characters), `limit` (1 to 100, default 30), `type` (`image`, `video`, `audio`, `all`; default `image`) | Your uploads: `asset`, `name`, `w`, `h`, `uploaded`; videos and sounds also have `kind` and `duration` (seconds), and sounds no size. |
+| `list_uploads` | `designs:read` | `query` (up to 100 characters), `limit` (1 to 100, default 30), `type` (`image`, `video`, `audio`, `all`; default `image`) | Your uploads: `asset`, `name`, `w`, `h`, `uploaded`, and `description` and `tags` when set; videos and sounds also have `kind` and `duration` (seconds), and sounds no size. `query` searches names, descriptions and tags. |
+| `describe_asset` | `designs:write` | `asset` (required), `description` (up to 1,000 characters), `tags` (up to 40, each up to 40 characters) | The upload with its `description` and `tags`, and for a video its size, `orientation`, `seconds` and `sound`. Your own uploads, or the files of a brand kit you can edit. Each field given replaces the old one; tags are trimmed, lower-cased and deduplicated. |
 | `get_brand_kit` | `designs:read` | none | See [Brand kits](#brand-kits). |
-| `create_brand_kit` | `designs:write` | `name` (required), `team`, `colors`, `palettes`, `fonts`, `text_styles`, `voice`, `motion`, `logos`, `graphics`, `photos`, `guidelines` | The new kit, as `get_brand_kit` shows it. See [Making brand kits](#making-brand-kits). |
-| `update_brand_kit` | `designs:write` | `brand_kit` (required), `new_name`, the fields of `create_brand_kit`, `add_logos`, `add_graphics`, `add_photos`, `remove_assets` | The changed kit, as `get_brand_kit` shows it. |
+| `create_brand_kit` | `designs:write` | `name` (required), `team`, `colors`, `palettes`, `fonts`, `text_styles`, `voice`, `motion`, `logos`, `graphics`, `photos`, `videos`, `guidelines` | The new kit, as `get_brand_kit` shows it. See [Making brand kits](#making-brand-kits). |
+| `update_brand_kit` | `designs:write` | `brand_kit` (required), `new_name`, the fields of `create_brand_kit`, `add_logos`, `add_graphics`, `add_photos`, `add_videos`, `remove_assets` | The changed kit, as `get_brand_kit` shows it. |
 | `search_fonts` | none | `query` (up to 80 characters), `category` (`sans`, `serif`, `display`, `handwriting`, `mono`), `limit` (1 to 100, default 30) | Font `family` and `category`. An exact name match comes first, then by popularity. |
 
 ### Creating and reading
@@ -308,9 +309,10 @@ Assistants can set up a brand from a brand book, design system, website or files
 
 - The kit goes in your personal workspace, or in the team named by `team` if you are an owner, admin or designer there. `team` matches like `kit` below.
 - Kit names must be unique among the kits you can see, since tools find kits by name.
-- `logos`, `graphics` and `photos` take asset ids of your own image uploads. Assistants upload each file first with `upload_image` or `create_upload_link`. Ids of anyone else's files are refused.
+- `logos`, `graphics` and `photos` take asset ids of your own image uploads, and `videos` (up to 60) of your own video uploads. Assistants upload each file first with `upload_image` or `create_upload_link` (videos with `create_upload_link`). Ids of anyone else's files, and images as videos or videos as images, are refused.
+- `get_brand_kit` lists each file with its `description` and `tags` when they are set (`describe_asset`), and each video with `w`, `h`, `orientation` (`vertical`, `horizontal`, `square`), `seconds` and `sound`, so an assistant can choose without opening the files. Videos go into a design with `edit_design`'s `add_video { asset }`.
 - Colours are `#rrggbb`. `text_styles` take the fields `get_brand_kit` shows (`name`, `role`, `weight`, `italic`, `uppercase`, `letterSpacing`, `lineHeight`, `size`, `colors`, `note`). `guidelines` are `{ title, body }` sections, up to 60 and 300,000 characters in all.
-- In `update_brand_kit`, every field given replaces the kit's, except `fonts`, which changes only the roles given (`""` clears one). `add_*` appends images and `remove_assets` takes them out of all three lists.
+- In `update_brand_kit`, every field given replaces the kit's, except `fonts`, which changes only the roles given (`""` clears one). `add_*` appends files and `remove_assets` takes them out of all four lists.
 - Font files can't be uploaded through the connector. A kit font that isn't uploaded shows in `missingFonts`, and the user uploads it in Brand Hub.
 
 Changes are recorded in the team's audit log like Brand Hub edits, marked as made by an AI assistant.

@@ -395,7 +395,7 @@ fn trimmed_query(a: &Value) -> Option<String> {
 struct Fonts(OnceLock<oc_gfonts::GoogleFonts>);
 
 /// What to do with a design's brand kit (create_design and get_design).
-const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, its textStyles for every text (weight, italic, capitals, letterSpacing, lineHeight, colours; edit_design's check flags text that strays), only its colours, its logo, its graphics and photos via add_image { asset } (or { brand: { kit, name } }), and its videos via edit_design's add_video { asset }. Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
+const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, its textStyles for every text (weight, italic, capitals, letterSpacing, lineHeight, colours; edit_design's check flags text that strays), only its colours, its logo, its graphics and photos via add_image { asset } (or { brand: { kit, name } }), and its videos via edit_design's add_video { asset }. Choose kit files by their description and tags, and videos also by orientation and seconds (a vertical clip for a Reel or story, a horizontal one for a 16:9 frame). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
 
 fn gfonts(s: &AppState) -> oc_gfonts::GoogleFonts {
     s.local::<Fonts>().0.get_or_init(|| oc_gfonts::GoogleFonts::new(s.paths.fonts.clone(), s.pool.clone(), s.store.clone())).clone()
@@ -446,6 +446,26 @@ pub(super) async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]
         .into_iter()
         .map(|(id, name)| (id, name.unwrap_or_default()))
         .collect();
+    // What each file shows (describe_asset), and a video's shape and length, so the assistant picks without opening it.
+    let details: HashMap<String, Value> = pg::json_rows(
+        &s.pool,
+        "SELECT id, kind, width, height, duration_ms, has_audio, description, tags FROM assets WHERE id = ANY($1) AND trashed_at IS NULL",
+        &[pg::Arg::TextArray(Some(ids.clone()))],
+    )
+    .await?
+    .into_iter()
+    .filter_map(|r| r["id"].as_str().map(|id| (id.to_owned(), r.clone())))
+    .collect();
+    let item = |id: &Value| {
+        let mut o = named_asset(id, &names);
+        if let Some(d) = id.as_str().and_then(|i| details.get(i)) {
+            described(&mut o, d);
+            if d["kind"] == "video" {
+                video_facts(&mut o, d);
+            }
+        }
+        o
+    };
     let usable = usable_families(s, user_id).await?;
     let kit_ids: Vec<String> = kits.iter().filter_map(|k| k["id"].as_str().map(str::to_owned)).collect();
     let outlines = crate::routes::brandhub::guideline_outlines(s, &kit_ids).await?;
@@ -481,12 +501,12 @@ pub(super) async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]
                 );
             }
             for (key, cap) in [("logos", 30), ("graphics", 60), ("photos", 30)] {
-                let items = k[key].as_array().map(|ids| ids.iter().take(cap).map(|id| named_asset(id, &names)).collect()).unwrap_or_default();
+                let items = k[key].as_array().map(|ids| ids.iter().take(cap).map(item).collect()).unwrap_or_default();
                 m.insert(key.into(), Value::Array(items));
             }
             // Videos only when the kit has some (placed with edit_design's add_video { asset }).
             if let Some(ids) = k["videos"].as_array().filter(|v| !v.is_empty()) {
-                m.insert("videos".into(), Value::Array(ids.iter().take(30).map(|id| named_asset(id, &names)).collect()));
+                m.insert("videos".into(), Value::Array(ids.iter().take(60).map(item).collect()));
             }
             if view::truthy(k.get("voice")) {
                 m.insert("voice".into(), k["voice"].clone());
@@ -804,8 +824,10 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
             };
             let rows = pg::json_rows(
                 &s.pool,
-                &format!("SELECT id, name, kind, width, height, duration_ms, created_at FROM assets WHERE owner_id = $1 AND trashed_at IS NULL AND {kinds} AND source <> 'emoji'
-       AND ($2::text IS NULL OR name ILIKE '%' || $2 || '%' ESCAPE '\\') ORDER BY created_at DESC LIMIT $3"),
+                &format!("SELECT id, name, kind, width, height, duration_ms, created_at, description, tags FROM assets WHERE owner_id = $1 AND trashed_at IS NULL AND {kinds} AND source <> 'emoji'
+       AND ($2::text IS NULL OR name ILIKE '%' || $2 || '%' ESCAPE '\\' OR description ILIKE '%' || $2 || '%' ESCAPE '\\'
+            OR EXISTS (SELECT 1 FROM unnest(tags) t WHERE t ILIKE '%' || $2 || '%' ESCAPE '\\'))
+       ORDER BY created_at DESC LIMIT $3"),
                 &[pg::uuid(u.id), pg::opt_text(q), pg::Arg::Int(Some(a.get("limit").and_then(Value::as_f64).unwrap_or(30.0) as i64))],
             )
             .await?;
@@ -813,6 +835,7 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                 .iter()
                 .map(|r| {
                     let mut o = json!({ "asset": r["id"], "name": r["name"], "w": r["width"], "h": r["height"], "uploaded": r["created_at"] });
+                    described(&mut o, r);
                     if r["kind"] == "video" || r["kind"] == "audio" {
                         o["kind"] = r["kind"].clone();
                         o["duration"] = super::motion::secs(view::num(&r["duration_ms"]));
@@ -843,6 +866,7 @@ pub async fn call(s: &AppState, u: &BearerUser, name: &str, a: &Value) -> R {
                 "next": "Send the file yourself if you can run commands or make HTTP requests (a file attached to the chat is usually at /mnt/user-data/uploads/<name>): the reply names the asset, which you place with add_image { asset }. If you can't, give the user the url: the page takes the file, and get_upload_link with id then tells you the asset.",
             })))
         }
+        "describe_asset" => describe_asset(s, u, a).await,
         "get_upload_link" => {
             need(u, "assets:write")?;
             let id = a["id"].as_str().and_then(|i| uuid::Uuid::parse_str(i).ok()).unwrap_or_default();
@@ -1474,6 +1498,75 @@ pub fn failure(name: &str, f: Fail) -> Value {
 }
 
 /// A kit asset as the assistant sees it: `{ asset, name }`.
+/// An asset's description and tags (describe_asset), when it has them.
+fn described(o: &mut Value, row: &Value) {
+    if let Some(d) = row["description"].as_str().filter(|d| !d.is_empty()) {
+        o["description"] = json!(d);
+    }
+    if row["tags"].as_array().is_some_and(|t| !t.is_empty()) {
+        o["tags"] = row["tags"].clone();
+    }
+}
+
+/// A video's frame size, orientation, length (s) and whether it has sound.
+fn video_facts(o: &mut Value, row: &Value) {
+    let (w, h) = (view::num(&row["width"]), view::num(&row["height"]));
+    if w > 0.0 && h > 0.0 {
+        o["w"] = json!(w);
+        o["h"] = json!(h);
+        o["orientation"] = json!(if h > w * 1.05 { "vertical" } else if w > h * 1.05 { "horizontal" } else { "square" });
+    }
+    if let Some(ms) = row["duration_ms"].as_f64() {
+        o["seconds"] = super::motion::secs(ms);
+    }
+    o["sound"] = json!(row["has_audio"] == true);
+}
+
+/// `describe_asset`: what an upload shows and its search tags. The uploader may describe it, and so may anyone who can
+/// edit a brand kit that holds it. Each field given replaces the old one; tags are lower-cased, trimmed and deduplicated.
+async fn describe_asset(s: &AppState, u: &BearerUser, a: &Value) -> R {
+    need(u, "designs:write")?;
+    let id = opt_str(a, "asset").unwrap_or_default();
+    let owner: Option<uuid::Uuid> = sqlx::query_scalar("SELECT owner_id FROM assets WHERE id = $1 AND trashed_at IS NULL").bind(&id).fetch_optional(&s.pool).await?;
+    let Some(owner) = owner else {
+        return tool_err(format!("No upload {id}. Use list_uploads or get_brand_kit for asset ids."));
+    };
+    if owner != u.id {
+        let kits = crate::routes::brandhub::accessible_kits(s, u.id).await?;
+        let in_kit = |k: &Value| ["logos", "photos", "graphics", "videos"].iter().any(|key| k[*key].as_array().is_some_and(|l| l.iter().any(|x| x.as_str() == Some(id.as_str()))));
+        if !kits.iter().any(|k| k["canEdit"] == true && in_kit(k)) {
+            return tool_err("Only the person who uploaded it, or someone who can edit a brand kit that holds it, can describe it.");
+        }
+    }
+    let description = opt_str(a, "description").map(|d| crate::js::trim(&d).to_owned());
+    let tags: Option<Vec<String>> = a.get("tags").and_then(Value::as_array).map(|list| {
+        let mut out: Vec<String> = Vec::new();
+        for t in list.iter().filter_map(Value::as_str) {
+            let t = crate::js::trim(t).to_lowercase();
+            if !t.is_empty() && !out.contains(&t) {
+                out.push(t);
+            }
+        }
+        out
+    });
+    if description.is_none() && tags.is_none() {
+        return tool_err("Pass description, tags or both.");
+    }
+    let row = pg::json_one(
+        &s.pool,
+        "UPDATE assets SET description = COALESCE($2, description), tags = COALESCE($3, tags) WHERE id = $1 RETURNING id, name, kind, width, height, duration_ms, has_audio, description, tags",
+        &[pg::text(&id), pg::opt_text(description), pg::Arg::TextArray(tags)],
+    )
+    .await?
+    .unwrap_or(Value::Null);
+    let mut o = json!({ "asset": row["id"], "name": row["name"] });
+    described(&mut o, &row);
+    if row["kind"] == "video" {
+        video_facts(&mut o, &row);
+    }
+    Ok(text(&json!({ "ok": true, "described": o })))
+}
+
 fn named_asset(id: &Value, names: &HashMap<String, String>) -> Value {
     let name = id.as_str().and_then(|i| names.get(i)).map_or("", String::as_str);
     json!({ "asset": id, "name": name })

@@ -556,6 +556,11 @@ fn tool_schema(name: &str) -> Option<Schema> {
         ]),
         "create_upload_link" => z::obj([("filename", z::str().max(200.0).optional()), ("purpose", z::str().max(200.0).optional())]),
         "get_upload_link" => z::obj([("id", z::str().uuid())]),
+        "describe_asset" => z::obj([
+            ("asset", hub::asset_id()),
+            ("description", z::str().max(1000.0).optional()),
+            ("tags", z::array(z::str().min(1.0).max(40.0)).max(40.0).optional()),
+        ]),
         "search_fonts" => z::obj([
             ("query", z::str().max(80.0).optional()),
             ("category", z::enumeration(&["sans", "serif", "display", "handwriting", "mono"]).optional()),
@@ -606,8 +611,8 @@ fn tool_schema(name: &str) -> Option<Schema> {
     })
 }
 
-pub const TOOLS: [&str; 29] = [
-    "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link",
+pub const TOOLS: [&str; 30] = [
+    "get_design_guide", "list_designs", "list_size_presets", "search_templates", "search_media", "list_uploads", "upload_image", "create_upload_link", "get_upload_link", "describe_asset",
     "get_brand_kit", "get_brand_guidelines", "create_brand_kit", "update_brand_kit", "search_fonts", "create_design", "copy_design", "bulk_create", "get_design", "edit_design", "screenshot_page", "export_design", "undo_ai_changes",
     "list_planner_posts", "get_planner_post", "create_planner_post", "update_planner_post", "list_social_accounts", "check_publishing_limit", "get_post_results",
 ];
