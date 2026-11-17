@@ -91,6 +91,7 @@
         "heading": "Inter"
        },
        "graphics": [],
+       "videos": [],
        "id": "00000000-0000-4000-8000-000000006001",
        "isDefault": true,
        "logos": [],
@@ -118,6 +119,7 @@
         "heading": "Inter"
        },
        "graphics": [],
+       "videos": [],
        "id": "00000000-0000-4000-8000-000000006000",
        "isDefault": true,
        "logos": [],
@@ -190,6 +192,7 @@
         "heading": "Inter"
        },
        "graphics": [],
+       "videos": [],
        "id": "00000000-0000-4000-8000-000000006000",
        "isDefault": true,
        "logos": [],
@@ -660,6 +663,7 @@
        "heading": "Poppins"
       },
       "graphics": [],
+      "videos": [],
       "id": "{{kitA}}",
       "isDefault": false,
       "logos": [
@@ -721,6 +725,7 @@
        "heading": "Inter"
       },
       "graphics": [],
+      "videos": [],
       "id": "00000000-0000-4000-8000-000000006000",
       "isDefault": true,
       "logos": [],
@@ -1692,6 +1697,7 @@
        "colors": [],
        "fonts": {},
        "graphics": [],
+       "videos": [],
        "id": "{{kitC}}",
        "isDefault": true,
        "logos": [],

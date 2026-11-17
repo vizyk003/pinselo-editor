@@ -2886,5 +2886,10 @@
  "Seconds into the video": "视频中的秒数",
  "The last frame that isn’t mid page transition.": "不处于页面过渡中的最后一帧。",
  "seconds": "秒",
- "— shown on Instagram and Facebook": "— 在 Instagram 和 Facebook 上显示"
+ "— shown on Instagram and Facebook": "— 在 Instagram 和 Facebook 上显示",
+ "Brand videos": "品牌视频",
+ "{name} isn’t an MP4, WebM or MOV video": "{name} 不是 MP4、WebM 或 MOV 视频",
+ "{n} video|{n} videos": {
+  "other": "{n} 个视频"
+ }
 }

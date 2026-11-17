@@ -73,6 +73,7 @@ export function TeamBrandKitsDialog({ workspaceId, teamName, onClose }: { worksp
                       k.logos.length ? tn(k.logos.length, '{n} logo', '{n} logos') : null,
                       k.graphics.length ? tn(k.graphics.length, '{n} graphic', '{n} graphics') : null,
                       k.photos.length ? tn(k.photos.length, '{n} photo', '{n} photos') : null,
+                      k.videos?.length ? tn(k.videos.length, '{n} video', '{n} videos') : null,
                     ].filter(Boolean).join(' · ')}
                   </div>
                 </div>

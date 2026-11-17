@@ -13,8 +13,10 @@ use crate::state::AppState;
 /// Kit fields an assistant sets, as (argument, kit field); the image lists are handled on their own.
 const FIELDS: [(&str, &str); 6] = [("colors", "colors"), ("palettes", "palettes"), ("fonts", "fonts"), ("text_styles", "textStyles"), ("voice", "voice"), ("motion", "motion")];
 const IMAGE_LISTS: [&str; 3] = ["logos", "graphics", "photos"];
+/// Every asset list of a kit: the image lists and its videos.
+const ASSET_LISTS: [&str; 4] = ["logos", "graphics", "photos", "videos"];
 
-const NEXT: &str = "Check the kit as it now stands. If missingFonts is set, tell the user those font files must be uploaded in Brand Hub (the kit's Fonts), or pick Google Fonts with search_fonts instead. Add more logos, graphics or photos with update_brand_kit { add_logos | add_graphics | add_photos } after uploading them with upload_image or create_upload_link. Design with it by passing its name to create_design as brand_kit.";
+const NEXT: &str = "Check the kit as it now stands. If missingFonts is set, tell the user those font files must be uploaded in Brand Hub (the kit's Fonts), or pick Google Fonts with search_fonts instead. Add more logos, graphics or photos with update_brand_kit { add_logos | add_graphics | add_photos } after uploading them with upload_image or create_upload_link, and videos with add_videos after uploading them with create_upload_link. Design with it by passing its name to create_design as brand_kit.";
 
 async fn audit(s: &AppState, u: &BearerUser, ws: Uuid, action: &str, kit_id: &str, mut meta: Map<String, Value>) -> Result<(), Fail> {
     meta.insert("via".into(), json!("ai"));
@@ -45,17 +47,32 @@ async fn target_workspace(s: &AppState, user_id: Uuid, team: Option<&str>) -> Re
     }
 }
 
-/// Asset ids the user may add to a kit: their own live image uploads. Returns the ones that aren't.
-async fn foreign_assets(s: &AppState, user_id: Uuid, ids: &[String]) -> Result<Vec<String>, Fail> {
+/// Asset ids the user may add to a kit: their own live uploads of these kinds (images: `image`, `svg`; videos:
+/// `video`). Returns the ones that aren't.
+async fn foreign_assets(s: &AppState, user_id: Uuid, ids: &[String], kinds: &[&str]) -> Result<Vec<String>, Fail> {
     if ids.is_empty() {
         return Ok(Vec::new());
     }
-    let ok: Vec<String> = sqlx::query_scalar("SELECT id FROM assets WHERE id = ANY($1) AND owner_id = $2 AND trashed_at IS NULL AND kind IN ('image','svg')")
+    let ok: Vec<String> = sqlx::query_scalar("SELECT id FROM assets WHERE id = ANY($1) AND owner_id = $2 AND trashed_at IS NULL AND kind = ANY($3)")
         .bind(ids)
         .bind(user_id)
+        .bind(kinds)
         .fetch_all(&s.pool)
         .await?;
     Ok(ids.iter().filter(|i| !ok.contains(i)).cloned().collect())
+}
+
+/// New kit assets must be the caller's own uploads: images in the image lists, videos in `videos`.
+async fn check_uploads(s: &AppState, user_id: Uuid, images: &[String], videos: &[String]) -> Result<(), Fail> {
+    let bad = foreign_assets(s, user_id, images, &["image", "svg"]).await?;
+    if !bad.is_empty() {
+        return Err(Fail::Tool(format!("These aren't image uploads of yours: {}. Upload the files first with upload_image or create_upload_link, and use the asset ids they return (list_uploads lists them).", bad.join(", "))));
+    }
+    let bad = foreign_assets(s, user_id, videos, &["video"]).await?;
+    if !bad.is_empty() {
+        return Err(Fail::Tool(format!("These aren't video uploads of yours: {}. Upload the videos first with create_upload_link, and use the asset ids they return (list_uploads {{ type: \"video\" }} lists them).", bad.join(", "))));
+    }
+    Ok(())
 }
 
 fn ids(v: Option<&Value>) -> Vec<String> {
@@ -130,10 +147,7 @@ pub async fn create(s: &AppState, u: &BearerUser, a: &Value) -> R {
         return tool_err(format!("There's already a brand kit named \"{name}\". Change it with update_brand_kit, or give this one another name."));
     }
     let images: Vec<String> = IMAGE_LISTS.iter().flat_map(|k| ids(a.get(*k))).collect();
-    let bad = foreign_assets(s, u.id, &images).await?;
-    if !bad.is_empty() {
-        return tool_err(format!("These aren't image uploads of yours: {}. Upload the files first with upload_image or create_upload_link, and use the asset ids they return (list_uploads lists them).", bad.join(", ")));
-    }
+    check_uploads(s, u.id, &images, &ids(a.get("videos"))).await?;
     guidelines_fit(a)?;
     let mut kit = Map::new();
     kit.insert("name".into(), json!(name));
@@ -142,7 +156,7 @@ pub async fn create(s: &AppState, u: &BearerUser, a: &Value) -> R {
             kit.insert(field.into(), v.clone());
         }
     }
-    for key in IMAGE_LISTS {
+    for key in ASSET_LISTS {
         if let Some(v) = a.get(key) {
             kit.insert(key.into(), v.clone());
         }
@@ -164,7 +178,7 @@ pub async fn update(s: &AppState, u: &BearerUser, a: &Value) -> R {
     let kit_id = k["id"].as_str().unwrap_or("").to_owned();
     let ws = k["workspaceId"].as_str().and_then(|w| Uuid::parse_str(w).ok()).ok_or_else(|| Fail::Other("brand kit without a workspace".into()))?;
     let mut next = Map::new();
-    for key in ["name", "colors", "palettes", "fonts", "logos", "photos", "graphics", "voice", "textStyles", "motion"] {
+    for key in ["name", "colors", "palettes", "fonts", "logos", "photos", "graphics", "videos", "voice", "textStyles", "motion"] {
         next.insert(key.into(), k.get(key).cloned().unwrap_or(Value::Null));
     }
     let mut touched = a.get("guidelines").is_some();
@@ -192,9 +206,8 @@ pub async fn update(s: &AppState, u: &BearerUser, a: &Value) -> R {
             next.insert(field.into(), v.clone());
         }
     }
-    // Image lists: replaced when given, then added to, then pruned.
-    let before: Vec<String> = IMAGE_LISTS.iter().flat_map(|key| ids(k.get(*key))).collect();
-    for key in IMAGE_LISTS {
+    // Asset lists: replaced when given, then added to, then pruned.
+    for key in ASSET_LISTS {
         let mut list = if a.get(key).is_some() { ids(a.get(key)) } else { ids(next.get(key)) };
         for id in ids(a.get(format!("add_{key}").as_str())) {
             if !list.contains(&id) {
@@ -209,11 +222,14 @@ pub async fn update(s: &AppState, u: &BearerUser, a: &Value) -> R {
     if !touched {
         return tool_err("Nothing to change. Pass the fields to change, such as colors, fonts, add_logos or guidelines.");
     }
-    let added: Vec<String> = IMAGE_LISTS.iter().flat_map(|key| ids(next.get(*key))).filter(|i| !before.contains(i)).collect();
-    let bad = foreign_assets(s, u.id, &added).await?;
-    if !bad.is_empty() {
-        return tool_err(format!("These aren't image uploads of yours: {}. Upload the files first with upload_image or create_upload_link, and use the asset ids they return (list_uploads lists them).", bad.join(", ")));
-    }
+    // New in each list (an image already in the kit as a photo is still new as a video, and must be a video).
+    let added = |keys: &[&str]| -> Vec<String> {
+        keys.iter().flat_map(|key| {
+            let before = ids(k.get(*key));
+            ids(next.get(*key)).into_iter().filter(move |i| !before.contains(i))
+        }).collect()
+    };
+    check_uploads(s, u.id, &added(&IMAGE_LISTS), &added(&["videos"])).await?;
     guidelines_fit(a)?;
     let next = checked(Value::Object(next))?;
     // What changed, old and new, for the audit log, as the Brand Hub route records it.

@@ -295,7 +295,7 @@
   {
    "name": "get_brand_kit",
    "title": "Brand kit",
-   "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name) brand voice, and the outline of the kit's written guidelines (its brand book; read them with get_brand_guidelines). textStyles says how each kind of text looks beyond its font (weight, italic, capitals, letterSpacing, lineHeight, a reference size, allowed colours); give each text the matching role and style. missingFonts lists kit fonts that aren't uploaded yet. Check this before designing for a brand, and pass the kit's name to create_design as brand_kit.",
+   "description": "The user's brand kits (personal and team): colours, fonts for headings and body text, logos, graphics and photos (each with its asset id for add_image and file name), videos (asset ids for add_video), brand voice, and the outline of the kit's written guidelines (its brand book; read them with get_brand_guidelines). textStyles says how each kind of text looks beyond its font (weight, italic, capitals, letterSpacing, lineHeight, a reference size, allowed colours); give each text the matching role and style. missingFonts lists kit fonts that aren't uploaded yet. Check this before designing for a brand, and pass the kit's name to create_design as brand_kit.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -350,7 +350,7 @@
   {
    "name": "create_brand_kit",
    "title": "Create a brand kit",
-   "description": "Make a brand kit from a brand the user gives you (a brand book, design system, website or files): colours, fonts by role, text styles, voice, written guidelines, and logos, graphics and photos. Upload each image first with upload_image (small files such as SVG logos) or create_upload_link, and pass the asset ids it returns. The kit goes in the user's personal workspace, or in a team where they are an owner, admin or designer. Use only what the brand actually specifies; don't invent colours or rules. Returns the kit as get_brand_kit shows it, including missingFonts for fonts the user still has to upload.",
+   "description": "Make a brand kit from a brand the user gives you (a brand book, design system, website or files): colours, fonts by role, text styles, voice, written guidelines, and logos, graphics, photos and videos. Upload each image first with upload_image (small files such as SVG logos) or create_upload_link, and each video with create_upload_link, and pass the asset ids they return. The kit goes in the user's personal workspace, or in a team where they are an owner, admin or designer. Use only what the brand actually specifies; don't invent colours or rules. Returns the kit as get_brand_kit shows it, including missingFonts for fonts the user still has to upload.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -560,6 +560,15 @@
        "pattern": "^[0-9A-Za-z]{16}$"
       },
       "maxItems": 200
+     },
+     "videos": {
+      "description": "Video asset ids (upload videos with create_upload_link)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 60
      },
      "guidelines": {
       "description": "The written brand book, in sections (voice and copy, colour, typography, logo use, layout, imagery, dos and don'ts)",
@@ -786,7 +795,7 @@
   {
    "name": "update_brand_kit",
    "title": "Update a brand kit",
-   "description": "Change a brand kit you can edit: give its name and only the fields to change. colors, palettes, text_styles, voice, motion, guidelines and the logos, graphics and photos lists replace what the kit has; fonts change only the roles given. To add images, upload them (upload_image or create_upload_link) and pass their asset ids in add_logos, add_graphics or add_photos; remove_assets takes images out. Returns the kit as get_brand_kit shows it.",
+   "description": "Change a brand kit you can edit: give its name and only the fields to change. colors, palettes, text_styles, voice, motion, guidelines and the logos, graphics, photos and videos lists replace what the kit has; fonts change only the roles given. To add images, upload them (upload_image or create_upload_link) and pass their asset ids in add_logos, add_graphics or add_photos; videos (uploaded with create_upload_link) go in add_videos; remove_assets takes images and videos out. Returns the kit as get_brand_kit shows it.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -998,6 +1007,15 @@
       },
       "maxItems": 200
      },
+     "videos": {
+      "description": "Video asset ids (replaces the kit's)",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 60
+     },
      "guidelines": {
       "description": "The written brand book, in sections (voice and copy, colour, typography, logo use, layout, imagery, dos and don'ts) (replaces the kit's)",
       "type": "array",
@@ -1048,14 +1066,23 @@
       },
       "maxItems": 200
      },
-     "remove_assets": {
-      "description": "Asset ids to take out of the kit's logos, graphics and photos",
+     "add_videos": {
+      "description": "Video asset ids to add",
       "type": "array",
       "items": {
        "type": "string",
        "pattern": "^[0-9A-Za-z]{16}$"
       },
-      "maxItems": 430
+      "maxItems": 60
+     },
+     "remove_assets": {
+      "description": "Asset ids to take out of the kit's logos, graphics, photos and videos",
+      "type": "array",
+      "items": {
+       "type": "string",
+       "pattern": "^[0-9A-Za-z]{16}$"
+      },
+      "maxItems": 490
      },
      "motion": {
       "description": "How the brand moves (ms, px): the defaults of edit_design's animations and page transitions",

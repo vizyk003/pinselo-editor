@@ -2986,5 +2986,12 @@
  "Seconds into the video": "Segundos do vídeo",
  "The last frame that isn’t mid page transition.": "O último quadro que não está no meio de uma transição de página.",
  "seconds": "segundos",
- "— shown on Instagram and Facebook": "— exibida no Instagram e no Facebook"
+ "— shown on Instagram and Facebook": "— exibida no Instagram e no Facebook",
+ "Brand videos": "Vídeos da marca",
+ "{name} isn’t an MP4, WebM or MOV video": "{name} não é um vídeo MP4, WebM ou MOV",
+ "{n} video|{n} videos": {
+  "one": "{n} vídeo",
+  "many": "{n} vídeos",
+  "other": "{n} vídeos"
+ }
 }

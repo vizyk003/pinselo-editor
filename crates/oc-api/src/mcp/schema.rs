@@ -451,6 +451,7 @@ fn kit_fields() -> Vec<(&'static str, Schema)> {
         ("logos", z::array(hub::asset_id()).max(30.0).optional()),
         ("graphics", z::array(hub::asset_id()).max(200.0).optional()),
         ("photos", z::array(hub::asset_id()).max(200.0).optional()),
+        ("videos", z::array(hub::asset_id()).max(hub::MAX_KIT_VIDEOS as f64).optional()),
         ("guidelines", hub::guideline_sections().optional()),
         ("motion", hub::motion().optional()),
     ]
@@ -470,7 +471,8 @@ fn tool_schema(name: &str) -> Option<Schema> {
                     ("add_logos", z::array(hub::asset_id()).max(30.0).optional()),
                     ("add_graphics", z::array(hub::asset_id()).max(200.0).optional()),
                     ("add_photos", z::array(hub::asset_id()).max(200.0).optional()),
-                    ("remove_assets", z::array(hub::asset_id()).max(430.0).optional()),
+                    ("add_videos", z::array(hub::asset_id()).max(hub::MAX_KIT_VIDEOS as f64).optional()),
+                    ("remove_assets", z::array(hub::asset_id()).max(490.0).optional()),
                 ],
             ]
             .concat(),

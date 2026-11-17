@@ -2886,5 +2886,10 @@
  "Seconds into the video": "動画の開始からの秒数",
  "The last frame that isn’t mid page transition.": "ページ切り替えの途中ではない最後のフレーム。",
  "seconds": "秒",
- "— shown on Instagram and Facebook": "— Instagram と Facebook に表示されます"
+ "— shown on Instagram and Facebook": "— Instagram と Facebook に表示されます",
+ "Brand videos": "ブランド動画",
+ "{name} isn’t an MP4, WebM or MOV video": "{name} は MP4、WebM、MOV の動画ではありません",
+ "{n} video|{n} videos": {
+  "other": "{n}本の動画"
+ }
 }

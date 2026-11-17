@@ -196,9 +196,9 @@ async fn import_media(s: &AppState, u: &BearerUser, src: &Value, doc_assets: &Ma
             &s.pool,
             "SELECT id, kind, sha256, mime, width, height, name, duration_ms, has_audio FROM assets WHERE id = $1 AND trashed_at IS NULL
        AND (owner_id = $2 OR workspace_id IN (SELECT workspace_id FROM memberships WHERE user_id = $2)
-            -- A brand kit's logos, photos and graphics are for everyone who can see the kit, wherever they were uploaded.
+            -- A brand kit's logos, photos, graphics and videos are for everyone who can see the kit, wherever they were uploaded.
             OR EXISTS (SELECT 1 FROM brand_kits k JOIN memberships m ON m.workspace_id = k.workspace_id AND m.user_id = $2
-                       WHERE k.logos ? assets.id OR k.photos ? assets.id OR k.graphics ? assets.id))",
+                       WHERE k.logos ? assets.id OR k.photos ? assets.id OR k.graphics ? assets.id OR k.videos ? assets.id))",
             &[pg::text(id), pg::uuid(u.id)],
         )
         .await?;
@@ -395,7 +395,7 @@ fn trimmed_query(a: &Value) -> Option<String> {
 struct Fonts(OnceLock<oc_gfonts::GoogleFonts>);
 
 /// What to do with a design's brand kit (create_design and get_design).
-const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, its textStyles for every text (weight, italic, capitals, letterSpacing, lineHeight, colours; edit_design's check flags text that strays), only its colours, its logo, and its graphics and photos via add_image { asset } (or { brand: { kit, name } }). Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
+const KIT_NEXT: &str = "If the kit lists guidelines, read them first with get_brand_guidelines and follow them throughout. Design with this kit: its fonts for each role, its textStyles for every text (weight, italic, capitals, letterSpacing, lineHeight, colours; edit_design's check flags text that strays), only its colours, its logo, its graphics and photos via add_image { asset } (or { brand: { kit, name } }), and its videos via edit_design's add_video { asset }. Follow its voice for every word. Never draw a stand-in for a brand element the kit has. If missingFonts is set, tell the user which font files to upload.";
 
 fn gfonts(s: &AppState) -> oc_gfonts::GoogleFonts {
     s.local::<Fonts>().0.get_or_init(|| oc_gfonts::GoogleFonts::new(s.paths.fonts.clone(), s.pool.clone(), s.store.clone())).clone()
@@ -428,12 +428,12 @@ fn missing_fonts(kit: &Value, usable: &std::collections::HashSet<String>) -> Vec
 }
 
 /// What the assistant sees of brand kits (`get_brand_kit`, and the chosen kit in `create_design` and `get_design`):
-/// colours, fonts by role, logos, graphics and photos with their file names, voice, and fonts that won't render.
+/// colours, fonts by role, logos, graphics, photos and videos with their file names, voice, and fonts that won't render.
 pub(super) async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]) -> Result<Vec<Value>, Fail> {
     // File names let the assistant choose without opening every image.
     let ids: Vec<String> = kits
         .iter()
-        .flat_map(|k| ["logos", "graphics", "photos"].map(|key| &k[key]))
+        .flat_map(|k| ["logos", "graphics", "photos", "videos"].map(|key| &k[key]))
         .filter_map(Value::as_array)
         .flatten()
         .filter_map(Value::as_str)
@@ -483,6 +483,10 @@ pub(super) async fn kit_views(s: &AppState, user_id: uuid::Uuid, kits: &[&Value]
             for (key, cap) in [("logos", 30), ("graphics", 60), ("photos", 30)] {
                 let items = k[key].as_array().map(|ids| ids.iter().take(cap).map(|id| named_asset(id, &names)).collect()).unwrap_or_default();
                 m.insert(key.into(), Value::Array(items));
+            }
+            // Videos only when the kit has some (placed with edit_design's add_video { asset }).
+            if let Some(ids) = k["videos"].as_array().filter(|v| !v.is_empty()) {
+                m.insert("videos".into(), Value::Array(ids.iter().take(30).map(|id| named_asset(id, &names)).collect()));
             }
             if view::truthy(k.get("voice")) {
                 m.insert("voice".into(), k["voice"].clone());

@@ -420,6 +420,8 @@ export interface Kit {
   id: string; workspaceId: string; workspace?: string; personal?: boolean; isDefault: boolean; canEdit?: boolean;
   name: string; colors: KitColor[]; palettes: Array<{ name: string; colors: KitColor[] }>; fonts: Partial<Record<KitFontRole, string>>;
   logos: string[]; photos: string[]; graphics: string[]; voice: string; textStyles?: KitTextStyle[];
+  /** Video uploads (asset ids); missing from servers that predate kit videos. */
+  videos?: string[];
 }
 /** A section of a brand kit's written guidelines (its brand book), in Markdown. */
 export interface GuidelineSection { title: string; body: string }

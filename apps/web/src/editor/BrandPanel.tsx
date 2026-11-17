@@ -4,7 +4,7 @@
  * re-maps the design's colours (nearest hue/luminance) and fonts (by role) to the kit.
  */
 import { designColors, fontSetOps, hex, solid, type AssetRef, type Editor, type TextEl } from '@oc/engine';
-import { Check, Image as ImageIcon, Palette, Plus, Shapes, Sparkles, Star, Trash2, Type, Wand2 } from 'lucide-react';
+import { Check, Clapperboard, Image as ImageIcon, Palette, Plus, Shapes, Sparkles, Star, Trash2, Type, Wand2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { api, ApiError, assetUrl, brandHub, contentApi, type CustomFont, type Kit, type KitFontRole, type KitInput } from '../api';
 import { useToast } from '../components/ui';
@@ -245,6 +245,7 @@ export function BrandPanel() {
       <AssetGroup title={t('Logos')} icon={<ImageIcon size={13} />} ids={kit.logos} canEdit={canEdit} onChange={(logos) => save({ logos })} />
       <AssetGroup title={t('Brand photos')} icon={<ImageIcon size={13} />} ids={kit.photos} canEdit={canEdit} onChange={(photos) => save({ photos })} />
       <AssetGroup title={t('Brand graphics')} icon={<Shapes size={13} />} ids={kit.graphics} canEdit={canEdit} onChange={(graphics) => save({ graphics })} />
+      <AssetGroup title={t('Brand videos')} icon={<Clapperboard size={13} />} ids={kit.videos ?? []} canEdit={canEdit} video onChange={(videos) => save({ videos })} />
 
       <h4><Check size={13} /> {t('Brand voice')}</h4>
       {canEdit ? (
@@ -271,8 +272,16 @@ function FontSelect({ value, onChange, label }: { value: string; onChange: (v: s
 }
 
 const BRAND_IMAGE_TYPES = ['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'];
+/** What the uploads ingest takes as video (it makes a streamable copy and a poster). */
+const BRAND_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
 
-function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; icon: React.ReactNode; ids: string[]; canEdit: boolean; onChange: (ids: string[]) => void }) {
+function AssetGroup({ title, icon, ids, canEdit, video = false, onChange }: {
+  title: string; icon: React.ReactNode; ids: string[]; canEdit: boolean;
+  /** A list of videos: takes video files and shows each one's poster frame. */
+  video?: boolean;
+  onChange: (ids: string[]) => void;
+}) {
+  const types = video ? BRAND_VIDEO_TYPES : BRAND_IMAGE_TYPES;
   const { editor } = useEd();
   const toast = useToast();
   const input = useRef<HTMLInputElement>(null);
@@ -294,7 +303,7 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
     setUploading((n) => n + files.length);
     for (const f of files) {
       try {
-        if (!BRAND_IMAGE_TYPES.includes(f.type)) throw new Error(f.name);
+        if (!types.includes(f.type)) throw new Error(video ? t('{name} isn’t an MP4, WebM or MOV video', { name: f.name }) : f.name);
         const { asset } = await api.upload(f);
         added.push(asset.id);
       } catch (x) {
@@ -323,7 +332,7 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
               const a = mine.get(id) ?? (await api.assets().then((r) => r.assets.find((x) => x.id === id)).then((x) => (x ? assetRef(x) : undefined)));
               if (a) insertAssetAt(editor, a, undefined);
               else toast(t('This file isn’t in your uploads.'));
-            }}><img src={assetUrl(id)} alt={title} style={{ objectFit: 'contain' }} draggable={false} /></button>
+            }}><img src={video ? `${assetUrl(id)}/poster` : assetUrl(id)} alt={title} style={{ objectFit: video ? 'cover' : 'contain' }} draggable={false} /></button>
             {canEdit && <button className="btn sm icon" style={{ position: 'absolute', top: 4, right: 4, width: 22, height: 22 }} aria-label={t('Remove')} onClick={() => onChange(ids.filter((x) => x !== id))}><Trash2 size={11} /></button>}
           </div>
         ))}
@@ -333,7 +342,7 @@ function AssetGroup({ title, icon, ids, canEdit, onChange }: { title: string; ic
         {canEdit && <button className="tile" onClick={() => input.current?.click()} title={t('Upload')} aria-label={t('Upload')}><Plus size={22} /></button>}
       </div>
       {uploading > 0 && <p className="faint" role="status" style={{ margin: '4px 0 0', fontSize: 12 }}>{tn(uploading, 'Uploading {n} file…', 'Uploading {n} files…')}</p>}
-      <input ref={input} type="file" accept={BRAND_IMAGE_TYPES.join()} multiple hidden onChange={(e) => {
+      <input ref={input} type="file" accept={types.join()} multiple hidden onChange={(e) => {
         const files = [...(e.target.files ?? [])];
         e.target.value = '';
         void addFiles(files);

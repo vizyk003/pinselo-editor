@@ -3141,5 +3141,15 @@
  "Seconds into the video": "الثواني من بداية الفيديو",
  "The last frame that isn’t mid page transition.": "الإطار الأخير الذي ليس في منتصف انتقال بين الصفحات.",
  "seconds": "ثانية",
- "— shown on Instagram and Facebook": "— تظهر على Instagram وFacebook"
+ "— shown on Instagram and Facebook": "— تظهر على Instagram وFacebook",
+ "Brand videos": "فيديوهات العلامة التجارية",
+ "{name} isn’t an MP4, WebM or MOV video": "{name} ليس فيديو MP4 أو WebM أو MOV",
+ "{n} video|{n} videos": {
+  "zero": "{n} فيديو",
+  "one": "فيديو واحد",
+  "two": "فيديوهان",
+  "few": "{n} فيديوهات",
+  "many": "{n} فيديو",
+  "other": "{n} فيديو"
+ }
 }
