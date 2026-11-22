@@ -182,9 +182,9 @@ Add operations share these optional placement fields, except `add_line`, which t
 | `remove_audio` | `id` | |
 | `set_captions` | | `cues` (`[{ start, end, text }]`, replaces the track's cues), `style` (`font`, `size`, `color`, `background`, `position`, `highlight`), `visible` |
 | `animate` | `ids` | `in`, `out`, `start`, `stagger` (default: the kit's, else 0.15 s), `visibleFrom`, `visibleTo` |
-| `group` | `ids` (at least 2) | `ref`, `name`, `role` |
+| `group` | `ids` (at least 2) | `ref`, `name`, `role`, `mask` (one of `ids`), `maskMode` (`alpha`, the default, or `luminance`) |
 | `ungroup` | `id` | |
-| `update` | `id` | `x`, `y`, `w`, `h`, `rotation`, `opacity`, `name`, `role`, `hidden`, `text`, text style fields, `fill`, `stroke` (`null` removes it), `radius`, `image`, `alt`, time fields, and for videos `muted`, `loop`, `volume`, `speed`, `trim` |
+| `update` | `id` | `x`, `y`, `w`, `h`, `rotation`, `opacity`, `name`, `role`, `hidden`, for groups `mask` (`null` removes it) and `maskMode`, `text`, text style fields, `fill`, `stroke` (`null` removes it), `radius`, `image`, `alt`, time fields, and for videos `muted`, `loop`, `volume`, `speed`, `trim` |
 | `delete` | `ids` | |
 | `reorder` | `id`, `to` (`front`, `back`, `forward`, `backward`) | |
 | `arrange` | `ids`, `direction` (`row`, `column`, `grid`) | `gap`, `columns`, `within` (`page`, `items`), `padding`, `x`, `y`, `width`, `height`, `align`, `justify`, `stretch` |
@@ -259,6 +259,7 @@ Times are in seconds. Pages play one after another in videos, GIFs and auto-play
     - Other element types refuse these tracks, and so does `fill` on a shape filled with a gradient or a picture. Builds from before these tracks keep them and draw the element as it is.
   - A track given replaces that track; `null` removes it, and `keyframes: null` removes them all. Keyframes add to an entrance, exit or loop on the same property (moves add up, opacity and scale multiply).
   - Elements inside a group animate on their own, on top of the group's movement. Moving an element inside a rotated or flipped group (`position`, `offset`, `x`, `y`, `motionPath`) is refused; rotation, scale, opacity and blur keys still work there.
+- **Masks:** a group's `mask` is one of its own elements, drawn as a stencil instead of shown: the others show only through it. With `alpha` they show through its shape and opacity; with `luminance` through its brightness (white shows, black hides, greys fade). Text as the mask fills its letters with what is behind; a gradient shape as a `luminance` mask fades the group out. The mask moves and changes like any element (keyframes, entrances, `visibleFrom` / `visibleTo`), so a growing shape wipes the group in; while the mask is outside its time, nothing of the group shows. `maskMode` alone changes the mode of the mask the group has; `mask` from outside the group, or on an element that is not a group, is refused.
 - **`motionPath`:** `{ via, duration, delay, easing, smooth }`. The element's top-left travels through `via` (2 to 64 page points `[x, y]`, best starting where it rests) over `duration` seconds, `delay` seconds after it appears, `linear` (the default) or with an `ease`. `smooth: true` curves through the points. `null` removes it.
 - **`visibleFrom`, `visibleTo`:** the page seconds an element appears and disappears (`null` clears), so texts can take turns on one page. Give `visibleTo` or `out.at`, not both.
 - **Caption highlight:** `set_captions`' `style.highlight` is a colour for the word being spoken: the words of a cue light up one after another across its time, each for a share in proportion to its length. `null` goes back to one colour.

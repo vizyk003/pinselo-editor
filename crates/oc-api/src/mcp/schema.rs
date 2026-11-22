@@ -145,6 +145,10 @@ fn pan_zoom() -> Schema {
     ])
 }
 /// A page-space point `[x, y]`.
+/// How a group's mask gates the rest: by its coverage, or by its brightness.
+fn mask_mode() -> Schema {
+    z::enumeration(&["alpha", "luminance"])
+}
 fn point() -> Schema {
     z::array(z::num()).min(2.0).max(2.0)
 }
@@ -316,7 +320,7 @@ fn op_schema(op: &str) -> Schema {
             f.extend([("size", positive()), ("color", color().optional()), ("background", color().optional())]);
             f.extend(timing());
         }
-        "group" => f.extend([("ref", r#ref()), ("ids", z::array(target()).min(2.0)), ("name", z::str().max(80.0).optional()), ("role", z::enumeration(&ROLES).optional())]),
+        "group" => f.extend([("ref", r#ref()), ("ids", z::array(target()).min(2.0)), ("name", z::str().max(80.0).optional()), ("role", z::enumeration(&ROLES).optional()), ("mask", target().optional()), ("maskMode", mask_mode().optional())]),
         "ungroup" => f.push(("id", target())),
         "update" => {
             f.extend([
@@ -330,6 +334,8 @@ fn op_schema(op: &str) -> Schema {
                 ("name", z::str().max(80.0).optional()),
                 ("role", z::enumeration(&ROLES).optional()),
                 ("hidden", z::bool().optional()),
+                ("mask", target().nullable().optional()),
+                ("maskMode", mask_mode().optional()),
                 ("text", z::str().max(20000.0).optional()),
             ]);
             f.extend(effects());

@@ -3299,6 +3299,18 @@
             "price",
             "legal"
            ]
+          },
+          "mask": {
+           "description": "One of ids drawn as a stencil instead of shown: the other elements show only through it. Text as the mask fills the letters with the photo behind them; a circle crops a group round. The mask animates like any element (keyframes, entrances), so a growing shape can wipe the group in",
+           "type": "string"
+          },
+          "maskMode": {
+           "description": "How the mask lets the rest show: alpha (the default) through its shape and opacity; luminance through its brightness, so white shows, black hides and greys fade (a gradient shape makes a soft fade)",
+           "type": "string",
+           "enum": [
+            "alpha",
+            "luminance"
+           ]
           }
          },
          "required": [
@@ -3380,6 +3392,25 @@
           },
           "hidden": {
            "type": "boolean"
+          },
+          "mask": {
+           "description": "Groups: which of the group's own elements is its mask (see group); null removes the mask and shows that element again",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "maskMode": {
+           "description": "How the mask lets the rest show: alpha (the default) through its shape and opacity; luminance through its brightness, so white shows, black hides and greys fade (a gradient shape makes a soft fade)",
+           "type": "string",
+           "enum": [
+            "alpha",
+            "luminance"
+           ]
           },
           "text": {
            "description": "Replace the text (keeps its style)",

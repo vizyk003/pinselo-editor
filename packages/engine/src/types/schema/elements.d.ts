@@ -304,6 +304,9 @@ export interface FrameOverlay {
 }
 export interface GroupEl extends ElementBase {
     type: 'group';
+    /** The mask (DS-107): one of its children, drawn as a stencil for the others instead of shown; gating by its
+     *  coverage (alpha) or by its brightness × coverage (luminance). */
+    mask?: { id: ElementId; mode: 'alpha' | 'luminance' };
 }
 export interface TextEl extends ElementBase {
     type: 'text';

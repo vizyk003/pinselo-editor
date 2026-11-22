@@ -609,6 +609,7 @@ impl Run<'_> {
                 let gw = boxes.iter().map(|b| b.0 + b.2).fold(f64::NEG_INFINITY, f64::max) - gx;
                 let gh = boxes.iter().map(|b| b.1 + b.3).fold(f64::NEG_INFINITY, f64::max) - gy;
                 let real: Vec<String> = ids.iter().map(|v| self.id(v)).collect::<Result<_, _>>()?;
+                let mask = self.mask_patch(op, &real, &Value::Null)?;
                 let (json, typed) = self.doc();
                 let ppos = json["elements"].get(&parent).and_then(|pe| page_pos(json, pe)).unwrap_or((0.0, 0.0));
                 let sorted: Vec<String> = view::children(typed, &parent).into_iter().filter(|c| real.contains(c)).collect();
@@ -625,6 +626,9 @@ impl Run<'_> {
                 }
                 if let Some(r) = s(op, "role") {
                     g.insert("role".into(), json!(r));
+                }
+                if let Some(m) = mask.filter(Value::is_object) {
+                    g.insert("mask".into(), m);
                 }
                 let mut ops = vec![json!({ "op": "add", "el": g, "parent": parent, "after": sorted.last() })];
                 let mut after = "bottom".to_owned();
@@ -1038,6 +1042,33 @@ impl Run<'_> {
         }
     }
 
+    /// An operation's `mask` / `maskMode` → the group's stored `mask` (`Null` removes it), or `None` when it names
+    /// neither. `children` are the group's elements once the operation applies; the mask must be one of them.
+    fn mask_patch(&self, op: &Value, children: &[String], current: &Value) -> Result<Option<Value>, EditError> {
+        let (mask, mode) = (op.get("mask"), s(op, "maskMode"));
+        let id = match mask {
+            None if mode.is_none() => return Ok(None),
+            Some(Value::Null) => return Ok(Some(Value::Null)),
+            Some(m) => {
+                let v = m.as_str().unwrap_or("");
+                let id = self.id(v)?;
+                if !children.contains(&id) {
+                    return err(format!("mask {v} must be one of the group's own elements: it is drawn as a stencil, and the others show only through it."));
+                }
+                if children.len() < 2 {
+                    return err("A masked group needs at least one element besides the mask.");
+                }
+                id
+            }
+            None => match current["id"].as_str() {
+                Some(id) => id.to_owned(),
+                None => return err("maskMode: the group has no mask; give mask (one of its elements) as well."),
+            },
+        };
+        let mode = mode.or_else(|| current["mode"].as_str()).unwrap_or("alpha");
+        Ok(Some(json!({ "id": id, "mode": mode })))
+    }
+
     fn compile_update(&mut self, op: &Value, i: usize) -> Result<Vec<Value>, EditError> {
         let target = s(op, "id").unwrap_or("");
         let e = self.el(target)?;
@@ -1063,6 +1094,15 @@ impl Run<'_> {
         let mut patch = Map::new();
         if let Some(v) = op.get("opacity") {
             patch.insert("opacity".into(), v.clone());
+        }
+        if op.get("mask").is_some() || op.get("maskMode").is_some() {
+            if ty != "group" {
+                return err(format!("{target} is a {ty}; mask and maskMode apply to groups (group the picture with the shape or text that should shape it)."));
+            }
+            let children = view::children(&self.doc().1, &id);
+            if let Some(m) = self.mask_patch(op, &children, &e["mask"])? {
+                patch.insert("mask".into(), m);
+            }
         }
         if let Some(v) = effects_patch(op, &e["effects"]) {
             patch.insert("effects".into(), v);
@@ -1691,6 +1731,36 @@ mod motion_tests {
         let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("card"), "shadow": null }]), vec![], json!({}));
         assert!(res.error.is_none(), "{:?}", res.error);
         assert_eq!(doc["elements"][id("card").as_str()]["effects"], json!([{ "k": "blur", "radius": 2 }]));
+    }
+
+    #[test]
+    fn groups_take_a_mask_and_change_or_drop_it() {
+        let ydoc = design(1080.0, 1080.0);
+        let ops = json!([
+            { "op": "add_shape", "ref": "photo", "page": 1, "shape": "rect", "x": 0, "y": 0, "w": 1080, "h": 1080, "fill": "#ff5a36" },
+            { "op": "add_text", "ref": "word", "page": 1, "text": "SALE", "x": 100, "y": 400, "w": 880, "size": 200 },
+            { "op": "group", "ref": "g", "ids": ["$photo", "$word"], "mask": "$word" }
+        ]);
+        let (res, doc) = run(&ydoc, ops, vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        assert_eq!(doc["elements"][id("g").as_str()]["mask"], json!({ "id": id("word"), "mode": "alpha" }));
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let v = Value::Object(view::design_view(&doc, &typed, None));
+        let g = v["pages"][0]["elements"].as_array().unwrap().iter().find(|n| n["id"] == id("g").as_str()).cloned().unwrap();
+        assert_eq!(g["mask"], json!({ "id": id("word"), "mode": "alpha" }));
+        // maskMode alone keeps the mask element; null removes the mask.
+        let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("g"), "maskMode": "luminance" }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert_eq!(doc["elements"][id("g").as_str()]["mask"], json!({ "id": id("word"), "mode": "luminance" }));
+        let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("g"), "mask": null }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert!(doc["elements"][id("g").as_str()].get("mask").is_none_or(Value::is_null));
+        // A mask from outside the group, a mask on a non-group, and a mode without a mask are refused.
+        let (res, _) = run(&ydoc, json!([{ "op": "add_shape", "ref": "o", "page": 1, "shape": "rect", "x": 0, "y": 0, "w": 10, "h": 10 }, { "op": "update", "id": id("g"), "mask": "$o" }]), vec![], json!({}));
+        assert!(res.error.as_ref().is_some_and(|e| format!("{e:?}").contains("group's own elements")), "{:?}", res.error);
+        let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("photo"), "mask": id("word") }]), vec![], json!({}));
+        assert!(res.error.as_ref().is_some_and(|e| format!("{e:?}").contains("apply to groups")), "{:?}", res.error);
     }
 
     #[test]
