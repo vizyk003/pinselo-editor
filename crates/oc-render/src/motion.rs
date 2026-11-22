@@ -303,6 +303,97 @@ pub fn keyframe_motion(k: &Keyframes, t: f64) -> MotionState {
     }
 }
 
+/// The element with its `Replace` tracks (fill, stroke, corner radius, crop, shadow) applied at page time `t`,
+/// or `None` when it has none, so drawing reads it the way it reads any element. Its own value stays wherever a
+/// track has no keys.
+pub fn animated(el: &Element, t: f64) -> Option<Element> {
+    use oc_schema::elements::{DropShadowEffect, Effect};
+    use oc_schema::keyframes::{color_value, number_value, prop_spec};
+    use oc_schema::primitives::{ColorValue, Paint, RgbColor, Stroke, StrokeAlign, StrokeCap, StrokeJoin};
+    let k = el.base()?.keyframes.as_ref()?;
+    let num = |p: &str| number_value(prop_spec(p).expect("prop"), k.number(p), t);
+    let col = |p: &str| k.color(p).and_then(|keys| color_value(keys, t));
+    let (fill, stroke_color, stroke_width, radius) = (col("fill"), col("strokeColor"), num("strokeWidth"), num("radius"));
+    let crop = [num("cropX"), num("cropY"), num("cropW"), num("cropH")];
+    let shadow = (num("shadowX"), num("shadowY"), num("shadowBlur"), col("shadowColor"));
+    let any_shadow = shadow.0.is_some() || shadow.1.is_some() || shadow.2.is_some() || shadow.3.is_some();
+    if fill.is_none() && stroke_color.is_none() && stroke_width.is_none() && radius.is_none() && crop.iter().all(Option::is_none) && !any_shadow {
+        return None;
+    }
+    let mut el = el.clone();
+    let restroke = |s: &mut Stroke| {
+        if let Some(c) = &stroke_color {
+            s.paint = Paint::solid_color(c.clone());
+        }
+        if let Some(w) = stroke_width {
+            s.width = w;
+        }
+    };
+    let recrop = |c: &mut StoredRect| {
+        let [x, y, w, h] = crop;
+        c.w = w.unwrap_or(c.w);
+        c.h = h.unwrap_or(c.h);
+        c.x = min(x.unwrap_or(c.x), 1.0 - c.w);
+        c.y = min(y.unwrap_or(c.y), 1.0 - c.h);
+    };
+    match &mut el {
+        Element::Shape(s) => {
+            if let Some(c) = &fill {
+                match s.fills.first_mut() {
+                    Some(Paint::Solid(p)) => p.color = c.clone(),
+                    Some(_) => {}
+                    None => s.fills.push(Paint::solid_color(c.clone())),
+                }
+            }
+            if stroke_color.is_some() || stroke_width.is_some() {
+                if s.strokes.is_empty() {
+                    let black = ColorValue::Srgb(RgbColor { r: 0.0, g: 0.0, b: 0.0, a: 1.0, extra: Extra::new() });
+                    s.strokes.push(Stroke { paint: Paint::solid_color(black), width: 1.0, align: StrokeAlign::Center, cap: StrokeCap::Butt, join: StrokeJoin::Miter, dash: None, extra: Extra::new() });
+                }
+                restroke(&mut s.strokes[0]);
+            }
+            if let Some(r) = radius {
+                s.params.insert("cornerRadius".into(), r);
+            }
+        }
+        Element::Line(l) => restroke(&mut l.stroke),
+        Element::Image(i) => {
+            if radius.is_some() {
+                i.corner_radius = radius;
+            }
+            recrop(&mut i.crop);
+        }
+        Element::Video(v) => {
+            if radius.is_some() {
+                v.corner_radius = radius;
+            }
+            recrop(&mut v.crop);
+        }
+        _ => {}
+    }
+    if any_shadow && let Some(b) = el.base_mut() {
+        let fx = b.effects.get_or_insert_with(Vec::new);
+        let i = match fx.iter().position(|e| matches!(e, Effect::DropShadow(_))) {
+            Some(i) => i,
+            None => {
+                // Off the element until the track says otherwise: the connector's default shadow colour.
+                let color = ColorValue::Srgb(RgbColor { r: 0.0, g: 0.0, b: 0.0, a: 64.0 / 255.0, extra: Extra::new() });
+                fx.push(Effect::DropShadow(DropShadowEffect { dx: 0.0, dy: 0.0, blur: 0.0, color, extra: Extra::new() }));
+                fx.len() - 1
+            }
+        };
+        if let Effect::DropShadow(d) = &mut fx[i] {
+            d.dx = shadow.0.unwrap_or(d.dx);
+            d.dy = shadow.1.unwrap_or(d.dy);
+            d.blur = shadow.2.unwrap_or(d.blur);
+            if let Some(c) = shadow.3 {
+                d.color = c;
+            }
+        }
+    }
+    Some(el)
+}
+
 /// `Object.values(el.keyframes).some((k) => k?.length)`.
 fn has_keys(k: &Keyframes) -> bool {
     let known = [&k.x, &k.y, &k.scale, &k.rotate, &k.opacity, &k.blur, &k.scale_x, &k.scale_y, &k.anchor_x, &k.anchor_y].iter().any(|v| v.as_ref().is_some_and(|v| !v.is_empty()));
@@ -734,6 +825,28 @@ mod tests {
         // Without a distance the travel follows the element size.
         let m = evaluate_preset(&AnimPreset::Rise, 50.0, 100.0, (600.0, 200.0), &PresetOpts { easing: Some(AnimEasing::Linear), ..Default::default() });
         assert!((m.dy - 50.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn crop_keys_move_the_crop_and_keep_it_inside_the_picture() {
+        let img: Element = serde_json::from_value(serde_json::json!({
+            "id": "i", "type": "image", "parentId": "p", "z": "a0", "opacity": 1, "asset": "a",
+            "xf": { "x": 0, "y": 0, "w": 100, "h": 100, "rot": 0 }, "crop": { "x": 0, "y": 0, "w": 1, "h": 1 },
+            "keyframes": { "cropW": [{ "t": 0, "v": 1 }, { "t": 1000, "v": 0.5, "ease": "linear" }], "cropX": [{ "t": 0, "v": 0.9 }] }
+        }))
+        .unwrap();
+        let crop = |t: f64| match animated(&img, t) {
+            Some(Element::Image(i)) => (i.crop.x, i.crop.w, i.crop.h),
+            other => panic!("{other:?}"),
+        };
+        // Full width: x is pulled back to 0 so the crop stays inside; half width leaves room up to 0.5.
+        assert_eq!(crop(0.0), (0.0, 1.0, 1.0));
+        assert_eq!(crop(500.0), (0.25, 0.75, 1.0));
+        assert_eq!(crop(1000.0), (0.5, 0.5, 1.0));
+        // Shapes have no crop: the tracks leave them alone.
+        let mut v = serde_json::to_value(&img).unwrap();
+        v["keyframes"] = serde_json::json!({ "x": [{ "t": 0, "v": 5 }] });
+        assert!(animated(&serde_json::from_value(v).unwrap(), 0.0).is_none());
     }
 
     #[test]

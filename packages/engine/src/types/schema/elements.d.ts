@@ -107,9 +107,19 @@ export interface Keyframe {
     /** CSS `cubic-bezier(x1, y1, x2, y2)` for the segment ending here; wins over `ease`. */
     bezier?: [number, number, number, number];
 }
-/** Keyed properties after `KEYFRAME_PROPS`: width and height multipliers, and the pivot of animated scale and rotation (box fractions, 0.5 = centre). */
-export type KeyframePropMore = 'scaleX' | 'scaleY' | 'anchorX' | 'anchorY';
-export type Keyframes = Partial<Record<KeyframeProp | KeyframePropMore, Keyframe[]>>;
+/** Keyed properties after `KEYFRAME_PROPS`: width and height multipliers, and the pivot of animated scale and rotation (box fractions, 0.5 = centre).
+ *  Then tracks that set the element's own value: stroke width and corner radius (px), crop (0..1 of the picture), and the drop shadow (px). */
+export type KeyframePropMore = 'scaleX' | 'scaleY' | 'anchorX' | 'anchorY' | 'strokeWidth' | 'radius' | 'cropX' | 'cropY' | 'cropW' | 'cropH' | 'shadowX' | 'shadowY' | 'shadowBlur';
+/** Colour tracks: a shape's first fill, the stroke of a shape or line, the drop shadow. */
+export type KeyframeColorProp = 'fill' | 'strokeColor' | 'shadowColor';
+/** A key of a colour track; sRGB (or Display P3) keys blend. */
+export interface ColorKey {
+    t: number;
+    c: ColorValue;
+    ease?: KeyframeEase;
+    bezier?: [number, number, number, number];
+}
+export type Keyframes = Partial<Record<KeyframeProp | KeyframePropMore, Keyframe[]> & Record<KeyframeColorProp, ColorKey[]>>;
 /** Looping emphasis animation (MV-004) while the element is on screen, after its entrance. */
 export type EmphasisPreset = 'pulse' | 'wiggle' | 'bounce' | 'flicker' | 'spin' | 'heartbeat' | 'float' | 'swing';
 export declare const EMPHASIS_PRESETS: readonly EmphasisPreset[];

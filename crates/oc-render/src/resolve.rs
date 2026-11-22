@@ -285,6 +285,10 @@ impl<'a> Resolver<'a> {
             return;
         }
         let el = self.get(raw);
+        let el = match self.opts.time_ms.and_then(|t| crate::motion::animated(&el, t)) {
+            Some(a) => std::borrow::Cow::Owned(a),
+            None => el,
+        };
         let c = common(&el);
         if c.hidden {
             return;

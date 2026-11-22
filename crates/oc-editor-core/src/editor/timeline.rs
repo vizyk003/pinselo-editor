@@ -4,7 +4,7 @@
 use oc_crdt::{DocOp, PageOp};
 use oc_schema::elements::Element;
 use oc_schema::factory::{base_init, make_video};
-use oc_schema::keyframes::keyframe_neutral;
+use oc_schema::keyframes::{PropMode, keyframe_neutral, prop_spec};
 use oc_schema::primitives::{Vec2, Xf};
 use oc_schema::timeline::{locate_time, page_duration_ms, timeline_of, video_source_time};
 use oc_schema::tree::children_of;
@@ -15,15 +15,17 @@ use super::{Editor, el_id, one, op_add, op_meta, op_page_update, op_update};
 use crate::state::*;
 use crate::util::{f, jm, max, min, num, round, s};
 
-/// `withKeyframe` over JSON keyframes: a key set at `t` (replacing one within 20 ms); a first key after 0 also
-/// pins the start at neutral.
+/// `withKeyframe` over JSON keyframes: a key set at `t` (replacing one within 20 ms); a first key after 0 of a
+/// track that moves the element (offset or multiply) also pins the start at neutral. A track that sets a value
+/// has no neutral to pin: it holds its first key's value until then.
 pub fn with_keyframe(k: &Map<String, Value>, prop: &str, t: f64, v: f64, ease: Option<&str>) -> Map<String, Value> {
     let mut keys: Vec<Value> = k
         .get(prop)
         .and_then(Value::as_array)
         .map(|a| a.iter().filter(|x| (f(x.get("t")).unwrap_or(f64::NAN) - t).abs() > 20.0).cloned().collect())
         .unwrap_or_default();
-    if keys.is_empty() && t > 0.0 {
+    let pins = prop_spec(prop).is_none_or(|p| p.mode != PropMode::Replace);
+    if keys.is_empty() && t > 0.0 && pins {
         let mut z = one("t", num(0.0));
         z.insert("v".into(), num(keyframe_neutral(prop).unwrap_or(0.0)));
         keys.push(Value::Object(z));

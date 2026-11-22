@@ -314,3 +314,41 @@ fn keyed_width_height_and_anchor_scale_about_the_pivot() {
     // Drawn without a time, keys do nothing.
     assert!(near(px(&at(&d, None), 200, 40, 50), RED, 2));
 }
+
+fn srgb(r: f64, g: f64, b: f64, a: f64) -> Value {
+    json!({ "space": "srgb", "r": r, "g": g, "b": b, "a": a })
+}
+
+#[test]
+fn fill_keys_blend_between_colours() {
+    let k = json!({ "fill": [{ "t": 0, "c": srgb(1.0, 0.0, 0.0, 1.0) }, { "t": 1000, "c": srgb(0.0, 0.0, 1.0, 1.0), "ease": "linear" }] });
+    let d = timed_doc(None, json!({ "keyframes": k }), None);
+    assert!(near(px(&at(&d, None), 200, 25, 50), RED, 2), "its own fill at rest");
+    assert!(near(px(&at(&d, Some(500.0)), 200, 25, 50), [128, 0, 128], 3), "halfway: {:?}", px(&at(&d, Some(500.0)), 200, 25, 50));
+    assert!(near(px(&at(&d, Some(2000.0)), 200, 25, 50), [0, 0, 255], 2));
+}
+
+#[test]
+fn stroke_radius_and_shadow_keys_set_the_element_values() {
+    let black = srgb(0.0, 0.0, 0.0, 1.0);
+    // A 20 px centred stroke reaches 10 px past the right edge (x = 50).
+    let d = timed_doc(None, json!({ "keyframes": { "strokeWidth": [{ "t": 0, "v": 20 }], "strokeColor": [{ "t": 0, "c": black }] } }), None);
+    assert!(near(px(&at(&d, Some(0.0)), 200, 55, 50), [0, 0, 0], 2));
+    assert!(near(px(&at(&d, None), 200, 55, 50), WHITE, 2), "no stroke at rest");
+    // A rounded corner leaves the very corner white.
+    let d = timed_doc(None, json!({ "keyframes": { "radius": [{ "t": 0, "v": 0 }, { "t": 1000, "v": 25 }] } }), None);
+    assert!(near(px(&at(&d, Some(0.0)), 200, 1, 1), RED, 2));
+    assert!(near(px(&at(&d, Some(1000.0)), 200, 1, 1), WHITE, 2));
+    // A hard shadow 20 px to the right.
+    let d = timed_doc(None, json!({ "keyframes": { "shadowX": [{ "t": 0, "v": 20 }], "shadowColor": [{ "t": 0, "c": black }] } }), None);
+    assert!(near(px(&at(&d, Some(0.0)), 200, 60, 50), [0, 0, 0], 3), "{:?}", px(&at(&d, Some(0.0)), 200, 60, 50));
+    assert!(near(px(&at(&d, None), 200, 60, 50), WHITE, 2));
+}
+
+#[test]
+fn a_colour_track_that_does_not_read_is_left_out() {
+    // Numbers where colours belong: the element still loads and draws with its own fill.
+    let d = timed_doc(None, json!({ "keyframes": { "fill": [{ "t": 0, "v": 3 }], "x": [{ "t": 0, "v": 100 }] } }), None);
+    let img = at(&d, Some(0.0));
+    assert!(near(px(&img, 200, 125, 50), RED, 2), "{:?}", px(&img, 200, 125, 50));
+}

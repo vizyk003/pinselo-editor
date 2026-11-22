@@ -655,11 +655,18 @@ impl Editor {
                     changed = true;
                 };
                 let ex = el_xf(el);
+                // Keys are offsets in the element's own box (drawn inside its rotation and flips): a drag on the
+                // page is turned back by the rotation and mirrored by the flips, and a turn reads the other way
+                // round when exactly one flip mirrors the box.
+                let (fx, fy) = (ex.flip_x == Some(true), ex.flip_y == Some(true));
                 if is_move {
-                    put(&mut k, "x", pxf.x - ex.x);
-                    put(&mut k, "y", pxf.y - ex.y);
+                    let r = -ex.rot.to_radians();
+                    let (dx, dy) = (pxf.x - ex.x, pxf.y - ex.y);
+                    let (bx, by) = (dx * r.cos() - dy * r.sin(), dx * r.sin() + dy * r.cos());
+                    put(&mut k, "x", if fx { -bx } else { bx });
+                    put(&mut k, "y", if fy { -by } else { by });
                 } else {
-                    put(&mut k, "rotate", pxf.rot - ex.rot);
+                    put(&mut k, "rotate", (pxf.rot - ex.rot) * if fx != fy { -1.0 } else { 1.0 });
                 }
                 if changed {
                     ops.push(op_update(&id, one("keyframes", Value::Object(k))));

@@ -589,7 +589,203 @@ pub fn keyframes_patch(spec: &Value, el: &Value, rest: &Rest) -> Result<Value, S
             set("anchorY", Some(vec![stored_key(0.0, r4(sy), Ease::default())]));
         }
     }
+    value_tracks(spec, el, &mut set)?;
     Ok(if out.is_empty() { Value::Null } else { Value::Object(out) })
+}
+
+/// Element types a connector track applies to, and how to say so when it does not.
+const VALUE_TRACKS: [(&str, &[&str], &str); 6] = [
+    ("fill", &["shape"], "fill keys apply to shapes"),
+    ("strokeColor", &["shape", "line"], "stroke keys apply to shapes and lines"),
+    ("strokeWidth", &["shape", "line"], "stroke keys apply to shapes and lines"),
+    ("radius", &["shape", "image", "video"], "radius keys apply to shapes, images and videos"),
+    ("zoom", &["image", "video"], "zoom keys apply to images and videos"),
+    ("shadow", &[], ""),
+];
+
+/// The most a zoom key magnifies (as a pan-zoom: `oc_render::motion::PAN_ZOOM_MAX`).
+pub const MAX_ZOOM: f64 = 4.0;
+
+/// The default drop shadow (`edit::effects_patch`): x, y, blur, colour.
+const SHADOW: (f64, f64, f64, &str) = (0.0, 8.0, 24.0, "#00000040");
+
+fn stored_color(name: &str, t: f64, v: &Value) -> Result<Value, String> {
+    let c = v.as_str().map(super::edit::hex).unwrap_or(Value::Null);
+    if c.is_null() {
+        return Err(format!("keyframes.{name} at {} s: {v} is not a colour; use \"#rrggbb\" or \"#rrggbbaa\".", secs(t)));
+    }
+    Ok(c)
+}
+
+fn stored_color_key(t: f64, c: Value, ease: Ease) -> Value {
+    let mut k = stored_key(t, Value::Null, ease);
+    if let Some(m) = k.as_object_mut() {
+        m.remove("v");
+        m.insert("c".into(), c);
+    }
+    k
+}
+
+/// The tracks that set an element's own value: colours, stroke width, corner radius, zoom (into its crop) and
+/// the drop shadow. Absolute values, in the units `update` takes.
+fn value_tracks(spec: &Value, el: &Value, set: &mut dyn FnMut(&str, Option<Vec<Value>>)) -> Result<(), String> {
+    let ty = el["type"].as_str().unwrap_or("");
+    for (name, types, why) in VALUE_TRACKS {
+        if spec.get(name).is_some_and(|v| !v.is_null()) && !types.is_empty() && !types.contains(&ty) {
+            return Err(format!("keyframes.{name}: this is a {ty}; {why}."));
+        }
+    }
+    if spec.get("fill").is_some_and(|v| !v.is_null()) && el["fills"].get(0).is_some_and(|p| p["k"] != "solid") {
+        return Err("keyframes.fill: the shape is filled with a gradient or picture; fill keys change a plain colour (set fill to a colour first).".into());
+    }
+    for name in ["fill", "strokeColor"] {
+        match spec.get(name) {
+            None => {}
+            Some(Value::Null) => set(name, None),
+            Some(track) => {
+                let keys = keys_of(name, track)?;
+                let mut out = Vec::with_capacity(keys.len());
+                for k in &keys {
+                    out.push(stored_color_key(k.t, stored_color(name, k.t, k.v)?, k.ease));
+                }
+                set(name, Some(out));
+            }
+        }
+    }
+    for name in ["strokeWidth", "radius"] {
+        match spec.get(name) {
+            None => {}
+            Some(Value::Null) => set(name, None),
+            Some(track) => {
+                let keys = keys_of(name, track)?;
+                if let Some(k) = keys.iter().find(|k| num(k.v) < 0.0) {
+                    return Err(format!("keyframes.{name} at {} s: {} is below 0.", secs(k.t), num(k.v)));
+                }
+                set(name, Some(keys.iter().map(|k| stored_key(k.t, r2(num(k.v)), k.ease)).collect()));
+            }
+        }
+    }
+    // Zoom: into the element's own crop (1 = as it is), towards a focus point of the picture.
+    const CROP: [&str; 4] = ["cropX", "cropY", "cropW", "cropH"];
+    match spec.get("zoom") {
+        None => {}
+        Some(Value::Null) => CROP.iter().for_each(|c| set(c, None)),
+        Some(track) => {
+            let c = &el["crop"];
+            let (cx, cy, cw, ch) = (num(&c["x"]), num(&c["y"]), c.get("w").map_or(1.0, num), c.get("h").map_or(1.0, num));
+            let keys = keys_of("zoom", track)?;
+            let mut out: [Vec<Value>; 4] = Default::default();
+            for k in &keys {
+                let (z, fx, fy) = match k.v {
+                    Value::Array(a) if a.len() == 3 => (num(&a[0]), num(&a[1]), num(&a[2])),
+                    v => (num(v), 0.5, 0.5),
+                };
+                let max = MAX_ZOOM;
+                if !(1.0..=max).contains(&z) || !(0.0..=1.0).contains(&fx) || !(0.0..=1.0).contains(&fy) {
+                    return Err(format!("keyframes.zoom at {} s: the value is a zoom from 1 (as placed) to {max}, or [zoom, focusX, focusY] with the focus as fractions of the picture from 0 to 1.", secs(k.t)));
+                }
+                let (w, h) = (cw / z, ch / z);
+                for (i, v) in [cx + (cw - w) * fx, cy + (ch - h) * fy, w, h].into_iter().enumerate() {
+                    out[i].push(stored_key(k.t, r4(v), k.ease));
+                }
+            }
+            for (name, t) in CROP.iter().zip(out) {
+                set(name, Some(t));
+            }
+        }
+    }
+    // Shadow: each key a shadow; what a key leaves out comes from the element's shadow, else the default one.
+    const SHADOW_KEYS: [&str; 4] = ["shadowX", "shadowY", "shadowBlur", "shadowColor"];
+    match spec.get("shadow") {
+        None => {}
+        Some(Value::Null) => SHADOW_KEYS.iter().for_each(|c| set(c, None)),
+        Some(track) => {
+            let own = el["effects"].as_array().and_then(|fx| fx.iter().find(|e| e["k"] == "dropShadow"));
+            let base = own.map_or((SHADOW.0, SHADOW.1, SHADOW.2, super::edit::hex(SHADOW.3)), |d| (num(&d["dx"]), num(&d["dy"]), num(&d["blur"]), d["color"].clone()));
+            let keys = keys_of("shadow", track)?;
+            let mut out: [Vec<Value>; 4] = Default::default();
+            for k in &keys {
+                if !k.v.is_object() {
+                    return Err(format!("keyframes.shadow at {} s: each value is a shadow {{ x, y, blur, color }}.", secs(k.t)));
+                }
+                let blur = f(k.v, "blur").unwrap_or(base.2);
+                if blur < 0.0 {
+                    return Err(format!("keyframes.shadow at {} s: blur {blur} is below 0.", secs(k.t)));
+                }
+                let color = match k.v.get("color") {
+                    Some(c) => stored_color("shadow", k.t, c)?,
+                    None => base.3.clone(),
+                };
+                out[0].push(stored_key(k.t, r2(f(k.v, "x").unwrap_or(base.0)), k.ease));
+                out[1].push(stored_key(k.t, r2(f(k.v, "y").unwrap_or(base.1)), k.ease));
+                out[2].push(stored_key(k.t, r2(blur), k.ease));
+                out[3].push(stored_color_key(k.t, color, k.ease));
+            }
+            for (name, t) in SHADOW_KEYS.iter().zip(out) {
+                set(name, Some(t));
+            }
+        }
+    }
+    Ok(())
+}
+
+/// A stored colour track, or none.
+fn color_track(k: &Value, name: &str) -> Option<Vec<oc_schema::elements::ColorKey>> {
+    serde_json::from_value::<Vec<oc_schema::elements::ColorKey>>(k.get(name)?.clone()).ok().filter(|t| !t.is_empty())
+}
+
+fn color_ease_view(k: &oc_schema::elements::ColorKey) -> Option<Value> {
+    ease_view(&oc_schema::elements::Keyframe { t: k.t, v: 0.0, ease: k.ease.clone(), bezier: k.bezier, extra: Default::default() })
+}
+
+/// The value tracks as assistants write them.
+fn value_tracks_view(k: &Value, el: &Value, o: &mut Map<String, Value>) {
+    use oc_schema::keyframes::keyframe_value;
+    for name in ["fill", "strokeColor"] {
+        if let Some(tr) = color_track(k, name) {
+            o.insert(name.into(), Value::Array(tr.iter().map(|c| key_view(c.t, super::view::color_out(&json!(c.c)), color_ease_view(c))).collect()));
+        }
+    }
+    for name in ["strokeWidth", "radius"] {
+        if let Some(tr) = track(k, name) {
+            o.insert(name.into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(k.v), ease_view(k))).collect()));
+        }
+    }
+    if let Some(ws) = track(k, "cropW") {
+        let c = &el["crop"];
+        let (cx, cy, cw, ch) = (num(&c["x"]), num(&c["y"]), c.get("w").map_or(1.0, num), c.get("h").map_or(1.0, num));
+        let (xs, ys, hs) = (track(k, "cropX"), track(k, "cropY"), track(k, "cropH"));
+        let keys = ws
+            .iter()
+            .map(|kw| {
+                let (x, y) = (keyframe_value(xs.as_deref(), kw.t, cx), keyframe_value(ys.as_deref(), kw.t, cy));
+                let h = keyframe_value(hs.as_deref(), kw.t, ch);
+                let z = if kw.v > 0.0 { cw / kw.v } else { 1.0 };
+                let focus = |at: f64, from: f64, whole: f64, part: f64| if whole - part > 1e-9 { (at - from) / (whole - part) } else { 0.5 };
+                let (fx, fy) = (focus(x, cx, cw, kw.v), focus(y, cy, ch, h));
+                let v = if (fx - 0.5).abs() < 1e-3 && (fy - 0.5).abs() < 1e-3 { r4(z) } else { json!([r4(z), r4(fx), r4(fy)]) };
+                key_view(kw.t, v, ease_view(kw))
+            })
+            .collect();
+        o.insert("zoom".into(), Value::Array(keys));
+    }
+    let (sx, sy, sb, sc) = (track(k, "shadowX"), track(k, "shadowY"), track(k, "shadowBlur"), color_track(k, "shadowColor"));
+    let mut times: Vec<(f64, Option<Value>)> = sx.iter().chain(&sy).chain(&sb).flatten().map(|k| (k.t, ease_view(k))).chain(sc.iter().flatten().map(|c| (c.t, color_ease_view(c)))).collect();
+    if !times.is_empty() {
+        times.sort_by(|p, q| p.0.total_cmp(&q.0));
+        times.dedup_by(|p, q| (p.0 - q.0).abs() < 0.5);
+        let own = el["effects"].as_array().and_then(|fx| fx.iter().find(|e| e["k"] == "dropShadow"));
+        let base = own.map_or((SHADOW.0, SHADOW.1, SHADOW.2), |d| (num(&d["dx"]), num(&d["dy"]), num(&d["blur"])));
+        let keys = times
+            .into_iter()
+            .map(|(t, e)| {
+                let color = sc.as_deref().and_then(|c| oc_schema::keyframes::color_value(c, t)).map_or_else(|| json!(SHADOW.3), |c| super::view::color_out(&json!(c)));
+                let v = json!({ "x": r2(keyframe_value(sx.as_deref(), t, base.0)), "y": r2(keyframe_value(sy.as_deref(), t, base.1)), "blur": r2(keyframe_value(sb.as_deref(), t, base.2)), "color": color });
+                key_view(t, v, e)
+            })
+            .collect();
+        o.insert("shadow".into(), Value::Array(keys));
+    }
 }
 
 /// A stored track, or none.
@@ -671,6 +867,7 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
         let named = ANCHORS.iter().find(|(_, x, y)| (x - fx).abs() < 1e-6 && (y - fy).abs() < 1e-6);
         o.insert("anchor".into(), named.map_or_else(|| json!([r4(fx), r4(fy)]), |(n, _, _)| json!(n)));
     }
+    value_tracks_view(k, el, &mut o);
     if o.is_empty() { None } else { Some(Value::Object(o)) }
 }
 
@@ -1270,7 +1467,12 @@ pub fn video_checks(doc: &Value, typed: &oc_schema::DesignDoc, pages: Option<&[S
 fn stored_tracks(el: &Value) -> Vec<(&'static str, Vec<oc_schema::elements::Keyframe>)> {
     let k = &el["keyframes"];
     // The anchor is a static pivot (one key at 0 s), not a move, so the timing checks leave it out.
-    oc_schema::elements::KEYFRAME_PROPS.iter().chain(&["scaleX", "scaleY"]).filter_map(|p| track(k, p).map(|t| (*p, t))).collect()
+    let numbers = oc_schema::elements::KEYFRAME_PROPS.iter().chain(&["scaleX", "scaleY", "strokeWidth", "radius", "cropW", "shadowX"]).filter_map(|p| track(k, p).map(|t| (*p, t)));
+    // Colour tracks count for their times only.
+    let colors = ["fill", "strokeColor"].into_iter().filter_map(|p| {
+        color_track(k, p).map(|t| (p, t.iter().map(|c| oc_schema::elements::Keyframe { t: c.t, v: 0.0, ease: None, bezier: None, extra: Default::default() }).collect()))
+    });
+    numbers.chain(colors).collect()
 }
 
 /// How an assistant names a stored track.
@@ -1282,6 +1484,12 @@ fn track_name(stored: &str) -> &'static str {
         "scaleX" => "scaleX",
         "scaleY" => "scaleY",
         "opacity" => "opacity",
+        "fill" => "fill",
+        "strokeColor" => "strokeColor",
+        "strokeWidth" => "strokeWidth",
+        "radius" => "radius",
+        "cropW" => "zoom",
+        "shadowX" => "shadow",
         _ => "blur",
     }
 }
@@ -1642,6 +1850,49 @@ mod tests {
         flipped["keyframes"] = stored;
         assert_eq!(keyframes_view(&flipped, &rest).unwrap()["anchor"], json!("left"));
         assert!(keyframes_patch(&json!({ "anchor": "middle" }), &el, &rest).unwrap_err().contains("bottom-left"));
+    }
+
+    #[test]
+    fn colour_stroke_radius_zoom_and_shadow_keys_round_trip() {
+        let mut el = box_el(0.0, 1.0);
+        el["fills"] = json!([{ "k": "solid", "color": super::super::edit::hex("#ff0000") }]);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let spec = json!({
+            "fill": [{ "at": 0, "value": "#1f2328" }, { "at": 1, "value": "#ff5a3680", "ease": "linear" }],
+            "strokeWidth": [{ "at": 0, "value": 0 }, { "at": 0.5, "value": 6 }],
+            "radius": [{ "at": 0, "value": 0 }, { "at": 1, "value": 48, "ease": "out-quart" }],
+            "shadow": [{ "at": 0, "value": { "x": 0, "y": 0, "blur": 0, "color": "#00000000" } }, { "at": 0.6, "value": { "x": 0, "y": 20, "blur": 40, "color": "#00000066" } }],
+        });
+        let stored = keyframes_patch(&spec, &el, &rest).unwrap();
+        assert_eq!(stored["fill"][0]["c"], super::super::edit::hex("#1f2328"));
+        assert!(stored["fill"][0].get("v").is_none());
+        // Stored keys load as the renderer reads them.
+        let typed: oc_schema::elements::Keyframes = serde_json::from_value(stored.clone()).unwrap();
+        assert_eq!(typed.color("fill").map(<[_]>::len), Some(2));
+        assert_eq!(typed.number("shadowY").map(|k| k[1].v), Some(20.0));
+        el["keyframes"] = stored;
+        assert_eq!(keyframes_view(&el, &rest).unwrap(), spec);
+        // A shadow key that leaves something out takes it from the default shadow.
+        let p = keyframes_patch(&json!({ "shadow": [{ "at": 0, "value": { "y": 4 } }] }), &el, &rest).unwrap();
+        assert_eq!((p["shadowBlur"][0]["v"].clone(), p["shadowY"][0]["v"].clone()), (json!(24), json!(4)));
+        // Zoom compiles into the picture's own crop.
+        let img = json!({ "type": "image", "xf": { "x": 0, "y": 0, "w": 100, "h": 100, "rot": 0 }, "opacity": 1, "crop": { "x": 0.2, "y": 0, "w": 0.6, "h": 1 } });
+        let rest = Rest::of(&img, Some((0.0, 0.0)));
+        let spec = json!({ "zoom": [{ "at": 0, "value": 1 }, { "at": 2, "value": [2, 0, 1] }] });
+        let stored = keyframes_patch(&spec, &img, &rest).unwrap();
+        assert_eq!(stored["cropW"][1]["v"], json!(0.3));
+        assert_eq!((stored["cropX"][1]["v"].clone(), stored["cropY"][1]["v"].clone()), (json!(0.2), json!(0.5)));
+        let mut with = img.clone();
+        with["keyframes"] = stored;
+        assert_eq!(keyframes_view(&with, &rest).unwrap(), spec);
+        // Tracks that do not fit the element are refused with the reason.
+        assert!(keyframes_patch(&json!({ "zoom": [{ "at": 0, "value": 2 }] }), &el, &rest).unwrap_err().contains("images and videos"));
+        assert!(keyframes_patch(&json!({ "fill": [{ "at": 0, "value": "#fff" }] }), &img, &rest).unwrap_err().contains("apply to shapes"));
+        assert!(keyframes_patch(&json!({ "fill": [{ "at": 0, "value": "red" }] }), &el, &rest).unwrap_err().contains("not a colour"));
+        assert!(keyframes_patch(&json!({ "zoom": [{ "at": 0, "value": 0.5 }] }), &img, &rest).unwrap_err().contains("from 1"));
+        let mut grad = el.clone();
+        grad["fills"] = json!([{ "k": "linear" }]);
+        assert!(keyframes_patch(&json!({ "fill": [{ "at": 0, "value": "#ffffff" }] }), &grad, &rest).unwrap_err().contains("gradient"));
     }
 
     #[test]

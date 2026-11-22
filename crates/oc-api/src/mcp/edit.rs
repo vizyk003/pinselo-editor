@@ -1189,11 +1189,20 @@ impl Run<'_> {
             if let Some(v) = op.get("opacity") {
                 after["opacity"] = v.clone();
             }
+            // Value keys (fill, shadow, zoom) are measured against the fill, shadow and crop this update sets.
+            for k in ["fills", "strokes", "stroke", "crop"] {
+                if let Some(v) = patch.get(k) {
+                    after[k] = v.clone();
+                }
+            }
+            if let Some(fx) = effects_patch(op, &e["effects"]) {
+                after["effects"] = fx;
+            }
             let mut rest = super::motion::Rest::of(&after, view::rest_point(&self.doc().0, &after));
             if let Some((x, y)) = rest.page {
                 rest.page = Some((f(op, "x").unwrap_or(x), f(op, "y").unwrap_or(y)));
             }
-            patch.extend(super::motion::element_patch(op, &e, &self.ctx.kit, 0.0, Some(&rest)).map_err(EditError)?);
+            patch.extend(super::motion::element_patch(op, &after, &self.ctx.kit, 0.0, Some(&rest)).map_err(EditError)?);
         }
         if op.get("speed").is_some() && ty != "video" {
             return err(format!("{target} is a {ty}; speed applies to videos."));
@@ -1682,6 +1691,32 @@ mod motion_tests {
         let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("card"), "shadow": null }]), vec![], json!({}));
         assert!(res.error.is_none(), "{:?}", res.error);
         assert_eq!(doc["elements"][id("card").as_str()]["effects"], json!([{ "k": "blur", "radius": 2 }]));
+    }
+
+    #[test]
+    fn value_keys_go_through_edit_design_and_read_back() {
+        let ydoc = design(1080.0, 1080.0);
+        let ops = json!([
+            { "op": "update_page", "page": 1, "duration": 3 },
+            { "op": "add_shape", "ref": "card", "page": 1, "shape": "rect", "x": 100, "y": 100, "w": 300, "h": 200, "fill": "#1f2328",
+              "keyframes": { "fill": [{ "at": 0, "value": "#1f2328" }, { "at": 1, "value": "#ff5a36" }], "radius": [{ "at": 0, "value": 0 }, { "at": 1, "value": 100 }],
+                             "shadow": [{ "at": 0, "value": { "y": 0, "blur": 0 } }, { "at": 1, "value": { "y": 16, "blur": 40 } }] } },
+            { "op": "add_shape", "ref": "grad", "page": 1, "shape": "rect", "x": 500, "y": 100, "w": 100, "h": 100, "fill": { "gradient": ["#000000", "#ffffff"] } }
+        ]);
+        let (res, doc) = run(&ydoc, ops, vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let v = Value::Object(view::design_view(&doc, &typed, None));
+        let node = v["pages"][0]["elements"].as_array().unwrap().iter().find(|n| n["id"] == id("card").as_str()).cloned().unwrap();
+        assert_eq!(node["keyframes"]["fill"][1]["value"], "#ff5a36");
+        assert_eq!(node["keyframes"]["radius"][1]["value"], json!(100));
+        assert_eq!(node["keyframes"]["shadow"][1]["value"], json!({ "x": 0, "y": 16, "blur": 40, "color": "#00000040" }));
+        // A gradient shape refuses fill keys, until the same update makes its fill a colour.
+        let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("grad"), "keyframes": { "fill": [{ "at": 0, "value": "#ffffff" }] } }]), vec![], json!({}));
+        assert!(res.error.as_ref().is_some_and(|e| e.2.contains("gradient") || e.1.contains("gradient")), "{:?}", res.error);
+        let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("grad"), "fill": "#000000", "keyframes": { "fill": [{ "at": 0, "value": "#ffffff" }] } }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
     }
 
     #[test]

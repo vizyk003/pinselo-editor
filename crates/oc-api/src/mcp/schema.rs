@@ -167,6 +167,20 @@ fn keyframes() -> Schema {
         ("scaleX", track(z::num().min(0.0).max(20.0))),
         ("scaleY", track(z::num().min(0.0).max(20.0))),
         ("anchor", z::union(vec![z::enumeration(&super::motion::ANCHOR_NAMES), z::array(z::num().min(0.0).max(1.0)).min(2.0).max(2.0)]).nullable().optional()),
+        ("fill", track(color())),
+        ("strokeColor", track(color())),
+        ("strokeWidth", track(z::num().min(0.0).max(500.0))),
+        ("radius", track(z::num().min(0.0).max(10000.0))),
+        ("zoom", track(z::union(vec![z::num().min(1.0).max(super::motion::MAX_ZOOM), z::array(z::num().min(0.0).max(super::motion::MAX_ZOOM)).min(3.0).max(3.0)]))),
+        (
+            "shadow",
+            track(z::obj([
+                ("x", z::num().min(-500.0).max(500.0).optional()),
+                ("y", z::num().min(-500.0).max(500.0).optional()),
+                ("blur", z::num().min(0.0).max(200.0).optional()),
+                ("color", color().optional()),
+            ])),
+        ),
     ])
 }
 /// `motionPath`: the element's top-left travels through page points.

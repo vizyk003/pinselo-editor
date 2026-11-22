@@ -217,8 +217,6 @@ string_enum! {
     pub enum KeyframeProp { X = "x", Y = "y", Scale = "scale", Rotate = "rotate", Opacity = "opacity", Blur = "blur" }
 }
 pub const KEYFRAME_PROPS: &[&str] = &["x", "y", "scale", "rotate", "opacity", "blur"];
-/// Keyframed properties added after `KEYFRAME_PROPS` (which the editor's keyframe panel lists).
-pub const KEYFRAME_PROPS_MORE: &[&str] = &["scaleX", "scaleY", "anchorX", "anchorY"];
 string_enum! {
     pub enum KeyframeEase {
         Linear = "linear", Ease = "ease", EaseIn = "ease-in", EaseOut = "ease-out", Back = "back", Hold = "hold",
@@ -238,6 +236,26 @@ pub struct Keyframe {
     pub bezier: Option<[f64; 4]>,
     #[serde(flatten)]
     pub extra: Extra,
+}
+
+/// A key of a colour track (`fill`, `strokeColor`, `shadowColor`): like [`Keyframe`] with a colour for `v`.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ColorKey {
+    pub t: f64,
+    pub c: ColorValue,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ease: Option<KeyframeEase>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bezier: Option<[f64; 4]>,
+    #[serde(flatten)]
+    pub extra: Extra,
+}
+
+/// A track added after the first ones: a value that does not read as one leaves the track out instead of failing
+/// the whole element, the way older builds (keeping these in `extra`) never fail on them.
+fn lenient<'de, D: Deserializer<'de>, T: serde::de::DeserializeOwned>(d: D) -> Result<Option<Vec<T>>, D::Error> {
+    let v = Option::<Value>::deserialize(d)?;
+    Ok(v.and_then(|v| serde_json::from_value(v).ok()))
 }
 
 /// `Partial<Record<KeyframeProp, Keyframe[]>>`.
@@ -265,8 +283,73 @@ pub struct Keyframes {
     pub anchor_x: Option<Vec<Keyframe>>,
     #[serde(default, rename = "anchorY", skip_serializing_if = "Option::is_none")]
     pub anchor_y: Option<Vec<Keyframe>>,
+    // Tracks that set the element's own value instead of moving it (`keyframes::PROPS`, mode `Replace`).
+    #[serde(default, deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub fill: Option<Vec<ColorKey>>,
+    #[serde(default, rename = "strokeColor", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub stroke_color: Option<Vec<ColorKey>>,
+    #[serde(default, rename = "strokeWidth", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub stroke_width: Option<Vec<Keyframe>>,
+    #[serde(default, deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub radius: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "cropX", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub crop_x: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "cropY", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub crop_y: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "cropW", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub crop_w: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "cropH", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub crop_h: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "shadowX", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub shadow_x: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "shadowY", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub shadow_y: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "shadowBlur", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub shadow_blur: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "shadowColor", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub shadow_color: Option<Vec<ColorKey>>,
     #[serde(flatten)]
     pub extra: Extra,
+}
+
+impl Keyframes {
+    /// A number track by its stored name (`keyframes::PROPS`).
+    pub fn number(&self, prop: &str) -> Option<&[Keyframe]> {
+        let v = match prop {
+            "x" => &self.x,
+            "y" => &self.y,
+            "scale" => &self.scale,
+            "rotate" => &self.rotate,
+            "opacity" => &self.opacity,
+            "blur" => &self.blur,
+            "scaleX" => &self.scale_x,
+            "scaleY" => &self.scale_y,
+            "anchorX" => &self.anchor_x,
+            "anchorY" => &self.anchor_y,
+            "strokeWidth" => &self.stroke_width,
+            "radius" => &self.radius,
+            "cropX" => &self.crop_x,
+            "cropY" => &self.crop_y,
+            "cropW" => &self.crop_w,
+            "cropH" => &self.crop_h,
+            "shadowX" => &self.shadow_x,
+            "shadowY" => &self.shadow_y,
+            "shadowBlur" => &self.shadow_blur,
+            _ => return None,
+        };
+        v.as_deref().filter(|k| !k.is_empty())
+    }
+
+    /// A colour track by its stored name.
+    pub fn color(&self, prop: &str) -> Option<&[ColorKey]> {
+        let v = match prop {
+            "fill" => &self.fill,
+            "strokeColor" => &self.stroke_color,
+            "shadowColor" => &self.shadow_color,
+            _ => return None,
+        };
+        v.as_deref().filter(|k| !k.is_empty())
+    }
 }
 
 string_enum! {
