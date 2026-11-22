@@ -270,11 +270,395 @@ fn pan_zoom_view(pz: &Value) -> Value {
     o
 }
 
+// ---------------------------------------------------------------- keyframes and motion paths
+//
+// Assistants write keyframes as absolute values in the units of `update` (page px for position, degrees for rotation,
+// 0–1 for opacity). Designs store them as offsets from the element's resting place, measured in its own box: rotated
+// with it and mirrored by its flips (`oc-render` draws the motion inside the element's transform). `Rest` converts.
+
+/// Eases a key accepts. A key's ease shapes the stretch of time that arrives at it.
+pub const KEY_EASES: [&str; 7] = ["linear", "ease", "ease-in", "ease-out", "ease-in-out", "back", "hold"];
+
+/// How many keys a track takes.
+pub const MAX_KEYS: usize = 64;
+
+/// Where an element rests, which stored offsets are measured from: its page-space top-left (`None` inside a rotated
+/// group, where page and box directions cannot be related here), its own rotation (degrees), flips and opacity.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Rest {
+    pub page: Option<(f64, f64)>,
+    pub rot: f64,
+    pub flip_x: bool,
+    pub flip_y: bool,
+    pub opacity: f64,
+}
+
+impl Rest {
+    /// The rest of a stored element (`xf`, `opacity`) at page position `page`.
+    pub fn of(el: &Value, page: Option<(f64, f64)>) -> Rest {
+        let xf = &el["xf"];
+        Rest {
+            page,
+            rot: f(xf, "rot").unwrap_or(0.0),
+            flip_x: xf["flipX"] == true,
+            flip_y: xf["flipY"] == true,
+            opacity: f(el, "opacity").unwrap_or(1.0),
+        }
+    }
+
+    fn rotated(&self) -> bool {
+        (self.rot % 360.0).abs() > 1e-9
+    }
+
+    /// -1 when exactly one flip mirrors the box (a keyed turn then reads the other way round on the page).
+    fn mirror(&self) -> f64 {
+        if self.flip_x != self.flip_y { -1.0 } else { 1.0 }
+    }
+
+    /// A page-space move → the stored offset (box space): turned back by the rotation, then mirrored by the flips.
+    fn to_box(self, dx: f64, dy: f64) -> (f64, f64) {
+        let r = -self.rot.to_radians();
+        let (c, s) = (r.cos(), r.sin());
+        let (x, y) = (dx * c - dy * s, dx * s + dy * c);
+        (if self.flip_x { -x } else { x }, if self.flip_y { -y } else { y })
+    }
+
+    /// A stored offset (box space) → the page-space move.
+    fn to_page(self, bx: f64, by: f64) -> (f64, f64) {
+        let (x, y) = (if self.flip_x { -bx } else { bx }, if self.flip_y { -by } else { by });
+        let r = self.rot.to_radians();
+        let (c, s) = (r.cos(), r.sin());
+        (x * c - y * s, x * s + y * c)
+    }
+}
+
+/// Two decimals, as stored and shown.
+fn r2(v: f64) -> Value {
+    super::edit::jnum((v * 100.0).round() / 100.0)
+}
+
+/// Four decimals (opacity, scale).
+fn r4(v: f64) -> Value {
+    super::edit::jnum((v * 10000.0).round() / 10000.0)
+}
+
+/// A key's ease as stored: "ease" (also "ease-in-out") is the default and is left out.
+fn stored_ease(e: Option<&str>) -> Option<&'static str> {
+    match e? {
+        "linear" => Some("linear"),
+        "ease-in" => Some("ease-in"),
+        "ease-out" => Some("ease-out"),
+        "back" => Some("back"),
+        "hold" => Some("hold"),
+        _ => None,
+    }
+}
+
+/// A scalar track: (assistant name, stored name, assistant value → stored value).
+type ToStored<'a> = (&'static str, &'static str, &'a dyn Fn(f64) -> Result<Value, String>);
+/// A scalar track: (assistant name, stored name, stored value → assistant value).
+type FromStored<'a> = (&'static str, &'static str, &'a dyn Fn(f64) -> Value);
+
+/// One assistant key: (page ms, value, ease).
+struct Key<'a> {
+    t: f64,
+    v: &'a Value,
+    ease: Option<&'static str>,
+}
+
+fn keys_of<'a>(name: &str, spec: &'a Value) -> Result<Vec<Key<'a>>, String> {
+    let items = spec.as_array().map(Vec::as_slice).unwrap_or(&[]);
+    if items.len() > MAX_KEYS {
+        return Err(format!("keyframes.{name} has {} keys; at most {MAX_KEYS}.", items.len()));
+    }
+    let mut out: Vec<Key<'a>> = Vec::with_capacity(items.len());
+    for k in items {
+        let t = ms(num(&k["at"]));
+        if let Some(prev) = out.last()
+            && t <= prev.t
+        {
+            return Err(format!("keyframes.{name}: keys must be in time order, each later than the one before ({} s after {} s).", secs(t), secs(prev.t)));
+        }
+        out.push(Key { t, v: &k["value"], ease: stored_ease(s(k, "ease")) });
+    }
+    Ok(out)
+}
+
+fn stored_key(t: f64, v: Value, ease: Option<&str>) -> Value {
+    let mut k = json!({ "t": super::edit::jnum(t), "v": v });
+    if let Some(e) = ease {
+        k["ease"] = json!(e);
+    }
+    k
+}
+
+fn pair(v: &Value) -> (f64, f64) {
+    (num(&v[0]), num(&v[1]))
+}
+
+/// `keyframes` of an operation → the element's stored `keyframes` (`Null`: none left). Tracks not named keep their
+/// keys; a track given replaces the stored one, `null` removes it. `rest` is where the element rests once the
+/// operation applies.
+pub fn keyframes_patch(spec: &Value, el: &Value, rest: &Rest) -> Result<Value, String> {
+    if spec.is_null() {
+        return Ok(Value::Null);
+    }
+    let mut out = match &el["keyframes"] {
+        Value::Object(m) => m.clone(),
+        _ => Map::new(),
+    };
+    let given = |k: &str| spec.get(k).is_some();
+    if given("position") as u8 + given("offset") as u8 > 1 || ((given("position") || given("offset")) && (given("x") || given("y"))) {
+        return Err("keyframes: give position, offset, or x and y, not more than one of them; they move the same thing.".into());
+    }
+    let needs_page = ["position", "offset", "x", "y"].iter().any(|k| given(k));
+    let page = match rest.page {
+        Some(p) => p,
+        None if needs_page => return Err("keyframes: moving an element inside a rotated group is not supported; animate the group, or move the element out of it.".into()),
+        None => (0.0, 0.0),
+    };
+    let mut set = |key: &str, track: Option<Vec<Value>>| match track {
+        Some(t) if !t.is_empty() => {
+            out.insert(key.into(), Value::Array(t));
+        }
+        _ => {
+            out.remove(key);
+        }
+    };
+    // Position: page-space top-left (`position`, `x`, `y`) or a move from the resting place (`offset`).
+    for (name, from) in [("position", Some(page)), ("offset", None)] {
+        match spec.get(name) {
+            None => {}
+            Some(Value::Null) => {
+                set("x", None);
+                set("y", None);
+            }
+            Some(track) => {
+                let keys = keys_of(name, track)?;
+                let (mut xs, mut ys) = (Vec::new(), Vec::new());
+                for k in &keys {
+                    let (vx, vy) = pair(k.v);
+                    let (ox, oy) = from.unwrap_or((0.0, 0.0));
+                    let (bx, by) = rest.to_box(vx - ox, vy - oy);
+                    xs.push(stored_key(k.t, r2(bx), k.ease));
+                    ys.push(stored_key(k.t, r2(by), k.ease));
+                }
+                set("x", Some(xs));
+                set("y", Some(ys));
+            }
+        }
+    }
+    for (name, origin, flip) in [("x", page.0, rest.flip_x), ("y", page.1, rest.flip_y)] {
+        match spec.get(name) {
+            None => {}
+            Some(Value::Null) => set(name, None),
+            Some(track) => {
+                if rest.rotated() {
+                    return Err(format!("keyframes.{name}: the element is rotated, so moving it along the page moves both of its own axes; key position (or offset) instead."));
+                }
+                let keys = keys_of(name, track)?;
+                let sign = if flip { -1.0 } else { 1.0 };
+                set(name, Some(keys.iter().map(|k| stored_key(k.t, r2(sign * (num(k.v) - origin)), k.ease)).collect()));
+            }
+        }
+    }
+    let rot_sign = rest.mirror();
+    let opacity = rest.opacity;
+    let scalar: [ToStored; 4] = [
+        ("scale", "scale", &|v| Ok(r4(v))),
+        ("rotation", "rotate", &|v| Ok(r2(rot_sign * (v - rest.rot)))),
+        (
+            "opacity",
+            "opacity",
+            &|v| {
+                if opacity <= 0.0 {
+                    return Err("keyframes.opacity: the element's own opacity is 0, so nothing would show; set opacity on the element first (update opacity: 1).".into());
+                }
+                if v > opacity + 1e-9 {
+                    return Err(format!("keyframes.opacity: a key of {v} is above the element's own opacity ({opacity}), which keys can only lower; set opacity: 1 in the same update and key the fade."));
+                }
+                Ok(r4(v / opacity))
+            },
+        ),
+        ("blur", "blur", &|v| Ok(r2(v))),
+    ];
+    for (name, key, conv) in scalar {
+        match spec.get(name) {
+            None => {}
+            Some(Value::Null) => set(key, None),
+            Some(track) => {
+                let keys = keys_of(name, track)?;
+                let mut t = Vec::with_capacity(keys.len());
+                for k in &keys {
+                    t.push(stored_key(k.t, conv(num(k.v))?, k.ease));
+                }
+                set(key, Some(t));
+            }
+        }
+    }
+    Ok(if out.is_empty() { Value::Null } else { Value::Object(out) })
+}
+
+/// A stored track, or none.
+fn track(k: &Value, name: &str) -> Option<Vec<oc_schema::elements::Keyframe>> {
+    serde_json::from_value::<Vec<oc_schema::elements::Keyframe>>(k.get(name)?.clone()).ok().filter(|t| !t.is_empty())
+}
+
+fn ease_name(e: &Option<oc_schema::elements::KeyframeEase>) -> Option<&str> {
+    e.as_ref().map(|e| e.as_str()).filter(|e| *e != "ease")
+}
+
+fn key_view(t: f64, value: Value, ease: Option<&str>) -> Value {
+    let mut k = json!({ "at": secs(t), "value": value });
+    if let Some(e) = ease {
+        k["ease"] = json!(e);
+    }
+    k
+}
+
+/// Stored keyframes as assistants write them (absolute values, seconds).
+pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
+    use oc_schema::keyframes::keyframe_value;
+    let k = el.get("keyframes").filter(|k| k.is_object())?;
+    let mut o = Map::new();
+    let (xs, ys) = (track(k, "x"), track(k, "y"));
+    let (px, py) = rest.page.unwrap_or((0.0, 0.0));
+    let same_times = |a: &[oc_schema::elements::Keyframe], b: &[oc_schema::elements::Keyframe]| a.len() == b.len() && a.iter().zip(b).all(|(p, q)| (p.t - q.t).abs() < 0.5);
+    let positional = |times: Vec<(f64, Option<&str>)>, x: &dyn Fn(f64) -> f64, y: &dyn Fn(f64) -> f64| -> Value {
+        Value::Array(
+            times
+                .into_iter()
+                .map(|(t, e)| {
+                    let (dx, dy) = rest.to_page(x(t), y(t));
+                    // Inside a rotated group the page position is unknown: show the move instead.
+                    let v = if rest.page.is_some() { json!([r2(px + dx), r2(py + dy)]) } else { json!([r2(dx), r2(dy)]) };
+                    key_view(t, v, e)
+                })
+                .collect(),
+        )
+    };
+    let name = if rest.page.is_some() { "position" } else { "offset" };
+    match (&xs, &ys) {
+        (Some(a), Some(b)) if same_times(a, b) => {
+            let times = a.iter().map(|k| (k.t, ease_name(&k.ease))).collect();
+            o.insert(name.into(), positional(times, &|t| keyframe_value(Some(a), t, 0.0), &|t| keyframe_value(Some(b), t, 0.0)));
+        }
+        (a, b) if rest.page.is_some() && !rest.rotated() => {
+            // Unrotated: each axis reads on its own.
+            for (n, tr, origin, flip) in [("x", a, px, rest.flip_x), ("y", b, py, rest.flip_y)] {
+                if let Some(tr) = tr {
+                    let sign = if flip { -1.0 } else { 1.0 };
+                    o.insert(n.into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(origin + sign * k.v), ease_name(&k.ease))).collect()));
+                }
+            }
+        }
+        (a, b) if a.is_some() || b.is_some() => {
+            // Rotated with keys at different times on each axis: both axes at every key time.
+            let mut times: Vec<(f64, Option<&str>)> = a.iter().chain(b.iter()).flatten().map(|k| (k.t, ease_name(&k.ease))).collect();
+            times.sort_by(|p, q| p.0.total_cmp(&q.0));
+            times.dedup_by(|p, q| (p.0 - q.0).abs() < 0.5);
+            o.insert(name.into(), positional(times, &|t| keyframe_value(a.as_deref(), t, 0.0), &|t| keyframe_value(b.as_deref(), t, 0.0)));
+        }
+        _ => {}
+    }
+    let scalar: [FromStored; 4] = [
+        ("scale", "scale", &r4),
+        ("rotation", "rotate", &|v| r2(rest.rot + rest.mirror() * v)),
+        ("opacity", "opacity", &|v| r4(v * rest.opacity)),
+        ("blur", "blur", &r2),
+    ];
+    for (name, key, conv) in scalar {
+        if let Some(tr) = track(k, key) {
+            o.insert(name.into(), Value::Array(tr.iter().map(|k| key_view(k.t, conv(k.v), ease_name(&k.ease))).collect()));
+        }
+    }
+    if o.is_empty() { None } else { Some(Value::Object(o)) }
+}
+
+/// Points per segment of a smooth path (Catmull-Rom), and the most a path stores.
+const SMOOTH_STEPS: usize = 8;
+const MAX_PATH_POINTS: usize = 256;
+
+/// Through-points → a polyline through them, curved (Catmull-Rom) when `smooth`.
+fn path_points(via: &[(f64, f64)], smooth: bool) -> Vec<(f64, f64)> {
+    if !smooth || via.len() < 3 {
+        return via.to_vec();
+    }
+    let segs = via.len() - 1;
+    let steps = (MAX_PATH_POINTS.saturating_sub(1) / segs).clamp(2, SMOOTH_STEPS);
+    let at = |i: isize| via[i.clamp(0, via.len() as isize - 1) as usize];
+    let mut out = Vec::with_capacity(segs * steps + 1);
+    for i in 0..segs as isize {
+        let (p0, p1, p2, p3) = (at(i - 1), at(i), at(i + 1), at(i + 2));
+        for s in 0..steps {
+            let t = s as f64 / steps as f64;
+            let (t2, t3) = (t * t, t * t * t);
+            let c = |a: f64, b: f64, c: f64, d: f64| 0.5 * (2.0 * b + (-a + c) * t + (2.0 * a - 5.0 * b + 4.0 * c - d) * t2 + (-a + 3.0 * b - 3.0 * c + d) * t3);
+            out.push((c(p0.0, p1.0, p2.0, p3.0), c(p0.1, p1.1, p2.1, p3.1)));
+        }
+    }
+    out.push(via[via.len() - 1]);
+    out
+}
+
+/// `motionPath` → the element's stored `motionPath`: the box's top-left travels through `via` (page px) over
+/// `duration` seconds, starting `delay` seconds after the element appears.
+pub fn motion_path_patch(spec: &Value, rest: &Rest) -> Result<Value, String> {
+    if spec.is_null() {
+        return Ok(Value::Null);
+    }
+    let Some(page) = rest.page else {
+        return Err("motionPath: moving an element inside a rotated group is not supported; animate the group, or move the element out of it.".into());
+    };
+    let via: Vec<(f64, f64)> = spec["via"].as_array().into_iter().flatten().map(pair).collect();
+    let mut points = Vec::new();
+    for (x, y) in path_points(&via, spec["smooth"] == true) {
+        let (bx, by) = rest.to_box(x - page.0, y - page.1);
+        points.push(r2(bx));
+        points.push(r2(by));
+    }
+    Ok(json!({
+        "points": points,
+        "durationMs": super::edit::jnum(ms(num(&spec["duration"]))),
+        "delayMs": super::edit::jnum(ms(f(spec, "delay").unwrap_or(0.0))),
+        "easing": if s(spec, "easing") == Some("ease") { "ease" } else { "linear" },
+    }))
+}
+
+/// A stored motion path as assistants write it.
+fn motion_path_view(mp: &Value, rest: &Rest) -> Value {
+    let (px, py) = rest.page.unwrap_or((0.0, 0.0));
+    let pts: Vec<f64> = mp["points"].as_array().into_iter().flatten().map(num).collect();
+    let via: Vec<Value> = (0..pts.len() / 2)
+        .map(|i| {
+            let (dx, dy) = rest.to_page(pts[2 * i], pts[2 * i + 1]);
+            json!([r2(px + dx), r2(py + dy)])
+        })
+        .collect();
+    let mut o = json!({ "via": via, "duration": secs(num(&mp["durationMs"])) });
+    if let Some(d) = f(mp, "delayMs").filter(|d| *d > 0.0) {
+        o["delay"] = secs(d);
+    }
+    if s(mp, "easing") == Some("ease") {
+        o["easing"] = json!("ease");
+    }
+    o
+}
+
 /// The time fields of an `add_*`, `update` or `animate` operation as an element patch (`anim`, `animOut`, `emphasis`,
-/// `panZoom`, `timing`;
-/// `null` removes). `el` is the element as stored (or about to be added); `extra_delay_s` staggers `animate`.
-pub fn element_patch(op: &Value, el: &Value, kit: &Kit, extra_delay_s: f64) -> Result<Map<String, Value>, String> {
+/// `panZoom`, `timing`, `keyframes`, `motionPath`; `null` removes). `el` is the element as stored (or about to be added);
+/// `rest` where it rests once the operation applies (needed for keyframes and motion paths); `extra_delay_s` staggers
+/// `animate`.
+pub fn element_patch(op: &Value, el: &Value, kit: &Kit, extra_delay_s: f64, rest: Option<&Rest>) -> Result<Map<String, Value>, String> {
     let mut p = Map::new();
+    let fallback = Rest::of(el, None);
+    let rest = rest.unwrap_or(&fallback);
+    if let Some(spec) = op.get("keyframes") {
+        p.insert("keyframes".into(), keyframes_patch(spec, el, rest)?);
+    }
+    if let Some(spec) = op.get("motionPath") {
+        p.insert("motionPath".into(), motion_path_patch(spec, rest)?);
+    }
     let anim = op.get("animation");
     let (spec_in, spec_out, spec_loop) = match anim {
         Some(Value::Null) => (Some(&Value::Null), Some(&Value::Null), Some(&Value::Null)),
@@ -357,7 +741,7 @@ pub fn element_patch(op: &Value, el: &Value, kit: &Kit, extra_delay_s: f64) -> R
 
 /// Whether an operation sets any time field of an element.
 pub fn has_element_time(op: &Value) -> bool {
-    ["animation", "panZoom", "visibleFrom", "visibleTo"].iter().any(|k| op.get(*k).is_some())
+    ["animation", "panZoom", "visibleFrom", "visibleTo", "keyframes", "motionPath"].iter().any(|k| op.get(*k).is_some())
 }
 
 /// `duration` and `transition` of `add_page` / `update_page` as a page patch (`null` removes).
@@ -392,13 +776,30 @@ pub fn page_patch(op: &Value, kit: &Kit) -> Map<String, Value> {
         }
         None => {}
     }
+    match op.get("entrance") {
+        Some(Value::Null) => {
+            p.insert("anim".into(), Value::Null);
+        }
+        Some(e) => {
+            let preset = match s(e, "type").unwrap_or("fade") {
+                "scale" => "shrink",
+                k => k,
+            };
+            p.insert("anim".into(), json!({ "preset": preset, "durationMs": super::edit::jnum(f(e, "duration").map_or(500.0, ms)) }));
+        }
+        None => {}
+    }
     p
 }
 
+/// Entrances a whole page can give its elements (none that need a direction).
+pub const PAGE_ENTRANCES: [&str; 8] = ["fade", "rise", "drop", "scale", "zoom", "pop", "wipe", "blur"];
+
 // ---------------------------------------------------------------- reading the timeline
 
-/// An element's animation and visibility as assistants write them (seconds), for `get_design`.
-pub fn element_view(el: &Value) -> Map<String, Value> {
+/// An element's animation and visibility as assistants write them (seconds), for `get_design`. `rest` is where it
+/// rests, which keyframes and motion paths are measured from.
+pub fn element_view(el: &Value, rest: &Rest) -> Map<String, Value> {
     let mut o = Map::new();
     let a = &el["anim"];
     let out = &el["animOut"];
@@ -456,6 +857,15 @@ pub fn element_view(el: &Value) -> Map<String, Value> {
     if let Some(pz) = el.get("panZoom").filter(|p| p.is_object()) {
         o.insert("panZoom".into(), pan_zoom_view(pz));
     }
+    if let Some(k) = keyframes_view(el, rest) {
+        o.insert("keyframes".into(), k);
+    }
+    if let Some(mp) = el.get("motionPath").filter(|p| p["points"].as_array().is_some_and(|a| a.len() >= 4)) {
+        o.insert("motionPath".into(), motion_path_view(mp, rest));
+    }
+    if let Some(m) = el.get("mask").filter(|m| m["id"].is_string()) {
+        o.insert("mask".into(), json!({ "id": m["id"], "mode": m.get("mode").cloned().unwrap_or(json!("alpha")) }));
+    }
     if let Some(st) = f(&el["timing"], "startMs").filter(|v| *v > 0.0) {
         o.insert("visibleFrom".into(), secs(st));
     }
@@ -479,8 +889,15 @@ pub fn page_view(p: &Value, length_ms: f64) -> Map<String, Value> {
         }
         o.insert("transition".into(), tr);
     }
+    if let Some(a) = p.get("anim").filter(|a| a.is_object()) {
+        let preset = s(a, "preset").unwrap_or("fade");
+        o.insert("entrance".into(), json!({ "type": if preset == "shrink" { "scale" } else { preset }, "duration": secs(num(&a["durationMs"])) }));
+    }
     o
 }
+
+/// Element fields that make it move or come and go over time.
+const MOTION_FIELDS: [&str; 7] = ["anim", "animOut", "timing", "panZoom", "keyframes", "motionPath", "emphasis"];
 
 /// Whether a design uses time at all (page lengths, transitions, animations, sound, captions or video).
 pub fn is_timed(doc: &Value) -> bool {
@@ -494,7 +911,7 @@ pub fn is_timed(doc: &Value) -> bool {
     if pages.map(|(_, p)| p).any(|p| p["durationMs"].is_number() || p["transition"].is_object() || p["anim"].is_object()) {
         return true;
     }
-    doc["elements"].as_object().into_iter().flatten().any(|(_, e)| e["deleted"] != true && (e["anim"].is_object() || e["animOut"].is_object() || e["timing"].is_object() || e["panZoom"].is_object() || e["type"] == "video"))
+    doc["elements"].as_object().into_iter().flatten().any(|(_, e)| e["deleted"] != true && (MOTION_FIELDS.iter().any(|k| e[*k].is_object()) || e["type"] == "video"))
 }
 
 /// The design's timeline (seconds): page spans, soundtrack and captions.
@@ -661,12 +1078,31 @@ pub fn video_checks(doc: &Value, typed: &oc_schema::DesignDoc, pages: Option<&[S
             if f(&el["timing"], "endMs").is_some_and(|e| e > len + 1.0) {
                 out.push(issue(id, "cut_by_page_end", format!("It should stay until {} s but the page ends at {} s, so its exit is cut off.", secs(num(&el["timing"]["endMs"])), secs(len)), page));
             }
+            let nested = el.get("parentId").and_then(Value::as_str).is_some_and(|p| doc["elements"].get(p).is_some_and(|pe| pe.is_object()));
+            if nested {
+                let ignored: Vec<&str> = [("anim", "entrance"), ("animOut", "exit"), ("emphasis", "loop"), ("keyframes", "keyframes"), ("motionPath", "motion path"), ("timing", "visibleFrom / visibleTo")]
+                    .iter()
+                    .filter(|(k, _)| el[*k].is_object())
+                    .map(|(_, n)| *n)
+                    .collect();
+                if !ignored.is_empty() {
+                    out.push(issue(
+                        id,
+                        "animation_ignored_in_group",
+                        format!("It is inside a group, and elements inside a group do not move or come and go yet, so its {} {} ignored. Animate the group instead, or ungroup it.", ignored.join(", "), if ignored.len() == 1 { "is" } else { "are" }),
+                        page,
+                    ));
+                }
+            } else {
+                keyframe_checks(doc, el, id, (start, end, len), (w, h), page, &mut out);
+            }
             let role = s(el, "role");
             if el["type"] == "text" {
                 let t = text_of(el);
                 let n = words(&t);
                 if n > 0 {
-                    let readable = (end - start - entrance_end(el)) / 1000.0;
+                    let faded = if nested { 0.0 } else { faded_ms(el, start + entrance_end(el), end) };
+                    let readable = (end - start - entrance_end(el) - faded) / 1000.0;
                     let need = NOTICE_S + n as f64 / WORDS_PER_SECOND;
                     if readable < need - 0.05 {
                         out.push(issue(
@@ -748,6 +1184,168 @@ pub fn video_checks(doc: &Value, typed: &oc_schema::DesignDoc, pages: Option<&[S
     out
 }
 
+/// The stored keyframe tracks of an element, by stored name.
+fn stored_tracks(el: &Value) -> Vec<(&'static str, Vec<oc_schema::elements::Keyframe>)> {
+    let k = &el["keyframes"];
+    oc_schema::elements::KEYFRAME_PROPS.iter().filter_map(|p| track(k, p).map(|t| (*p, t))).collect()
+}
+
+/// How an assistant names a stored track.
+fn track_name(stored: &str) -> &'static str {
+    match stored {
+        "x" | "y" => "position",
+        "rotate" => "rotation",
+        "scale" => "scale",
+        "opacity" => "opacity",
+        _ => "blur",
+    }
+}
+
+/// Stored tracks an entrance preset also drives.
+fn entrance_tracks(preset: &str) -> &'static [&'static str] {
+    match preset {
+        "fade" | "flip" => &["opacity"],
+        "rise" | "drop" | "pan" | "float" | "bounce" | "slide" => &["opacity", "x", "y"],
+        "pop" | "zoom" | "shrink" | "stomp" | "breathe" => &["opacity", "scale"],
+        "spin" | "tumble" => &["opacity", "rotate", "scale"],
+        "blur" => &["opacity", "blur"],
+        _ => &[],
+    }
+}
+
+/// How far from neutral a keyed value must be to count as moving.
+fn off_neutral(stored: &str, v: f64) -> bool {
+    match stored {
+        "scale" => (v - 1.0).abs() > 0.005,
+        "opacity" => (v - 1.0).abs() > 0.01,
+        _ => v.abs() > 0.5,
+    }
+}
+
+/// How long (ms) keyed opacity holds text below half between `from` and `to` (page ms): too faint to read.
+fn faded_ms(el: &Value, from: f64, to: f64) -> f64 {
+    let Some(op) = track(&el["keyframes"], "opacity") else { return 0.0 };
+    let own = f(el, "opacity").unwrap_or(1.0);
+    let step = 50.0;
+    let mut t = from;
+    let mut n = 0.0;
+    while t < to {
+        if oc_schema::keyframes::keyframe_value(Some(&op), t, 1.0).clamp(0.0, 1.0) * own < 0.5 {
+            n += step;
+        }
+        t += step;
+    }
+    n
+}
+
+/// Keyframe checks of one top-level element: keys after the page ends or outside the element's window, keys closer
+/// than a frame, keyframes fighting its entrance, and keys that keep it off the page.
+fn keyframe_checks(doc: &Value, el: &Value, id: &str, (start, end, len): (f64, f64, f64), (pw, ph): (f64, f64), page: Option<&str>, out: &mut Vec<Value>) {
+    use oc_schema::keyframes::keyframe_value;
+    let tracks = stored_tracks(el);
+    if tracks.is_empty() {
+        return;
+    }
+    let mut times: Vec<f64> = tracks.iter().flat_map(|(_, t)| t.iter().map(|k| k.t)).collect();
+    times.sort_by(f64::total_cmp);
+    times.dedup();
+    let last = *times.last().unwrap_or(&0.0);
+    if last > len + 1.0 {
+        out.push(issue(
+            id,
+            "keyframe_after_page_end",
+            format!("Its last keyframe is at {} s but the page lasts {} s, so what comes after the end never plays; move the keys earlier or lengthen the page.", secs(last), secs(len)),
+            page,
+        ));
+    } else {
+        let outside: Vec<String> = times.iter().filter(|t| **t < start - 1.0 || **t > end + 1.0).map(|t| secs(*t).to_string()).collect();
+        if !outside.is_empty() {
+            out.push(issue(
+                id,
+                "keyframe_outside_window",
+                format!(
+                    "It shows from {} to {} s but has keyframes at {} s; keys are page seconds and only play while the element shows, so move them inside its time or change visibleFrom / visibleTo.",
+                    secs(start),
+                    secs(end),
+                    outside.join(", ")
+                ),
+                page,
+            ));
+        }
+    }
+    if let Some((name, a, b)) = tracks.iter().find_map(|(n, t)| t.windows(2).find(|w| w[1].t - w[0].t < 1000.0 / 30.0).map(|w| (*n, w[0].t, w[1].t))) {
+        out.push(issue(
+            id,
+            "keys_closer_than_a_frame",
+            format!(
+                "Its {} keys at {} and {} s are less than a frame apart (30 frames a second), so the change between them is lost; space them out, or for a jump use ease \"hold\" on the later key.",
+                track_name(name),
+                secs(a),
+                secs(b)
+            ),
+            page,
+        ));
+    }
+    if let Some(a) = el.get("anim").filter(|a| a.is_object()) {
+        let preset = s(a, "preset").unwrap_or("");
+        let (a0, a1) = (start + num(&a["delayMs"]), start + num(&a["delayMs"]) + num(&a["durationMs"]));
+        let hit: Vec<&str> = tracks
+            .iter()
+            .filter(|(n, _)| entrance_tracks(preset).contains(n))
+            .filter(|(n, t)| (0..=4).any(|i| off_neutral(n, keyframe_value(Some(t), a0 + (a1 - a0) * i as f64 / 4.0, 0.0))))
+            .map(|(n, _)| track_name(n))
+            .fold(Vec::new(), |mut v, n| {
+                if !v.contains(&n) {
+                    v.push(n);
+                }
+                v
+            });
+        if !hit.is_empty() {
+            let shown = if preset == "shrink" { "scale" } else { preset };
+            out.push(issue(
+                id,
+                "entrance_conflict",
+                format!(
+                    "Its entrance ({shown}) and its {} keyframes both act at {}–{} s, and they combine (moves add up, opacity and scale multiply). Remove the entrance (animation: {{ in: null }}) and key the whole move, or start the keyframes after the entrance.",
+                    hit.join(" and "),
+                    secs(a0),
+                    secs(a1)
+                ),
+                page,
+            ));
+        }
+    }
+    // Keys that hold it entirely off one side of the page.
+    let (xs, ys) = (tracks.iter().find(|(n, _)| *n == "x").map(|(_, t)| t), tracks.iter().find(|(n, _)| *n == "y").map(|(_, t)| t));
+    if (xs.is_some() || ys.is_some())
+        && let Some((px, py)) = super::view::rest_point(doc, el)
+    {
+        let rest = Rest::of(el, Some((px, py)));
+        let (w, h) = (num(&el["xf"]["w"]), num(&el["xf"]["h"]));
+        let side = |t: f64| -> Option<&'static str> {
+            let (dx, dy) = rest.to_page(keyframe_value(xs.map(Vec::as_slice), t, 0.0), keyframe_value(ys.map(Vec::as_slice), t, 0.0));
+            let (x, y) = (px + dx, py + dy);
+            if x + w <= 0.0 {
+                Some("left")
+            } else if x >= pw {
+                Some("right")
+            } else if y + h <= 0.0 {
+                Some("top")
+            } else if y >= ph {
+                Some("bottom")
+            } else {
+                None
+            }
+        };
+        let sides: Vec<Option<&str>> = times.iter().map(|t| side(*t)).collect();
+        if let Some(Some(first)) = sides.first()
+            && sides.iter().all(|s| *s == Some(*first))
+        {
+            out.push(issue(id, "never_on_screen", format!("Its keyframes keep it off the {first} of the page the whole time, so it is never seen."), page));
+        }
+    }
+}
+
 fn js_round(v: f64) -> Value {
     super::edit::jnum(v.round())
 }
@@ -780,49 +1378,49 @@ mod tests {
     #[test]
     fn exits_and_windows_become_timing() {
         let el = json!({ "type": "text" });
-        let p = element_patch(&json!({ "animation": { "in": { "type": "fade" }, "out": { "type": "fade", "at": 2.2 } }, "visibleFrom": 0.5 }), &el, &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "animation": { "in": { "type": "fade" }, "out": { "type": "fade", "at": 2.2 } }, "visibleFrom": 0.5 }), &el, &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["timing"], json!({ "startMs": 500, "endMs": 2600 }));
         assert_eq!(p["animOut"], json!({ "preset": "fade", "durationMs": 400 }));
         // visibleTo alone; null clears.
-        let p = element_patch(&json!({ "visibleTo": 1.5 }), &el, &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "visibleTo": 1.5 }), &el, &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["timing"], json!({ "startMs": 0, "endMs": 1500 }));
         let cur = json!({ "type": "text", "timing": { "startMs": 500, "endMs": 1500 } });
-        let p = element_patch(&json!({ "visibleTo": null, "visibleFrom": null }), &cur, &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "visibleTo": null, "visibleFrom": null }), &cur, &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["timing"], Value::Null);
-        assert!(element_patch(&json!({ "visibleFrom": 2, "visibleTo": 1 }), &el, &Kit::default(), 0.0).is_err());
-        assert!(element_patch(&json!({ "visibleTo": 2, "animation": { "out": { "at": 1 } } }), &el, &Kit::default(), 0.0).is_err());
-        let p = element_patch(&json!({ "animation": null }), &cur, &Kit::default(), 0.0).unwrap();
+        assert!(element_patch(&json!({ "visibleFrom": 2, "visibleTo": 1 }), &el, &Kit::default(), 0.0, None).is_err());
+        assert!(element_patch(&json!({ "visibleTo": 2, "animation": { "out": { "at": 1 } } }), &el, &Kit::default(), 0.0, None).is_err());
+        let p = element_patch(&json!({ "animation": null }), &cur, &Kit::default(), 0.0, None).unwrap();
         assert_eq!((p["anim"].clone(), p["animOut"].clone(), p.contains_key("timing")), (Value::Null, Value::Null, false));
     }
 
     #[test]
     fn pictures_pan_and_zoom_and_elements_loop() {
         let img = json!({ "type": "image" });
-        let p = element_patch(&json!({ "panZoom": {} }), &img, &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "panZoom": {} }), &img, &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["panZoom"], json!({ "from": 1, "to": 1.12 }));
-        let p = element_patch(&json!({ "panZoom": { "type": "zoom-out", "amount": 0.2, "focus": { "x": 0.3, "y": 0.5 } } }), &img, &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "panZoom": { "type": "zoom-out", "amount": 0.2, "focus": { "x": 0.3, "y": 0.5 } } }), &img, &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["panZoom"], json!({ "fromX": 0.3, "toX": 0.3, "from": 1.2, "to": 1 }));
-        let p = element_patch(&json!({ "panZoom": { "type": "pan-left", "easing": "ease" } }), &json!({ "type": "video" }), &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "panZoom": { "type": "pan-left", "easing": "ease" } }), &json!({ "type": "video" }), &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["panZoom"], json!({ "fromX": 1, "toX": 0, "from": 1.15, "to": 1.15, "easing": "ease" }));
         // Only elements holding a picture; null removes.
-        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "text" }), &Kit::default(), 0.0).unwrap_err().contains("images, videos"));
-        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "frame" }), &Kit::default(), 0.0).is_err());
-        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "frame", "content": { "asset": "a" } }), &Kit::default(), 0.0).is_ok());
-        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "shape", "fills": [{ "k": "image", "asset": "a" }] }), &Kit::default(), 0.0).is_ok());
-        assert_eq!(element_patch(&json!({ "panZoom": null }), &img, &Kit::default(), 0.0).unwrap()["panZoom"], Value::Null);
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "text" }), &Kit::default(), 0.0, None).unwrap_err().contains("images, videos"));
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "frame" }), &Kit::default(), 0.0, None).is_err());
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "frame", "content": { "asset": "a" } }), &Kit::default(), 0.0, None).is_ok());
+        assert!(element_patch(&json!({ "panZoom": {} }), &json!({ "type": "shape", "fills": [{ "k": "image", "asset": "a" }] }), &Kit::default(), 0.0, None).is_ok());
+        assert_eq!(element_patch(&json!({ "panZoom": null }), &img, &Kit::default(), 0.0, None).unwrap()["panZoom"], Value::Null);
         // Loops become the emphasis; animation null clears it with the rest.
-        let p = element_patch(&json!({ "animation": { "loop": { "type": "float", "period": 2.4, "intensity": 0.5 } } }), &img, &Kit::default(), 0.0).unwrap();
+        let p = element_patch(&json!({ "animation": { "loop": { "type": "float", "period": 2.4, "intensity": 0.5 } } }), &img, &Kit::default(), 0.0, None).unwrap();
         assert_eq!(p["emphasis"], json!({ "preset": "float", "periodMs": 2400, "intensity": 0.5 }));
         assert!(!p.contains_key("anim"));
-        assert_eq!(element_patch(&json!({ "animation": null }), &img, &Kit::default(), 0.0).unwrap()["emphasis"], Value::Null);
-        assert!(element_patch(&json!({ "animation": { "loop": { "type": "bounce" } } }), &img, &kit(json!({ "bounce": false })), 0.0).is_err());
+        assert_eq!(element_patch(&json!({ "animation": null }), &img, &Kit::default(), 0.0, None).unwrap()["emphasis"], Value::Null);
+        assert!(element_patch(&json!({ "animation": { "loop": { "type": "bounce" } } }), &img, &kit(json!({ "bounce": false })), 0.0, None).is_err());
         // And read back as written.
         for spec in [json!({ "type": "zoom-in", "amount": 0.12 }), json!({ "type": "zoom-out", "amount": 0.2, "focus": { "x": 0.3, "y": 0.5 } }), json!({ "type": "pan-left", "amount": 0.15, "easing": "ease" }), json!({ "type": "pan-down", "amount": 0.15, "focus": { "x": 0.2, "y": 0.5 } })] {
             let stored = pan_zoom(&spec, &img).unwrap();
             assert_eq!(pan_zoom_view(&stored), spec);
         }
         let el = json!({ "type": "image", "emphasis": { "preset": "pulse", "periodMs": 1600 }, "panZoom": { "from": 1, "to": 1.12 } });
-        assert_eq!(Value::Object(element_view(&el)), json!({ "animation": { "loop": { "type": "pulse", "period": 1.6 } }, "panZoom": { "type": "zoom-in", "amount": 0.12 } }));
+        assert_eq!(Value::Object(element_view(&el, &Rest::of(&el, None))), json!({ "animation": { "loop": { "type": "pulse", "period": 1.6 } }, "panZoom": { "type": "zoom-in", "amount": 0.12 } }));
     }
 
     #[test]
@@ -838,9 +1436,128 @@ mod tests {
     fn element_view_reads_back_what_was_written() {
         let el = json!({ "type": "text", "anim": { "preset": "shrink", "durationMs": 400, "delayMs": 200, "easing": "ease-out" }, "animOut": { "preset": "fade", "durationMs": 300 }, "timing": { "startMs": 500, "endMs": 2600 } });
         assert_eq!(
-            Value::Object(element_view(&el)),
+            Value::Object(element_view(&el, &Rest::of(&el, None))),
             json!({ "animation": { "in": { "type": "scale", "delay": 0.2, "duration": 0.4, "easing": "ease-out" }, "out": { "type": "fade", "duration": 0.3, "at": 2.3 } }, "visibleFrom": 0.5, "visibleTo": 2.6 })
         );
+    }
+
+    /// What the renderer draws for a stored move and turn: `local_matrix(xf)` then the motion matrix about the centre
+    /// (`oc-render` `Resolver::emit`), as a page-space centre and the page direction of the box's x axis.
+    fn drawn(xf: &oc_schema::Xf, dx: f64, dy: f64, rot: f64) -> ([f64; 2], f64) {
+        use oc_geometry::matrix::{apply, apply_vector, local_matrix, multiply, rotate, translate};
+        let (cx, cy) = (xf.w / 2.0, xf.h / 2.0);
+        let motion = multiply(&translate(cx + dx, cy + dy), &multiply(&rotate(rot), &translate(-cx, -cy)));
+        let m = multiply(&local_matrix(xf), &motion);
+        let axis = apply_vector(&m, [1.0, 0.0]);
+        (apply(&m, [cx, cy]), axis[1].atan2(axis[0]).to_degrees())
+    }
+
+    #[test]
+    fn stored_moves_and_turns_match_the_renderer_for_rotated_and_flipped_elements() {
+        for rot in [0.0, 30.0, 90.0, -135.0] {
+            for (fx, fy) in [(false, false), (true, false), (false, true), (true, true)] {
+                let xf = oc_schema::Xf { flip_x: Some(fx), flip_y: Some(fy), ..oc_schema::Xf::new(100.0, 200.0, 80.0, 40.0, rot) };
+                let rest = Rest { page: Some((0.0, 0.0)), rot, flip_x: fx, flip_y: fy, opacity: 1.0 };
+                // A page move of (30, -20) is drawn as exactly that move.
+                let (bx, by) = rest.to_box(30.0, -20.0);
+                let (still, _) = drawn(&xf, 0.0, 0.0, 0.0);
+                let (moved, _) = drawn(&xf, bx, by, 0.0);
+                assert!((moved[0] - still[0] - 30.0).abs() < 1e-9 && (moved[1] - still[1] + 20.0).abs() < 1e-9, "rot {rot} flips {fx} {fy}");
+                assert_eq!(rest.to_page(bx, by).0.round(), 30.0);
+                // A key of rotation 50 draws the box as an element rotated 50 with the same flips.
+                let stored = rest.mirror() * (50.0 - rot);
+                let (_, turned) = drawn(&xf, 0.0, 0.0, stored);
+                let target = oc_schema::Xf { rot: 50.0, ..xf.clone() };
+                let (_, want) = drawn(&target, 0.0, 0.0, 0.0);
+                assert!(((turned - want + 540.0) % 360.0 - 180.0).abs() < 1e-6, "rot {rot} flips {fx} {fy}: {turned} vs {want}");
+            }
+        }
+    }
+
+    fn box_el(rot: f64, opacity: f64) -> Value {
+        json!({ "type": "shape", "xf": { "x": 100, "y": 200, "w": 80, "h": 40, "rot": rot }, "opacity": opacity })
+    }
+
+    #[test]
+    fn keyframes_store_offsets_and_read_back_as_written() {
+        let el = box_el(0.0, 1.0);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let spec = json!({
+            "position": [{ "at": 0, "value": [-200, 200] }, { "at": 0.6, "value": [100, 200], "ease": "ease-out" }],
+            "scale": [{ "at": 0, "value": 0.5 }, { "at": 0.6, "value": 1, "ease": "back" }],
+            "rotation": [{ "at": 1, "value": 0 }, { "at": 1.5, "value": 90, "ease": "hold" }],
+            "opacity": [{ "at": 0, "value": 0 }, { "at": 0.3, "value": 1, "ease": "linear" }],
+        });
+        let stored = keyframes_patch(&spec, &el, &rest).unwrap();
+        assert_eq!(stored["x"], json!([{ "t": 0, "v": -300 }, { "t": 600, "v": 0, "ease": "ease-out" }]));
+        assert_eq!(stored["y"], json!([{ "t": 0, "v": 0 }, { "t": 600, "v": 0, "ease": "ease-out" }]));
+        assert_eq!(stored["rotate"], json!([{ "t": 1000, "v": 0 }, { "t": 1500, "v": 90, "ease": "hold" }]));
+        let mut with = el.clone();
+        with["keyframes"] = stored;
+        assert_eq!(keyframes_view(&with, &rest).unwrap(), spec);
+        // Rotated: position still reads back in page space.
+        let el = box_el(90.0, 0.5);
+        let rest = Rest::of(&el, Some((120.0, 180.0)));
+        let spec = json!({ "position": [{ "at": 0, "value": [20, 180] }, { "at": 1, "value": [120, 180] }], "opacity": [{ "at": 0, "value": 0 }, { "at": 1, "value": 0.5 }] });
+        let stored = keyframes_patch(&spec, &el, &rest).unwrap();
+        assert_eq!((stored["x"][0]["v"].clone(), stored["y"][0]["v"].clone()), (json!(0), json!(100)));
+        assert_eq!(stored["opacity"][1]["v"], json!(1));
+        let mut with = el.clone();
+        with["keyframes"] = stored;
+        assert_eq!(keyframes_view(&with, &rest).unwrap(), spec);
+    }
+
+    #[test]
+    fn keyframe_tracks_replace_merge_and_clear() {
+        let mut el = box_el(0.0, 1.0);
+        el["keyframes"] = json!({ "x": [{ "t": 0, "v": 5 }], "blur": [{ "t": 0, "v": 4 }] });
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        // Tracks not named stay; a track given replaces; null removes one, or all.
+        let p = keyframes_patch(&json!({ "scale": [{ "at": 0, "value": 2 }], "blur": null }), &el, &rest).unwrap();
+        assert_eq!(p, json!({ "x": [{ "t": 0, "v": 5 }], "scale": [{ "t": 0, "v": 2 }] }));
+        assert_eq!(keyframes_patch(&json!({ "x": null, "blur": null }), &el, &rest).unwrap(), Value::Null);
+        assert_eq!(keyframes_patch(&Value::Null, &el, &rest).unwrap(), Value::Null);
+    }
+
+    #[test]
+    fn keyframes_refuse_what_cannot_be_shown() {
+        let el = box_el(0.0, 0.5);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let err = |spec: Value, rest: &Rest| keyframes_patch(&spec, &el, rest).unwrap_err();
+        assert!(err(json!({ "opacity": [{ "at": 0, "value": 1 }] }), &rest).contains("above the element's own opacity"));
+        assert!(err(json!({ "scale": [{ "at": 1, "value": 1 }, { "at": 1, "value": 2 }] }), &rest).contains("time order"));
+        assert!(err(json!({ "position": [{ "at": 0, "value": [0, 0] }], "x": [{ "at": 0, "value": 0 }] }), &rest).contains("not more than one"));
+        let rotated = Rest { rot: 30.0, ..rest };
+        assert!(err(json!({ "x": [{ "at": 0, "value": 0 }] }), &rotated).contains("key position"));
+        let in_rotated_group = Rest { page: None, ..rest };
+        assert!(err(json!({ "position": [{ "at": 0, "value": [0, 0] }] }), &in_rotated_group).contains("rotated group"));
+        // Scale, rotation and blur need no page position.
+        assert!(keyframes_patch(&json!({ "rotation": [{ "at": 0, "value": 10 }] }), &el, &in_rotated_group).is_ok());
+    }
+
+    #[test]
+    fn motion_paths_go_through_page_points() {
+        let el = box_el(0.0, 1.0);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let p = motion_path_patch(&json!({ "via": [[100, 200], [300, 100]], "duration": 1.5, "delay": 0.25 }), &rest).unwrap();
+        assert_eq!(p, json!({ "points": [0, 0, 200, -100], "durationMs": 1500, "delayMs": 250, "easing": "linear" }));
+        assert_eq!(motion_path_view(&p, &rest), json!({ "via": [[100, 200], [300, 100]], "duration": 1.5, "delay": 0.25 }));
+        // Smooth paths pass through every point given.
+        let p = motion_path_patch(&json!({ "via": [[100, 200], [200, 100], [300, 200]], "duration": 1, "smooth": true, "easing": "ease" }), &rest).unwrap();
+        let pts: Vec<f64> = p["points"].as_array().unwrap().iter().map(num).collect();
+        assert_eq!(pts.len(), 2 * (2 * SMOOTH_STEPS + 1));
+        assert_eq!((pts[2 * SMOOTH_STEPS], pts[2 * SMOOTH_STEPS + 1]), (100.0, -100.0));
+        assert_eq!(&pts[pts.len() - 2..], &[200.0, 0.0]);
+        assert!(motion_path_patch(&json!({ "via": [[0, 0], [1, 1]], "duration": 1 }), &Rest { page: None, ..rest }).is_err());
+    }
+
+    #[test]
+    fn pages_take_an_entrance() {
+        let p = page_patch(&json!({ "entrance": { "type": "scale", "duration": 0.4 } }), &Kit::default());
+        assert_eq!(Value::Object(p.clone()), json!({ "anim": { "preset": "shrink", "durationMs": 400 } }));
+        let page = json!({ "anim": p["anim"] });
+        assert_eq!(page_view(&page, 3000.0)["entrance"], json!({ "type": "scale", "duration": 0.4 }));
+        assert_eq!(Value::Object(page_patch(&json!({ "entrance": null }), &Kit::default())), json!({ "anim": null }));
     }
 
     #[test]

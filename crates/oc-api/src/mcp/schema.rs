@@ -124,21 +124,60 @@ fn pan_zoom() -> Schema {
         ("easing", z::enumeration(&["linear", "ease"]).optional()),
     ])
 }
-/// When an element moves and shows: `animation` (`null` removes all of it), `panZoom`, `visibleFrom` / `visibleTo`
-/// (`null` clears).
+/// A page-space point `[x, y]`.
+fn point() -> Schema {
+    z::array(z::num()).min(2.0).max(2.0)
+}
+/// One keyframe track: keys in time order (page seconds), each with the value at that moment and the ease of the move
+/// arriving at it. `null` removes the track.
+fn track(value: Schema) -> Schema {
+    z::array(z::obj([("at", secs()), ("value", value), ("ease", z::enumeration(&super::motion::KEY_EASES).optional())])).min(1.0).max(super::motion::MAX_KEYS as f64).nullable().optional()
+}
+/// `keyframes`: absolute values over page time, per property (`null` removes them all).
+fn keyframes() -> Schema {
+    z::obj([
+        ("position", track(point())),
+        ("x", track(z::num())),
+        ("y", track(z::num())),
+        ("offset", track(point())),
+        ("scale", track(z::num().min(0.0).max(20.0))),
+        ("rotation", track(z::num().min(-36000.0).max(36000.0))),
+        ("opacity", track(z::num().min(0.0).max(1.0))),
+        ("blur", track(z::num().min(0.0).max(200.0))),
+    ])
+}
+/// `motionPath`: the element's top-left travels through page points.
+fn motion_path() -> Schema {
+    z::obj([
+        ("via", z::array(point()).min(2.0).max(64.0)),
+        ("duration", z::num().min(0.05).max(600.0)),
+        ("delay", secs().optional()),
+        ("easing", z::enumeration(&["linear", "ease"]).optional()),
+        ("smooth", z::bool().optional()),
+    ])
+}
+/// When an element moves and shows: `animation` (`null` removes all of it), `panZoom`, `keyframes`, `motionPath`,
+/// `visibleFrom` / `visibleTo` (`null` clears).
 fn timing() -> Vec<(&'static str, Schema)> {
     vec![
         ("animation", z::obj([("in", anim_in().nullable().optional()), ("out", anim_out().nullable().optional()), ("loop", anim_loop().nullable().optional())]).nullable().optional()),
         ("panZoom", pan_zoom().nullable().optional()),
+        ("keyframes", keyframes().nullable().optional()),
+        ("motionPath", motion_path().nullable().optional()),
         ("visibleFrom", secs().nullable().optional()),
         ("visibleTo", secs().nullable().optional()),
     ]
+}
+/// A video's playback speed.
+fn speed() -> Schema {
+    z::num().min(0.25).max(3.0).optional()
 }
 /// A page's length (`null`: automatic) and how it comes in from the page before (`null` or type "none": a cut).
 fn page_time() -> Vec<(&'static str, Schema)> {
     vec![
         ("duration", z::num().min(0.1).max(600.0).nullable().optional()),
         ("transition", z::obj([("type", z::enumeration(&hub::MOTION_TRANSITIONS).optional()), ("duration", z::num().min(0.01).max(5.0).optional()), ("direction", direction().optional())]).nullable().optional()),
+        ("entrance", z::obj([("type", z::enumeration(&super::motion::PAGE_ENTRANCES).optional()), ("duration", z::num().min(0.01).max(30.0).optional())]).nullable().optional()),
     ]
 }
 /// A video or sound: an upload (`list_uploads`), stock (`search_media`), or a URL.
@@ -186,6 +225,7 @@ fn op_schema(op: &str) -> Schema {
             ("start", marker().optional()),
             ("end", marker().optional()),
             ("name", z::str().max(80.0).optional()),
+            ("role", z::enumeration(&ROLES).optional()),
             ]);
             f.extend(timing());
         }
@@ -239,7 +279,7 @@ fn op_schema(op: &str) -> Schema {
             f.extend([("size", positive()), ("color", color().optional()), ("background", color().optional())]);
             f.extend(timing());
         }
-        "group" => f.extend([("ref", r#ref()), ("ids", z::array(target()).min(2.0)), ("name", z::str().max(80.0).optional())]),
+        "group" => f.extend([("ref", r#ref()), ("ids", z::array(target()).min(2.0)), ("name", z::str().max(80.0).optional()), ("role", z::enumeration(&ROLES).optional())]),
         "ungroup" => f.push(("id", target())),
         "update" => {
             f.extend([
@@ -264,7 +304,7 @@ fn op_schema(op: &str) -> Schema {
                 ("alt", z::str().max(500.0).optional()),
             ]);
             f.extend(timing());
-            f.extend([("muted", z::bool().optional()), ("loop", z::bool().optional()), ("volume", z::num().min(0.0).max(1.0).optional()), ("trim", trim().optional())]);
+            f.extend([("muted", z::bool().optional()), ("loop", z::bool().optional()), ("volume", z::num().min(0.0).max(1.0).optional()), ("speed", speed()), ("trim", trim().optional())]);
         }
         "delete" => f.push(("ids", z::array(target()).min(1.0))),
         "reorder" => f.extend([("id", target()), ("to", z::enumeration(&["front", "back", "forward", "backward"]))]),
@@ -314,6 +354,7 @@ fn op_schema(op: &str) -> Schema {
                 ("muted", z::bool().optional()),
                 ("loop", z::bool().optional()),
                 ("volume", z::num().min(0.0).max(1.0).optional()),
+                ("speed", speed()),
                 ("radius", z::num().min(0.0).optional()),
             ]);
             f.extend(timing());
@@ -365,7 +406,7 @@ fn op_schema(op: &str) -> Schema {
                 ("start", secs().optional()),
                 ("stagger", z::num().min(0.0).max(10.0).optional()),
             ]);
-            f.extend(timing().into_iter().filter(|(k, _)| *k != "animation" && *k != "panZoom"));
+            f.extend(timing().into_iter().filter(|(k, _)| *k == "visibleFrom" || *k == "visibleTo"));
         }
         "delete_page" => f.push(("page", page_ref())),
         "move_page" => f.extend([("page", page_ref()), ("after", page_ref().nullable())]),
@@ -680,4 +721,124 @@ pub fn validate(name: &str, args: Option<&Value>) -> Result<Value, String> {
 /// A registered tool name.
 pub fn is_tool(name: &str) -> bool {
     TOOLS.contains(&name)
+}
+
+/// `tools.json` is written by hand; these tests keep what it announces equal to what validation accepts.
+#[cfg(test)]
+mod drift {
+    use super::*;
+
+    /// A `tools.json` schema without what validation does not decide (descriptions), `required` sorted.
+    fn clean(v: &Value) -> Value {
+        match v {
+            Value::Object(m) => Value::Object(
+                m.iter()
+                    .filter(|(k, _)| !matches!(k.as_str(), "description" | "$schema" | "propertyNames"))
+                    .filter(|(k, v)| !(k.as_str() == "additionalProperties" && **v == Value::Bool(false)))
+                    .map(|(k, v)| {
+                        let v = if k == "required" {
+                            let mut r: Vec<String> = v.as_array().into_iter().flatten().filter_map(Value::as_str).map(str::to_owned).collect();
+                            r.sort_unstable();
+                            json!(r)
+                        } else if k == "properties" {
+                            Value::Object(v.as_object().into_iter().flatten().map(|(k, v)| (k.clone(), clean(v))).collect())
+                        } else {
+                            clean(v)
+                        };
+                        (k.clone(), v)
+                    })
+                    .collect(),
+            ),
+            Value::Array(a) => Value::Array(a.iter().map(clean).collect()),
+            other => other.clone(),
+        }
+    }
+
+    /// Where `announced` (tools.json) and `validated` (the zod schema) differ, as readable lines.
+    fn diff(path: &str, announced: &Value, validated: &Value, out: &mut Vec<String>) {
+        match (announced, validated) {
+            (Value::Object(a), Value::Object(b)) => {
+                for k in a.keys().chain(b.keys().filter(|k| !a.contains_key(*k))) {
+                    let p = format!("{path}.{k}");
+                    match (a.get(k), b.get(k)) {
+                        (Some(x), Some(y)) => diff(&p, x, y, out),
+                        (Some(_), None) => out.push(format!("{p}: announced, not validated")),
+                        (None, Some(_)) => out.push(format!("{p}: validated, not announced")),
+                        (None, None) => {}
+                    }
+                }
+            }
+            (Value::Array(a), Value::Array(b)) if a.len() == b.len() => {
+                for (i, (x, y)) in a.iter().zip(b).enumerate() {
+                    diff(&format!("{path}[{i}]"), x, y, out);
+                }
+            }
+            (a, b) if a == b => {}
+            (a, b) => out.push(format!("{path}: announced {a}, validated {b}")),
+        }
+    }
+
+    /// Differences kept on purpose, by path prefix.
+    const ALLOWED: &[(&str, &str)] = &[
+        // ChatGPT reads `file` from the announcement (`openai/fileParams`) and fills in an object; validation also takes the
+        // bare id string a model passes when it has nothing else.
+        ("upload_image.properties.file.", "shaped for ChatGPT's file parameters"),
+    ];
+
+    /// Operations whose `animation` is announced as a bare object ("exactly as on update") to keep `tools/list` short,
+    /// and those that announce no `panZoom` although validation takes it, so `edit_design` can say why it does not apply.
+    const ABBREVIATED: &[&str] = &["add_text", "add_shape", "add_line", "add_image", "add_table", "add_chart", "add_qr", "add_video"];
+    const NO_PICTURE: &[&str] = &["add_text", "add_shape", "add_line", "add_table", "add_chart", "add_qr"];
+
+    fn allowed(line: &str) -> bool {
+        if ALLOWED.iter().any(|(p, _)| line.starts_with(p)) {
+            return true;
+        }
+        ABBREVIATED.iter().any(|op| {
+            let pre = format!("edit_design.{op}.properties.");
+            line.strip_prefix(&pre).is_some_and(|rest| {
+                // Abbreviated: an announced bare object accepts every validated field below it.
+                ["animation", "keyframes", "motionPath", "panZoom"].iter().any(|f| rest.starts_with(&format!("{f}.anyOf[0].")))
+                    && line.ends_with("validated, not announced")
+                    || (NO_PICTURE.contains(op) && rest.starts_with("panZoom:") && line.ends_with("validated, not announced"))
+            })
+        })
+    }
+
+    fn announced() -> Vec<Value> {
+        let t: Value = serde_json::from_str(include_str!("tools.json")).expect("tools.json");
+        t["tools"].as_array().cloned().expect("tools")
+    }
+
+    #[test]
+    fn every_tool_is_announced_once() {
+        let names: Vec<String> = announced().iter().filter_map(|t| t["name"].as_str().map(str::to_owned)).collect();
+        assert_eq!(names, TOOLS.iter().map(|s| (*s).to_owned()).collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn tools_json_matches_validation() {
+        let mut out = Vec::new();
+        for t in announced() {
+            let name = t["name"].as_str().unwrap_or("");
+            let input = clean(&t["inputSchema"]);
+            if name == "edit_design" {
+                let items = &input["properties"]["operations"]["items"]["oneOf"];
+                let listed: Vec<&str> = items.as_array().into_iter().flatten().filter_map(|o| o["properties"]["op"]["const"].as_str()).collect();
+                assert_eq!(listed, OPS.to_vec(), "edit_design operations in tools.json");
+                for o in items.as_array().into_iter().flatten() {
+                    let op = o["properties"]["op"]["const"].as_str().unwrap_or("");
+                    // The discriminator is announced as a string const.
+                    let mut want = op_schema(op).json_shape();
+                    want["properties"]["op"] = json!({ "type": "string", "const": op });
+                    diff(&format!("edit_design.{op}"), o, &want, &mut out);
+                }
+                continue;
+            }
+            let schema = tool_schema(name).unwrap_or_else(|| panic!("{name}: no schema"));
+            diff(name, &input, &schema.json_shape(), &mut out);
+        }
+        out.retain(|l| !allowed(l));
+        assert!(out.is_empty(), "tools.json differs from the validation schemas:\n{}", out.join("\n"));
+    }
 }

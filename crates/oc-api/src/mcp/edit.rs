@@ -352,7 +352,9 @@ impl Run<'_> {
         if kind.starts_with("add_") && kind != "add_page" && kind != "add_audio" && super::motion::has_element_time(op) {
             for d in &mut ops {
                 if d["op"] == "add" && d["el"]["id"].as_str() == new_id.as_deref() {
-                    let patch = super::motion::element_patch(op, &d["el"], &self.ctx.kit, 0.0).map_err(EditError)?;
+                    // The new element rests where it is added: its parent (page or group) already exists.
+                    let rest = super::motion::Rest::of(&d["el"], view::rest_point(&self.doc().0, &d["el"]));
+                    let patch = super::motion::element_patch(op, &d["el"], &self.ctx.kit, 0.0, Some(&rest)).map_err(EditError)?;
                     for (k, v) in patch {
                         if !v.is_null() {
                             d["el"][k.as_str()] = v;
@@ -596,6 +598,9 @@ impl Run<'_> {
                 g.insert("xf".into(), json!({ "x": jnum(gx - ppos.0), "y": jnum(gy - ppos.1), "w": jnum(gw), "h": jnum(gh), "rot": 0 }));
                 if let Some(n) = s(op, "name").filter(|n| !n.is_empty()) {
                     g.insert("name".into(), json!(n));
+                }
+                if let Some(r) = s(op, "role") {
+                    g.insert("role".into(), json!(r));
                 }
                 let mut ops = vec![json!({ "op": "add", "el": g, "parent": parent, "after": sorted.last() })];
                 let mut after = "bottom".to_owned();
@@ -862,7 +867,7 @@ impl Run<'_> {
                 }
                 e.insert(
                     "clip".into(),
-                    json!({ "trimStartMs": jnum(t0), "trimEndMs": jnum(t1), "speed": 1, "volume": op.get("volume").cloned().unwrap_or(json!(1)), "muted": op.get("muted").cloned().unwrap_or(json!(false)), "loop": op.get("loop").cloned().unwrap_or(json!(false)) }),
+                    json!({ "trimStartMs": jnum(t0), "trimEndMs": jnum(t1), "speed": op.get("speed").cloned().unwrap_or(json!(1)), "volume": op.get("volume").cloned().unwrap_or(json!(1)), "muted": op.get("muted").cloned().unwrap_or(json!(false)), "loop": op.get("loop").cloned().unwrap_or(json!(false)) }),
                 );
                 if let Some(r) = f(op, "radius").filter(|r| *r != 0.0) {
                     e.insert("cornerRadius".into(), jnum(r));
@@ -996,7 +1001,7 @@ impl Run<'_> {
                 let mut ops = Vec::new();
                 for (n, v) in ids.iter().enumerate() {
                     let e = self.el(v)?;
-                    let patch = super::motion::element_patch(&spec, &e, &self.ctx.kit, start + n as f64 * gap).map_err(|m| EditError(format!("{v}: {m}")))?;
+                    let patch = super::motion::element_patch(&spec, &e, &self.ctx.kit, start + n as f64 * gap, None).map_err(|m| EditError(format!("{v}: {m}")))?;
                     ops.push(json!({ "op": "update", "id": e["id"], "patch": patch }));
                 }
                 Ok((ops, None, None))
@@ -1146,12 +1151,30 @@ impl Run<'_> {
             }
         }
         if super::motion::has_element_time(op) {
-            patch.extend(super::motion::element_patch(op, &e, &self.ctx.kit, 0.0).map_err(EditError)?);
+            // Keyframes are measured from where the element rests once this update applies: its new size, rotation and
+            // opacity, and the x, y given (which get_design will then show).
+            let mut after = e.clone();
+            for (k, to) in [("w", "w"), ("h", "h"), ("rotation", "rot")] {
+                if let Some(v) = op.get(k) {
+                    after["xf"][to] = v.clone();
+                }
+            }
+            if let Some(v) = op.get("opacity") {
+                after["opacity"] = v.clone();
+            }
+            let mut rest = super::motion::Rest::of(&after, view::rest_point(&self.doc().0, &after));
+            if let Some((x, y)) = rest.page {
+                rest.page = Some((f(op, "x").unwrap_or(x), f(op, "y").unwrap_or(y)));
+            }
+            patch.extend(super::motion::element_patch(op, &e, &self.ctx.kit, 0.0, Some(&rest)).map_err(EditError)?);
+        }
+        if op.get("speed").is_some() && ty != "video" {
+            return err(format!("{target} is a {ty}; speed applies to videos."));
         }
         if ty == "video" {
             let mut clip = e["clip"].clone();
             let mut changed = false;
-            for k in ["muted", "loop", "volume"] {
+            for k in ["muted", "loop", "volume", "speed"] {
                 if let Some(v) = op.get(k) {
                     clip[k] = v.clone();
                     changed = true;
@@ -1532,6 +1555,73 @@ mod motion_tests {
     }
 
     #[test]
+    fn keyframes_paths_speed_and_page_entrances_through_edit_design() {
+        let ydoc = design(1080.0, 1080.0);
+        let clip = json!({ "id": "clip000000000001", "kind": "video", "sha256": "cd", "mime": "video/mp4", "w": 1920, "h": 1080, "durationMs": 9000, "hasAudio": true });
+        let rect = |r: &str, x: i64, extra: Value| {
+            let mut o = json!({ "op": "add_shape", "ref": r, "page": 1, "shape": "rect", "x": x, "y": 400, "w": 100, "h": 100, "fill": "#ff5a36" });
+            for (k, v) in extra.as_object().unwrap() {
+                o[k.as_str()] = v.clone();
+            }
+            o
+        };
+        let (res, doc) = run(
+            &ydoc,
+            json!([
+                { "op": "update_page", "page": 1, "duration": 3, "entrance": { "type": "rise", "duration": 0.4 } },
+                rect("card", 100, json!({ "rotation": 90, "keyframes": { "position": [{ "at": 0, "value": [-400, 400] }, { "at": 0.8, "value": [100, 400], "ease": "ease-out" }], "rotation": [{ "at": 0, "value": 0 }, { "at": 0.8, "value": 90 }] } })),
+                rect("late", 250, json!({ "keyframes": { "scale": [{ "at": 0, "value": 1 }, { "at": 4, "value": 2 }] } })),
+                rect("fight", 400, json!({ "animation": { "in": { "type": "rise" } }, "keyframes": { "offset": [{ "at": 0, "value": [0, 300] }, { "at": 0.4, "value": [0, 0] }] } })),
+                rect("close", 550, json!({ "keyframes": { "rotation": [{ "at": 1, "value": 0 }, { "at": 1.01, "value": 90 }] } })),
+                rect("gone", 700, json!({ "keyframes": { "x": [{ "at": 0, "value": -800 }, { "at": 1, "value": -700 }] } })),
+                rect("brief", 850, json!({ "visibleFrom": 1, "visibleTo": 2, "keyframes": { "scale": [{ "at": 0.2, "value": 1 }, { "at": 1.5, "value": 2 }] } })),
+                rect("trip", 100, json!({ "motionPath": { "via": [[100, 400], [500, 200], [900, 400]], "duration": 2, "delay": 0.5, "smooth": true } })),
+                rect("a", 100, json!({ "animation": { "in": { "type": "fade" } } })),
+                rect("b", 250, json!({})),
+                { "op": "group", "ref": "pair", "ids": ["$a", "$b"], "role": "decor" },
+                { "op": "add_video", "ref": "demo", "page": 1, "source": { "asset": "clip000000000001" }, "x": 0, "y": 700, "w": 400, "h": 225, "speed": 0.5 }
+            ]),
+            vec![(11, clip)],
+            json!({}),
+        );
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        let el = |r: &str| doc["elements"][id(r).as_str()].clone();
+        // Rotated a quarter turn: a page move to the right is a move down its own (turned) box.
+        assert_eq!(el("card")["keyframes"]["rotate"], json!([{ "t": 0, "v": -90 }, { "t": 800, "v": 0 }]));
+        assert_eq!(el("trip")["motionPath"]["delayMs"], 500);
+        assert_eq!(el("demo")["clip"]["speed"], 0.5);
+        assert_eq!(el("pair")["role"], "decor");
+        let pid = view::sorted_page_ids(&typed)[0].clone();
+        assert_eq!(doc["pages"][pid.as_str()]["anim"], json!({ "preset": "rise", "durationMs": 400 }));
+        // get_design shows them as written.
+        let v = Value::Object(view::design_view(&doc, &typed, None));
+        let node = |r: &str| v["pages"][0]["elements"].as_array().unwrap().iter().find(|n| n["id"] == id(r).as_str()).cloned().unwrap();
+        let card = node("card");
+        let (x, y) = (num(&card["x"]), num(&card["y"]));
+        let pos = &card["keyframes"]["position"];
+        assert_eq!((num(&pos[1]["value"][0]), num(&pos[1]["value"][1])), (x, y));
+        assert_eq!(num(&pos[0]["value"][0]) - num(&pos[1]["value"][0]), -500.0);
+        assert_eq!(card["keyframes"]["rotation"], json!([{ "at": 0, "value": 0 }, { "at": 0.8, "value": 90 }]));
+        assert_eq!(node("trip")["motionPath"]["delay"], 0.5);
+        assert_eq!(v["pages"][0]["entrance"], json!({ "type": "rise", "duration": 0.4 }));
+        // The checks say what will not play.
+        let issues = super::super::motion::video_checks(&doc, &typed, None);
+        let by = |r: &str| issues.iter().filter(|i| i["id"] == id(r).as_str()).filter_map(|i| i["problem"].as_str().map(str::to_owned)).collect::<Vec<_>>();
+        assert_eq!(by("late"), ["keyframe_after_page_end"]);
+        assert_eq!(by("brief"), ["keyframe_outside_window"]);
+        assert_eq!(by("close"), ["keys_closer_than_a_frame"]);
+        assert_eq!(by("fight"), ["entrance_conflict"]);
+        assert_eq!(by("gone"), ["never_on_screen"]);
+        assert_eq!(by("a"), ["animation_ignored_in_group"]);
+        assert!(by("card").is_empty() && by("trip").is_empty() && by("b").is_empty(), "{issues:?}");
+        // speed is for videos.
+        let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("late"), "speed": 2 }]), vec![], json!({}));
+        assert!(res.error.as_ref().is_some_and(|e| e.2.contains("speed applies to videos")), "{:?}", res.error);
+    }
+
+    #[test]
     fn photos_move_one_thing_loops_and_spoken_words_light_up() {
         let ydoc = design(1080.0, 1920.0);
         let photo = json!({ "id": "photo00000000001", "kind": "image", "sha256": "ef", "mime": "image/jpeg", "w": 2000, "h": 3000, "name": "Team" });
@@ -1559,7 +1649,7 @@ mod motion_tests {
         // get_design shows them as they were written.
         let tl = super::super::motion::timeline_view(&doc, &typed);
         assert_eq!(tl["captions"]["style"]["highlight"], "#ffd60a");
-        assert_eq!(Value::Object(super::super::motion::element_view(&el("bg")))["panZoom"], json!({ "type": "zoom-in", "amount": 0.15, "focus": { "x": 0.5, "y": 0.3 } }));
+        assert_eq!(Value::Object(super::super::motion::element_view(&el("bg"), &super::super::motion::Rest::of(&el("bg"), None)))["panZoom"], json!({ "type": "zoom-in", "amount": 0.15, "focus": { "x": 0.5, "y": 0.3 } }));
 
         // Text has no picture to move; null takes the movement and the highlight off again.
         let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("cta"), "panZoom": {} }]), vec![], json!({}));

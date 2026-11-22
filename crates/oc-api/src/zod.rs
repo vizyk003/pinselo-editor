@@ -307,6 +307,121 @@ impl Schema {
         self.push_num(NumCheck::Min(0.0, true))
     }
 
+    /// Whether an object field with this schema may be left out (zod's `required` list in JSON Schema).
+    pub fn is_optional(&self) -> bool {
+        self.optional || self.default.is_some()
+    }
+
+    /// The JSON Schema the MCP SDK announces for this schema, without descriptions (`tools/list`). Used to check the
+    /// hand-kept `tools.json` against the schemas that actually validate.
+    pub fn json_shape(&self) -> Value {
+        let mut o = Map::new();
+        match &self.kind {
+            Kind::Any => {}
+            Kind::Str(checks) => {
+                o.insert("type".into(), json!("string"));
+                for c in checks {
+                    match c {
+                        StrCheck::Min(n) => {
+                            o.insert("minLength".into(), json!(n));
+                        }
+                        StrCheck::Max(n) => {
+                            o.insert("maxLength".into(), json!(n));
+                        }
+                        StrCheck::Email => {
+                            o.insert("format".into(), json!("email"));
+                        }
+                        StrCheck::Uuid => {
+                            o.insert("format".into(), json!("uuid"));
+                        }
+                        StrCheck::Url => {
+                            o.insert("format".into(), json!("uri"));
+                        }
+                        StrCheck::Datetime => {
+                            o.insert("format".into(), json!("date-time"));
+                            o.insert("pattern".into(), json!(DATETIME_PATTERN));
+                        }
+                        StrCheck::DatetimeOffset => {
+                            o.insert("format".into(), json!("date-time"));
+                            o.insert("pattern".into(), json!(DATETIME_OFFSET_PATTERN));
+                        }
+                        StrCheck::Regex(js, _) | StrCheck::RegexFn(js, _) => {
+                            o.insert("pattern".into(), json!(js.trim_start_matches('/').trim_end_matches('/')));
+                        }
+                        StrCheck::Lower | StrCheck::Trim => {}
+                    }
+                }
+            }
+            Kind::Num(checks) => {
+                let int = checks.iter().any(|c| matches!(c, NumCheck::Int));
+                o.insert("type".into(), json!(if int { "integer" } else { "number" }));
+                for c in checks {
+                    match c {
+                        NumCheck::Min(m, true) => {
+                            o.insert("minimum".into(), bound(*m));
+                        }
+                        NumCheck::Min(m, false) => {
+                            o.insert("exclusiveMinimum".into(), bound(*m));
+                        }
+                        NumCheck::Max(m, true) => {
+                            o.insert("maximum".into(), bound(*m));
+                        }
+                        NumCheck::Max(m, false) => {
+                            o.insert("exclusiveMaximum".into(), bound(*m));
+                        }
+                        NumCheck::Int => {}
+                    }
+                }
+                // zod's safe-integer format bounds an int that has no tighter bound of its own.
+                if int {
+                    o.entry("minimum").or_insert(json!(-9_007_199_254_740_991_i64));
+                    o.entry("maximum").or_insert(json!(9_007_199_254_740_991_i64));
+                }
+            }
+            Kind::Bool => {
+                o.insert("type".into(), json!("boolean"));
+            }
+            Kind::Literal(v) => {
+                o.insert("const".into(), v.clone());
+            }
+            Kind::Enum(values) => {
+                o.insert("type".into(), json!("string"));
+                o.insert("enum".into(), json!(values));
+            }
+            Kind::Array(item, min, max) => {
+                o.insert("type".into(), json!("array"));
+                o.insert("items".into(), item.json_shape());
+                if let Some(m) = min {
+                    o.insert("minItems".into(), json!(m));
+                }
+                if let Some(m) = max {
+                    o.insert("maxItems".into(), json!(m));
+                }
+            }
+            Kind::Object(fields, _) => {
+                o.insert("type".into(), json!("object"));
+                o.insert("properties".into(), Value::Object(fields.iter().map(|(k, s)| (k.clone(), s.json_shape())).collect()));
+                let mut req: Vec<&str> = fields.iter().filter(|(_, s)| !s.is_optional()).map(|(k, _)| k.as_str()).collect();
+                req.sort_unstable();
+                if !req.is_empty() {
+                    o.insert("required".into(), json!(req));
+                }
+            }
+            Kind::Union(options) => {
+                o.insert("anyOf".into(), Value::Array(options.iter().map(Schema::json_shape).collect()));
+            }
+            Kind::Record(value) => {
+                o.insert("type".into(), json!("object"));
+                o.insert("additionalProperties".into(), value.json_shape());
+            }
+        }
+        if let Some(d) = &self.default {
+            o.insert("default".into(), d.clone());
+        }
+        let shape = Value::Object(o);
+        if self.nullable { json!({ "anyOf": [shape, { "type": "null" }] }) } else { shape }
+    }
+
     /// `schema.parse(input)` (`None` = `undefined`). Errors become the 400 `invalid_request` reply.
     pub fn parse(&self, input: Option<&Value>) -> Result<Value, ApiError> {
         let mut issues = Vec::new();

@@ -97,9 +97,10 @@ pub struct JobContext {
 }
 
 impl JobContext {
-    /// Persist progress (clamped to 0..=1) and optionally a label.
+    /// Persist progress (clamped to 0..=1) and optionally a label. Also renews the job's lock, so a long job that reports
+    /// progress is never taken for orphaned.
     pub async fn progress(&self, fraction: f64, label: Option<&str>) -> Result<(), sqlx::Error> {
-        sqlx::query("UPDATE jobs SET progress = $2, label = COALESCE($3, label) WHERE id = $1")
+        sqlx::query("UPDATE jobs SET progress = $2, label = COALESCE($3, label), locked_at = now() WHERE id = $1")
             .bind(self.job.id)
             .bind(fraction.clamp(0.0, 1.0) as f32)
             .bind(label)
@@ -296,15 +297,30 @@ async fn claim(pool: &PgPool, queue: &str) -> Result<Option<Job>, sqlx::Error> {
     Ok(Some(job))
 }
 
+/// How often a running job's lock is renewed. Workers starting up re-queue jobs whose lock is older than 15 minutes
+/// (a crashed worker's), so a job that runs longer must keep its lock fresh.
+pub const LOCK_REFRESH: Duration = Duration::from_secs(60);
+
 async fn run_one(pool: PgPool, job: Job, handler: Arc<dyn Handler>) {
     let id = job.id;
     let (attempts, max_attempts) = (job.attempts, job.max_attempts);
     let payload = job.payload.0.clone();
     let ctx = JobContext { job, pool: pool.clone() };
+    let lock = {
+        let pool = pool.clone();
+        tokio::spawn(async move {
+            let mut iv = tokio::time::interval_at(tokio::time::Instant::now() + LOCK_REFRESH, LOCK_REFRESH);
+            loop {
+                iv.tick().await;
+                let _ = sqlx::query("UPDATE jobs SET locked_at = now() WHERE id = $1 AND status = 'running'").bind(id).execute(&pool).await;
+            }
+        })
+    };
     let res = match tokio::spawn(handler.call(payload, ctx)).await {
         Ok(r) => r,
         Err(e) => Err(e.to_string().into()),
     };
+    lock.abort();
     let q = match res {
         Ok(result) => sqlx::query("UPDATE jobs SET status = 'done', progress = 1, label = 'Done', result = $2, finished_at = now(), error = NULL WHERE id = $1")
             .bind(id)

@@ -1743,6 +1743,28 @@
             }
            ]
           },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "visibleFrom": {
            "description": "Page second it appears",
            "anyOf": [
@@ -1933,6 +1955,28 @@
             }
            ]
           },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "visibleFrom": {
            "description": "Page second it appears",
            "anyOf": [
@@ -2086,6 +2130,28 @@
           },
           "animation": {
            "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -2329,6 +2395,28 @@
             }
            ]
           },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "visibleFrom": {
            "description": "Page second it appears",
            "anyOf": [
@@ -2480,6 +2568,28 @@
           },
           "animation": {
            "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -2666,6 +2776,28 @@
             }
            ]
           },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "visibleFrom": {
            "description": "Page second it appears",
            "anyOf": [
@@ -2790,6 +2922,28 @@
           },
           "animation": {
            "description": "{ in, out, loop } entrance, exit and looping movement in seconds, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -3421,6 +3575,446 @@
             }
            ]
           },
+          "keyframes": {
+           "description": "Keyframe tracks: values at page seconds, in the units of update (absolute, not offsets). A track given replaces that track, null removes it; keyframes: null removes all",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "position": {
+               "description": "Page x, y of the element's top-left at each key (as get_design shows x, y)",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "description": "[x, y] in page px",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                     "type": "number"
+                    }
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "x": {
+               "description": "Page x at each key (unrotated elements; use position for rotated ones)",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number"
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "y": {
+               "description": "Page y at each key (unrotated elements; use position for rotated ones)",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number"
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "offset": {
+               "description": "A move from the resting place at each key, [dx, dy] page px (instead of position)",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "description": "[dx, dy] in page px",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                     "type": "number"
+                    }
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "scale": {
+               "description": "Size as a multiple of the element's own (1 = as placed)",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 20
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "rotation": {
+               "description": "Rotation in degrees at each key (absolute, as update rotation)",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": -36000,
+                    "maximum": 36000
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "opacity": {
+               "description": "Opacity 0–1 at each key, up to the element's own opacity",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "blur": {
+               "description": "Blur radius in px",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 200
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
+                    "type": "string",
+                    "enum": [
+                     "linear",
+                     "ease",
+                     "ease-in",
+                     "ease-out",
+                     "ease-in-out",
+                     "back",
+                     "hold"
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path the element travels along: its top-left passes through via (page px) over duration seconds; null removes",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "via": {
+               "description": "Page points [x, y] for the element's top-left, in order (start where it rests for a smooth departure)",
+               "minItems": 2,
+               "maxItems": 64,
+               "type": "array",
+               "items": {
+                "description": "[x, y] in page px",
+                "minItems": 2,
+                "maxItems": 2,
+                "type": "array",
+                "items": {
+                 "type": "number"
+                }
+               }
+              },
+              "duration": {
+               "description": "Seconds the journey takes",
+               "type": "number",
+               "minimum": 0.05,
+               "maximum": 600
+              },
+              "delay": {
+               "description": "Seconds after the element appears before it sets off",
+               "type": "number",
+               "minimum": 0,
+               "maximum": 600
+              },
+              "easing": {
+               "type": "string",
+               "enum": [
+                "linear",
+                "ease"
+               ]
+              },
+              "smooth": {
+               "description": "Curve through the points instead of straight lines between them",
+               "type": "boolean"
+              }
+             },
+             "required": [
+              "duration",
+              "via"
+             ]
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "visibleFrom": {
            "description": "Page second it appears (null: from the start)",
            "anyOf": [
@@ -3460,6 +4054,12 @@
            "type": "number",
            "minimum": 0,
            "maximum": 1
+          },
+          "speed": {
+           "description": "Playback speed (1 = normal, 0.5 = slow motion, 2 = double speed)",
+           "type": "number",
+           "minimum": 0.25,
+           "maximum": 3
           },
           "trim": {
            "description": "Video: the part of the clip to play",
@@ -3827,6 +4427,37 @@
              "type": "null"
             }
            ]
+          },
+          "entrance": {
+           "description": "One entrance for every element on the page that has none of its own, one after another in stacking order; null removes",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "type": {
+               "type": "string",
+               "enum": [
+                "fade",
+                "rise",
+                "drop",
+                "scale",
+                "zoom",
+                "pop",
+                "wipe",
+                "blur"
+               ]
+              },
+              "duration": {
+               "type": "number",
+               "minimum": 0.01,
+               "maximum": 30
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -3951,6 +4582,37 @@
                 "left",
                 "right"
                ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "entrance": {
+           "description": "One entrance for every element on the page that has none of its own, one after another in stacking order; null removes",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "type": {
+               "type": "string",
+               "enum": [
+                "fade",
+                "rise",
+                "drop",
+                "scale",
+                "zoom",
+                "pop",
+                "wipe",
+                "blur"
+               ]
+              },
+              "duration": {
+               "type": "number",
+               "minimum": 0.01,
+               "maximum": 30
               }
              }
             },
@@ -4277,6 +4939,12 @@
            "minimum": 0,
            "maximum": 1
           },
+          "speed": {
+           "description": "Playback speed (1 = normal, 0.5 = slow motion, 2 = double speed)",
+           "type": "number",
+           "minimum": 0.25,
+           "maximum": 3
+          },
           "radius": {
            "type": "number",
            "minimum": 0
@@ -4294,6 +4962,28 @@
           },
           "panZoom": {
            "description": "{ type, amount, focus } the picture moves slowly inside its box while it shows, exactly as on update",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "keyframes": {
+           "description": "Keyframe tracks, exactly as on update; null removes",
+           "anyOf": [
+            {
+             "type": "object"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "motionPath": {
+           "description": "A path to travel along, exactly as on update; null removes",
            "anyOf": [
             {
              "type": "object"
@@ -4977,13 +5667,13 @@
       "type": "string",
       "format": "date-time",
       "description": "Only posts scheduled at or after this time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
      },
      "to": {
       "type": "string",
       "format": "date-time",
       "description": "Only posts scheduled before this time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
      },
      "team": {
       "description": "Only this team's (brand's) posts: the team's name or id, or \"personal\" for posts outside every team",
@@ -5058,7 +5748,7 @@
      "scheduled_at": {
       "type": "string",
       "format": "date-time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
       "description": "When to publish (ISO date-time with offset)"
      },
      "timezone": {
@@ -5163,7 +5853,7 @@
      "scheduled_at": {
       "type": "string",
       "format": "date-time",
-      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d(?:\\.\\d+)?)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
+      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$",
       "description": "When to publish (ISO date-time with offset)"
      },
      "timezone": {

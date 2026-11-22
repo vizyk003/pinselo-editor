@@ -255,6 +255,39 @@ pub fn page_pos(doc: &Value, el: &Value) -> Option<(f64, f64)> {
     Some((x, y))
 }
 
+/// The point `get_design` shows as an element's x, y (the page top-left of its box; of its bounds when it is rotated),
+/// which keyframes and motion paths are measured from. `None` when a group around it is rotated or flipped, since
+/// page directions then differ from the element's own.
+pub fn rest_point(doc: &Value, el: &Value) -> Option<(f64, f64)> {
+    let parent = el.get("parentId").and_then(Value::as_str).and_then(|p| doc["elements"].get(p));
+    let (ox, oy) = match parent {
+        None => (0.0, 0.0),
+        Some(g) => {
+            let mut a = Some(g);
+            let mut guard = 0;
+            while let Some(cur) = a {
+                if cur["xf"]["flipX"] == true || cur["xf"]["flipY"] == true {
+                    return None;
+                }
+                a = cur.get("parentId").and_then(Value::as_str).and_then(|p| doc["elements"].get(p));
+                guard += 1;
+                if guard > 1000 {
+                    break;
+                }
+            }
+            page_pos(doc, g)?
+        }
+    };
+    let xf = &el["xf"];
+    let (x, y, w, h, r) = (num(&xf["x"]), num(&xf["y"]), num(&xf["w"]), num(&xf["h"]), num(&xf["rot"]));
+    if r == 0.0 || r.is_nan() {
+        return Some((ox + x, oy + y));
+    }
+    let (c, s) = (r.to_radians().cos().abs(), r.to_radians().sin().abs());
+    let (hw, hh) = ((w * c + h * s) / 2.0, (w * s + h * c) / 2.0);
+    Some((ox + x + w / 2.0 - hw, oy + y + h / 2.0 - hh))
+}
+
 /// The ids of the live children of `parent`, bottom to top.
 pub fn children(typed: &DesignDoc, parent: &str) -> Vec<String> {
     oc_schema::tree::children_of(&typed.elements, parent).into_iter().filter_map(|e| e.id().map(str::to_owned)).collect()
@@ -331,7 +364,7 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
         for (k, v) in detail(el, max_text) {
             n.insert(k, v);
         }
-        for (k, v) in super::motion::element_view(el) {
+        for (k, v) in super::motion::element_view(el, &super::motion::Rest::of(el, rest_point(doc, el))) {
             n.insert(k, v);
         }
         let kids = children(typed, id);

@@ -143,7 +143,7 @@ Each call runs as the token's user, with the same design roles as the editor. Wi
 | `create_design` | `designs:write` | `title` (required), `preset`, `width` and `height` (16 to 20000), `unit` (`px`, `mm`, `cm`, `in`, `pt`), `template_id` | `id`, `editUrl`, `design`. A unit other than px needs both width and height. |
 | `copy_design` | `designs:write`, view | `design_id` (required), `title`, `preset`, `width`, `height`, `unit`, `scale_content` (default false) | `id`, `editUrl`, `resized`, `design`. When resized, also `check`, a layout check of up to 10 pages. |
 | `bulk_create` | `designs:write`, view | `design_id` (required), `rows` (required, 1 to 50 objects of field to value), `titles` (up to 50) | `created` (each with `id`, `title`, `editUrl`, `filled`), plus optional `warning` and `check`. |
-| `get_design` | `designs:read`, view | `design_id` (required), `page` (id or 1-based number) | `id`, `editUrl`, `title`, `type`, `size`, `pageCount`, `pages`, and `brand` when a team's kit governs the design. For a design that uses time, also `timeline`, page `duration` and `transition`, element `animation`, `visibleFrom` and `visibleTo`, and `videoCheck`. See [Video and motion](#video-and-motion). |
+| `get_design` | `designs:read`, view | `design_id` (required), `page` (id or 1-based number) | `id`, `editUrl`, `title`, `type`, `size`, `pageCount`, `pages`, and `brand` when a team's kit governs the design. For a design that uses time, also `timeline`, page `duration`, `transition` and `entrance`, element `animation`, `panZoom`, `keyframes`, `motionPath`, `visibleFrom` and `visibleTo`, group `mask`, and `videoCheck`. See [Video and motion](#video-and-motion). |
 | `screenshot_page` | `designs:read`, view | `design_id` (required), `page` (default first), `width` (120 to 2000, default 1024), and one of `time` (seconds), `frames` (2 to 12) or `times` (up to 12 seconds) | A PNG image. With a time, the page at that moment of its playback; with `frames` or `times`, a filmstrip, four frames a row, and a line naming the times. |
 | `export_design` | `exports`, view | `design_id` (required), `format` (required: `png`, `jpg`, `pdf`, `pdf-print`, `pptx`, `svg`, `mp4`, `gif`), `pages` (1-based), `scale` (0.25 to 4, default 1), `width` (MP4 only, 16 to 3840 px), `export_id` (MP4 and GIF: a render to wait for) | `file`, `size`, `downloadUrl`. |
 | `edit_design` | `designs:write`, edit | `design_id` (required), `operations` (required, 1 to 200) | See below. |
@@ -163,9 +163,9 @@ MP4 and GIF exports play only the pages given (default: all visible pages), each
 
 Coordinates are px at 96 dpi from the page's top-left, and colours are hex (`#rrggbb` or `#rrggbbaa`). Operations run in order. A later operation can refer to an earlier new item as `"$name"` if that item was given `ref: "name"`. A page reference is a page id, a `$ref` or a 1-based number.
 
-Every `add_*` operation except `add_audio`, and `update`, also take the time fields `animation`, `panZoom`, `visibleFrom` and `visibleTo` (see [Video and motion](#video-and-motion)).
+Every `add_*` operation except `add_audio`, and `update`, also take the time fields `animation`, `panZoom`, `keyframes`, `motionPath`, `visibleFrom` and `visibleTo` (see [Video and motion](#video-and-motion)).
 
-Add operations share these optional placement fields, except `add_line`, which takes only `page`, `parent` and `name`: `page`, `parent` (a group), `rotation`, `opacity` (0 to 1), `name`, and `role` (`headline`, `subhead`, `body`, `quote`, `caption`, `cta`, `logo`, `hero-image`, `background`, `decor`, `price`, `legal`).
+Add operations share these optional placement fields, except `add_line`, which takes only `page`, `parent`, `name` and `role`: `page`, `parent` (a group), `rotation`, `opacity` (0 to 1), `name`, and `role` (`headline`, `subhead`, `body`, `quote`, `caption`, `cta`, `logo`, `hero-image`, `background`, `decor`, `price`, `legal`).
 
 | Operation | Required | Optional |
 |---|---|---|
@@ -176,22 +176,22 @@ Add operations share these optional placement fields, except `add_line`, which t
 | `add_table` | `data`, `x`, `y`, `w` | `ref`, `h`, `font`, `size`, `color`, `headerFill`, `headerColor` |
 | `add_chart` | `chart`, `labels`, `series`, `x`, `y`, `w`, `h` | `ref`, `showLegend`, `showValues`, `font`, `textColor` |
 | `add_qr` | `data`, `x`, `y`, `size` | `ref`, `color`, `background` |
-| `add_video` | `source`, `x`, `y`, `w`, `h` | `ref`, `fit`, `trim` (`{ start, end }` in seconds of the clip), `muted`, `loop`, `volume` (0 to 1), `radius` |
+| `add_video` | `source`, `x`, `y`, `w`, `h` | `ref`, `fit`, `trim` (`{ start, end }` in seconds of the clip), `muted`, `loop`, `volume` (0 to 1), `speed` (0.25 to 3, default 1), `radius` |
 | `add_audio` | `source` | `ref`, `start`, `trim`, `duration` (default: to the end of the video, looping if shorter), `volume`, `fadeIn` (default 0), `fadeOut` (default 0.8), `loop` |
 | `update_audio` | `id` | `start`, `trim`, `duration`, `volume`, `fadeIn`, `fadeOut`, `loop`, `fit` (to the end of the video as it is now) |
 | `remove_audio` | `id` | |
 | `set_captions` | | `cues` (`[{ start, end, text }]`, replaces the track's cues), `style` (`font`, `size`, `color`, `background`, `position`, `highlight`), `visible` |
 | `animate` | `ids` | `in`, `out`, `start`, `stagger` (default: the kit's, else 0.15 s), `visibleFrom`, `visibleTo` |
-| `group` | `ids` (at least 2) | `ref`, `name` |
+| `group` | `ids` (at least 2) | `ref`, `name`, `role` |
 | `ungroup` | `id` | |
-| `update` | `id` | `x`, `y`, `w`, `h`, `rotation`, `opacity`, `name`, `role`, `hidden`, `text`, text style fields, `fill`, `stroke` (`null` removes it), `radius`, `image`, `alt`, time fields, and for videos `muted`, `loop`, `volume`, `trim` |
+| `update` | `id` | `x`, `y`, `w`, `h`, `rotation`, `opacity`, `name`, `role`, `hidden`, `text`, text style fields, `fill`, `stroke` (`null` removes it), `radius`, `image`, `alt`, time fields, and for videos `muted`, `loop`, `volume`, `speed`, `trim` |
 | `delete` | `ids` | |
 | `reorder` | `id`, `to` (`front`, `back`, `forward`, `backward`) | |
 | `arrange` | `ids`, `direction` (`row`, `column`, `grid`) | `gap`, `columns`, `within` (`page`, `items`), `padding`, `x`, `y`, `width`, `height`, `align`, `justify`, `stretch` |
 | `align` | `ids`, `to` (`left`, `center`, `right`, `top`, `middle`, `bottom`) | `relativeTo` (`page`, `selection`) |
 | `distribute` | `ids` (at least 3), `axis` (`horizontal`, `vertical`) | |
-| `add_page` | | `ref`, `after`, `duplicate`, `title`, `background`, `duration`, `transition` |
-| `update_page` | `page` | `title`, `background`, `notes`, `duration`, `transition` |
+| `add_page` | | `ref`, `after`, `duplicate`, `title`, `background`, `duration`, `transition`, `entrance` |
+| `update_page` | `page` | `title`, `background`, `notes`, `duration`, `transition`, `entrance` |
 | `delete_page` | `page` | |
 | `move_page` | `page`, `after` (`null` makes it first) | |
 | `set_title` | `title` | |
@@ -240,12 +240,18 @@ Arguments are validated before anything runs, and images are imported before the
 
 Times are in seconds. Pages play one after another in videos, GIFs and auto-playing presentations.
 
-- **Page timing:** `duration` (0.1 to 600; `null` is automatic: 5 s, or as long as the page's videos) and `transition` (`{ type, duration, direction }`; `type` is a page transition such as `fade`, `slide`, `push` or `wipe`, and `none` or `null` cuts). A transition is how the page comes in from the one before: `dissolve` blends the two pages, `fade` goes through black (the old page fades out, then the new one fades in), and in a `slide` the new page moves over the old one while a `push` moves both.
+- **Page timing:** `duration` (0.1 to 600; `null` is automatic: 5 s, or as long as the page's videos) and `transition` (`{ type, duration, direction }`; `type` is a page transition such as `fade`, `slide`, `push` or `wipe`, and `none` or `null` cuts). A transition is how the page comes in from the one before: `dissolve` blends the two pages, `fade` goes through black (the old page fades out, then the new one fades in), and in a `slide` the new page moves over the old one while a `push` moves both. `entrance` (`{ type, duration }`; `fade`, `rise`, `drop`, `scale`, `zoom`, `pop`, `wipe`, `blur`) gives every element of the page that has no entrance of its own the same one, 0.12 s apart in stacking order; `null` removes it.
 - **`animation`:** `{ in, out, loop }`; `null` removes all three, and `null` for one of them removes that one.
   - `in`: `type` (`fade`, `rise`, `drop`, `slide-left`, `slide-right`, `slide-up`, `slide-down`, `scale`, `zoom`, `pop`, `wipe`, `draw`, `typewriter`, `blur`), `delay` (from when the element appears), `duration`, `easing` (`linear`, `ease`, `ease-in`, `ease-out`, `ease-in-out`), `direction`, `distance` (px of travel for `rise`, `drop` and slides), and for text `by` (`element`, `line`, `word`, `letter`) with `stagger`. `draw` reveals a line from its first point to its last.
   - `out`: `type` (`fade`, `rise`, `drop`, `slide`, `scale`, `zoom`, `wipe`, `blur`), `at` (the page second it starts, which sets `visibleTo` to `at + duration`) and `duration`.
   - `loop`: a small movement that repeats once the entrance has finished, for as long as the element shows. `type` (`pulse`, `heartbeat`, `float`, `swing`, `wiggle`, `bounce`, `flicker`, `spin`; default `pulse`), `period` (seconds for one round; default 1.6, `spin` 3) and `intensity` (0.25 to 2). A kit with `bounce: false` rules out `bounce`.
 - **`panZoom`:** for images, videos, and frames or shapes holding a photo. The picture moves slowly inside its box for as long as the element shows, so a still photo reads as footage; the box, its corners and its outline stay where they are. `type` (`zoom-in`, the default, `zoom-out`, `pan-left`, `pan-right`, `pan-up`, `pan-down`: the view travels that way across the picture), `amount` (how far it zooms, as a fraction: 0.12 ends 12% closer; default 0.12, and pans stay 0.15 closer so there is picture to travel across), `focus` (`{ x, y }` from 0 to 1: the point of the picture as cropped that a zoom holds on; default its centre) and `easing` (`linear`, the default, or `ease`). `null` removes it. Other elements refuse it. Still exports (PNG, JPG, PDF) show the picture as it is cropped.
+- **`keyframes`:** movement over page time, per property. Each property is a list of keys `{ at, value, ease }` in time order: `at` is the page second, `value` is absolute and in the units of `update`, and `ease` shapes the move that arrives at that key (`ease`, the default, `ease-in`, `ease-out`, `ease-in-out`, `linear`, `back`, which overshoots and settles, and `hold`, which jumps at the key). Before its first key the element holds the first value, after its last key the last value, and keys play only while the element shows.
+  - `position`: `[x, y]`, the element's x, y as `get_design` shows them (page px; for a rotated element, the top-left of its bounds). `offset` (`[dx, dy]` from where the element rests) can be given instead, and `x` or `y` alone move one axis of an unrotated element.
+  - `scale` (a multiple of the element's size, 0 to 20), `rotation` (degrees), `opacity` (0 to 1, up to the element's own opacity) and `blur` (px, 0 to 200).
+  - A track given replaces that track; `null` removes it, and `keyframes: null` removes them all. Keyframes add to an entrance, exit or loop on the same property (moves add up, opacity and scale multiply).
+  - Elements inside a group do not move on their own yet, and moving an element inside a rotated or flipped group is refused.
+- **`motionPath`:** `{ via, duration, delay, easing, smooth }`. The element's top-left travels through `via` (2 to 64 page points `[x, y]`, best starting where it rests) over `duration` seconds, `delay` seconds after it appears, `linear` (the default) or with an `ease`. `smooth: true` curves through the points. `null` removes it.
 - **`visibleFrom`, `visibleTo`:** the page seconds an element appears and disappears (`null` clears), so texts can take turns on one page. Give `visibleTo` or `out.at`, not both.
 - **Caption highlight:** `set_captions`' `style.highlight` is a colour for the word being spoken: the words of a cue light up one after another across its time, each for a share in proportion to its length. `null` goes back to one colour.
 - **Defaults:** without a brand kit, an entrance is `fade` for 0.5 s (`draw` 0.6 s) with an ease-out, an exit 0.4 s, a transition `fade` for 0.4 s. A kit's `motion` replaces these (see below).
@@ -254,12 +260,17 @@ Times are in seconds. Pages play one after another in videos, GIFs and auto-play
 
 | `problem` | Meaning |
 |---|---|
-| `text_too_brief` | Text can't be read in the time it is fully on screen, at about 3 words a second plus half a second. |
+| `text_too_brief` | Text can't be read in the time it is fully on screen, at about 3 words a second plus half a second. Time that keyframes hold it below half opacity doesn't count. |
 | `caption_too_brief` | The same for a caption cue. |
 | `outside_safe_zone` | In a 9:16 video, text, a QR code or an element with a text, logo, button or price role reaches into the top 14% or the bottom 35%, which Reels covers with its interface. Stories cover 14% at each end. |
 | `never_shown`, `cut_by_page_end` | An element appears after its page ends, or its exit is cut off by the page end. |
 | `video_too_long` | A 9:16 video over 60 s (a Stories card), or a 4:5 or square video over 15 s (Meta's advice for feed ads). |
 | `audio_ends_early` | The soundtrack stops more than half a second before the video ends. |
+| `animation_ignored_in_group` | An element inside a group has an entrance, exit, loop, keyframes, motion path or visibility window, which do not play inside groups yet. |
+| `keyframe_after_page_end`, `keyframe_outside_window` | Keyframes after the page ends, or outside the time the element shows, never play. |
+| `keys_closer_than_a_frame` | Two keys of one property are less than a frame (1/30 s) apart. |
+| `entrance_conflict` | An entrance and keyframes act on the same property at the same time. |
+| `never_on_screen` | The keyframes keep the element off one side of the page the whole time. |
 
 A brand kit's `motion` sets the defaults, in milliseconds and px: `enter` (`type`, `duration`, `easing`, `distance`), `text` (the same, for text), `draw` (`duration`, `easing`), `exit` (`type`, `duration`), `stagger` (between elements in `animate`), `transition` (`type`, `duration`), `bounce` (`false` refuses `pop`) and `note`. For example `{ "transition": { "type": "fade", "duration": 150 }, "draw": { "duration": 400 }, "text": { "type": "rise", "distance": 8 }, "stagger": 60, "bounce": false }`. The design's kit is the one it was made with, else its team's default kit. `get_brand_kit` and `get_design` show it.
 

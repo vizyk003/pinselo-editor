@@ -123,3 +123,29 @@ async fn heartbeat_upserts() {
     assert_eq!(info, Some(json!({"v": 1})));
     t.drop_db().await;
 }
+
+/// A long job that reports progress renews its lock, so a worker starting meanwhile does not re-queue it as orphaned.
+#[tokio::test]
+async fn progress_renews_the_lock() {
+    let Some(t) = TestDb::create().await else {
+        eprintln!("skipped: OC_DATABASE_URL not set");
+        return;
+    };
+    let id = enqueue(&t.pool, "long", &json!({}), EnqueueOpts::default()).await.unwrap();
+    let pool = t.pool.clone();
+    let handler = move |_p: Value, ctx: JobContext| {
+        let pool = pool.clone();
+        async move {
+            // As if the job had been running for an hour.
+            sqlx::query("UPDATE jobs SET locked_at = now() - interval '1 hour' WHERE id = $1").bind(ctx.job.id).execute(&pool).await?;
+            ctx.progress(0.5, None).await?;
+            let age: f64 = sqlx::query_scalar("SELECT extract(epoch FROM now() - locked_at)::float8 FROM jobs WHERE id = $1").bind(ctx.job.id).fetch_one(&pool).await?;
+            Ok::<Value, HandlerError>(json!({ "age": age }))
+        }
+    };
+    assert_eq!(drain(&t.pool, "long", handler).await, 1);
+    let job = get_job(&t.pool, id).await.unwrap().unwrap();
+    assert_eq!(job.status, JobStatus::Done);
+    let age = job.result.as_ref().map(|r| r.0["age"].as_f64().unwrap()).unwrap();
+    assert!(age < 60.0, "lock is {age} s old after progress");
+}
