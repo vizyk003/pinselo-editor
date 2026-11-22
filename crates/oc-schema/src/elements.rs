@@ -230,6 +230,10 @@ pub struct Keyframe {
     pub v: f64,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ease: Option<KeyframeEase>,
+    /// A CSS `cubic-bezier(x1, y1, x2, y2)` for the segment ending at this key; wins over `ease` (which older
+    /// builds, keeping this in `extra`, fall back to).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bezier: Option<[f64; 4]>,
     #[serde(flatten)]
     pub extra: Extra,
 }

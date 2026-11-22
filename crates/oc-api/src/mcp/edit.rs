@@ -1614,8 +1614,8 @@ mod motion_tests {
         assert_eq!(by("close"), ["keys_closer_than_a_frame"]);
         assert_eq!(by("fight"), ["entrance_conflict"]);
         assert_eq!(by("gone"), ["never_on_screen"]);
-        assert_eq!(by("a"), ["animation_ignored_in_group"]);
-        assert!(by("card").is_empty() && by("trip").is_empty() && by("b").is_empty(), "{issues:?}");
+        // Elements inside groups animate like any other.
+        assert!(by("card").is_empty() && by("trip").is_empty() && by("a").is_empty() && by("b").is_empty(), "{issues:?}");
         // speed is for videos.
         let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("late"), "speed": 2 }]), vec![], json!({}));
         assert!(res.error.as_ref().is_some_and(|e| e.2.contains("speed applies to videos")), "{:?}", res.error);

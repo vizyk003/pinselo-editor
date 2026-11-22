@@ -224,3 +224,75 @@ fn outlined_text_covers_the_same_pixels_as_the_text() {
     // The painter hints glyphs at this size; the outline is the exact (unhinted) shape.
     assert!((a - bb).abs() / a < 0.06, "ink {a} vs {bb}");
 }
+
+/// `doc` with extra fields merged into the content rect `c` and, when given, the mask `m`.
+fn timed_doc(mode: Option<&str>, c_extra: Value, mask_extra: Option<Value>) -> DesignDoc {
+    let mut els = serde_json::Map::new();
+    let mut g = json!({ "id": "g", "type": "group", "parentId": "p", "z": "a0", "opacity": 1, "xf": { "x": 0, "y": 0, "w": 200, "h": 100, "rot": 0 } });
+    if let Some(m) = mode {
+        g["mask"] = json!({ "id": "m", "mode": m });
+    }
+    els.insert("g".into(), g);
+    let mut c = shape("c", "g", "a0", 0.0, 0.0, 50.0, 100.0, "rect", solid(1.0, 0.0, 0.0));
+    for (k, v) in c_extra.as_object().unwrap() {
+        c[k.as_str()] = v.clone();
+    }
+    els.insert("c".into(), c);
+    if let Some(extra) = mask_extra {
+        let mut m = shape("m", "g", "a1", 0.0, 0.0, 200.0, 100.0, "rect", solid(1.0, 1.0, 1.0));
+        for (k, v) in extra.as_object().unwrap() {
+            m[k.as_str()] = v.clone();
+        }
+        els.insert("m".into(), m);
+    }
+    de(&json!({
+        "meta": { "schemaVersion": 1, "minClientSchema": 1, "layoutVersion": 1, "surface": "video",
+                  "dims": { "w": 200, "h": 100, "unit": "px", "dpi": 96 }, "lang": "en", "title": "m", "epoch": 0 },
+        "pages": { "p": { "id": "p", "order": "a0", "background": [solid(1.0, 1.0, 1.0)], "durationMs": 3000 } },
+        "elements": els,
+        "assets": {}
+    }))
+}
+
+fn at(d: &DesignDoc, t: Option<f64>) -> Vec<u8> {
+    paint(&resolve_page(d, "p", &ResolveOptions { time_ms: t, ..Default::default() }))
+}
+
+const RED: [u8; 3] = [255, 0, 0];
+const WHITE: [u8; 3] = [255, 255, 255];
+
+#[test]
+fn elements_inside_a_group_follow_their_own_keyframes() {
+    let d = timed_doc(None, json!({ "keyframes": { "x": [{ "t": 0, "v": 0 }, { "t": 1000, "v": 150 }] } }), None);
+    // Without a time the page is drawn at rest.
+    let still = at(&d, None);
+    assert!(near(px(&still, 200, 25, 50), RED, 2) && near(px(&still, 200, 175, 50), WHITE, 2));
+    let start = at(&d, Some(0.0));
+    assert!(near(px(&start, 200, 25, 50), RED, 2) && near(px(&start, 200, 175, 50), WHITE, 2));
+    let end = at(&d, Some(2000.0));
+    assert!(near(px(&end, 200, 25, 50), WHITE, 2), "it has moved away: {:?}", px(&end, 200, 25, 50));
+    assert!(near(px(&end, 200, 175, 50), RED, 2), "to the right: {:?}", px(&end, 200, 175, 50));
+}
+
+#[test]
+fn elements_inside_a_group_show_only_in_their_window() {
+    let d = timed_doc(None, json!({ "timing": { "startMs": 1000 } }), None);
+    assert!(near(px(&at(&d, Some(500.0)), 200, 25, 50), WHITE, 2), "not yet shown");
+    assert!(near(px(&at(&d, Some(1500.0)), 200, 25, 50), RED, 2), "shown");
+    assert!(near(px(&at(&d, None), 200, 25, 50), RED, 2), "drawn at rest without a time");
+}
+
+#[test]
+fn a_mask_outside_its_window_hides_what_it_gates() {
+    let d = timed_doc(Some("alpha"), json!({}), Some(json!({ "timing": { "startMs": 1000 } })));
+    assert!(near(px(&at(&d, Some(500.0)), 200, 25, 50), WHITE, 2), "mask not shown yet, so neither is the content");
+    assert!(near(px(&at(&d, Some(1500.0)), 200, 25, 50), RED, 2));
+}
+
+#[test]
+fn a_moving_mask_moves_the_window_onto_the_content() {
+    // A 200 px mask slid 150 px right by keyframes: at the end only its left 50 px sit over the page from x 150.
+    let d = timed_doc(Some("alpha"), json!({}), Some(json!({ "xf": { "x": 0, "y": 0, "w": 50, "h": 100, "rot": 0 }, "keyframes": { "x": [{ "t": 0, "v": 150 }, { "t": 1000, "v": 0 }] } })));
+    assert!(near(px(&at(&d, Some(0.0)), 200, 25, 50), WHITE, 2), "mask away from the content");
+    assert!(near(px(&at(&d, Some(2000.0)), 200, 25, 50), RED, 2), "mask over the content");
+}

@@ -21,7 +21,7 @@ use serde_json::{Map, Value};
 use crate::builders::{chart_items, draw_items, form_items, table_items};
 use crate::displaylist::{DLItem, DisplayList, PathStroke, ResolvedPaint, TextFit};
 use crate::jsfmt::{max, min, num_to_string};
-use crate::motion::{IDENTITY_MOTION, MotionState, motion_at_time, pan_zoom_crop};
+use crate::motion::{IDENTITY_MOTION, MotionState, motion_at_time, nested_motion_at_time, pan_zoom_crop};
 use crate::qr::{self, Ecc};
 use crate::text_units::reveal_units;
 
@@ -265,6 +265,14 @@ impl<'a> Resolver<'a> {
 
     /// The crop of an element's picture at the render time: its pan and zoom applied while the page plays, the stored
     /// crop otherwise (still pages, thumbnails and the editor at rest show the picture as it was cropped).
+    /// Motion of a group's child: still when the page is drawn without a time, `None` when the child is outside
+    /// its visibility window.
+    fn child_motion(&self, raw: &'a Element) -> Option<MotionState> {
+        let Some(t) = self.opts.time_ms else { return Some(IDENTITY_MOTION) };
+        let el = self.get(raw);
+        nested_motion_at_time(&el, t, element_window(&el, self.page_ms), self.opts.click_steps.as_deref())
+    }
+
     fn moving_crop(&self, el: &Element, crop: StoredRect) -> StoredRect {
         match (self.opts.time_ms, el.base().and_then(|b| b.pan_zoom.as_ref())) {
             (Some(t), Some(pz)) if crop.w > 0.0 && crop.h > 0.0 => pan_zoom_crop(&crop, pz, t, element_window(el, self.page_ms)),
@@ -479,13 +487,18 @@ impl<'a> Resolver<'a> {
                 let mask = g.mask.as_ref().and_then(|m| {
                     kids.iter().copied().find(|k| k.id() == Some(m.id.as_str()) && !common(&self.get(k)).hidden).map(|k| (k, m.mode.clone()))
                 });
+                // A mask outside its visibility window shows nothing, so neither does what it gates.
+                let mask = mask.map(|(mk, mode)| (mk, mode, self.child_motion(mk)));
                 match mask {
-                    Some((mk, mode)) => {
+                    Some((_, _, None)) => {}
+                    Some((mk, mode, Some(mm))) => {
                         self.push(DLItem::Mask { mode, src_el: id.clone() });
-                        self.emit(mk, depth + 1, &IDENTITY_MOTION);
+                        self.emit(mk, depth + 1, &mm);
                         self.push(DLItem::MaskContent);
                         for ch in kids.iter().copied().filter(|k| !std::ptr::eq(*k, mk)) {
-                            self.emit(ch, depth + 1, &IDENTITY_MOTION);
+                            if let Some(m) = self.child_motion(ch) {
+                                self.emit(ch, depth + 1, &m);
+                            }
                         }
                         self.push(DLItem::Restore);
                     }
@@ -495,7 +508,9 @@ impl<'a> Resolver<'a> {
                             if mid.is_some() && ch.id() == mid {
                                 continue;
                             }
-                            self.emit(ch, depth + 1, &IDENTITY_MOTION);
+                            if let Some(m) = self.child_motion(ch) {
+                                self.emit(ch, depth + 1, &m);
+                            }
                         }
                     }
                 }

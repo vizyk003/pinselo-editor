@@ -104,6 +104,8 @@ export interface Keyframe {
     t: number;
     v: number;
     ease?: KeyframeEase;
+    /** CSS `cubic-bezier(x1, y1, x2, y2)` for the segment ending here; wins over `ease`. */
+    bezier?: [number, number, number, number];
 }
 export type Keyframes = Partial<Record<KeyframeProp, Keyframe[]>>;
 /** Looping emphasis animation (MV-004) while the element is on screen, after its entrance. */

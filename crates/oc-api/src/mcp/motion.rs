@@ -276,8 +276,20 @@ fn pan_zoom_view(pz: &Value) -> Value {
 // 0–1 for opacity). Designs store them as offsets from the element's resting place, measured in its own box: rotated
 // with it and mirrored by its flips (`oc-render` draws the motion inside the element's transform). `Rest` converts.
 
-/// Eases a key accepts. A key's ease shapes the stretch of time that arrives at it.
-pub const KEY_EASES: [&str; 7] = ["linear", "ease", "ease-in", "ease-out", "ease-in-out", "back", "hold"];
+/// Eases a key accepts by name. A key's ease shapes the stretch of time that arrives at it.
+pub const KEY_EASES: [&str; 12] = ["linear", "ease", "ease-in", "ease-out", "ease-in-out", "back", "hold", "out-quart", "out-expo", "in-out-quart", "out-back", "anticipate"];
+
+/// Named curves stored as a cubic bezier, with the built-in ease older builds fall back to (`None`: the default).
+const BEZIER_EASES: [(&str, [f64; 4], Option<&str>); 5] = [
+    ("out-quart", [0.25, 1.0, 0.5, 1.0], Some("ease-out")),
+    ("out-expo", [0.16, 1.0, 0.3, 1.0], Some("ease-out")),
+    ("in-out-quart", [0.76, 0.0, 0.24, 1.0], None),
+    ("out-back", [0.34, 1.56, 0.64, 1.0], Some("back")),
+    ("anticipate", [0.36, 0.0, 0.66, -0.56], Some("ease-in")),
+];
+
+/// How far a custom curve's y control points may reach (overshoot and anticipation, not wild swings).
+pub const BEZIER_Y: (f64, f64) = (-2.0, 3.0);
 
 /// How many keys a track takes.
 pub const MAX_KEYS: usize = 64;
@@ -342,16 +354,53 @@ fn r4(v: f64) -> Value {
     super::edit::jnum((v * 10000.0).round() / 10000.0)
 }
 
-/// A key's ease as stored: "ease" (also "ease-in-out") is the default and is left out.
-fn stored_ease(e: Option<&str>) -> Option<&'static str> {
-    match e? {
+/// A key's ease as stored: a built-in name ("ease", also "ease-in-out", is the default and is left out) and a
+/// cubic bezier that wins over it where builds know it.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+struct Ease {
+    name: Option<&'static str>,
+    bezier: Option<[f64; 4]>,
+}
+
+fn stored_ease(e: &Value) -> Result<Ease, String> {
+    if let Some(a) = e.as_array() {
+        let b: Vec<f64> = a.iter().filter_map(Value::as_f64).collect();
+        let b: [f64; 4] = b.try_into().map_err(|_| "ease: a curve is four numbers [x1, y1, x2, y2].".to_string())?;
+        if !oc_schema::keyframes::bezier_ok(&b) {
+            return Err(format!("ease [{}, {}, {}, {}]: x1 and x2 must be between 0 and 1 (as in CSS cubic-bezier).", b[0], b[1], b[2], b[3]));
+        }
+        if !(BEZIER_Y.0..=BEZIER_Y.1).contains(&b[1]) || !(BEZIER_Y.0..=BEZIER_Y.1).contains(&b[3]) {
+            return Err(format!("ease [{}, {}, {}, {}]: y1 and y2 must be between {} and {}.", b[0], b[1], b[2], b[3], BEZIER_Y.0, BEZIER_Y.1));
+        }
+        // Older builds fall back to the built-in ease nearest in spirit: overshoot reads as back.
+        let name = if b[1] > 1.0 || b[3] > 1.0 { Some("back") } else { None };
+        return Ok(Ease { name, bezier: Some(b) });
+    }
+    let Some(n) = e.as_str() else { return Ok(Ease::default()) };
+    if let Some((_, b, fallback)) = BEZIER_EASES.iter().find(|(k, _, _)| *k == n) {
+        return Ok(Ease { name: *fallback, bezier: Some(*b) });
+    }
+    let name = match n {
         "linear" => Some("linear"),
         "ease-in" => Some("ease-in"),
         "ease-out" => Some("ease-out"),
         "back" => Some("back"),
         "hold" => Some("hold"),
         _ => None,
+    };
+    Ok(Ease { name, bezier: None })
+}
+
+/// A stored key's ease as assistants write it: a name where one fits, else the curve.
+fn ease_view(k: &oc_schema::elements::Keyframe) -> Option<Value> {
+    if let Some(b) = k.bezier.filter(oc_schema::keyframes::bezier_ok) {
+        let near = |p: &[f64; 4]| p.iter().zip(&b).all(|(x, y)| (x - y).abs() < 1e-6);
+        return Some(match BEZIER_EASES.iter().find(|(_, p, _)| near(p)) {
+            Some((n, _, _)) => json!(n),
+            None => json!(b.iter().map(|v| super::edit::jnum(*v)).collect::<Vec<_>>()),
+        });
     }
+    k.ease.as_ref().map(|e| e.as_str()).filter(|e| *e != "ease").map(|e| json!(e))
 }
 
 /// A scalar track: (assistant name, stored name, assistant value → stored value).
@@ -363,7 +412,7 @@ type FromStored<'a> = (&'static str, &'static str, &'a dyn Fn(f64) -> Value);
 struct Key<'a> {
     t: f64,
     v: &'a Value,
-    ease: Option<&'static str>,
+    ease: Ease,
 }
 
 fn keys_of<'a>(name: &str, spec: &'a Value) -> Result<Vec<Key<'a>>, String> {
@@ -379,15 +428,19 @@ fn keys_of<'a>(name: &str, spec: &'a Value) -> Result<Vec<Key<'a>>, String> {
         {
             return Err(format!("keyframes.{name}: keys must be in time order, each later than the one before ({} s after {} s).", secs(t), secs(prev.t)));
         }
-        out.push(Key { t, v: &k["value"], ease: stored_ease(s(k, "ease")) });
+        let ease = stored_ease(&k["ease"]).map_err(|e| format!("keyframes.{name} at {} s: {e}", secs(t)))?;
+        out.push(Key { t, v: &k["value"], ease });
     }
     Ok(out)
 }
 
-fn stored_key(t: f64, v: Value, ease: Option<&str>) -> Value {
+fn stored_key(t: f64, v: Value, ease: Ease) -> Value {
     let mut k = json!({ "t": super::edit::jnum(t), "v": v });
-    if let Some(e) = ease {
+    if let Some(e) = ease.name {
         k["ease"] = json!(e);
+    }
+    if let Some(b) = ease.bezier {
+        k["bezier"] = json!(b.iter().map(|v| super::edit::jnum(*v)).collect::<Vec<_>>());
     }
     k
 }
@@ -504,14 +557,10 @@ fn track(k: &Value, name: &str) -> Option<Vec<oc_schema::elements::Keyframe>> {
     serde_json::from_value::<Vec<oc_schema::elements::Keyframe>>(k.get(name)?.clone()).ok().filter(|t| !t.is_empty())
 }
 
-fn ease_name(e: &Option<oc_schema::elements::KeyframeEase>) -> Option<&str> {
-    e.as_ref().map(|e| e.as_str()).filter(|e| *e != "ease")
-}
-
-fn key_view(t: f64, value: Value, ease: Option<&str>) -> Value {
+fn key_view(t: f64, value: Value, ease: Option<Value>) -> Value {
     let mut k = json!({ "at": secs(t), "value": value });
     if let Some(e) = ease {
-        k["ease"] = json!(e);
+        k["ease"] = e;
     }
     k
 }
@@ -524,7 +573,7 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
     let (xs, ys) = (track(k, "x"), track(k, "y"));
     let (px, py) = rest.page.unwrap_or((0.0, 0.0));
     let same_times = |a: &[oc_schema::elements::Keyframe], b: &[oc_schema::elements::Keyframe]| a.len() == b.len() && a.iter().zip(b).all(|(p, q)| (p.t - q.t).abs() < 0.5);
-    let positional = |times: Vec<(f64, Option<&str>)>, x: &dyn Fn(f64) -> f64, y: &dyn Fn(f64) -> f64| -> Value {
+    let positional = |times: Vec<(f64, Option<Value>)>, x: &dyn Fn(f64) -> f64, y: &dyn Fn(f64) -> f64| -> Value {
         Value::Array(
             times
                 .into_iter()
@@ -540,7 +589,7 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
     let name = if rest.page.is_some() { "position" } else { "offset" };
     match (&xs, &ys) {
         (Some(a), Some(b)) if same_times(a, b) => {
-            let times = a.iter().map(|k| (k.t, ease_name(&k.ease))).collect();
+            let times = a.iter().map(|k| (k.t, ease_view(k))).collect();
             o.insert(name.into(), positional(times, &|t| keyframe_value(Some(a), t, 0.0), &|t| keyframe_value(Some(b), t, 0.0)));
         }
         (a, b) if rest.page.is_some() && !rest.rotated() => {
@@ -548,13 +597,13 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
             for (n, tr, origin, flip) in [("x", a, px, rest.flip_x), ("y", b, py, rest.flip_y)] {
                 if let Some(tr) = tr {
                     let sign = if flip { -1.0 } else { 1.0 };
-                    o.insert(n.into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(origin + sign * k.v), ease_name(&k.ease))).collect()));
+                    o.insert(n.into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(origin + sign * k.v), ease_view(k))).collect()));
                 }
             }
         }
         (a, b) if a.is_some() || b.is_some() => {
             // Rotated with keys at different times on each axis: both axes at every key time.
-            let mut times: Vec<(f64, Option<&str>)> = a.iter().chain(b.iter()).flatten().map(|k| (k.t, ease_name(&k.ease))).collect();
+            let mut times: Vec<(f64, Option<Value>)> = a.iter().chain(b.iter()).flatten().map(|k| (k.t, ease_view(k))).collect();
             times.sort_by(|p, q| p.0.total_cmp(&q.0));
             times.dedup_by(|p, q| (p.0 - q.0).abs() < 0.5);
             o.insert(name.into(), positional(times, &|t| keyframe_value(a.as_deref(), t, 0.0), &|t| keyframe_value(b.as_deref(), t, 0.0)));
@@ -569,7 +618,7 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
     ];
     for (name, key, conv) in scalar {
         if let Some(tr) = track(k, key) {
-            o.insert(name.into(), Value::Array(tr.iter().map(|k| key_view(k.t, conv(k.v), ease_name(&k.ease))).collect()));
+            o.insert(name.into(), Value::Array(tr.iter().map(|k| key_view(k.t, conv(k.v), ease_view(k))).collect()));
         }
     }
     if o.is_empty() { None } else { Some(Value::Object(o)) }
@@ -1078,30 +1127,13 @@ pub fn video_checks(doc: &Value, typed: &oc_schema::DesignDoc, pages: Option<&[S
             if f(&el["timing"], "endMs").is_some_and(|e| e > len + 1.0) {
                 out.push(issue(id, "cut_by_page_end", format!("It should stay until {} s but the page ends at {} s, so its exit is cut off.", secs(num(&el["timing"]["endMs"])), secs(len)), page));
             }
-            let nested = el.get("parentId").and_then(Value::as_str).is_some_and(|p| doc["elements"].get(p).is_some_and(|pe| pe.is_object()));
-            if nested {
-                let ignored: Vec<&str> = [("anim", "entrance"), ("animOut", "exit"), ("emphasis", "loop"), ("keyframes", "keyframes"), ("motionPath", "motion path"), ("timing", "visibleFrom / visibleTo")]
-                    .iter()
-                    .filter(|(k, _)| el[*k].is_object())
-                    .map(|(_, n)| *n)
-                    .collect();
-                if !ignored.is_empty() {
-                    out.push(issue(
-                        id,
-                        "animation_ignored_in_group",
-                        format!("It is inside a group, and elements inside a group do not move or come and go yet, so its {} {} ignored. Animate the group instead, or ungroup it.", ignored.join(", "), if ignored.len() == 1 { "is" } else { "are" }),
-                        page,
-                    ));
-                }
-            } else {
-                keyframe_checks(doc, el, id, (start, end, len), (w, h), page, &mut out);
-            }
+            keyframe_checks(doc, el, id, (start, end, len), (w, h), page, &mut out);
             let role = s(el, "role");
             if el["type"] == "text" {
                 let t = text_of(el);
                 let n = words(&t);
                 if n > 0 {
-                    let faded = if nested { 0.0 } else { faded_ms(el, start + entrance_end(el), end) };
+                    let faded = faded_ms(el, start + entrance_end(el), end);
                     let readable = (end - start - entrance_end(el) - faded) / 1000.0;
                     let need = NOTICE_S + n as f64 / WORDS_PER_SECOND;
                     if readable < need - 0.05 {
@@ -1505,6 +1537,30 @@ mod tests {
         let mut with = el.clone();
         with["keyframes"] = stored;
         assert_eq!(keyframes_view(&with, &rest).unwrap(), spec);
+    }
+
+    #[test]
+    fn keyframe_curves_store_a_bezier_with_a_fallback_and_read_back() {
+        let el = box_el(0.0, 1.0);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let spec = json!({
+            "scale": [{ "at": 0, "value": 0 }, { "at": 0.5, "value": 1, "ease": "out-back" }],
+            "rotation": [{ "at": 0, "value": 0 }, { "at": 1, "value": 45, "ease": [0.2, 0.7, 0.4, 1] }],
+            "opacity": [{ "at": 0, "value": 0 }, { "at": 1, "value": 1, "ease": "in-out-quart" }],
+        });
+        let stored = keyframes_patch(&spec, &el, &rest).unwrap();
+        // Older builds read `ease` (back, the default), newer ones the curve.
+        assert_eq!(stored["scale"][1], json!({ "t": 500, "v": 1, "ease": "back", "bezier": [0.34, 1.56, 0.64, 1] }));
+        assert_eq!(stored["rotate"][1], json!({ "t": 1000, "v": 45, "bezier": [0.2, 0.7, 0.4, 1] }));
+        assert_eq!(stored["opacity"][1], json!({ "t": 1000, "v": 1, "bezier": [0.76, 0, 0.24, 1] }));
+        let mut with = el.clone();
+        with["keyframes"] = stored;
+        assert_eq!(keyframes_view(&with, &rest).unwrap(), spec);
+        // Curves that are not a function of time, or swing too far, are refused.
+        for bad in [json!([1.2, 0, 0.5, 1]), json!([0.2, 5, 0.5, 1]), json!([0.2, 0.5])] {
+            let e = keyframes_patch(&json!({ "scale": [{ "at": 0, "value": 1, "ease": bad }] }), &el, &rest).unwrap_err();
+            assert!(e.starts_with("keyframes.scale at 0 s: ease"), "{e}");
+        }
     }
 
     #[test]

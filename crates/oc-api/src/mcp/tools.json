@@ -3607,16 +3607,33 @@
                     }
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3651,16 +3668,33 @@
                     "type": "number"
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3695,16 +3729,33 @@
                     "type": "number"
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3745,16 +3796,33 @@
                     }
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3791,16 +3859,33 @@
                     "maximum": 20
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3837,16 +3922,33 @@
                     "maximum": 36000
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3883,16 +3985,33 @@
                     "maximum": 1
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },
@@ -3929,16 +4048,33 @@
                     "maximum": 200
                    },
                    "ease": {
-                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out); hold jumps at the key",
-                    "type": "string",
-                    "enum": [
-                     "linear",
-                     "ease",
-                     "ease-in",
-                     "ease-out",
-                     "ease-in-out",
-                     "back",
-                     "hold"
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
                     ]
                    }
                   },

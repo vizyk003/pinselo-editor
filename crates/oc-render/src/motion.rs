@@ -375,12 +375,21 @@ pub fn entrance_ms(el: &Element, a: &ElementAnim, unit_count: impl FnOnce() -> f
 /// Full motion state at page time `t`, honouring the element's visibility window, entrance, exit and motion
 /// path. `None` when the element is not visible at `t`.
 pub fn motion_at_time(el: &Element, page: &Page, index: usize, t: f64, window: Window, click_steps: Option<&[f64]>) -> Option<MotionState> {
+    motion_with(el, animation_for(el, page, index), t, window, click_steps)
+}
+
+/// Motion of an element inside a group at page time `t`: its own entrance, exit, emphasis, keyframes and motion
+/// path, never the page's staggered entrance (that belongs to the group). `None` when it is not visible at `t`.
+pub fn nested_motion_at_time(el: &Element, t: f64, window: Window, click_steps: Option<&[f64]>) -> Option<MotionState> {
+    motion_with(el, el.base().and_then(|b| b.anim.clone()), t, window, click_steps)
+}
+
+fn motion_with(el: &Element, a: Option<ElementAnim>, t: f64, window: Window, click_steps: Option<&[f64]>) -> Option<MotionState> {
     if t < window.start || t >= window.end {
         return None;
     }
     let mut local = t - window.start;
     let mut m = IDENTITY_MOTION;
-    let a = animation_for(el, page, index);
     if let Some(on_click) = a.as_ref().and_then(|a| a.on_click).filter(|c| crate::jsfmt::truthy(*c)) {
         // Build steps: Present passes when each click happened; exports play steps 1.2 s apart.
         let at = match click_steps {

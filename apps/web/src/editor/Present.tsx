@@ -4,7 +4,7 @@
  * laser pointer (L), black/white screen (B/W), and number + Enter to jump to a page.
  */
 import { RenderTarget, canvas2dTransitionTarget, clickStepCount, drawTransition, pageSettleMs, resolvePage, transitionFrame, transitionProgress } from '@oc/engine';
-import { childrenOf, pageDurationMs, sortedPages, timelineOf, videoSlots, type EmbedEl } from '@oc/engine';
+import { childrenOf, descendants, pageDurationMs, sortedPages, timelineOf, videoSlots, type EmbedEl } from '@oc/engine';
 import { EmbedOverlay } from '../components/EmbedOverlay';
 import { MediaPool } from './media';
 import { ChevronLeft, ChevronRight, Crosshair, Pause, Play, Repeat, X } from 'lucide-react';
@@ -107,7 +107,7 @@ export function Present({ onExit }: { onExit: () => void }) {
     if (!auto) return;
     const page = pages[i];
     if (!page) return;
-    const wait = steps.current.length < stepsOf(i) ? 1500 : Math.max(pageSettleMs(page, childrenOf(editor.doc, page.id)) + 600, pageDurationMs(editor.doc, page));
+    const wait = steps.current.length < stepsOf(i) ? 1500 : Math.max(pageSettleMs(page, descendants(editor.doc, page.id)) + 600, pageDurationMs(editor.doc, page));
     const timer = setTimeout(next, wait);
     return () => clearTimeout(timer);
   }); // eslint-disable-line react-hooks/exhaustive-deps
@@ -180,7 +180,8 @@ export function Present({ onExit }: { onExit: () => void }) {
       const pageMs = pageDurationMs(editor.doc, page);
       const span = sp(page.id);
       pool.current?.sync(editor.doc, (span?.startMs ?? 0) + Math.min(t, pageMs - 1), t < pageMs);
-      const els = childrenOf(editor.doc, page.id);
+      // Elements inside groups animate too, so look at every element on the page (as the video export does).
+      const els = descendants(editor.doc, page.id);
       const timed = els.some((e) => videoSlots(e).length > 0 || e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes || e.panZoom) || Boolean(editor.doc.meta.audio?.length || editor.doc.meta.captions?.cues.length);
       const settle = Math.max(pageSettleMs(page, els), page.transition?.durationMs ?? 0, timed ? pageMs : 0, (steps.current.at(-1) ?? 0) + 3000);
       const animating = timed || t < pageSettleMs(page, els) + 50 || steps.current.some((s) => s >= 0 && t < s + 3000);

@@ -131,7 +131,7 @@ fn point() -> Schema {
 /// One keyframe track: keys in time order (page seconds), each with the value at that moment and the ease of the move
 /// arriving at it. `null` removes the track.
 fn track(value: Schema) -> Schema {
-    z::array(z::obj([("at", secs()), ("value", value), ("ease", z::enumeration(&super::motion::KEY_EASES).optional())])).min(1.0).max(super::motion::MAX_KEYS as f64).nullable().optional()
+    z::array(z::obj([("at", secs()), ("value", value), ("ease", z::union(vec![z::enumeration(&super::motion::KEY_EASES), z::array(z::num()).min(4.0).max(4.0)]).optional())])).min(1.0).max(super::motion::MAX_KEYS as f64).nullable().optional()
 }
 /// `keyframes`: absolute values over page time, per property (`null` removes them all).
 fn keyframes() -> Schema {
