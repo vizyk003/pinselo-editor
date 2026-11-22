@@ -217,6 +217,8 @@ string_enum! {
     pub enum KeyframeProp { X = "x", Y = "y", Scale = "scale", Rotate = "rotate", Opacity = "opacity", Blur = "blur" }
 }
 pub const KEYFRAME_PROPS: &[&str] = &["x", "y", "scale", "rotate", "opacity", "blur"];
+/// Keyframed properties added after `KEYFRAME_PROPS` (which the editor's keyframe panel lists).
+pub const KEYFRAME_PROPS_MORE: &[&str] = &["scaleX", "scaleY", "anchorX", "anchorY"];
 string_enum! {
     pub enum KeyframeEase {
         Linear = "linear", Ease = "ease", EaseIn = "ease-in", EaseOut = "ease-out", Back = "back", Hold = "hold",
@@ -253,6 +255,16 @@ pub struct Keyframes {
     pub opacity: Option<Vec<Keyframe>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub blur: Option<Vec<Keyframe>>,
+    /// Width and height multipliers on top of `scale`.
+    #[serde(default, rename = "scaleX", skip_serializing_if = "Option::is_none")]
+    pub scale_x: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "scaleY", skip_serializing_if = "Option::is_none")]
+    pub scale_y: Option<Vec<Keyframe>>,
+    /// The point animated scale and rotation pivot on, as fractions of the box (0.5, 0.5 = its centre).
+    #[serde(default, rename = "anchorX", skip_serializing_if = "Option::is_none")]
+    pub anchor_x: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "anchorY", skip_serializing_if = "Option::is_none")]
+    pub anchor_y: Option<Vec<Keyframe>>,
     #[serde(flatten)]
     pub extra: Extra,
 }

@@ -291,6 +291,30 @@ const BEZIER_EASES: [(&str, [f64; 4], Option<&str>); 5] = [
 /// How far a custom curve's y control points may reach (overshoot and anticipation, not wild swings).
 pub const BEZIER_Y: (f64, f64) = (-2.0, 3.0);
 
+/// Named pivots for `keyframes.anchor`, as fractions of the element's own box.
+pub const ANCHORS: [(&str, f64, f64); 9] = [
+    ("top-left", 0.0, 0.0),
+    ("top", 0.5, 0.0),
+    ("top-right", 1.0, 0.0),
+    ("left", 0.0, 0.5),
+    ("center", 0.5, 0.5),
+    ("right", 1.0, 0.5),
+    ("bottom-left", 0.0, 1.0),
+    ("bottom", 0.5, 1.0),
+    ("bottom-right", 1.0, 1.0),
+];
+
+pub const ANCHOR_NAMES: [&str; 9] = ["top-left", "top", "top-right", "left", "center", "right", "bottom-left", "bottom", "bottom-right"];
+
+fn anchor_point(a: &Value) -> Option<(f64, f64)> {
+    if let Some(n) = a.as_str() {
+        return ANCHORS.iter().find(|(k, _, _)| *k == n).map(|(_, x, y)| (*x, *y));
+    }
+    let p = a.as_array().filter(|p| p.len() == 2)?;
+    let (x, y) = (p[0].as_f64()?, p[1].as_f64()?);
+    ((0.0..=1.0).contains(&x) && (0.0..=1.0).contains(&y)).then_some((x, y))
+}
+
 /// How many keys a track takes.
 pub const MAX_KEYS: usize = 64;
 
@@ -517,8 +541,10 @@ pub fn keyframes_patch(spec: &Value, el: &Value, rest: &Rest) -> Result<Value, S
     }
     let rot_sign = rest.mirror();
     let opacity = rest.opacity;
-    let scalar: [ToStored; 4] = [
+    let scalar: [ToStored; 6] = [
         ("scale", "scale", &|v| Ok(r4(v))),
+        ("scaleX", "scaleX", &|v| Ok(r4(v))),
+        ("scaleY", "scaleY", &|v| Ok(r4(v))),
         ("rotation", "rotate", &|v| Ok(r2(rot_sign * (v - rest.rot)))),
         (
             "opacity",
@@ -547,6 +573,20 @@ pub fn keyframes_patch(spec: &Value, el: &Value, rest: &Rest) -> Result<Value, S
                 }
                 set(key, Some(t));
             }
+        }
+    }
+    // The anchor: a pivot on the element's own box, stored as one key per axis (flips mirror it).
+    match spec.get("anchor") {
+        None => {}
+        Some(Value::Null) => {
+            set("anchorX", None);
+            set("anchorY", None);
+        }
+        Some(a) => {
+            let (fx, fy) = anchor_point(a).ok_or_else(|| format!("keyframes.anchor: use one of {} or [x, y] fractions of the box from 0 to 1.", ANCHORS.iter().map(|(n, _, _)| *n).collect::<Vec<_>>().join(", ")))?;
+            let (sx, sy) = (if rest.flip_x { 1.0 - fx } else { fx }, if rest.flip_y { 1.0 - fy } else { fy });
+            set("anchorX", Some(vec![stored_key(0.0, r4(sx), Ease::default())]));
+            set("anchorY", Some(vec![stored_key(0.0, r4(sy), Ease::default())]));
         }
     }
     Ok(if out.is_empty() { Value::Null } else { Value::Object(out) })
@@ -610,8 +650,10 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
         }
         _ => {}
     }
-    let scalar: [FromStored; 4] = [
+    let scalar: [FromStored; 6] = [
         ("scale", "scale", &r4),
+        ("scaleX", "scaleX", &r4),
+        ("scaleY", "scaleY", &r4),
         ("rotation", "rotate", &|v| r2(rest.rot + rest.mirror() * v)),
         ("opacity", "opacity", &|v| r4(v * rest.opacity)),
         ("blur", "blur", &r2),
@@ -620,6 +662,14 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
         if let Some(tr) = track(k, key) {
             o.insert(name.into(), Value::Array(tr.iter().map(|k| key_view(k.t, conv(k.v), ease_view(k))).collect()));
         }
+    }
+    let (ax, ay) = (track(k, "anchorX"), track(k, "anchorY"));
+    if ax.is_some() || ay.is_some() {
+        let first = |t: &Option<Vec<oc_schema::elements::Keyframe>>| t.as_ref().map_or(0.5, |t| t[0].v);
+        let (sx, sy) = (first(&ax), first(&ay));
+        let (fx, fy) = (if rest.flip_x { 1.0 - sx } else { sx }, if rest.flip_y { 1.0 - sy } else { sy });
+        let named = ANCHORS.iter().find(|(_, x, y)| (x - fx).abs() < 1e-6 && (y - fy).abs() < 1e-6);
+        o.insert("anchor".into(), named.map_or_else(|| json!([r4(fx), r4(fy)]), |(n, _, _)| json!(n)));
     }
     if o.is_empty() { None } else { Some(Value::Object(o)) }
 }
@@ -1219,7 +1269,8 @@ pub fn video_checks(doc: &Value, typed: &oc_schema::DesignDoc, pages: Option<&[S
 /// The stored keyframe tracks of an element, by stored name.
 fn stored_tracks(el: &Value) -> Vec<(&'static str, Vec<oc_schema::elements::Keyframe>)> {
     let k = &el["keyframes"];
-    oc_schema::elements::KEYFRAME_PROPS.iter().filter_map(|p| track(k, p).map(|t| (*p, t))).collect()
+    // The anchor is a static pivot (one key at 0 s), not a move, so the timing checks leave it out.
+    oc_schema::elements::KEYFRAME_PROPS.iter().chain(&["scaleX", "scaleY"]).filter_map(|p| track(k, p).map(|t| (*p, t))).collect()
 }
 
 /// How an assistant names a stored track.
@@ -1228,6 +1279,8 @@ fn track_name(stored: &str) -> &'static str {
         "x" | "y" => "position",
         "rotate" => "rotation",
         "scale" => "scale",
+        "scaleX" => "scaleX",
+        "scaleY" => "scaleY",
         "opacity" => "opacity",
         _ => "blur",
     }
@@ -1238,8 +1291,8 @@ fn entrance_tracks(preset: &str) -> &'static [&'static str] {
     match preset {
         "fade" | "flip" => &["opacity"],
         "rise" | "drop" | "pan" | "float" | "bounce" | "slide" => &["opacity", "x", "y"],
-        "pop" | "zoom" | "shrink" | "stomp" | "breathe" => &["opacity", "scale"],
-        "spin" | "tumble" => &["opacity", "rotate", "scale"],
+        "pop" | "zoom" | "shrink" | "stomp" | "breathe" => &["opacity", "scale", "scaleX", "scaleY"],
+        "spin" | "tumble" => &["opacity", "rotate", "scale", "scaleX", "scaleY"],
         "blur" => &["opacity", "blur"],
         _ => &[],
     }
@@ -1248,7 +1301,7 @@ fn entrance_tracks(preset: &str) -> &'static [&'static str] {
 /// How far from neutral a keyed value must be to count as moving.
 fn off_neutral(stored: &str, v: f64) -> bool {
     match stored {
-        "scale" => (v - 1.0).abs() > 0.005,
+        "scale" | "scaleX" | "scaleY" => (v - 1.0).abs() > 0.005,
         "opacity" => (v - 1.0).abs() > 0.01,
         _ => v.abs() > 0.5,
     }
@@ -1561,6 +1614,34 @@ mod tests {
             let e = keyframes_patch(&json!({ "scale": [{ "at": 0, "value": 1, "ease": bad }] }), &el, &rest).unwrap_err();
             assert!(e.starts_with("keyframes.scale at 0 s: ease"), "{e}");
         }
+    }
+
+    #[test]
+    fn width_height_keys_and_the_anchor_round_trip() {
+        assert_eq!(ANCHORS.map(|(n, _, _)| n), ANCHOR_NAMES);
+        let el = box_el(0.0, 1.0);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let spec = json!({ "scaleY": [{ "at": 0, "value": 0 }, { "at": 0.5, "value": 1, "ease": "out-back" }], "anchor": "bottom" });
+        let stored = keyframes_patch(&spec, &el, &rest).unwrap();
+        assert_eq!(stored["anchorX"], json!([{ "t": 0, "v": 0.5 }]));
+        assert_eq!(stored["anchorY"], json!([{ "t": 0, "v": 1 }]));
+        let mut with = el.clone();
+        with["keyframes"] = stored.clone();
+        assert_eq!(keyframes_view(&with, &rest).unwrap(), spec);
+        // A pivot off the named points reads back as fractions; null removes it and leaves the keys.
+        with["keyframes"] = keyframes_patch(&json!({ "anchor": [0.25, 0.75] }), &with, &rest).unwrap();
+        assert_eq!(keyframes_view(&with, &rest).unwrap()["anchor"], json!([0.25, 0.75]));
+        let cleared = keyframes_patch(&json!({ "anchor": null }), &with, &rest).unwrap();
+        assert!(cleared.get("anchorX").is_none() && cleared.get("scaleY").is_some());
+        // Flipped: "left" is the left of the element as seen, the right of its own (mirrored) box.
+        let mut flipped = box_el(0.0, 1.0);
+        flipped["xf"]["flipX"] = json!(true);
+        let rest = Rest::of(&flipped, Some((100.0, 200.0)));
+        let stored = keyframes_patch(&json!({ "anchor": "left" }), &flipped, &rest).unwrap();
+        assert_eq!(stored["anchorX"][0]["v"], json!(1));
+        flipped["keyframes"] = stored;
+        assert_eq!(keyframes_view(&flipped, &rest).unwrap()["anchor"], json!("left"));
+        assert!(keyframes_patch(&json!({ "anchor": "middle" }), &el, &rest).unwrap_err().contains("bottom-left"));
     }
 
     #[test]

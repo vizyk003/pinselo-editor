@@ -78,8 +78,11 @@ pub fn cubic_bezier(b: &[f64; 4], p: f64) -> f64 {
 pub const KEYFRAME_NEUTRAL: &[(&str, f64)] =
     &[("x", 0.0), ("y", 0.0), ("scale", 1.0), ("rotate", 0.0), ("opacity", 1.0), ("blur", 0.0)];
 
+/// Neutral value of the properties in `KEYFRAME_PROPS_MORE`.
+pub const KEYFRAME_NEUTRAL_MORE: &[(&str, f64)] = &[("scaleX", 1.0), ("scaleY", 1.0), ("anchorX", 0.5), ("anchorY", 0.5)];
+
 pub fn keyframe_neutral(prop: &str) -> Option<f64> {
-    KEYFRAME_NEUTRAL.iter().find(|(k, _)| *k == prop).map(|(_, v)| *v)
+    KEYFRAME_NEUTRAL.iter().chain(KEYFRAME_NEUTRAL_MORE).find(|(k, _)| *k == prop).map(|(_, v)| *v)
 }
 
 /// Interpolated value of a keyframe track at page time `t` (before the first key → first value, after the

@@ -356,6 +356,17 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
         if el.get("visible") == Some(&Value::Bool(false)) {
             n.insert("hidden".into(), json!(true));
         }
+        for fx in el["effects"].as_array().into_iter().flatten() {
+            match fx["k"].as_str() {
+                Some("dropShadow") => {
+                    n.insert("shadow".into(), json!({ "x": r1(num(&fx["dx"])), "y": r1(num(&fx["dy"])), "blur": r1(num(&fx["blur"])), "color": color_out(&fx["color"]) }));
+                }
+                Some("blur") => {
+                    n.insert("blur".into(), json!(r1(num(&fx["radius"]))));
+                }
+                _ => {}
+            }
+        }
         if let Some(lock) = el.get("lock").filter(|l| truthy(Some(l)) && l["by"] != "brand")
             && lock.as_object().is_some_and(|m| m.values().any(oc_schema::tree::truthy))
         {

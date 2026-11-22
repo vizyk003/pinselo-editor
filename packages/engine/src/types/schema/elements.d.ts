@@ -107,7 +107,9 @@ export interface Keyframe {
     /** CSS `cubic-bezier(x1, y1, x2, y2)` for the segment ending here; wins over `ease`. */
     bezier?: [number, number, number, number];
 }
-export type Keyframes = Partial<Record<KeyframeProp, Keyframe[]>>;
+/** Keyed properties after `KEYFRAME_PROPS`: width and height multipliers, and the pivot of animated scale and rotation (box fractions, 0.5 = centre). */
+export type KeyframePropMore = 'scaleX' | 'scaleY' | 'anchorX' | 'anchorY';
+export type Keyframes = Partial<Record<KeyframeProp | KeyframePropMore, Keyframe[]>>;
 /** Looping emphasis animation (MV-004) while the element is on screen, after its entrance. */
 export type EmphasisPreset = 'pulse' | 'wiggle' | 'bounce' | 'flicker' | 'spin' | 'heartbeat' | 'float' | 'swing';
 export declare const EMPHASIS_PRESETS: readonly EmphasisPreset[];

@@ -61,6 +61,30 @@ pub fn hex(s: &str) -> Value {
     oc_schema::color::hex(s).ok().and_then(|c| serde_json::to_value(c).ok()).unwrap_or(Value::Null)
 }
 
+/// An operation's `shadow` and `blur` applied to an element's stored `effects` (other effects stay). `None` when
+/// the operation names neither; `Null` when no effect is left.
+pub fn effects_patch(op: &Value, current: &Value) -> Option<Value> {
+    let (shadow, blur) = (op.get("shadow"), op.get("blur"));
+    if shadow.is_none() && blur.is_none() {
+        return None;
+    }
+    let mut fx: Vec<Value> = current.as_array().cloned().unwrap_or_default();
+    if let Some(sh) = shadow {
+        fx.retain(|e| e["k"] != "dropShadow");
+        if sh.is_object() {
+            let color = hex(s(sh, "color").unwrap_or("#00000040"));
+            fx.push(json!({ "k": "dropShadow", "dx": jnum(f(sh, "x").unwrap_or(0.0)), "dy": jnum(f(sh, "y").unwrap_or(8.0)), "blur": jnum(f(sh, "blur").unwrap_or(24.0)), "color": color }));
+        }
+    }
+    if let Some(b) = blur {
+        fx.retain(|e| e["k"] != "blur");
+        if let Some(r) = b.as_f64().filter(|r| *r > 0.0) {
+            fx.push(json!({ "k": "blur", "radius": jnum(r) }));
+        }
+    }
+    Some(if fx.is_empty() { Value::Null } else { Value::Array(fx) })
+}
+
 pub fn solid(color: Value) -> Value {
     json!({ "k": "solid", "color": color })
 }
@@ -1040,6 +1064,9 @@ impl Run<'_> {
         if let Some(v) = op.get("opacity") {
             patch.insert("opacity".into(), v.clone());
         }
+        if let Some(v) = effects_patch(op, &e["effects"]) {
+            patch.insert("effects".into(), v);
+        }
         if let Some(v) = op.get("name") {
             patch.insert("name".into(), v.clone());
         }
@@ -1222,6 +1249,9 @@ fn base(ty: &str, op: &Value, x: f64, y: f64, w: f64, h: f64, parent: &str) -> M
     }
     if let Some(r) = s(op, "role") {
         m.insert("role".into(), json!(r));
+    }
+    if let Some(fx) = effects_patch(op, &Value::Null).filter(|v| !v.is_null()) {
+        m.insert("effects".into(), fx);
     }
     m
 }
@@ -1619,6 +1649,39 @@ mod motion_tests {
         // speed is for videos.
         let (res, _) = run(&ydoc, json!([{ "op": "update", "id": id("late"), "speed": 2 }]), vec![], json!({}));
         assert!(res.error.as_ref().is_some_and(|e| e.2.contains("speed applies to videos")), "{:?}", res.error);
+    }
+
+    #[test]
+    fn shadows_and_blur_are_set_read_and_removed() {
+        let ydoc = design(1080.0, 1080.0);
+        let (res, doc) = run(
+            &ydoc,
+            json!([
+                { "op": "add_shape", "ref": "card", "page": 1, "shape": "rect", "x": 100, "y": 100, "w": 300, "h": 200, "fill": "#ffffff", "shadow": { "y": 12, "blur": 30, "color": "#0000004d" } },
+                { "op": "add_shape", "ref": "bg", "page": 1, "shape": "rect", "x": 0, "y": 0, "w": 1080, "h": 1080, "fill": "#ff5a36", "blur": 8 }
+            ]),
+            vec![],
+            json!({}),
+        );
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        let card = &doc["elements"][id("card").as_str()];
+        assert_eq!(card["effects"][0]["k"], "dropShadow");
+        assert_eq!((card["effects"][0]["dx"].clone(), card["effects"][0]["dy"].clone(), card["effects"][0]["blur"].clone()), (json!(0), json!(12), json!(30)));
+        assert_eq!(doc["elements"][id("bg").as_str()]["effects"], json!([{ "k": "blur", "radius": 8 }]));
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let v = Value::Object(view::design_view(&doc, &typed, None));
+        let node = |r: &str| v["pages"][0]["elements"].as_array().unwrap().iter().find(|n| n["id"] == id(r).as_str()).cloned().unwrap();
+        assert_eq!(node("card")["shadow"], json!({ "x": 0.0, "y": 12.0, "blur": 30.0, "color": "#0000004d" }));
+        assert_eq!(node("bg")["blur"], json!(8.0));
+        // update: a blur joins the shadow; null removes one and leaves the other.
+        let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("card"), "blur": 2 }, { "op": "update", "id": id("bg"), "blur": null }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert_eq!(doc["elements"][id("card").as_str()]["effects"].as_array().unwrap().len(), 2);
+        assert!(doc["elements"][id("bg").as_str()].get("effects").is_none_or(Value::is_null), "{}", doc["elements"][id("bg").as_str()]);
+        let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("card"), "shadow": null }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert_eq!(doc["elements"][id("card").as_str()]["effects"], json!([{ "k": "blur", "radius": 2 }]));
     }
 
     #[test]

@@ -294,12 +294,14 @@ impl<'a> Resolver<'a> {
         let moving = !motion.is_identity_ref();
         if moving {
             // Animate about the box centre: translate, rotate, scale (element box space).
-            let cx = bbox.w / 2.0;
-            let cy = bbox.h / 2.0;
+            let (cx, cy) = match motion.anchor {
+                Some((ax, ay)) => (bbox.w * ax, bbox.h * ay),
+                None => (bbox.w / 2.0, bbox.h / 2.0),
+            };
             let r = (motion.rot * std::f64::consts::PI) / 180.0;
             // Rotation · scale (with flip's horizontal squash), about the centre.
             let sx = motion.scale * motion.sx.unwrap_or(1.0);
-            let sy = motion.scale;
+            let sy = motion.scale * motion.sy.unwrap_or(1.0);
             let (a, b, cc, d) = (libm::cos(r) * sx, libm::sin(r) * sx, -libm::sin(r) * sy, libm::cos(r) * sy);
             self.push(DLItem::Save { matrix: [a, b, cc, d, cx + motion.dx - a * cx - cc * cy, cy + motion.dy - b * cx - d * cy] });
             if motion.reveal < 1.0 {

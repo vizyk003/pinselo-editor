@@ -41,6 +41,12 @@ pub struct MotionState {
     /// Horizontal squash (flip), multiplies `scale` on x.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sx: Option<f64>,
+    /// Vertical stretch (keyed `scaleY`), multiplies `scale` on y.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sy: Option<f64>,
+    /// Pivot of the animated scale and rotation, as box fractions; `None` is the centre.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub anchor: Option<(f64, f64)>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub units: Option<Units>,
     /// 'draw': the reveal cuts only at its moving edge, so strokes past the element box (lines) stay visible.
@@ -63,6 +69,8 @@ pub const IDENTITY_MOTION: MotionState = MotionState {
     reveal: 1.0,
     reveal_from: None,
     sx: None,
+    sy: None,
+    anchor: None,
     units: None,
     reveal_open: false,
     identity: true,
@@ -267,6 +275,8 @@ fn compose(a: &MotionState, b: &MotionState) -> MotionState {
         reveal: min(a.reveal, b.reveal),
         reveal_from: if a.reveal < 1.0 { a.reveal_from.clone() } else { b.reveal_from.clone() },
         sx: if a.sx.is_some() || b.sx.is_some() { Some(a.sx.unwrap_or(1.0) * b.sx.unwrap_or(1.0)) } else { None },
+        sy: if a.sy.is_some() || b.sy.is_some() { Some(a.sy.unwrap_or(1.0) * b.sy.unwrap_or(1.0)) } else { None },
+        anchor: b.anchor.or(a.anchor),
         units: a.units.clone().or_else(|| b.units.clone()),
         reveal_open: if a.reveal < 1.0 { a.reveal_open } else { b.reveal_open },
         identity: false,
@@ -282,13 +292,20 @@ pub fn keyframe_motion(k: &Keyframes, t: f64) -> MotionState {
         rot: keyframe_value(k.rotate.as_deref(), t, 0.0),
         opacity: max(0.0, min(1.0, keyframe_value(k.opacity.as_deref(), t, 1.0))),
         blur: max(0.0, keyframe_value(k.blur.as_deref(), t, 0.0)),
+        sx: k.scale_x.as_ref().filter(|v| !v.is_empty()).map(|v| max(0.001, keyframe_value(Some(v), t, 1.0))),
+        sy: k.scale_y.as_ref().filter(|v| !v.is_empty()).map(|v| max(0.001, keyframe_value(Some(v), t, 1.0))),
+        anchor: if k.anchor_x.as_ref().is_some_and(|v| !v.is_empty()) || k.anchor_y.as_ref().is_some_and(|v| !v.is_empty()) {
+            Some((keyframe_value(k.anchor_x.as_deref(), t, 0.5), keyframe_value(k.anchor_y.as_deref(), t, 0.5)))
+        } else {
+            None
+        },
         ..fresh()
     }
 }
 
 /// `Object.values(el.keyframes).some((k) => k?.length)`.
 fn has_keys(k: &Keyframes) -> bool {
-    let known = [&k.x, &k.y, &k.scale, &k.rotate, &k.opacity, &k.blur].iter().any(|v| v.as_ref().is_some_and(|v| !v.is_empty()));
+    let known = [&k.x, &k.y, &k.scale, &k.rotate, &k.opacity, &k.blur, &k.scale_x, &k.scale_y, &k.anchor_x, &k.anchor_y].iter().any(|v| v.as_ref().is_some_and(|v| !v.is_empty()));
     known || extra_has_length(&k.extra)
 }
 

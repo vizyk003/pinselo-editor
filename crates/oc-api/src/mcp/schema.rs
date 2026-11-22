@@ -35,8 +35,26 @@ fn page_ref() -> Schema {
 /// `SemanticRole` values (oc-schema): what an element is for, so assistants and resize keep the hierarchy.
 pub const ROLES: [&str; 12] = ["headline", "subhead", "body", "quote", "caption", "cta", "logo", "hero-image", "background", "decor", "price", "legal"];
 
+/// `shadow` and `blur`: an element's drop shadow and its blur (`null` removes either).
+fn effects() -> [(&'static str, Schema); 2] {
+    [
+        (
+            "shadow",
+            z::obj([
+                ("x", z::num().min(-500.0).max(500.0).optional()),
+                ("y", z::num().min(-500.0).max(500.0).optional()),
+                ("blur", z::num().min(0.0).max(200.0).optional()),
+                ("color", color().optional()),
+            ])
+            .nullable()
+            .optional(),
+        ),
+        ("blur", z::num().min(0.0).max(200.0).nullable().optional()),
+    ]
+}
+
 fn placement() -> Vec<(&'static str, Schema)> {
-    vec![
+    let mut v = vec![
         ("page", page_ref().optional()),
         ("parent", target().optional()),
         ("x", z::num()),
@@ -45,7 +63,9 @@ fn placement() -> Vec<(&'static str, Schema)> {
         ("opacity", z::num().min(0.0).max(1.0).optional()),
         ("name", z::str().max(80.0).optional()),
         ("role", z::enumeration(&ROLES).optional()),
-    ]
+    ];
+    v.extend(effects());
+    v
 }
 fn font() -> Schema {
     z::str().max(80.0).optional()
@@ -144,6 +164,9 @@ fn keyframes() -> Schema {
         ("rotation", track(z::num().min(-36000.0).max(36000.0))),
         ("opacity", track(z::num().min(0.0).max(1.0))),
         ("blur", track(z::num().min(0.0).max(200.0))),
+        ("scaleX", track(z::num().min(0.0).max(20.0))),
+        ("scaleY", track(z::num().min(0.0).max(20.0))),
+        ("anchor", z::union(vec![z::enumeration(&super::motion::ANCHOR_NAMES), z::array(z::num().min(0.0).max(1.0)).min(2.0).max(2.0)]).nullable().optional()),
     ])
 }
 /// `motionPath`: the element's top-left travels through page points.
@@ -295,6 +318,7 @@ fn op_schema(op: &str) -> Schema {
                 ("hidden", z::bool().optional()),
                 ("text", z::str().max(20000.0).optional()),
             ]);
+            f.extend(effects());
             f.extend(text_style());
             f.extend([
                 ("fill", fill().optional()),
@@ -742,6 +766,13 @@ mod drift {
                             json!(r)
                         } else if k == "properties" {
                             Value::Object(v.as_object().into_iter().flatten().map(|(k, v)| (k.clone(), clean(v))).collect())
+                        } else if k == "anyOf" {
+                            // A union nested in a union (a nullable union) means the same as its options listed flat.
+                            let flat = v.as_array().into_iter().flatten().map(clean).flat_map(|o| match o.as_object().filter(|m| m.len() == 1).and_then(|m| m.get("anyOf")) {
+                                Some(Value::Array(inner)) => inner.clone(),
+                                _ => vec![o],
+                            });
+                            Value::Array(flat.collect())
                         } else {
                             clean(v)
                         };
@@ -829,14 +860,14 @@ mod drift {
                 for o in items.as_array().into_iter().flatten() {
                     let op = o["properties"]["op"]["const"].as_str().unwrap_or("");
                     // The discriminator is announced as a string const.
-                    let mut want = op_schema(op).json_shape();
+                    let mut want = clean(&op_schema(op).json_shape());
                     want["properties"]["op"] = json!({ "type": "string", "const": op });
                     diff(&format!("edit_design.{op}"), o, &want, &mut out);
                 }
                 continue;
             }
             let schema = tool_schema(name).unwrap_or_else(|| panic!("{name}: no schema"));
-            diff(name, &input, &schema.json_shape(), &mut out);
+            diff(name, &input, &clean(&schema.json_shape()), &mut out);
         }
         out.retain(|l| !allowed(l));
         assert!(out.is_empty(), "tools.json differs from the validation schemas:\n{}", out.join("\n"));

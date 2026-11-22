@@ -1790,6 +1790,51 @@
              "type": "null"
             }
            ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -1997,6 +2042,51 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
             },
             {
              "type": "null"
@@ -2442,6 +2532,51 @@
              "type": "null"
             }
            ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2619,6 +2754,51 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
             },
             {
              "type": "null"
@@ -2823,6 +3003,51 @@
              "type": "null"
             }
            ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -2973,6 +3198,51 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
             },
             {
              "type": "null"
@@ -4088,6 +4358,164 @@
                  "type": "null"
                 }
                ]
+              },
+              "scaleX": {
+               "description": "Multiplies the width on top of scale (1 = as placed; 0 squashes it flat), so a bar can grow from its base or a card can flip like a page",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 20
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "scaleY": {
+               "description": "Multiplies the height on top of scale (1 = as placed; 0 squashes it flat), so a bar can grow from its base or a card can flip like a page",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 20
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "anchor": {
+               "description": "The point scale and rotation keys (and scale or spin entrances) pivot on, on the element's own box: a name, or [x, y] fractions from 0 to 1 (default center). bottom makes a bar grow up from its base; top-left makes a card swing in from its corner. null resets it",
+               "anyOf": [
+                {
+                 "type": "string",
+                 "enum": [
+                  "top-left",
+                  "top",
+                  "top-right",
+                  "left",
+                  "center",
+                  "right",
+                  "bottom-left",
+                  "bottom",
+                  "bottom-right"
+                 ]
+                },
+                {
+                 "type": "array",
+                 "items": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                 },
+                 "minItems": 2,
+                 "maxItems": 2
+                },
+                {
+                 "type": "null"
+                }
+               ]
               }
              }
             },
@@ -4214,6 +4642,51 @@
              "maximum": 600
             }
            }
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [
@@ -5149,6 +5622,51 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "shadow": {
+           "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "x": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "y": {
+               "type": "number",
+               "minimum": -500,
+               "maximum": 500
+              },
+              "blur": {
+               "type": "number",
+               "minimum": 0,
+               "maximum": 200
+              },
+              "color": {
+               "type": "string",
+               "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "blur": {
+           "description": "Blurs the whole element by this many px (a soft background, depth of field). null or 0 removes it",
+           "anyOf": [
+            {
+             "type": "number",
+             "minimum": 0,
+             "maximum": 200
             },
             {
              "type": "null"

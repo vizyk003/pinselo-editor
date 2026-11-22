@@ -296,3 +296,21 @@ fn a_moving_mask_moves_the_window_onto_the_content() {
     assert!(near(px(&at(&d, Some(0.0)), 200, 25, 50), WHITE, 2), "mask away from the content");
     assert!(near(px(&at(&d, Some(2000.0)), 200, 25, 50), RED, 2), "mask over the content");
 }
+
+#[test]
+fn keyed_width_height_and_anchor_scale_about_the_pivot() {
+    // Half height, pivoting on the bottom edge: the rect keeps its bottom and loses its top half.
+    let d = timed_doc(None, json!({ "keyframes": { "scaleY": [{ "t": 0, "v": 0.5 }], "anchorY": [{ "t": 0, "v": 1 }] } }), None);
+    let img = at(&d, Some(0.0));
+    assert!(near(px(&img, 200, 25, 25), WHITE, 2) && near(px(&img, 200, 25, 75), RED, 2));
+    // About the centre (no anchor) it keeps the middle instead.
+    let d = timed_doc(None, json!({ "keyframes": { "scaleY": [{ "t": 0, "v": 0.5 }] } }), None);
+    let img = at(&d, Some(0.0));
+    assert!(near(px(&img, 200, 25, 10), WHITE, 2) && near(px(&img, 200, 25, 50), RED, 2) && near(px(&img, 200, 25, 90), WHITE, 2));
+    // Half width from the left edge; the height is untouched.
+    let d = timed_doc(None, json!({ "keyframes": { "scaleX": [{ "t": 0, "v": 0.5 }], "anchorX": [{ "t": 0, "v": 0 }] } }), None);
+    let img = at(&d, Some(0.0));
+    assert!(near(px(&img, 200, 10, 50), RED, 2) && near(px(&img, 200, 40, 50), WHITE, 2) && near(px(&img, 200, 10, 95), RED, 2));
+    // Drawn without a time, keys do nothing.
+    assert!(near(px(&at(&d, None), 200, 40, 50), RED, 2));
+}
