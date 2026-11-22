@@ -318,6 +318,10 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
       : tableCol && single?.type === 'table' ? { kind: 'tableCol', id: single.id, index: +tableCol } : { kind: 'canvas' };
     e.currentTarget.setPointerCapture(e.pointerId);
     editor.pointerDown(toScene(e), mods(e), target, e.button);
+    // A click that keeps text editing (moving the caret) hands the keys back to the IME proxy. The focus effect
+    // below only runs when the caret state changes, so a click where the caret already was left the canvas
+    // focused and Backspace / typing went nowhere.
+    if (editor.state.editingText) imeRef.current?.focus({ preventScroll: true });
   };
 
   const lastHover = useRef(0);
@@ -487,6 +491,13 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.target !== wrapRef.current) return;
     const st = editor.state;
+    // Still editing text but the canvas has focus: the key belongs to the text, never to the selection
+    // (Backspace here would delete the whole text box).
+    if (st.editingText && imeRef.current) {
+      imeRef.current.focus({ preventScroll: true });
+      onImeKey(e as unknown as React.KeyboardEvent<HTMLTextAreaElement>);
+      return;
+    }
     // Pen and node editing own their keys (Space, arrows, Enter, Escape, Tab between points; DS-100).
     if (!readOnly && (st.tool === 'pen' || st.pathEdit) && !e.metaKey && !e.ctrlKey && (e.key !== 'Tab' || st.pathEdit)) {
       if (editor.handleKey(e.key, mods(e), e.code)) {
@@ -828,6 +839,8 @@ export function Canvas({ presence, commentPins }: { presence: Presence[]; commen
       aria-describedby="canvas-keys-hint"
       aria-keyshortcuts="Enter Tab Shift+Tab Escape"
       onPointerDown={onPointerDown}
+      // The browser focuses the canvas on mousedown, after pointerdown has given focus to the IME proxy.
+      onMouseDown={(e) => { if (editor.state.editingText && e.button === 0) e.preventDefault(); }}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerLeave={() => {
