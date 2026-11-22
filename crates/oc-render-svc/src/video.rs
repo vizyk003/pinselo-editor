@@ -18,7 +18,7 @@ use std::sync::Arc;
 use futures::future::BoxFuture;
 use indexmap::IndexMap;
 use oc_render::jsfmt::max;
-use oc_render::motion::{page_settle_ms, transition_progress};
+use oc_render::motion::{page_is_dynamic, page_settle_ms, shown, transition_progress};
 use oc_schema::DesignDoc;
 use oc_schema::elements::Element;
 use oc_schema::js::{round, to_fixed};
@@ -59,42 +59,6 @@ fn failed(e: impl std::fmt::Display) -> RenderError {
     RenderError::Failed(e.to_string())
 }
 
-/// JSON truthiness of an element field (`e.timing || e.animOut || …` on an unknown element type).
-fn raw_truthy(m: &serde_json::Map<String, serde_json::Value>, k: &str) -> bool {
-    use serde_json::Value;
-    match m.get(k) {
-        None | Some(Value::Null) => false,
-        Some(Value::Bool(b)) => *b,
-        Some(Value::Number(n)) => n.as_f64().is_some_and(|x| x != 0.0 && !x.is_nan()),
-        Some(Value::String(s)) => !s.is_empty(),
-        Some(_) => true,
-    }
-}
-
-fn visible(el: &Element) -> bool {
-    match el {
-        Element::Unknown(m) => m.get("visible") != Some(&serde_json::Value::Bool(false)),
-        _ => el.base().is_none_or(|b| b.visible != Some(false)),
-    }
-}
-
-/// `e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes || e.panZoom`.
-fn has_motion(el: &Element) -> bool {
-    match el {
-        Element::Unknown(m) => ["timing", "animOut", "motionPath", "emphasis", "keyframes", "panZoom"]
-            .iter()
-            .any(|k| raw_truthy(m, k)),
-        _ => el.base().is_some_and(|b| {
-            b.timing.is_some()
-                || b.anim_out.is_some()
-                || b.motion_path.is_some()
-                || b.emphasis.is_some()
-                || b.keyframes.is_some()
-                || b.pan_zoom.is_some()
-        }),
-    }
-}
-
 /// `frames(r, doc, fps, scale, media, progress)`: the design timeline as frames, handed to `sink` in order.
 pub async fn frames(
     deps: VideoDeps<'_>,
@@ -123,16 +87,19 @@ pub async fn frames(
         let els = descendants(&doc.elements, &p.id);
         let videos: Vec<(&Element, oc_schema::timeline::VideoSlot<'_>)> = els
             .iter()
-            .filter(|e| visible(e))
+            .filter(|e| shown(e))
             .flat_map(|e| video_slots(e).into_iter().map(move |v| (*e, v)))
             .collect();
-        let dynamic = !videos.is_empty() || captions || els.iter().any(|e| has_motion(e));
+        let dynamic = page_is_dynamic(&els, captions);
         let settle_at = max(
             trans.map_or(0.0, |t| t.duration_ms),
             page_settle_ms(p, &els),
         );
         let mut settled: Option<Arc<Rgba>> = None;
         let mut last: Option<Arc<Rgba>> = None;
+        // The last drawn frame (before any transition) and its key: a moving page whose picture did not change
+        // between two frames (an element waiting for its window, a hold between keys) is not drawn again.
+        let mut drawn: Option<(u64, Arc<Rgba>)> = None;
         for i in 0..n {
             let t = (i as f64 / fps) * 1000.0;
             let reuse = if !dynamic && t > settle_at + 50.0 {
@@ -177,11 +144,19 @@ pub async fn frames(
                         video_frames: (!current.is_empty()).then(|| Arc::new(current)),
                         ..RasterOptions::default()
                     };
-                    let f = Arc::new(
-                        deps.renderer
-                            .render_rgba(deps.host, doc, &p.id, &opts)
-                            .await?,
-                    );
+                    let key = deps.renderer.frame_key(deps.host, doc, &p.id, &opts);
+                    let f = match (&drawn, key) {
+                        (Some((k, f)), Some(key)) if *k == key => f.clone(),
+                        _ => {
+                            let f = Arc::new(
+                                deps.renderer
+                                    .render_rgba(deps.host, doc, &p.id, &opts)
+                                    .await?,
+                            );
+                            drawn = key.map(|k| (k, f.clone()));
+                            f
+                        }
+                    };
                     if !dynamic && t > settle_at + 50.0 {
                         settled = Some(f.clone());
                     }

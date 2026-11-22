@@ -376,6 +376,19 @@ pub trait Renderer: Send + Sync + 'static {
         opts: &'a RasterOptions,
     ) -> RenderFuture<'a, Rgba>;
 
+    /// A key for what [`Renderer::render_rgba`] would draw with these options: two calls with the same key give
+    /// the same pixels, so video export reuses the previous frame instead of drawing it again. `None` (the
+    /// default) means "unknown, always draw".
+    fn frame_key(
+        &self,
+        _host: &dyn RenderHost,
+        _doc: &DesignDoc,
+        _page_id: &str,
+        _opts: &RasterOptions,
+    ) -> Option<u64> {
+        None
+    }
+
     /// Rasterise and encode a page (`render`).
     fn render_image<'a>(
         &'a self,

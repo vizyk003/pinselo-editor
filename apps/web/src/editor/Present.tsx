@@ -3,8 +3,8 @@
  * Click builds (PS-010): Next reveals the page's next build step before moving on. Autoplay (A) with loop,
  * laser pointer (L), black/white screen (B/W), and number + Enter to jump to a page.
  */
-import { RenderTarget, canvas2dTransitionTarget, clickStepCount, drawTransition, pageSettleMs, resolvePage, transitionFrame, transitionProgress } from '@oc/engine';
-import { childrenOf, descendants, pageDurationMs, sortedPages, timelineOf, videoSlots, type EmbedEl } from '@oc/engine';
+import { RenderTarget, canvas2dTransitionTarget, clickStepCount, drawTransition, pageIsDynamic, pageSettleMs, resolvePage, transitionFrame, transitionProgress } from '@oc/engine';
+import { childrenOf, descendants, pageDurationMs, sortedPages, timelineOf, type EmbedEl } from '@oc/engine';
 import { EmbedOverlay } from '../components/EmbedOverlay';
 import { MediaPool } from './media';
 import { ChevronLeft, ChevronRight, Crosshair, Pause, Play, Repeat, X } from 'lucide-react';
@@ -182,7 +182,7 @@ export function Present({ onExit }: { onExit: () => void }) {
       pool.current?.sync(editor.doc, (span?.startMs ?? 0) + Math.min(t, pageMs - 1), t < pageMs);
       // Elements inside groups animate too, so look at every element on the page (as the video export does).
       const els = descendants(editor.doc, page.id);
-      const timed = els.some((e) => videoSlots(e).length > 0 || e.timing || e.animOut || e.motionPath || e.emphasis || e.keyframes || e.panZoom) || Boolean(editor.doc.meta.audio?.length || editor.doc.meta.captions?.cues.length);
+      const timed = pageIsDynamic(els, Boolean(editor.doc.meta.captions?.visible && editor.doc.meta.captions.cues.length)) || Boolean(editor.doc.meta.audio?.length);
       const settle = Math.max(pageSettleMs(page, els), page.transition?.durationMs ?? 0, timed ? pageMs : 0, (steps.current.at(-1) ?? 0) + 3000);
       const animating = timed || t < pageSettleMs(page, els) + 50 || steps.current.some((s) => s >= 0 && t < s + 3000);
       const pw = Math.max(1, Math.round(w * z * dpr));

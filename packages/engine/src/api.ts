@@ -7,7 +7,7 @@ export { engineReady, initEngine, onEngineReady, raw, type EngineInput } from '.
 export { Editor, EnginePanicError, hardenDoc, isEngineTrap, type EngineEditorOptions, type EngineStore, type OriginName } from './editor';
 export { EngineTextService, FALLBACK_FAMILY, FontRegistry, TextEngine, type FontFace, type FontFamily, type FontLoader, type FontManifest, type MissingFace, type TextLayout } from './text';
 export {
-  DisplayList, Painter, RenderTarget, canvas2dTransitionTarget, clickStepCount, drawTransition, pageSettleMs, resolvePage, sliceColor, smoothPath, svgToElements, transitionFrame, transitionProgress,
+  DisplayList, Painter, RenderTarget, canvas2dTransitionTarget, clickStepCount, drawTransition, pageIsDynamic, pageSettleMs, resolvePage, sliceColor, smoothPath, svgToElements, transitionFrame, transitionProgress,
   type AssetSource, type DLItem, type ResolveOptions, type ResolvedPaint, type TransitionCanvas, type TransitionFrame, type TransitionLayer, type VideoFrameSource,
 } from './render';
 export { docRef } from './docref';

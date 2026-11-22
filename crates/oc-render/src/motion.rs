@@ -521,6 +521,45 @@ pub fn page_settle_ms(page: &Page, els: &[&Element]) -> f64 {
     end
 }
 
+/// JSON truthiness of an element field (`e.timing || e.animOut || …` on an unknown element type).
+fn raw_truthy(m: &serde_json::Map<String, Value>, k: &str) -> bool {
+    match m.get(k) {
+        None | Some(Value::Null) => false,
+        Some(Value::Bool(b)) => *b,
+        Some(Value::Number(n)) => n.as_f64().is_some_and(|x| x != 0.0 && !x.is_nan()),
+        Some(Value::String(s)) => !s.is_empty(),
+        Some(_) => true,
+    }
+}
+
+/// `e.visible !== false`.
+pub fn shown(el: &Element) -> bool {
+    match el {
+        Element::Unknown(m) => m.get("visible") != Some(&Value::Bool(false)),
+        _ => el.base().is_none_or(|b| b.visible != Some(false)),
+    }
+}
+
+/// Whether an element can still change after the page's entrances have settled: it has its own window, an exit,
+/// a motion path, a loop, keyframes or a pan-zoom. Entrances alone end by [`page_settle_ms`].
+pub fn element_keeps_moving(el: &Element) -> bool {
+    match el {
+        Element::Unknown(m) => ["timing", "animOut", "motionPath", "emphasis", "keyframes", "panZoom"].iter().any(|k| raw_truthy(m, k)),
+        _ => el.base().is_some_and(|b| {
+            b.timing.is_some() || b.anim_out.is_some() || b.motion_path.is_some() || b.emphasis.is_some() || b.keyframes.is_some() || b.pan_zoom.is_some()
+        }),
+    }
+}
+
+/// Whether a page's frames can differ after [`page_settle_ms`] (and its transition): a shown video, captions on
+/// screen, or an element that keeps moving. `els` are all the page's elements, group children included. A page
+/// that is not dynamic can reuse its settled frame (video export) or stop redrawing (Present mode).
+pub fn page_is_dynamic(els: &[&Element], captions: bool) -> bool {
+    captions
+        || els.iter().any(|e| element_keeps_moving(e))
+        || els.iter().any(|e| shown(e) && !oc_schema::timeline::video_slots(e).is_empty())
+}
+
 /// Number of animation units in a text element (lines = paragraphs).
 pub fn text_unit_count(el: &Element, a: &ElementAnim) -> f64 {
     let Element::Text(t) = el else { return 1.0 };

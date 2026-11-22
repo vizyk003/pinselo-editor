@@ -207,3 +207,68 @@ fn path_data_tolerance() {
     assert!(!path_data_eq("M0 0 L1 0", "M0 0 L1 0 Z"));
     assert!(!path_data_eq("Monday 1", "Monday 1.0000001"));
 }
+
+/// `page_is_dynamic` misses nothing: on every template page and every animated case, a page it calls still
+/// resolves to the same display list at any two times after it settles. A new motion field that the check
+/// forgets makes this fail on the first fixture that uses it.
+#[test]
+fn still_pages_stay_still() {
+    let mut pages: Vec<(String, DesignDoc, String)> = Vec::new();
+    let mut seen: HashMap<String, DesignDoc> = HashMap::new();
+    for c in golden("templates").as_array().expect("cases") {
+        let file = s(&c["file"]);
+        let doc = seen.entry(file.to_owned()).or_insert_with(|| doc_of(&fixture(file))).clone();
+        pages.push((file.to_owned(), doc, s(&c["page"]).to_owned()));
+    }
+    for c in golden("animated").as_array().expect("cases") {
+        let (file, page) = (s(&c["file"]), s(&c["page"]));
+        let mut raw = fixture(file);
+        merge(&mut raw["pages"][page], &c["patch"]["page"]);
+        for (id, p) in c["patch"]["elements"].as_object().expect("elements") {
+            merge(&mut raw["elements"][id], p);
+        }
+        pages.push((format!("{file} (animated)"), doc_of(&raw), page.to_owned()));
+    }
+    // Every kind of motion on every element of some template pages (group children included), so a field the
+    // check forgets is used by at least one page here.
+    let motions = [
+        json!({ "timing": { "startMs": 300 } }),
+        json!({ "animOut": { "preset": "shrink", "durationMs": 800 } }),
+        json!({ "motionPath": { "points": [0, 0, 60, -30, 120, 0], "durationMs": 1200, "delayMs": 100, "easing": "linear" } }),
+        json!({ "emphasis": { "preset": "wiggle", "periodMs": 750 } }),
+        json!({ "keyframes": { "x": [{ "t": 0, "v": -40 }, { "t": 900, "v": 0 }] } }),
+        json!({ "panZoom": { "from": 1, "to": 1.4 } }),
+    ];
+    let files: Vec<String> = seen.keys().cloned().collect();
+    for file in &files {
+        let raw = fixture(file);
+        for m in &motions {
+            let mut r = raw.clone();
+            for el in r["elements"].as_object_mut().expect("elements").values_mut() {
+                merge(el, m);
+            }
+            let doc = doc_of(&r);
+            for page in doc.pages.keys() {
+                pages.push((format!("{file} with {m}"), doc.clone(), page.to_string()));
+            }
+        }
+    }
+    let (mut still, mut dynamic) = (0, 0);
+    for (file, doc, page) in &pages {
+        let els = oc_schema::tree::descendants(&doc.elements, page);
+        if motion::page_is_dynamic(&els, false) {
+            dynamic += 1;
+            continue;
+        }
+        still += 1;
+        let p = &doc.pages[page.as_str()];
+        let settle = motion::page_settle_ms(p, &els).max(p.transition.as_ref().map_or(0.0, |t| t.duration_ms));
+        let at = |t: f64| j(&resolve_page(doc, page, &ResolveOptions { time_ms: Some(t), ..Default::default() }));
+        let end = oc_schema::timeline::page_duration_ms(&doc.elements, p) - 1.0;
+        if end <= settle + 60.0 {
+            continue;
+        }
+        assert_eq!(at(settle + 60.0), at(end), "{file} {page} changes after it settles");
+    }
+    assert!(still > 100 && dynamic > 0, "still {still}, dynamic {dynamic}");
+}

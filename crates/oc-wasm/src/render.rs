@@ -13,7 +13,7 @@
 //!   cache for measuring, caret geometry and drawing), the asset bytes fed from JS, video frames fed from JS, and
 //!   the group/dirty-region queries for partial repaints.
 //! * The pure helpers apps/web imports from `@oc/render-core`: `smoothPath`, `sliceColor`, `pageSettleMs`,
-//!   `clickStepCount`, `transitionProgress`, `transitionFrame`.
+//!   `pageIsDynamic`, `clickStepCount`, `transitionProgress`, `transitionFrame`.
 
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -168,6 +168,14 @@ pub fn page_settle_ms(page: JsValue, els: JsValue) -> Result<f64, JsError> {
     let e = elements(&els)?;
     let refs: Vec<&Element> = e.iter().collect();
     Ok(oc_render::motion::page_settle_ms(&p, &refs))
+}
+
+/// `pageIsDynamic(els, captions)`: whether the page's frames can change after its entrances settle.
+#[wasm_bindgen(js_name = pageIsDynamic)]
+pub fn page_is_dynamic(els: JsValue, captions: bool) -> Result<bool, JsError> {
+    let e = elements(&els)?;
+    let refs: Vec<&Element> = e.iter().collect();
+    Ok(oc_render::motion::page_is_dynamic(&refs, captions))
 }
 
 /// `clickStepCount(els)`.

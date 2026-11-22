@@ -133,6 +133,11 @@ export const sliceColor = (el: ChartEl, i: number): ColorValue => raw.sliceColor
 /** When the page's entrance/emphasis animations have settled (ms). */
 export const pageSettleMs = (page: Page, els: readonly Element[]): number => raw.pageSettleMs(page, els);
 
+/** Whether a page's frames can change after its entrances settle (`els`: all its elements, group children
+ *  included): a shown video, captions on screen, or an element with a window, exit, path, loop, keyframes or
+ *  pan-zoom. The same check video export uses to reuse settled frames. */
+export const pageIsDynamic = (els: readonly Element[], captions: boolean): boolean => raw.pageIsDynamic(els, captions);
+
 /** Number of click build steps on a page (0 = none). */
 export const clickStepCount = (els: readonly Element[]): number => raw.clickStepCount(els);
 

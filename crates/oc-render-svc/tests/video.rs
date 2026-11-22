@@ -262,6 +262,8 @@ fn pattern(w: u32, h: u32, pi: i64, time_ms: f64, cap_ms: f64) -> Vec<u8> {
 #[derive(Default)]
 struct Fake {
     log: Mutex<Vec<Value>>,
+    /// When set, `frame_key` says every frame of a page within the same `bucket` ms looks alike.
+    bucket: Option<f64>,
 }
 
 fn ni<'a, T: Send + 'a>() -> RenderFuture<'a, T> {
@@ -271,6 +273,19 @@ fn ni<'a, T: Send + 'a>() -> RenderFuture<'a, T> {
 impl Renderer for Fake {
     fn engine(&self) -> &'static str {
         "fake"
+    }
+    fn frame_key(
+        &self,
+        _: &dyn RenderHost,
+        _: &DesignDoc,
+        page_id: &str,
+        o: &RasterOptions,
+    ) -> Option<u64> {
+        use std::hash::{Hash, Hasher};
+        let b = self.bucket?;
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        (page_id, (o.time_ms.unwrap_or(0.0) / b).floor() as i64).hash(&mut h);
+        Some(h.finish())
     }
     fn render_rgba<'a>(
         &'a self,
@@ -673,6 +688,30 @@ fn gif_export_matches_ts() {
         );
     }
     assert_eq!(sha(&bytes), g["sha256"].as_str().unwrap());
+}
+
+/// A renderer that can say two frames look alike is asked to draw each look once per page (the export reuses
+/// the frame it drew), and the export still hands out every frame.
+#[test]
+fn alike_frames_are_drawn_once() {
+    let doc = design("gif-deck");
+    let run = |bucket: Option<f64>| {
+        let fake = Fake { bucket, ..Fake::default() };
+        let (host, m, sp, tmp) = (Host::new(), media(), Recorder::new(false), tmp_root("gif-keyed"));
+        let deps = VideoDeps { renderer: &fake, host: &host, media: &m, spawner: &sp, tmp: &tmp };
+        block_on(export_gif(deps, &doc, None)).unwrap();
+        fake.log.into_inner().unwrap()
+    };
+    let (all, keyed) = (run(None), run(Some(1000.0)));
+    let buckets: Vec<(String, i64)> = keyed
+        .iter()
+        .map(|r| (r["page"].as_str().unwrap().to_owned(), (r["timeMs"].as_f64().unwrap() / 1000.0).floor() as i64))
+        .collect();
+    let mut distinct = buckets.clone();
+    distinct.dedup();
+    assert_eq!(buckets, distinct, "a look drawn twice in a row");
+    assert!(keyed.len() < all.len(), "{} draws keyed, {} without", keyed.len(), all.len());
+    assert!(keyed.iter().all(|r| all.contains(r)));
 }
 
 // ------------------------------------------------------------------ MP4 plans

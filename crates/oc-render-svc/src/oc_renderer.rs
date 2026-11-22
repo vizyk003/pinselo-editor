@@ -444,6 +444,27 @@ impl Renderer for OcRenderer {
         })
     }
 
+    /// The resolved display list, hashed: the painter is a pure function of it, the scale and the asset bytes
+    /// (fixed during one export). Video frames are not in the list, so a page showing one has no key.
+    fn frame_key(
+        &self,
+        _host: &dyn RenderHost,
+        doc: &DesignDoc,
+        page_id: &str,
+        opts: &RasterOptions,
+    ) -> Option<u64> {
+        use std::hash::{Hash, Hasher};
+        if opts.video_frames.is_some() {
+            return None;
+        }
+        let dl = resolve_page(doc, page_id, &resolve_opts(opts));
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        serde_json::to_vec(&dl).ok()?.hash(&mut h);
+        opts.scale.to_bits().hash(&mut h);
+        opts.transparent.hash(&mut h);
+        Some(h.finish())
+    }
+
     fn render_image<'a>(
         &'a self,
         host: &'a dyn RenderHost,
