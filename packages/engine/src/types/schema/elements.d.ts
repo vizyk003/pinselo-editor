@@ -187,6 +187,8 @@ export interface ElementBase {
     motionPath?: MotionPath;
     panZoom?: PanZoom;
     timing?: ElementTiming;
+    /** Takes on another element's animated movement (same page); at rest nothing changes. */
+    follow?: { id: ElementId };
     origin?: DesignOrigin;
     /** Bulk create (ED-090): the data column that fills this element (text, or image URL / upload name). */
     dataBinding?: {

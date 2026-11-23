@@ -202,6 +202,19 @@ fn common(el: &Element) -> Common {
     }
 }
 
+/// The matrix of a motion state in its element's box space, pivoting on (`cx`, `cy`): translate, rotate, scale.
+fn motion_matrix(motion: &MotionState, cx: f64, cy: f64) -> [f64; 6] {
+    let r = (motion.rot * std::f64::consts::PI) / 180.0;
+    // Rotation · scale (with flip's horizontal squash), about the centre.
+    let sx = motion.scale * motion.sx.unwrap_or(1.0);
+    let sy = motion.scale * motion.sy.unwrap_or(1.0);
+    let (a, b, cc, d) = (libm::cos(r) * sx, libm::sin(r) * sx, -libm::sin(r) * sy, libm::cos(r) * sy);
+    [a, b, cc, d, cx + motion.dx - a * cx - cc * cy, cy + motion.dy - b * cx - d * cy]
+}
+
+/// How many leaders a chain of `follow`s may pass through.
+const FOLLOW_DEPTH: usize = 8;
+
 struct Resolver<'a> {
     doc: &'a DesignDoc,
     opts: &'a ResolveOptions,
@@ -210,6 +223,7 @@ struct Resolver<'a> {
     page_ms: f64,
     page_no: usize,
     page_total: usize,
+    page: &'a oc_schema::design::Page,
 }
 
 impl<'a> Resolver<'a> {
@@ -267,6 +281,80 @@ impl<'a> Resolver<'a> {
     /// crop otherwise (still pages, thumbnails and the editor at rest show the picture as it was cropped).
     /// Motion of a group's child: still when the page is drawn without a time, `None` when the child is outside
     /// its visibility window.
+    /// The page-space matrix of the element's parents at rest (identity on the page), or `None` when it is not on
+    /// this page.
+    fn parents_matrix(&self, el: &Element) -> Option<[f64; 6]> {
+        let mut m = oc_geometry::matrix::IDENTITY;
+        let mut parent = el.base()?.parent_id.clone();
+        for _ in 0..64 {
+            if parent == self.page.id.as_str() {
+                return Some(m);
+            }
+            let g = self.doc.elements.get(parent.as_str())?;
+            let g = self.get(g);
+            let b = g.base()?;
+            m = oc_geometry::matrix::multiply(&local_matrix(&b.xf), &m);
+            parent = b.parent_id.clone();
+        }
+        None
+    }
+
+    /// The leader's own motion at page time `t`, its time held inside its window so a follower keeps the last (or
+    /// first) place its leader had.
+    fn own_motion(&self, leader: &Element, t: f64) -> MotionState {
+        let window = element_window(leader, self.page_ms);
+        let t = t.clamp(window.start, (window.end - 1.0).max(window.start));
+        let top = children_of(&self.doc.elements, &self.page.id);
+        let m = match top.iter().position(|e| e.id() == leader.id()) {
+            Some(i) => motion_at_time(leader, self.page, i, t, window, self.opts.click_steps.as_deref()),
+            None => nested_motion_at_time(leader, t, window, self.opts.click_steps.as_deref()),
+        };
+        m.unwrap_or(IDENTITY_MOTION)
+    }
+
+    /// The movement an element takes on from the leader it follows, as a page-space matrix: the leader's world
+    /// transform now times its inverse at rest (and its own leader's in turn). `None` when it follows nothing, or a
+    /// leader that is missing, deleted, on another page, or in a cycle.
+    fn follow_delta(&self, el: &Element, t: f64) -> Option<[f64; 6]> {
+        el.base()?.follow.as_ref()?;
+        // A chain that comes back on itself (or runs too long) moves nobody in it.
+        let mut seen: Vec<&str> = el.id().into_iter().collect();
+        let mut at = el;
+        while let Some(f) = at.base().and_then(|b| b.follow.as_ref()) {
+            if seen.contains(&f.id.as_str()) || seen.len() > FOLLOW_DEPTH {
+                return None;
+            }
+            seen.push(f.id.as_str());
+            match self.doc.elements.get(f.id.as_str()) {
+                Some(next) => at = next,
+                None => break,
+            }
+        }
+        self.chain_delta(el, t)
+    }
+
+    fn chain_delta(&self, el: &Element, t: f64) -> Option<[f64; 6]> {
+        use oc_geometry::matrix::{invert, multiply};
+        let lid = el.base()?.follow.as_ref()?.id.clone();
+        let raw = self.doc.elements.get(lid.as_str())?;
+        let leader = self.get(raw);
+        if leader.base().is_none_or(|b| b.deleted.is_some()) {
+            return None;
+        }
+        let world = multiply(&self.parents_matrix(&leader)?, &local_matrix(&leader.base()?.xf));
+        let m = self.own_motion(&leader, t);
+        let xf = &leader.base()?.xf;
+        let (cx, cy) = match m.anchor {
+            Some((ax, ay)) => (xf.w * ax, xf.h * ay),
+            None => (xf.w / 2.0, xf.h / 2.0),
+        };
+        let own = multiply(&multiply(&world, &motion_matrix(&m, cx, cy)), &invert(&world));
+        Some(match self.chain_delta(&leader, t) {
+            Some(up) => multiply(&up, &own),
+            None => own,
+        })
+    }
+
     fn child_motion(&self, raw: &'a Element) -> Option<MotionState> {
         let Some(t) = self.opts.time_ms else { return Some(IDENTITY_MOTION) };
         let el = self.get(raw);
@@ -293,6 +381,16 @@ impl<'a> Resolver<'a> {
         if c.hidden {
             return;
         }
+        // Following another element: its movement, carried into this element's parent space, wraps everything.
+        let follow = self.opts.time_ms.and_then(|t| {
+            let d = self.follow_delta(&el, t)?;
+            let p = self.parents_matrix(&el)?;
+            use oc_geometry::matrix::{invert, multiply};
+            Some(multiply(&multiply(&invert(&p), &d), &p))
+        });
+        if let Some(m) = follow {
+            self.push(DLItem::Save { matrix: m });
+        }
         self.push(DLItem::Save { matrix: local_matrix(&c.xf) });
         let bbox = Rect { x: 0.0, y: 0.0, w: c.xf.w, h: c.xf.h };
         let moving = !motion.is_identity_ref();
@@ -302,12 +400,7 @@ impl<'a> Resolver<'a> {
                 Some((ax, ay)) => (bbox.w * ax, bbox.h * ay),
                 None => (bbox.w / 2.0, bbox.h / 2.0),
             };
-            let r = (motion.rot * std::f64::consts::PI) / 180.0;
-            // Rotation · scale (with flip's horizontal squash), about the centre.
-            let sx = motion.scale * motion.sx.unwrap_or(1.0);
-            let sy = motion.scale * motion.sy.unwrap_or(1.0);
-            let (a, b, cc, d) = (libm::cos(r) * sx, libm::sin(r) * sx, -libm::sin(r) * sy, libm::cos(r) * sy);
-            self.push(DLItem::Save { matrix: [a, b, cc, d, cx + motion.dx - a * cx - cc * cy, cy + motion.dy - b * cx - d * cy] });
+            self.push(DLItem::Save { matrix: motion_matrix(motion, cx, cy) });
             if motion.reveal < 1.0 {
                 let k = motion.reveal;
                 // 'draw': strokes reach past the box (a horizontal line's box is 1 px high), so the clip is left open
@@ -623,6 +716,9 @@ impl<'a> Resolver<'a> {
             self.push(DLItem::Restore);
         }
         self.push(DLItem::Restore);
+        if follow.is_some() {
+            self.push(DLItem::Restore);
+        }
     }
 }
 
@@ -701,7 +797,7 @@ pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> Di
     }
     let sorted = sorted_pages(&doc.pages);
     let page_no = sorted.iter().position(|p| p.id == page_id).map_or(0, |i| i + 1);
-    let mut r = Resolver { doc, opts, dl, view: None, page_ms, page_no, page_total: sorted.len() };
+    let mut r = Resolver { doc, opts, dl, view: None, page_ms, page_no, page_total: sorted.len(), page };
     let top = children_of(&doc.elements, page_id);
     for (i, raw) in top.into_iter().enumerate() {
         match opts.time_ms {

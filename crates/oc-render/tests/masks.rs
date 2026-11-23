@@ -352,3 +352,68 @@ fn a_colour_track_that_does_not_read_is_left_out() {
     let img = at(&d, Some(0.0));
     assert!(near(px(&img, 200, 125, 50), RED, 2), "{:?}", px(&img, 200, 125, 50));
 }
+
+/// A 200×100 white page holding the given elements.
+fn page_of(els: Vec<Value>) -> DesignDoc {
+    let mut m = serde_json::Map::new();
+    for e in els {
+        m.insert(e["id"].as_str().unwrap().to_owned(), e);
+    }
+    de(&json!({
+        "meta": { "schemaVersion": 1, "minClientSchema": 1, "layoutVersion": 1, "surface": "video",
+                  "dims": { "w": 200, "h": 100, "unit": "px", "dpi": 96 }, "lang": "en", "title": "f", "epoch": 0 },
+        "pages": { "p": { "id": "p", "order": "a0", "background": [solid(1.0, 1.0, 1.0)], "durationMs": 3000 } },
+        "elements": m,
+        "assets": {}
+    }))
+}
+
+const BLUE: [u8; 3] = [0, 0, 255];
+
+#[test]
+fn a_follower_takes_on_its_leaders_movement() {
+    let mut a = shape("a", "p", "a0", 0.0, 0.0, 20.0, 100.0, "rect", solid(0.0, 0.0, 1.0));
+    a["keyframes"] = json!({ "x": [{ "t": 0, "v": 0 }, { "t": 1000, "v": 100 }] });
+    let mut b = shape("b", "p", "a1", 30.0, 0.0, 20.0, 100.0, "rect", solid(1.0, 0.0, 0.0));
+    b["follow"] = json!({ "id": "a" });
+    let d = page_of(vec![a, b.clone()]);
+    assert!(near(px(&at(&d, None), 200, 40, 50), RED, 2), "at rest it stays put");
+    assert!(near(px(&at(&d, Some(0.0)), 200, 40, 50), RED, 2));
+    let end = at(&d, Some(1500.0));
+    assert!(near(px(&end, 200, 140, 50), RED, 2) && near(px(&end, 200, 110, 50), BLUE, 2) && near(px(&end, 200, 40, 50), WHITE, 2));
+    // A follower inside a group follows a leader on the page just the same.
+    let g = json!({ "id": "g", "type": "group", "parentId": "p", "z": "a1", "opacity": 1, "xf": { "x": 30, "y": 0, "w": 20, "h": 100, "rot": 0 } });
+    let mut bg = b;
+    bg["parentId"] = json!("g");
+    bg["xf"]["x"] = json!(0);
+    let mut a = shape("a", "p", "a0", 0.0, 0.0, 20.0, 100.0, "rect", solid(0.0, 0.0, 1.0));
+    a["keyframes"] = json!({ "x": [{ "t": 0, "v": 0 }, { "t": 1000, "v": 100 }] });
+    let d = page_of(vec![a, g, bg]);
+    assert!(near(px(&at(&d, Some(1500.0)), 200, 140, 50), RED, 2));
+}
+
+#[test]
+fn a_follower_turns_around_its_leader() {
+    let mut a = shape("a", "p", "a0", 90.0, 40.0, 20.0, 20.0, "rect", solid(0.0, 0.0, 1.0));
+    a["keyframes"] = json!({ "rotate": [{ "t": 0, "v": 180 }] });
+    let mut b = shape("b", "p", "a1", 120.0, 40.0, 20.0, 20.0, "rect", solid(1.0, 0.0, 0.0));
+    b["follow"] = json!({ "id": "a" });
+    let img = at(&page_of(vec![a, b]), Some(0.0));
+    // Half a turn about the leader's centre (100, 50) carries it to the other side.
+    assert!(near(px(&img, 200, 70, 50), RED, 2) && near(px(&img, 200, 130, 50), WHITE, 2));
+}
+
+#[test]
+fn a_follow_cycle_or_a_missing_leader_moves_nobody() {
+    let mut a = shape("a", "p", "a0", 0.0, 0.0, 20.0, 100.0, "rect", solid(0.0, 0.0, 1.0));
+    a["keyframes"] = json!({ "x": [{ "t": 0, "v": 50 }] });
+    a["follow"] = json!({ "id": "b" });
+    let mut b = shape("b", "p", "a1", 150.0, 0.0, 20.0, 100.0, "rect", solid(1.0, 0.0, 0.0));
+    b["follow"] = json!({ "id": "a" });
+    let img = at(&page_of(vec![a, b]), Some(0.0));
+    assert!(near(px(&img, 200, 60, 50), BLUE, 2), "the leader moves by its own keys only");
+    assert!(near(px(&img, 200, 160, 50), RED, 2), "the follower stays put");
+    let mut c = shape("c", "p", "a0", 0.0, 0.0, 20.0, 100.0, "rect", solid(1.0, 0.0, 0.0));
+    c["follow"] = json!({ "id": "gone" });
+    assert!(near(px(&at(&page_of(vec![c]), Some(0.0)), 200, 10, 50), RED, 2));
+}

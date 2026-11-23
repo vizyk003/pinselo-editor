@@ -258,6 +258,19 @@ fn lenient<'de, D: Deserializer<'de>, T: serde::de::DeserializeOwned>(d: D) -> R
     Ok(v.and_then(|v| serde_json::from_value(v).ok()))
 }
 
+fn lenient_one<'de, D: Deserializer<'de>, T: serde::de::DeserializeOwned>(d: D) -> Result<Option<T>, D::Error> {
+    let v = Option::<Value>::deserialize(d)?;
+    Ok(v.and_then(|v| serde_json::from_value(v).ok()))
+}
+
+/// `follow`: the element whose movement this one takes on.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Follow {
+    pub id: ElementId,
+    #[serde(flatten)]
+    pub extra: Extra,
+}
+
 /// `Partial<Record<KeyframeProp, Keyframe[]>>`.
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct Keyframes {
@@ -563,6 +576,10 @@ pub struct ElementBase {
     pub pan_zoom: Option<PanZoom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timing: Option<ElementTiming>,
+    /// Moves with another element of the page (parenting): takes on its leader's animated movement, so at rest
+    /// nothing changes. Stored with the type-specific fields (not in `BASE_KEYS`); older builds keep it unread.
+    #[serde(default, deserialize_with = "lenient_one", skip_serializing_if = "Option::is_none")]
+    pub follow: Option<Follow>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<DesignOrigin>,
     /// Bulk create (ED-090): the data column that fills this element.
