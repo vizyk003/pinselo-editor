@@ -72,6 +72,9 @@ enum Role {
     MaskSource { luminance: bool },
     /// Content composited through `mask` (its drawn area is `bounds`; nothing outside it shows).
     Masked { mask: Rc<Mask>, bounds: Option<IntRect> },
+    /// Motion blur: poses drawn one after another, each added into `sum` (premultiplied channels; 16 poses of 255
+    /// fit in 16 bits) and cleared; the restore divides by the `taken` count.
+    Accum { sum: Vec<u16>, taken: u16 },
 }
 
 /// Mask coverage of one premultiplied pixel: its alpha, or its luminance (which premultiplication already scaled
@@ -260,12 +263,69 @@ impl Canvas {
     pub fn restore(&mut self) {
         let Some(prev) = self.stack.pop() else { return };
         if self.cur.layer {
+            if matches!(self.layers.last().map(|l| &l.role), Some(Role::Accum { .. })) {
+                self.take_pose();
+                self.average_poses();
+            }
             let layer = self.layers.pop().expect("layer");
             if !matches!(layer.role, Role::MaskSource { .. }) {
                 self.composite(layer);
             }
         }
         self.cur = prev;
+    }
+
+    /// Open a motion-blur layer: draw a pose, call [`Canvas::accum_next`] before each further pose, and `restore`
+    /// to composite their average.
+    pub fn save_accum_layer(&mut self) {
+        self.save_layer(LayerPaint::default());
+        let n = self.width as usize * self.height as usize * 4;
+        if let Some(l) = self.layers.last_mut() {
+            l.role = Role::Accum { sum: vec![0; n], taken: 0 };
+        }
+    }
+
+    /// The pose drawn so far goes into the sum, and the layer is cleared for the next one.
+    pub fn accum_next(&mut self) {
+        if self.cur.layer && matches!(self.layers.last().map(|l| &l.role), Some(Role::Accum { .. })) {
+            self.take_pose();
+        }
+    }
+
+    /// The pixel rows and columns (local, clamped) of the top layer's drawn area.
+    fn drawn_span(&self) -> Option<(usize, usize, usize, usize)> {
+        let l = self.layers.last()?.dirty.and_then(|d| self.local(d))?;
+        let (w, h) = (self.width as i32, self.height as i32);
+        Some((l.left().clamp(0, w) as usize, l.right().clamp(0, w) as usize, l.top().clamp(0, h) as usize, l.bottom().clamp(0, h) as usize))
+    }
+
+    fn take_pose(&mut self) {
+        let w = self.width as usize;
+        let span = self.drawn_span();
+        let Some(Layer { pixmap, role: Role::Accum { sum, taken }, .. }) = self.layers.last_mut() else { return };
+        *taken += 1;
+        let Some((x0, x1, y0, y1)) = span else { return };
+        let data = pixmap.data_mut();
+        for y in y0..y1 {
+            for i in (y * w + x0) * 4..(y * w + x1) * 4 {
+                sum[i] += u16::from(data[i]);
+                data[i] = 0;
+            }
+        }
+    }
+
+    fn average_poses(&mut self) {
+        let w = self.width as usize;
+        let span = self.drawn_span();
+        let Some(Layer { pixmap, role: Role::Accum { sum, taken }, .. }) = self.layers.last_mut() else { return };
+        let n = (*taken).max(1);
+        let Some((x0, x1, y0, y1)) = span else { return };
+        let data = pixmap.data_mut();
+        for y in y0..y1 {
+            for i in (y * w + x0) * 4..(y * w + x1) * 4 {
+                data[i] = ((sum[i] + n / 2) / n) as u8;
+            }
+        }
     }
 
     /// Open a layer that collects a mask (DS-107). Draw the mask into it, then call

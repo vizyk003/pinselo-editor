@@ -245,6 +245,8 @@ impl Renderer {
             }
             DLItem::Mask { mode, .. } => canvas.save_mask_layer(*mode == oc_schema::elements::MaskMode::Luminance),
             DLItem::MaskContent => canvas.begin_masked_content(),
+            DLItem::Accum { .. } => canvas.save_accum_layer(),
+            DLItem::AccumNext => canvas.accum_next(),
             DLItem::Clip { path: d } => {
                 if let Some(p) = path::parse(d).and_then(|p| p.to_skia()) {
                     canvas.clip_path(&p, false);

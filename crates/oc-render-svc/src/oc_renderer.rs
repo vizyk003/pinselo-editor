@@ -645,7 +645,9 @@ impl Renderer for OcRenderer {
                     | DLItem::Clip { .. }
                     | DLItem::Layer { .. }
                     | DLItem::Mask { .. }
-                    | DLItem::MaskContent => return true,
+                    | DLItem::MaskContent
+                    | DLItem::Accum { .. }
+                    | DLItem::AccumNext => return true,
                     DLItem::Path { src_el, .. }
                     | DLItem::Line { src_el, .. }
                     | DLItem::Image { src_el, .. }

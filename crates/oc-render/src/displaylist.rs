@@ -78,6 +78,12 @@ pub enum DLItem {
     Mask { mode: MaskMode, src_el: ElementId },
     #[serde(rename = "maskContent")]
     MaskContent,
+    /// Motion blur: the items up to the matching `restore` draw `samples` poses of one element, separated by
+    /// `accumNext`; they are averaged (summed in 16 bits, divided once) and composited as one layer.
+    #[serde(rename = "accum", rename_all = "camelCase")]
+    Accum { samples: u32, src_el: ElementId },
+    #[serde(rename = "accumNext")]
+    AccumNext,
     #[serde(rename = "path", rename_all = "camelCase")]
     Path {
         path: String,
@@ -162,6 +168,8 @@ impl DLItem {
             DLItem::Clip { .. } => "clip",
             DLItem::Mask { .. } => "mask",
             DLItem::MaskContent => "maskContent",
+            DLItem::Accum { .. } => "accum",
+            DLItem::AccumNext => "accumNext",
             DLItem::Path { .. } => "path",
             DLItem::Line { .. } => "line",
             DLItem::Image { .. } => "image",
@@ -185,6 +193,41 @@ pub struct DisplayList {
 }
 
 impl DisplayList {
+    /// The list as still formats (SVG, PDF) draw it: of each motion-blurred element only its first pose, the
+    /// middle of the shutter, inside a plain group.
+    pub fn first_samples(&self) -> std::borrow::Cow<'_, DisplayList> {
+        if !self.items.iter().any(|i| matches!(i, DLItem::Accum { .. })) {
+            return std::borrow::Cow::Borrowed(self);
+        }
+        let mut out = DisplayList { items: Vec::with_capacity(self.items.len()), ..self.clone() };
+        let mut open = 0usize;
+        let mut skip: Option<usize> = None;
+        for it in &self.items {
+            match it {
+                DLItem::Save { .. } | DLItem::Layer { .. } | DLItem::Mask { .. } | DLItem::Accum { .. } => open += 1,
+                DLItem::Restore => {
+                    if skip == Some(open) {
+                        skip = None;
+                    }
+                    open = open.saturating_sub(1);
+                }
+                DLItem::AccumNext if skip.is_none() => {
+                    skip = Some(open);
+                    continue;
+                }
+                _ => {}
+            }
+            if skip.is_some() {
+                continue;
+            }
+            out.items.push(match it {
+                DLItem::Accum { .. } => DLItem::Save { matrix: [1.0, 0.0, 0.0, 1.0, 0.0, 0.0] },
+                other => other.clone(),
+            });
+        }
+        std::borrow::Cow::Owned(out)
+    }
+
     pub fn new(width: f64, height: f64) -> Self {
         DisplayList { width, height, background: Vec::new(), items: Vec::new(), assets: IndexSet::new() }
     }

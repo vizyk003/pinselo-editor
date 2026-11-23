@@ -321,6 +321,9 @@ pub struct Keyframes {
     pub shadow_blur: Option<Vec<Keyframe>>,
     #[serde(default, rename = "shadowColor", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
     pub shadow_color: Option<Vec<ColorKey>>,
+    /// Motion blur: the shutter as a fraction of a 1/30 s frame (0.5 = the usual half-frame; 0 = off).
+    #[serde(default, rename = "motionBlur", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub motion_blur: Option<Vec<Keyframe>>,
     #[serde(flatten)]
     pub extra: Extra,
 }
@@ -348,6 +351,7 @@ impl Keyframes {
             "shadowX" => &self.shadow_x,
             "shadowY" => &self.shadow_y,
             "shadowBlur" => &self.shadow_blur,
+            "motionBlur" => &self.motion_blur,
             _ => return None,
         };
         v.as_deref().filter(|k| !k.is_empty())

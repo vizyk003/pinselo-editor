@@ -109,7 +109,7 @@ export interface Keyframe {
 }
 /** Keyed properties after `KEYFRAME_PROPS`: width and height multipliers, and the pivot of animated scale and rotation (box fractions, 0.5 = centre).
  *  Then tracks that set the element's own value: stroke width and corner radius (px), crop (0..1 of the picture), and the drop shadow (px). */
-export type KeyframePropMore = 'scaleX' | 'scaleY' | 'anchorX' | 'anchorY' | 'strokeWidth' | 'radius' | 'cropX' | 'cropY' | 'cropW' | 'cropH' | 'shadowX' | 'shadowY' | 'shadowBlur';
+export type KeyframePropMore = 'scaleX' | 'scaleY' | 'anchorX' | 'anchorY' | 'strokeWidth' | 'radius' | 'cropX' | 'cropY' | 'cropW' | 'cropH' | 'shadowX' | 'shadowY' | 'shadowBlur' | 'motionBlur';
 /** Colour tracks: a shape's first fill, the stroke of a shape or line, the drop shadow. */
 export type KeyframeColorProp = 'fill' | 'strokeColor' | 'shadowColor';
 /** A key of a colour track; sRGB (or Display P3) keys blend. */

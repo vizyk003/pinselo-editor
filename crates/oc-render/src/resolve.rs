@@ -212,6 +212,11 @@ fn motion_matrix(motion: &MotionState, cx: f64, cy: f64) -> [f64; 6] {
     [a, b, cc, d, cx + motion.dx - a * cx - cc * cy, cy + motion.dy - b * cx - d * cy]
 }
 
+/// Motion blur: a shutter of 1 is one frame at 30 fps, whatever the export's frame rate (so preview and export
+/// agree). At most this many poses, one per 1.5 px of travel.
+const MOTION_BLUR_FRAME_MS: f64 = 1000.0 / 30.0;
+const MOTION_BLUR_POSES: usize = 16;
+
 /// How many leaders a chain of `follow`s may pass through.
 const FOLLOW_DEPTH: usize = 8;
 
@@ -353,6 +358,58 @@ impl<'a> Resolver<'a> {
             Some(up) => multiply(&up, &own),
             None => own,
         })
+    }
+
+    /// Motion blur (`motionBlur` keys): the element's motion at pose times across the shutter around `t`, middle
+    /// pose first, or `None` when it is not blurred (no shutter, or it moves less than 3 px). `at` is its motion
+    /// at a page time.
+    fn blur_poses(&self, el: &Element, t: f64, at: &dyn Fn(f64) -> Option<MotionState>) -> Option<Vec<Option<MotionState>>> {
+        use oc_schema::keyframes::{number_value, prop_spec};
+        let k = el.base()?.keyframes.as_ref()?;
+        let shutter = number_value(prop_spec("motionBlur")?, k.number("motionBlur"), t)?;
+        if shutter <= 0.001 {
+            return None;
+        }
+        let span = shutter * MOTION_BLUR_FRAME_MS;
+        let (a, b) = (at(t - span / 2.0)?, at(t + span / 2.0)?);
+        let xf = &el.base()?.xf;
+        let r = libm::hypot(xf.w, xf.h) / 2.0;
+        let size = |m: &MotionState| m.scale * m.sx.unwrap_or(1.0).max(m.sy.unwrap_or(1.0));
+        let travel = libm::hypot(b.dx - a.dx, b.dy - a.dy) + (b.rot - a.rot).abs() * std::f64::consts::PI / 180.0 * r * size(&b) + (size(&b) - size(&a)).abs() * r;
+        let n = ((travel / 1.5).ceil() as usize).min(MOTION_BLUR_POSES);
+        if n < 2 {
+            return None;
+        }
+        let mid = (n - 1) / 2;
+        let order = std::iter::once(mid).chain((0..n).filter(|i| *i != mid));
+        Some(order.map(|i| at(t - span / 2.0 + span * i as f64 / (n - 1) as f64)).collect())
+    }
+
+    /// Emit an element at its motion, or its motion-blur poses averaged.
+    fn emit_posed(&mut self, raw: &'a Element, depth: usize, motion: &MotionState, poses: Option<Vec<Option<MotionState>>>) {
+        let Some(poses) = poses else { return self.emit(raw, depth, motion) };
+        self.push(DLItem::Accum { samples: poses.len() as u32, src_el: raw.id().unwrap_or_default().to_string() });
+        for (i, m) in poses.iter().enumerate() {
+            if i > 0 {
+                self.push(DLItem::AccumNext);
+            }
+            if let Some(m) = m {
+                self.emit(raw, depth, m);
+            }
+        }
+        self.push(DLItem::Restore);
+    }
+
+    /// A group's child at its own motion (motion-blurred where it says so), or nothing outside its window.
+    fn emit_child(&mut self, ch: &'a Element, depth: usize) {
+        let Some(m) = self.child_motion(ch) else { return };
+        let poses = self.opts.time_ms.and_then(|t| {
+            let el = self.get(ch);
+            let w = element_window(&el, self.page_ms);
+            let steps = self.opts.click_steps.as_deref();
+            self.blur_poses(&el, t, &|tt| nested_motion_at_time(&el, tt, w, steps))
+        });
+        self.emit_posed(ch, depth, &m, poses);
     }
 
     fn child_motion(&self, raw: &'a Element) -> Option<MotionState> {
@@ -595,9 +652,7 @@ impl<'a> Resolver<'a> {
                         self.emit(mk, depth + 1, &mm);
                         self.push(DLItem::MaskContent);
                         for ch in kids.iter().copied().filter(|k| !std::ptr::eq(*k, mk)) {
-                            if let Some(m) = self.child_motion(ch) {
-                                self.emit(ch, depth + 1, &m);
-                            }
+                            self.emit_child(ch, depth + 1);
                         }
                         self.push(DLItem::Restore);
                     }
@@ -607,9 +662,7 @@ impl<'a> Resolver<'a> {
                             if mid.is_some() && ch.id() == mid {
                                 continue;
                             }
-                            if let Some(m) = self.child_motion(ch) {
-                                self.emit(ch, depth + 1, &m);
-                            }
+                            self.emit_child(ch, depth + 1);
                         }
                     }
                 }
@@ -821,7 +874,9 @@ pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> Di
                     if let Some(c) = filmed {
                         r.push(DLItem::Save { matrix: c });
                     }
-                    r.emit(raw, 0, &m);
+                    let steps = opts.click_steps.as_deref();
+                    let poses = r.blur_poses(&el, t, &|tt| motion_at_time(&el, page, i, tt, window, steps));
+                    r.emit_posed(raw, 0, &m, poses);
                     if filmed.is_some() {
                         r.push(DLItem::Restore);
                     }

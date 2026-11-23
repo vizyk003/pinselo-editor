@@ -149,6 +149,7 @@ pub const PROPS: &[PropSpec] = &[
     prop("shadowY", Replace, 0.0, -INF, INF, &[]),
     prop("shadowBlur", Replace, 0.0, 0.0, INF, &[]),
     color("shadowColor", &[]),
+    prop("motionBlur", Replace, 0.0, 0.0, 1.0, &[]),
 ];
 
 /// The spec of a keyframed property.

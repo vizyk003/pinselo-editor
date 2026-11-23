@@ -541,7 +541,8 @@ pub fn keyframes_patch(spec: &Value, el: &Value, rest: &Rest) -> Result<Value, S
     }
     let rot_sign = rest.mirror();
     let opacity = rest.opacity;
-    let scalar: [ToStored; 6] = [
+    let scalar: [ToStored; 7] = [
+        ("motionBlur", "motionBlur", &|v| Ok(r4(v))),
         ("scale", "scale", &|v| Ok(r4(v))),
         ("scaleX", "scaleX", &|v| Ok(r4(v))),
         ("scaleY", "scaleY", &|v| Ok(r4(v))),
@@ -846,7 +847,8 @@ pub fn keyframes_view(el: &Value, rest: &Rest) -> Option<Value> {
         }
         _ => {}
     }
-    let scalar: [FromStored; 6] = [
+    let scalar: [FromStored; 7] = [
+        ("motionBlur", "motionBlur", &r4),
         ("scale", "scale", &r4),
         ("scaleX", "scaleX", &r4),
         ("scaleY", "scaleY", &r4),
@@ -1986,6 +1988,7 @@ mod tests {
         let spec = json!({
             "fill": [{ "at": 0, "value": "#1f2328" }, { "at": 1, "value": "#ff5a3680", "ease": "linear" }],
             "strokeWidth": [{ "at": 0, "value": 0 }, { "at": 0.5, "value": 6 }],
+            "motionBlur": [{ "at": 0, "value": 0.5 }],
             "radius": [{ "at": 0, "value": 0 }, { "at": 1, "value": 48, "ease": "out-quart" }],
             "shadow": [{ "at": 0, "value": { "x": 0, "y": 0, "blur": 0, "color": "#00000000" } }, { "at": 0.6, "value": { "x": 0, "y": 20, "blur": 40, "color": "#00000066" } }],
         });

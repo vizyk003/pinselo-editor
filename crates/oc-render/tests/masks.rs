@@ -468,3 +468,48 @@ fn shake_is_repeatable_and_only_inside_its_burst() {
     let other = filmed(vec![], json!({ "shake": [{ "startMs": 1000, "endMs": 2000, "amount": 12, "hz": 10, "seed": 8 }] }));
     assert_ne!(a, oc_render::motion::camera_shake(&other.pages["p"].camera.clone().unwrap(), 1500.0), "the seed picks the pattern");
 }
+
+fn ops(d: &DesignDoc, t: f64) -> Vec<String> {
+    resolve_page(d, "p", &ResolveOptions { time_ms: Some(t), ..Default::default() }).items.iter().map(|i| i.op().to_string()).collect()
+}
+
+#[test]
+fn a_still_element_under_motion_blur_draws_as_without_it() {
+    let mut a = shape("a", "p", "a0", 90.0, 40.0, 20.0, 20.0, "rect", solid(1.0, 0.0, 0.0));
+    let plain = page_of(vec![a.clone()]);
+    a["keyframes"] = json!({ "motionBlur": [{ "t": 0, "v": 1 }] });
+    let blurred = page_of(vec![a]);
+    assert!(!ops(&blurred, 500.0).contains(&"accum".to_string()), "no poses for an element that does not move");
+    assert_eq!(at(&blurred, Some(500.0)), at(&plain, Some(500.0)));
+}
+
+#[test]
+fn a_fast_element_smears_along_its_path() {
+    // 2 px per ms to the right; a shutter of 1 (33 ms) spans 66 px of travel: 16 poses.
+    let mut a = shape("a", "p", "a0", 0.0, 40.0, 20.0, 20.0, "rect", solid(1.0, 0.0, 0.0));
+    a["keyframes"] = json!({ "x": [{ "t": 0, "v": 0 }, { "t": 100, "v": 200, "ease": "linear" }], "motionBlur": [{ "t": 0, "v": 1 }] });
+    let d = page_of(vec![a.clone()]);
+    let o = ops(&d, 50.0);
+    assert_eq!(o.iter().filter(|s| *s == "accum").count(), 1);
+    assert_eq!(o.iter().filter(|s| *s == "accumNext").count(), 15);
+    // At 50 ms the box is at 100..120 and sweeps ±33 px during the shutter: its middle is covered for about 20 of
+    // those 66 px (a quarter red), 25 px past its edge for about 8 (an eighth), 50 px past it never.
+    let img = at(&d, Some(50.0));
+    let mid = px(&img, 200, 110, 50);
+    assert!(mid[0] > 250 && (175..=205).contains(&mid[1]) && mid[1] == mid[2], "{mid:?}");
+    let ahead = px(&img, 200, 145, 50);
+    assert!(ahead[0] > 250 && (210..=240).contains(&ahead[1]), "part red ahead: {ahead:?}");
+    let far = px(&img, 200, 170, 50);
+    assert!(near(far, WHITE, 2), "beyond the shutter: {far:?}");
+    // The same frame twice gives the same pixels (preview and export agree).
+    assert_eq!(at(&d, Some(50.0)), img);
+    // Still formats draw the middle pose only.
+    let dl = resolve_page(&d, "p", &ResolveOptions { time_ms: Some(50.0), ..Default::default() });
+    let still = dl.first_samples();
+    assert!(still.items.iter().all(|i| !matches!(i.op(), "accum" | "accumNext")));
+    assert_eq!(still.items.iter().filter(|i| i.op() == "path").count(), 1);
+    // Inside a group too.
+    let g = json!({ "id": "g", "type": "group", "parentId": "p", "z": "a0", "opacity": 1, "xf": { "x": 0, "y": 0, "w": 200, "h": 100, "rot": 0 } });
+    a["parentId"] = json!("g");
+    assert!(ops(&page_of(vec![g, a]), 50.0).contains(&"accum".to_string()));
+}

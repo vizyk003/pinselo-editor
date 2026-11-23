@@ -5033,6 +5033,69 @@
                  "type": "null"
                 }
                ]
+              },
+              "motionBlur": {
+               "description": "Motion blur over time: the camera shutter as a fraction of a 1/30 s frame (0.5 is the usual film look, 1 the strongest, 0 off). Fast moves, spins and zooms streak along their path; slow or still moments stay sharp, so one key at 0 s is usually enough",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
               }
              }
             },

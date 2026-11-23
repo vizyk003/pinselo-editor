@@ -413,6 +413,10 @@ impl Ctx<'_, '_> {
 
 /// Write display lists as a vector PDF.
 pub fn write_pdf(r: &mut Renderer, pages: &[PdfPage<'_>], assets: &dyn AssetProvider, opts: &PdfOptions) -> Result<Vec<u8>, PdfError> {
+    // Motion-blurred elements: only their first pose (PDF has no averaging).
+    let stills: Vec<std::borrow::Cow<'_, DisplayList>> = pages.iter().map(|p| p.dl.first_samples()).collect();
+    let pages: Vec<PdfPage<'_>> = pages.iter().zip(&stills).map(|(p, s)| PdfPage { dl: s, links: p.links.clone() }).collect();
+    let pages = pages.as_slice();
     let print = opts.print.as_ref();
     let inks = Inks::of(print)?;
     let standard = print.map_or(PdfStandard::None, |p| p.standard);
@@ -782,7 +786,7 @@ impl Probe<'_> {
 
     fn item_transparent(&mut self, it: &DLItem, inks: &Inks) -> bool {
         match it {
-            DLItem::Save { .. } | DLItem::Restore | DLItem::Clip { .. } | DLItem::MaskContent => false,
+            DLItem::Save { .. } | DLItem::Restore | DLItem::Clip { .. } | DLItem::MaskContent | DLItem::Accum { .. } | DLItem::AccumNext => false,
             // Soft masks are transparency (PDF/X-1a flattens them).
             DLItem::Mask { .. } => true,
             DLItem::Layer { opacity, blend, effects, .. } => *opacity < 0.999 || pdf_blend(blend).is_some() || effects.iter().any(|e| !matches!(e, Effect::Outline(_))),
@@ -932,6 +936,9 @@ impl Writer<'_, '_> {
                     c.stack.push(Frame { pushes: 1, ctm: c.ctm });
                     c.ctm = mul(&c.ctm, matrix);
                 }
+                // `first_samples` turned motion blur into plain groups; a stray one is a group too.
+                DLItem::Accum { .. } => c.stack.push(Frame { pushes: 0, ctm: c.ctm }),
+                DLItem::AccumNext => {}
                 DLItem::Restore => {
                     if let Some(f) = c.stack.pop() {
                         for _ in 0..f.pushes {
@@ -1724,8 +1731,8 @@ fn local_bounds(items: &[DLItem]) -> Option<(f64, f64, f64, f64)> {
                     stack.pop();
                 }
             }
-            DLItem::Mask { .. } => stack.push(m),
-            DLItem::Clip { .. } | DLItem::MaskContent => {}
+            DLItem::Mask { .. } | DLItem::Accum { .. } => stack.push(m),
+            DLItem::Clip { .. } | DLItem::MaskContent | DLItem::AccumNext => {}
             DLItem::Path { path, stroke, .. } => {
                 if let Some((x0, y0, x1, y1)) = crate::path::parse(path).and_then(|p| p.bounds()) {
                     let w = stroke.as_ref().map_or(0.0, |s| s.stroke.width * 2.0);

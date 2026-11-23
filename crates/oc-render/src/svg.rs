@@ -166,6 +166,8 @@ impl Writer<'_> {
 
 /// Write a display list as an SVG document.
 pub fn display_list_to_svg(r: &mut Renderer, dl: &DisplayList, assets: &dyn AssetProvider, opts: &SvgOptions<'_>) -> String {
+    let stills = dl.first_samples();
+    let dl: &DisplayList = &stills;
     let mut w = Writer { defs: Vec::new(), out: Vec::new(), uid: 0, opts };
     for bg in &dl.background {
         let (a, o) = w.paint(bg);
@@ -201,6 +203,12 @@ pub fn display_list_to_svg(r: &mut Renderer, dl: &DisplayList, assets: &dyn Asse
                 w.out.push(format!(r#"<g transform="matrix({})">"#, matrix.iter().map(|v| n(*v)).collect::<Vec<_>>().join(" ")));
                 stack.push(1);
             }
+            // `first_samples` turned motion blur into plain groups; a stray one is a group too.
+            DLItem::Accum { .. } => {
+                w.out.push("<g>".into());
+                stack.push(1);
+            }
+            DLItem::AccumNext => {}
             DLItem::Layer { opacity, blend, effects, .. } => {
                 let blurs: Vec<String> = effects.iter().filter_map(|e| if let Effect::Blur(b) = e { Some(format!(r#"<feGaussianBlur stdDeviation="{}"/>"#, n(b.radius / 2.0))) } else { None }).collect();
                 let shadows: Vec<String> = effects

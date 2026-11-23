@@ -191,8 +191,8 @@ impl Renderer {
                         layer_acc.push(acc.take());
                         depth += 1;
                     }
-                    DLItem::Mask { .. } => {
-                        // Bounds of a masked group: the mask and the content together (conservative).
+                    DLItem::Mask { .. } | DLItem::Accum { .. } => {
+                        // Bounds of a masked group (or motion-blur poses): all of it together (conservative).
                         ms.push(m);
                         layers.push((ms.len(), 0.0));
                         layer_acc.push(acc.take());
@@ -288,7 +288,7 @@ impl Renderer {
                     Aabb { x0: bbox.x - over_x, y0: bbox.y - over_y, x1: bbox.x + bbox.w + over_x, y1: bbox.y + bbox.h.max(l.height) + over_y }.pad(pad)
                 }
             }
-            DLItem::Clip { .. } | DLItem::Save { .. } | DLItem::Restore | DLItem::Layer { .. } | DLItem::Mask { .. } | DLItem::MaskContent => return None,
+            DLItem::Clip { .. } | DLItem::Save { .. } | DLItem::Restore | DLItem::Layer { .. } | DLItem::Mask { .. } | DLItem::MaskContent | DLItem::Accum { .. } | DLItem::AccumNext => return None,
         };
         Some(map(m, local))
     }
@@ -337,8 +337,9 @@ fn src_el(it: &DLItem) -> Option<&str> {
         | DLItem::Qr { src_el, .. }
         | DLItem::Placeholder { src_el, .. }
         | DLItem::Video { src_el, .. }
-        | DLItem::Mask { src_el, .. } => Some(src_el.as_str()),
-        DLItem::Save { .. } | DLItem::Restore | DLItem::Clip { .. } | DLItem::MaskContent => None,
+        | DLItem::Mask { src_el, .. }
+        | DLItem::Accum { src_el, .. } => Some(src_el.as_str()),
+        DLItem::Save { .. } | DLItem::Restore | DLItem::Clip { .. } | DLItem::MaskContent | DLItem::AccumNext => None,
     }
 }
 
