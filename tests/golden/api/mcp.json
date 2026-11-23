@@ -17340,7 +17340,7 @@
      "result": {
       "content": [
        {
-        "text": "MCP error -32602: Input validation error: Invalid arguments for tool edit_design: Invalid discriminator value. Expected 'add_text' | 'add_shape' | 'add_line' | 'add_image' | 'add_table' | 'add_chart' | 'add_qr' | 'group' | 'ungroup' | 'update' | 'delete' | 'reorder' | 'arrange' | 'align' | 'distribute' | 'add_page' | 'update_page' | 'delete_page' | 'move_page' | 'set_title' | 'replace_text' | 'add_video' | 'add_audio' | 'update_audio' | 'remove_audio' | 'set_captions' | 'animate' at operations[0].op",
+        "text": "MCP error -32602: Input validation error: Invalid arguments for tool edit_design: Invalid discriminator value. Expected 'add_text' | 'add_shape' | 'add_line' | 'add_image' | 'add_table' | 'add_chart' | 'add_qr' | 'group' | 'ungroup' | 'update' | 'delete' | 'reorder' | 'arrange' | 'align' | 'distribute' | 'add_page' | 'update_page' | 'delete_page' | 'move_page' | 'set_title' | 'replace_text' | 'add_video' | 'add_audio' | 'update_audio' | 'remove_audio' | 'set_captions' | 'animate' | 'duplicate' | 'shift_time' at operations[0].op",
         "type": "text"
        }
       ],
