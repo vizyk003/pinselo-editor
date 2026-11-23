@@ -11,10 +11,10 @@ use crate::zod::{self as z, Schema};
 const COLOR_JS: &str = "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$";
 const COLOR_MESSAGE: &str = "a hex colour like #1f2328 or #1f232880";
 
-pub const OPS: [&str; 27] = [
+pub const OPS: [&str; 29] = [
     "add_text", "add_shape", "add_line", "add_image", "add_table", "add_chart", "add_qr", "group", "ungroup", "update", "delete", "reorder", "arrange", "align",
     "distribute", "add_page", "update_page", "delete_page", "move_page", "set_title", "replace_text", "add_video", "add_audio", "update_audio",
-    "remove_audio", "set_captions", "animate",
+    "remove_audio", "set_captions", "animate", "duplicate", "shift_time",
 ];
 
 fn color() -> Schema {
@@ -207,6 +207,7 @@ fn timing() -> Vec<(&'static str, Schema)> {
         ("motionPath", motion_path().nullable().optional()),
         ("visibleFrom", secs().nullable().optional()),
         ("visibleTo", secs().nullable().optional()),
+        ("follow", target().nullable().optional()),
     ]
 }
 /// A video's playback speed.
@@ -322,6 +323,16 @@ fn op_schema(op: &str) -> Schema {
         }
         "group" => f.extend([("ref", r#ref()), ("ids", z::array(target()).min(2.0)), ("name", z::str().max(80.0).optional()), ("role", z::enumeration(&ROLES).optional()), ("mask", target().optional()), ("maskMode", mask_mode().optional())]),
         "ungroup" => f.push(("id", target())),
+        "duplicate" => f.extend([
+            ("ids", z::array(target()).min(1.0).max(50.0)),
+            ("ref", r#ref()),
+            ("refs", z::array(z::str().max(40.0)).max(50.0).optional()),
+            ("dx", z::num().min(-20000.0).max(20000.0).optional()),
+            ("dy", z::num().min(-20000.0).max(20000.0).optional()),
+            ("page", page_ref().optional()),
+            ("shift", z::num().min(-600.0).max(600.0).optional()),
+        ]),
+        "shift_time" => f.extend([("ids", z::array(target()).min(1.0).max(200.0)), ("by", z::num().min(-600.0).max(600.0))]),
         "update" => {
             f.extend([
                 ("id", target()),

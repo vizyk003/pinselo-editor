@@ -1162,6 +1162,9 @@ pub fn element_view(el: &Value, rest: &Rest) -> Map<String, Value> {
     if let Some(m) = el.get("mask").filter(|m| m["id"].is_string()) {
         o.insert("mask".into(), json!({ "id": m["id"], "mode": m.get("mode").cloned().unwrap_or(json!("alpha")) }));
     }
+    if let Some(l) = el["follow"]["id"].as_str() {
+        o.insert("follow".into(), json!(l));
+    }
     if let Some(st) = f(&el["timing"], "startMs").filter(|v| *v > 0.0) {
         o.insert("visibleFrom".into(), secs(st));
     }
@@ -1375,6 +1378,13 @@ pub fn video_checks(doc: &Value, typed: &oc_schema::DesignDoc, pages: Option<&[S
                 out.push(issue(id, "cut_by_page_end", format!("It should stay until {} s but the page ends at {} s, so its exit is cut off.", secs(num(&el["timing"]["endMs"])), secs(len)), page));
             }
             keyframe_checks(doc, el, id, (start, end, len), (w, h), page, &mut out);
+            if let Some(lid) = el["follow"]["id"].as_str() {
+                let leader = &doc["elements"][lid];
+                let here = oc_schema::tree::descendants(&typed.elements, &sp.page.id).iter().any(|e| e.id() == Some(lid));
+                if leader.is_null() || leader["deleted"].is_object() || leader["deleted"] == true || !here {
+                    out.push(issue(id, "follow_missing", format!("It follows {lid}, which is no longer on this page, so it moves on its own only; follow another element or set follow: null."), page));
+                }
+            }
             let role = s(el, "role");
             if el["type"] == "text" {
                 let t = text_of(el);

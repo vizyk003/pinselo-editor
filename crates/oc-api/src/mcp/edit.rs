@@ -85,6 +85,48 @@ pub fn effects_patch(op: &Value, current: &Value) -> Option<Value> {
     Some(if fx.is_empty() { Value::Null } else { Value::Array(fx) })
 }
 
+fn ms_of(seconds: f64) -> f64 {
+    (seconds * 1000.0).round()
+}
+
+/// Moves an element's timing later by `by` ms (earlier when negative): when it shows (`timing`) and every keyframe.
+/// What depends on those (entrance, exit, loop, motion path, pan-zoom) moves with them. An element shown from the
+/// start gets a start time; nothing may move before 0 s.
+fn shift_times(e: &mut Value, by: f64) -> Result<(), String> {
+    let start = e["timing"]["startMs"].as_f64().unwrap_or(0.0);
+    if start + by < -0.5 {
+        return Err(format!("would show it {} s before the page starts.", super::motion::secs(-(start + by))));
+    }
+    let mut timing = e["timing"].as_object().cloned().unwrap_or_default();
+    timing.insert("startMs".into(), jnum(start + by));
+    if let Some(end) = e["timing"].get("endMs").and_then(Value::as_f64) {
+        timing.insert("endMs".into(), jnum(end + by));
+    }
+    if timing.get("startMs").and_then(Value::as_f64) == Some(0.0) {
+        timing.remove("startMs");
+    }
+    if let Some(m) = e.as_object_mut() {
+        if timing.is_empty() {
+            m.remove("timing");
+        } else {
+            m.insert("timing".into(), Value::Object(timing));
+        }
+    }
+    if let Some(k) = e.get_mut("keyframes").and_then(Value::as_object_mut) {
+        for track in k.values_mut() {
+            for key in track.as_array_mut().into_iter().flatten() {
+                if let Some(t) = key["t"].as_f64() {
+                    if t + by < -0.5 {
+                        return Err(format!("would move a keyframe {} s before the page starts.", super::motion::secs(-(t + by))));
+                    }
+                    key["t"] = jnum(t + by);
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 pub fn solid(color: Value) -> Value {
     json!({ "k": "solid", "color": color })
 }
@@ -387,7 +429,59 @@ impl Run<'_> {
                 }
             }
         }
+        if kind.starts_with("add_") && op.get("follow").is_some() {
+            for d in &mut ops {
+                if d["op"] == "add" && d["el"]["id"].as_str() == new_id.as_deref() {
+                    let parent = d["el"]["parentId"].as_str().unwrap_or("").to_owned();
+                    let own = new_id.clone().unwrap_or_default();
+                    if let Some(Value::Object(f)) = self.follow_patch(op, &own, &parent)? {
+                        d["el"]["follow"] = Value::Object(f);
+                    }
+                }
+            }
+        }
         Ok((ops, r#ref, new_id))
+    }
+
+    /// The page an element (or a parent id) is on, as the design stands.
+    fn page_of(&mut self, mut id: String) -> Option<String> {
+        let json = &self.doc().0;
+        for _ in 0..64 {
+            if json["pages"].get(&id).is_some() {
+                return Some(id);
+            }
+            id = json["elements"].get(&id)?["parentId"].as_str()?.to_owned();
+        }
+        None
+    }
+
+    /// An operation's `follow` → the stored `follow` (`Null` removes it), or `None` when it names none. `own` is the
+    /// element's id and `parent` its parent (page or group).
+    fn follow_patch(&mut self, op: &Value, own: &str, parent: &str) -> Result<Option<Value>, EditError> {
+        let v = match op.get("follow") {
+            None => return Ok(None),
+            Some(Value::Null) => return Ok(Some(Value::Null)),
+            Some(v) => v.as_str().unwrap_or("").to_owned(),
+        };
+        let leader = self.id(&v)?;
+        self.el(&v)?;
+        if leader == own {
+            return err("follow: an element cannot follow itself.");
+        }
+        let (mine, theirs) = (self.page_of(parent.to_owned()), self.page_of(leader.clone()));
+        if mine.is_none() || mine != theirs {
+            return err(format!("follow {v}: the leader must be on the same page."));
+        }
+        // Following the leader's leaders back to this element would move nobody.
+        let mut at = leader.clone();
+        for _ in 0..16 {
+            match self.doc().0["elements"][at.as_str()]["follow"]["id"].as_str() {
+                Some(next) if next == own => return err(format!("follow {v}: it already follows this element (directly or through others), so neither would move.")),
+                Some(next) => at = next.to_owned(),
+                None => break,
+            }
+        }
+        Ok(Some(json!({ "id": leader })))
     }
 
     /// The design's length in ms as it stands.
@@ -667,6 +761,124 @@ impl Run<'_> {
                 Ok((ops, None, None))
             }
             "update" => Ok((self.compile_update(op, i)?, None, None)),
+            "duplicate" => {
+                let ids: Vec<String> = op["ids"].as_array().map(|a| a.iter().filter_map(Value::as_str).map(str::to_owned).collect()).unwrap_or_default();
+                let names: Vec<String> = op["refs"].as_array().map(|a| a.iter().filter_map(Value::as_str).map(str::to_owned).collect()).unwrap_or_default();
+                if !names.is_empty() && names.len() != ids.len() {
+                    return err(format!("refs names each copy, so it needs one name per id ({} ids, {} names).", ids.len(), names.len()));
+                }
+                let real: Vec<String> = ids.iter().map(|v| self.id(v)).collect::<Result<_, _>>()?;
+                let to_page = if op.get("page").is_some() { Some(self.page(op.get("page"))?) } else { None };
+                let (dx, dy) = (f(op, "dx").unwrap_or(0.0), f(op, "dy").unwrap_or(0.0));
+                let shift = ms_of(f(op, "shift").unwrap_or(0.0));
+                let (json, typed) = self.doc();
+                let els = &json["elements"];
+                // Every element copied (the ones named and what is inside groups), parents first, with its new id.
+                let mut order: Vec<(String, Option<String>)> = Vec::new();
+                for id in &real {
+                    if order.iter().any(|(o, _)| o == id) {
+                        continue;
+                    }
+                    order.push((id.clone(), None));
+                    let mut i = order.len() - 1;
+                    while i < order.len() {
+                        let parent = order[i].0.clone();
+                        for c in view::children(typed, &parent) {
+                            if !order.iter().any(|(o, _)| *o == c) {
+                                order.push((c, Some(parent.clone())));
+                            }
+                        }
+                        i += 1;
+                    }
+                }
+                let map: HashMap<String, String> = order.iter().map(|(o, _)| (o.clone(), oc_schema::ids::new_id())).collect();
+                let remap = |v: &mut Value| {
+                    if let Some(new) = v.as_str().and_then(|o| map.get(o)) {
+                        *v = json!(new);
+                    }
+                };
+                let mut ops = Vec::new();
+                for (old, inner) in &order {
+                    let mut e = els[old.as_str()].clone();
+                    if e.is_null() || e["deleted"].is_object() || e["deleted"] == true {
+                        continue;
+                    }
+                    e["id"] = json!(map[old.as_str()]);
+                    if let Some(m) = e.as_object_mut() {
+                        m.remove("z");
+                    }
+                    // References inside the copied set point at the copies (only where the element has them).
+                    for k in ["mask", "follow", "startAttach", "endAttach"] {
+                        if let Some(r) = e.get_mut(k).and_then(|v| v.get_mut("id")) {
+                            remap(r);
+                        }
+                    }
+                    let (parent, after) = match inner {
+                        Some(p) => (map[p.as_str()].clone(), None),
+                        None => {
+                            let own = e["parentId"].as_str().unwrap_or("").to_owned();
+                            if let Some(pg) = to_page.as_ref().filter(|pg| **pg != own) {
+                                // Onto another page: the copy keeps its place on the page, at the top.
+                                let (px, py) = view::rest_point(json, &els[old.as_str()]).unwrap_or((num(&e["xf"]["x"]), num(&e["xf"]["y"])));
+                                e["xf"]["x"] = jnum(px);
+                                e["xf"]["y"] = jnum(py);
+                                (pg.clone(), None)
+                            } else {
+                                (own, Some(json!(old)))
+                            }
+                        }
+                    };
+                    if inner.is_none() {
+                        e["xf"]["x"] = jnum(num(&e["xf"]["x"]) + dx);
+                        e["xf"]["y"] = jnum(num(&e["xf"]["y"]) + dy);
+                    }
+                    e["parentId"] = json!(parent);
+                    if shift != 0.0 {
+                        shift_times(&mut e, shift).map_err(|m| EditError(format!("shift {}", m)))?;
+                    }
+                    let mut add = json!({ "op": "add", "el": e, "parent": parent });
+                    if let Some(a) = after {
+                        add["after"] = a;
+                    }
+                    ops.push(add);
+                }
+                for (n, id) in names.iter().zip(&real) {
+                    self.res.refs.insert(n.clone(), json!(map[id.as_str()]));
+                }
+                let first = real.first().map(|id| map[id.as_str()].clone());
+                Ok((ops, if real.len() == 1 { r#ref } else { None }, first))
+            }
+            "shift_time" => {
+                let by = ms_of(f(op, "by").unwrap_or(0.0));
+                let ids: Vec<String> = op["ids"].as_array().map(|a| a.iter().filter_map(Value::as_str).map(str::to_owned).collect()).unwrap_or_default();
+                let real: Vec<String> = ids.iter().map(|v| self.id(v)).collect::<Result<_, _>>()?;
+                let (json, typed) = self.doc();
+                let mut all: Vec<String> = Vec::new();
+                for id in &real {
+                    for e in std::iter::once(id.clone()).chain(oc_schema::tree::descendants(&typed.elements, id).iter().filter_map(|e| e.id().map(|i| i.to_string()))) {
+                        if !all.contains(&e) {
+                            all.push(e);
+                        }
+                    }
+                }
+                let mut ops = Vec::new();
+                for id in all {
+                    let before = json["elements"][id.as_str()].clone();
+                    let mut e = before.clone();
+                    shift_times(&mut e, by).map_err(|m| EditError(format!("shift_time {id}: {m}")))?;
+                    let mut patch = Map::new();
+                    for k in ["timing", "keyframes"] {
+                        let (was, now) = (before.get(k).unwrap_or(&Value::Null), e.get(k).unwrap_or(&Value::Null));
+                        if was != now {
+                            patch.insert(k.into(), now.clone());
+                        }
+                    }
+                    if !patch.is_empty() {
+                        ops.push(json!({ "op": "update", "id": id, "patch": patch }));
+                    }
+                }
+                Ok((ops, None, None))
+            }
             "delete" => {
                 let ids: Vec<&str> = op["ids"].as_array().map(|a| a.iter().filter_map(Value::as_str).collect()).unwrap_or_default();
                 let ops = ids.iter().map(|v| self.id(v).map(|id| json!({ "op": "delete", "id": id }))).collect::<Result<_, _>>()?;
@@ -1094,6 +1306,10 @@ impl Run<'_> {
         let mut patch = Map::new();
         if let Some(v) = op.get("opacity") {
             patch.insert("opacity".into(), v.clone());
+        }
+        let parent = e["parentId"].as_str().unwrap_or("").to_owned();
+        if let Some(fp) = self.follow_patch(op, &id, &parent)? {
+            patch.insert("follow".into(), fp);
         }
         if op.get("mask").is_some() || op.get("maskMode").is_some() {
             if ty != "group" {
@@ -1731,6 +1947,76 @@ mod motion_tests {
         let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("card"), "shadow": null }]), vec![], json!({}));
         assert!(res.error.is_none(), "{:?}", res.error);
         assert_eq!(doc["elements"][id("card").as_str()]["effects"], json!([{ "k": "blur", "radius": 2 }]));
+    }
+
+    #[test]
+    fn duplicate_copies_animation_and_shift_time_moves_it() {
+        let ydoc = design(1080.0, 1080.0);
+        let ops = json!([
+            { "op": "update_page", "page": 1, "duration": 6 },
+            { "op": "add_shape", "ref": "card", "page": 1, "shape": "rect", "x": 100, "y": 100, "w": 300, "h": 200, "visibleTo": 4,
+              "keyframes": { "offset": [{ "at": 0, "value": [0, 400] }, { "at": 1, "value": [0, 0] }] } },
+            { "op": "add_text", "ref": "word", "page": 1, "text": "Hi", "x": 120, "y": 120, "w": 200 },
+            { "op": "group", "ref": "g", "ids": ["$card", "$word"], "mask": "$card" },
+            { "op": "add_text", "ref": "tag", "page": 1, "text": "tag", "x": 500, "y": 100, "w": 100, "follow": "$g" },
+            { "op": "duplicate", "ids": ["$g", "$tag"], "refs": ["g2", "tag2"], "dx": 400, "shift": 1.5 }
+        ]);
+        let (res, doc) = run(&ydoc, ops, vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        serde_json::from_value::<oc_schema::DesignDoc>(doc.clone()).expect("valid design");
+        let els = &doc["elements"];
+        let (g, g2) = (&els[id("g").as_str()], &els[id("g2").as_str()]);
+        assert_eq!(num(&g2["xf"]["x"]), num(&g["xf"]["x"]) + 400.0);
+        // The copy's mask and follower point at the copies, not the originals.
+        let kids: Vec<&Value> = els.as_object().unwrap().values().filter(|e| e["parentId"] == id("g2").as_str()).collect();
+        assert_eq!(kids.len(), 2);
+        let card2 = kids.iter().find(|e| e["type"] == "shape").unwrap();
+        assert_eq!(g2["mask"]["id"], card2["id"]);
+        assert_eq!(els[id("tag2").as_str()]["follow"]["id"], json!(id("g2")));
+        // Shifted 1.5 s: shown from 1.5 s to 5.5 s, keys at 1.5 and 2.5 s.
+        assert_eq!((card2["timing"]["startMs"].clone(), card2["timing"]["endMs"].clone()), (json!(1500), json!(5500)));
+        assert_eq!(card2["keyframes"]["y"][1]["t"], json!(2500));
+        // shift_time back to the start; further is refused.
+        let (res, doc) = run(&ydoc, json!([{ "op": "shift_time", "ids": [id("g2")], "by": -1.5 }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let card2 = &doc["elements"][card2["id"].as_str().unwrap()];
+        assert_eq!(card2["timing"], json!({ "endMs": 4000 }));
+        assert_eq!(card2["keyframes"]["y"][0]["t"], json!(0));
+        let (res, _) = run(&ydoc, json!([{ "op": "shift_time", "ids": [id("g2")], "by": -1 }]), vec![], json!({}));
+        assert!(res.error.as_ref().is_some_and(|e| format!("{e:?}").contains("before the page starts")), "{:?}", res.error);
+    }
+
+    #[test]
+    fn elements_follow_a_leader_on_their_page() {
+        let ydoc = design(1080.0, 1080.0);
+        let ops = json!([
+            { "op": "update_page", "page": 1, "duration": 3 },
+            { "op": "add_shape", "ref": "card", "page": 1, "shape": "rect", "x": 100, "y": 100, "w": 300, "h": 200, "keyframes": { "offset": [{ "at": 0, "value": [0, 400] }, { "at": 1, "value": [0, 0] }] } },
+            { "op": "add_text", "ref": "label", "page": 1, "text": "New", "x": 120, "y": 120, "w": 200, "follow": "$card" }
+        ]);
+        let (res, doc) = run(&ydoc, ops, vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        assert_eq!(doc["elements"][id("label").as_str()]["follow"], json!({ "id": id("card") }));
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let v = Value::Object(view::design_view(&doc, &typed, None));
+        let label = v["pages"][0]["elements"].as_array().unwrap().iter().find(|n| n["id"] == id("label").as_str()).cloned().unwrap();
+        assert_eq!(label["follow"], json!(id("card")));
+        // Itself, a cycle, and another page are refused; null stops following.
+        let refused = |ops: Value| run(&ydoc, ops, vec![], json!({})).0.error.map(|e| format!("{e:?}")).unwrap_or_default();
+        assert!(refused(json!([{ "op": "update", "id": id("card"), "follow": id("card") }])).contains("itself"));
+        assert!(refused(json!([{ "op": "update", "id": id("card"), "follow": id("label") }])).contains("neither would move"));
+        assert!(refused(json!([{ "op": "add_page", "ref": "p2" }, { "op": "add_shape", "page": 2, "shape": "rect", "x": 0, "y": 0, "w": 10, "h": 10, "follow": id("card") }])).contains("same page"));
+        // The leader deleted: the follower is reported.
+        let (res, doc) = run(&ydoc, json!([{ "op": "delete", "ids": [id("card")] }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let checks = super::super::motion::video_checks(&doc, &typed, None);
+        assert!(checks.iter().any(|c| c["problem"] == "follow_missing"), "{checks:?}");
+        let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("label"), "follow": null }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert!(doc["elements"][id("label").as_str()].get("follow").is_none_or(Value::is_null));
     }
 
     #[test]

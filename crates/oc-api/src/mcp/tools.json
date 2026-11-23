@@ -1579,7 +1579,7 @@
   {
    "name": "edit_design",
    "title": "Edit design",
-   "description": "Apply a list of operations (add text, shapes, lines, images, videos, tables, charts, QR codes; update, delete, group, reorder; arrange, align, distribute; add, update, move and delete pages; animate elements, time them and set page lengths and transitions; add music or a voice-over and captions; replace text everywhere, keeping its style; rename). Applied in order as one change that collaborators see live. See get_design_guide.",
+   "description": "Apply a list of operations (add text, shapes, lines, images, videos, tables, charts, QR codes; update, delete, duplicate, group, reorder; arrange, align, distribute; add, update, move and delete pages; animate elements, time them, shift their timing and set page lengths and transitions; add music or a voice-over and captions; replace text everywhere, keeping its style; rename). Applied in order as one change that collaborators see live. See get_design_guide.",
    "inputSchema": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
@@ -1785,6 +1785,17 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
             },
             {
              "type": "null"
@@ -2048,6 +2059,17 @@
             }
            ]
           },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "shadow": {
            "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
            "anyOf": [
@@ -2271,6 +2293,17 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
             },
             {
              "type": "null"
@@ -2533,6 +2566,17 @@
             }
            ]
           },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "shadow": {
            "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
            "anyOf": [
@@ -2754,6 +2798,17 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
             },
             {
              "type": "null"
@@ -3004,6 +3059,17 @@
             }
            ]
           },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "shadow": {
            "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
            "anyOf": [
@@ -3198,6 +3264,17 @@
              "type": "number",
              "minimum": 0,
              "maximum": 600
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
             },
             {
              "type": "null"
@@ -5045,6 +5122,17 @@
             }
            ]
           },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "muted": {
            "description": "Video: no sound",
            "type": "boolean"
@@ -6068,6 +6156,17 @@
             }
            ]
           },
+          "follow": {
+           "description": "Id or $ref of an element on the same page whose movement this one takes on (its keyframes, motion path, entrance and loop moves, including turns about the leader): a label riding a moving card, a shadow staying under a bouncing logo. At rest nothing changes. The follower keeps its own animation on top. null stops following",
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "null"
+            }
+           ]
+          },
           "shadow": {
            "description": "Drop shadow: x, y offset in px (default 0, 8), blur in px (default 24) and color (default #00000040; 8-digit hex sets its transparency). null removes it",
            "anyOf": [
@@ -6559,6 +6658,104 @@
          "required": [
           "op",
           "ids"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "duplicate"
+          },
+          "ids": {
+           "description": "Elements to copy, with their animation and timing; a group is copied with what is inside it",
+           "minItems": 1,
+           "maxItems": 50,
+           "type": "array",
+           "items": {
+            "type": "string",
+            "description": "Element id, or \"$ref\" of an element added earlier in this batch"
+           }
+          },
+          "ref": {
+           "description": "Name for the new item; later operations in this batch can use \"$name\" in place of its id",
+           "type": "string",
+           "maxLength": 40
+          },
+          "refs": {
+           "description": "One name per id for its copy, for later operations in this batch (\"$name\")",
+           "maxItems": 50,
+           "type": "array",
+           "items": {
+            "type": "string",
+            "maxLength": 40
+           }
+          },
+          "dx": {
+           "description": "Move the copies right by this many px (negative: left); default 0, on top of the original",
+           "type": "number",
+           "minimum": -20000,
+           "maximum": 20000
+          },
+          "dy": {
+           "description": "Move the copies down by this many px (negative: up); default 0",
+           "type": "number",
+           "minimum": -20000,
+           "maximum": 20000
+          },
+          "page": {
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "type": "integer",
+             "minimum": 1,
+             "maximum": 9007199254740991
+            }
+           ],
+           "description": "Put the copies on this page (id, \"$ref\" or 1-based number) at the same place; default the page of each original"
+          },
+          "shift": {
+           "description": "Seconds to move the copies' timing later (negative: earlier): when they show and all their keyframes, as shift_time. Copy an animated element and shift it to play the same motion again later, or stagger copies",
+           "type": "number",
+           "minimum": -600,
+           "maximum": 600
+          }
+         },
+         "required": [
+          "op",
+          "ids"
+         ]
+        },
+        {
+         "type": "object",
+         "properties": {
+          "op": {
+           "type": "string",
+           "const": "shift_time"
+          },
+          "ids": {
+           "description": "Elements (and what is inside groups) whose timing moves",
+           "minItems": 1,
+           "maxItems": 200,
+           "type": "array",
+           "items": {
+            "type": "string",
+            "description": "Element id, or \"$ref\" of an element added earlier in this batch"
+           }
+          },
+          "by": {
+           "description": "Seconds later (negative: earlier) that they show and that every keyframe falls; entrances, exits, loops, motion paths and pan-zoom move with them. Nothing may move before 0 s",
+           "type": "number",
+           "minimum": -600,
+           "maximum": 600
+          }
+         },
+         "required": [
+          "op",
+          "ids",
+          "by"
          ]
         }
        ]
