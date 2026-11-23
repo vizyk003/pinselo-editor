@@ -513,3 +513,20 @@ fn a_fast_element_smears_along_its_path() {
     a["parentId"] = json!("g");
     assert!(ops(&page_of(vec![g, a]), 50.0).contains(&"accum".to_string()));
 }
+
+#[test]
+fn gradient_keys_turn_and_recolour_a_gradient_fill() {
+    // Red on the left to blue on the right; keyed to point down (90°) and then to green-to-white.
+    let grad = json!({ "k": "linear", "angle": 0, "stops": [{ "t": 0, "color": srgb(1.0, 0.0, 0.0, 1.0) }, { "t": 1, "color": srgb(0.0, 0.0, 1.0, 1.0) }] });
+    let mut a = shape("a", "p", "a0", 0.0, 0.0, 200.0, 100.0, "rect", grad);
+    a["keyframes"] = json!({ "gradientAngle": [{ "t": 0, "v": 90 }] });
+    let img = at(&page_of(vec![a.clone()]), Some(0.0));
+    let (top, bottom) = (px(&img, 200, 100, 5), px(&img, 200, 100, 95));
+    assert!(top[0] > 200 && bottom[2] > 200, "it now runs top to bottom: {top:?} {bottom:?}");
+    a["keyframes"] = json!({ "gradientColors": [{ "t": 0, "colors": [srgb(0.0, 1.0, 0.0, 1.0), srgb(1.0, 1.0, 1.0, 1.0)] }] });
+    let img = at(&page_of(vec![a.clone()]), Some(0.0));
+    assert!(near(px(&img, 200, 1, 50), [0, 255, 0], 6), "{:?}", px(&img, 200, 1, 50));
+    // A key with a different number of colours than the gradient has stops leaves it as it is.
+    a["keyframes"] = json!({ "gradientColors": [{ "t": 0, "colors": [srgb(0.0, 1.0, 0.0, 1.0)] }] });
+    assert!(near(px(&at(&page_of(vec![a]), Some(0.0)), 200, 1, 50), RED, 6));
+}

@@ -5096,6 +5096,136 @@
                  "type": "null"
                 }
                ]
+              },
+              "gradientAngle": {
+               "description": "Turns a shape's linear gradient over time (degrees; 0 runs left to right): a slow sweep of light across a card or button. The fill must be { gradient, angle }",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": -3600,
+                    "maximum": 3600
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "gradientColors": {
+               "description": "A shape's gradient colours over time, each value one colour per stop in order (as many as the fill's gradient has); colours blend between keys, so a background can drift from dawn to dusk",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "array",
+                    "items": {
+                     "type": "string",
+                     "pattern": "^#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                    },
+                    "minItems": 2,
+                    "maxItems": 8
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
               }
              }
             },

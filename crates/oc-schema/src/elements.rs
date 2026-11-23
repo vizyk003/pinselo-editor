@@ -251,6 +251,19 @@ pub struct ColorKey {
     pub extra: Extra,
 }
 
+/// A key of the `gradientColors` track: every stop's colour, in stop order.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct GradientKey {
+    pub t: f64,
+    pub colors: Vec<ColorValue>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ease: Option<KeyframeEase>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bezier: Option<[f64; 4]>,
+    #[serde(flatten)]
+    pub extra: Extra,
+}
+
 /// A track added after the first ones: a value that does not read as one leaves the track out instead of failing
 /// the whole element, the way older builds (keeping these in `extra`) never fail on them.
 fn lenient<'de, D: Deserializer<'de>, T: serde::de::DeserializeOwned>(d: D) -> Result<Option<Vec<T>>, D::Error> {
@@ -324,6 +337,11 @@ pub struct Keyframes {
     /// Motion blur: the shutter as a fraction of a 1/30 s frame (0.5 = the usual half-frame; 0 = off).
     #[serde(default, rename = "motionBlur", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
     pub motion_blur: Option<Vec<Keyframe>>,
+    /// A shape's linear gradient angle (degrees) and its stop colours over time.
+    #[serde(default, rename = "gradientAngle", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub gradient_angle: Option<Vec<Keyframe>>,
+    #[serde(default, rename = "gradientColors", deserialize_with = "lenient", skip_serializing_if = "Option::is_none")]
+    pub gradient_colors: Option<Vec<GradientKey>>,
     #[serde(flatten)]
     pub extra: Extra,
 }
@@ -352,6 +370,7 @@ impl Keyframes {
             "shadowY" => &self.shadow_y,
             "shadowBlur" => &self.shadow_blur,
             "motionBlur" => &self.motion_blur,
+            "gradientAngle" => &self.gradient_angle,
             _ => return None,
         };
         v.as_deref().filter(|k| !k.is_empty())
@@ -366,6 +385,11 @@ impl Keyframes {
             _ => return None,
         };
         v.as_deref().filter(|k| !k.is_empty())
+    }
+
+    /// The gradient colour track.
+    pub fn gradient(&self) -> Option<&[GradientKey]> {
+        self.gradient_colors.as_deref().filter(|k| !k.is_empty())
     }
 }
 

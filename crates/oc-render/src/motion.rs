@@ -308,7 +308,7 @@ pub fn keyframe_motion(k: &Keyframes, t: f64) -> MotionState {
 /// track has no keys.
 pub fn animated(el: &Element, t: f64) -> Option<Element> {
     use oc_schema::elements::{DropShadowEffect, Effect};
-    use oc_schema::keyframes::{color_value, number_value, prop_spec};
+    use oc_schema::keyframes::{color_value, gradient_value, number_value, prop_spec};
     use oc_schema::primitives::{ColorValue, Paint, RgbColor, Stroke, StrokeAlign, StrokeCap, StrokeJoin};
     let k = el.base()?.keyframes.as_ref()?;
     let num = |p: &str| number_value(prop_spec(p).expect("prop"), k.number(p), t);
@@ -317,7 +317,8 @@ pub fn animated(el: &Element, t: f64) -> Option<Element> {
     let crop = [num("cropX"), num("cropY"), num("cropW"), num("cropH")];
     let shadow = (num("shadowX"), num("shadowY"), num("shadowBlur"), col("shadowColor"));
     let any_shadow = shadow.0.is_some() || shadow.1.is_some() || shadow.2.is_some() || shadow.3.is_some();
-    if fill.is_none() && stroke_color.is_none() && stroke_width.is_none() && radius.is_none() && crop.iter().all(Option::is_none) && !any_shadow {
+    let (angle, stops) = (num("gradientAngle"), k.gradient().and_then(|g| gradient_value(g, t)));
+    if fill.is_none() && stroke_color.is_none() && stroke_width.is_none() && radius.is_none() && crop.iter().all(Option::is_none) && !any_shadow && angle.is_none() && stops.is_none() {
         return None;
     }
     let mut el = el.clone();
@@ -338,6 +339,24 @@ pub fn animated(el: &Element, t: f64) -> Option<Element> {
     };
     match &mut el {
         Element::Shape(s) => {
+            // A gradient fill: its angle, and its stop colours when the key has one per stop.
+            let recolor = |st: &mut Vec<oc_schema::primitives::GradientStop>| {
+                if let Some(cs) = stops.as_ref().filter(|cs| cs.len() == st.len()) {
+                    for (stop, c) in st.iter_mut().zip(cs) {
+                        stop.color = c.clone();
+                    }
+                }
+            };
+            match s.fills.first_mut() {
+                Some(Paint::Linear(g)) => {
+                    if let Some(a) = angle {
+                        g.angle = a;
+                    }
+                    recolor(&mut g.stops);
+                }
+                Some(Paint::Radial(g)) => recolor(&mut g.stops),
+                _ => {}
+            }
             if let Some(c) = &fill {
                 match s.fills.first_mut() {
                     Some(Paint::Solid(p)) => p.color = c.clone(),

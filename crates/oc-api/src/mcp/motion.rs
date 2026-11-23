@@ -595,7 +595,9 @@ pub fn keyframes_patch(spec: &Value, el: &Value, rest: &Rest) -> Result<Value, S
 }
 
 /// Element types a connector track applies to, and how to say so when it does not.
-const VALUE_TRACKS: [(&str, &[&str], &str); 6] = [
+const VALUE_TRACKS: [(&str, &[&str], &str); 8] = [
+    ("gradientAngle", &["shape"], "gradient keys apply to shapes"),
+    ("gradientColors", &["shape"], "gradient keys apply to shapes"),
     ("fill", &["shape"], "fill keys apply to shapes"),
     ("strokeColor", &["shape", "line"], "stroke keys apply to shapes and lines"),
     ("strokeWidth", &["shape", "line"], "stroke keys apply to shapes and lines"),
@@ -664,6 +666,45 @@ fn value_tracks(spec: &Value, el: &Value, set: &mut dyn FnMut(&str, Option<Vec<V
                 }
                 set(name, Some(keys.iter().map(|k| stored_key(k.t, r2(num(k.v)), k.ease)).collect()));
             }
+        }
+    }
+    // Gradients: the angle of a linear gradient fill, and every stop's colour (one per stop, in stop order).
+    let first = &el["fills"][0];
+    match spec.get("gradientAngle") {
+        None => {}
+        Some(Value::Null) => set("gradientAngle", None),
+        Some(track) => {
+            if first["k"] != "linear" {
+                return Err("keyframes.gradientAngle: the shape's fill is not a linear gradient; set fill to { gradient, angle } first.".into());
+            }
+            let keys = keys_of("gradientAngle", track)?;
+            set("gradientAngle", Some(keys.iter().map(|k| stored_key(k.t, r2(num(k.v)), k.ease)).collect()));
+        }
+    }
+    match spec.get("gradientColors") {
+        None => {}
+        Some(Value::Null) => set("gradientColors", None),
+        Some(track) => {
+            let stops = first["stops"].as_array().map_or(0, Vec::len);
+            if first["k"] != "linear" && first["k"] != "radial" {
+                return Err("keyframes.gradientColors: the shape's fill is not a gradient; set fill to { gradient } first.".into());
+            }
+            let keys = keys_of("gradientColors", track)?;
+            let mut out = Vec::with_capacity(keys.len());
+            for k in &keys {
+                let cs = k.v.as_array().map(Vec::as_slice).unwrap_or(&[]);
+                if cs.len() != stops {
+                    return Err(format!("keyframes.gradientColors at {} s: the gradient has {stops} colours, so each key lists {stops} (it has {}).", secs(k.t), cs.len()));
+                }
+                let colors = cs.iter().map(|c| stored_color("gradientColors", k.t, c)).collect::<Result<Vec<_>, _>>()?;
+                let mut key = stored_key(k.t, Value::Null, k.ease);
+                if let Some(m) = key.as_object_mut() {
+                    m.remove("v");
+                    m.insert("colors".into(), Value::Array(colors));
+                }
+                out.push(key);
+            }
+            set("gradientColors", Some(out));
         }
     }
     // Zoom: into the element's own crop (1 = as it is), towards a focus point of the picture.
@@ -751,6 +792,19 @@ fn value_tracks_view(k: &Value, el: &Value, o: &mut Map<String, Value>) {
         if let Some(tr) = track(k, name) {
             o.insert(name.into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(k.v), ease_view(k))).collect()));
         }
+    }
+    if let Some(tr) = track(k, "gradientAngle") {
+        o.insert("gradientAngle".into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(k.v), ease_view(k))).collect()));
+    }
+    if let Some(tr) = k.get("gradientColors").and_then(|v| serde_json::from_value::<Vec<oc_schema::elements::GradientKey>>(v.clone()).ok()).filter(|t| !t.is_empty()) {
+        let keys = tr
+            .iter()
+            .map(|g| {
+                let e = ease_view(&oc_schema::elements::Keyframe { t: g.t, v: 0.0, ease: g.ease.clone(), bezier: g.bezier, extra: Default::default() });
+                key_view(g.t, Value::Array(g.colors.iter().map(|c| super::view::color_out(&json!(c))).collect()), e)
+            })
+            .collect();
+        o.insert("gradientColors".into(), Value::Array(keys));
     }
     if let Some(ws) = track(k, "cropW") {
         let c = &el["crop"];
@@ -2022,6 +2076,26 @@ mod tests {
         let mut grad = el.clone();
         grad["fills"] = json!([{ "k": "linear" }]);
         assert!(keyframes_patch(&json!({ "fill": [{ "at": 0, "value": "#ffffff" }] }), &grad, &rest).unwrap_err().contains("gradient"));
+    }
+
+    #[test]
+    fn gradient_keys_round_trip_and_need_a_gradient() {
+        let mut el = box_el(0.0, 1.0);
+        el["fills"] = json!([{ "k": "linear", "angle": 0, "stops": [{ "t": 0, "color": super::super::edit::hex("#ff0000") }, { "t": 1, "color": super::super::edit::hex("#0000ff") }] }]);
+        let rest = Rest::of(&el, Some((100.0, 200.0)));
+        let spec = json!({
+            "gradientAngle": [{ "at": 0, "value": 0 }, { "at": 2, "value": 180, "ease": "linear" }],
+            "gradientColors": [{ "at": 0, "value": ["#ff0000", "#0000ff"] }, { "at": 2, "value": ["#ffd60a", "#1f2328"] }],
+        });
+        let stored = keyframes_patch(&spec, &el, &rest).unwrap();
+        let typed: oc_schema::elements::Keyframes = serde_json::from_value(stored.clone()).unwrap();
+        assert_eq!(typed.gradient().map(|g| g[1].colors.len()), Some(2));
+        el["keyframes"] = stored;
+        assert_eq!(keyframes_view(&el, &rest).unwrap(), spec);
+        assert!(keyframes_patch(&json!({ "gradientColors": [{ "at": 0, "value": ["#ffffff", "#000000", "#ff0000"] }] }), &el, &rest).unwrap_err().contains("has 2 colours"));
+        let mut plain = box_el(0.0, 1.0);
+        plain["fills"] = json!([{ "k": "solid", "color": super::super::edit::hex("#ff0000") }]);
+        assert!(keyframes_patch(&json!({ "gradientAngle": [{ "at": 0, "value": 90 }] }), &plain, &rest).unwrap_err().contains("not a linear gradient"));
     }
 
     #[test]

@@ -172,6 +172,8 @@ fn keyframes() -> Schema {
         ("scaleY", track(z::num().min(0.0).max(20.0))),
         ("anchor", z::union(vec![z::enumeration(&super::motion::ANCHOR_NAMES), z::array(z::num().min(0.0).max(1.0)).min(2.0).max(2.0)]).nullable().optional()),
         ("motionBlur", track(z::num().min(0.0).max(1.0))),
+        ("gradientAngle", track(z::num().min(-3600.0).max(3600.0))),
+        ("gradientColors", track(z::array(color()).min(2.0).max(8.0))),
         ("fill", track(color())),
         ("strokeColor", track(color())),
         ("strokeWidth", track(z::num().min(0.0).max(500.0))),

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 //! Keyframe interpolation (MV-100), shared by the renderer (playback/export) and the editor (recording).
 
-use crate::elements::{ColorKey, Keyframe, KeyframeEase};
+use crate::elements::{ColorKey, GradientKey, Keyframe, KeyframeEase};
 use crate::primitives::{ColorValue, RgbColor};
 
 /// Easing curve of a keyframe segment (`EASES[ease]`). Unknown eases use `ease` (TS would throw).
@@ -96,6 +96,8 @@ pub enum PropKind {
     Number,
     /// [`ColorKey`]s.
     Color,
+    /// [`GradientKey`]s: a colour per gradient stop.
+    Gradient,
 }
 
 /// One keyframed property.
@@ -150,6 +152,8 @@ pub const PROPS: &[PropSpec] = &[
     prop("shadowBlur", Replace, 0.0, 0.0, INF, &[]),
     color("shadowColor", &[]),
     prop("motionBlur", Replace, 0.0, 0.0, 1.0, &[]),
+    prop("gradientAngle", Replace, 0.0, -INF, INF, &["shape"]),
+    PropSpec { name: "gradientColors", mode: Replace, kind: PropKind::Gradient, neutral: 0.0, min: 0.0, max: 0.0, types: &["shape"] },
 ];
 
 /// The spec of a keyframed property.
@@ -181,6 +185,14 @@ fn shape_of(bezier: Option<&[f64; 4]>, e: Option<&KeyframeEase>, p: f64) -> f64 
     }
 }
 impl Timed for Keyframe {
+    fn t(&self) -> f64 {
+        self.t
+    }
+    fn shape(&self, p: f64) -> f64 {
+        shape_of(self.bezier.as_ref(), self.ease.as_ref(), p)
+    }
+}
+impl Timed for GradientKey {
     fn t(&self) -> f64 {
         self.t
     }
@@ -229,21 +241,38 @@ pub fn color_value(keys: &[ColorKey], t: f64) -> Option<ColorValue> {
     }
     Some(match locate(keys, t) {
         At::On(k) => k.c.clone(),
-        At::Between(a, b, p) => {
-            let mix = |x: &RgbColor, y: &RgbColor| RgbColor {
-                r: x.r + (y.r - x.r) * p,
-                g: x.g + (y.g - x.g) * p,
-                b: x.b + (y.b - x.b) * p,
-                a: x.a + (y.a - x.a) * p,
-                extra: Default::default(),
-            };
-            match (&a.c, &b.c) {
-                (ColorValue::Srgb(x), ColorValue::Srgb(y)) => ColorValue::Srgb(mix(x, y)),
-                (ColorValue::DisplayP3(x), ColorValue::DisplayP3(y)) => ColorValue::DisplayP3(mix(x, y)),
-                _ if p >= 1.0 => b.c.clone(),
-                _ => a.c.clone(),
-            }
-        }
+        At::Between(a, b, p) => mix_colors(&a.c, &b.c, p),
+    })
+}
+
+/// Two colours `p` of the way from `a` to `b`: channel by channel (alpha included) when both are sRGB or both
+/// Display P3, else `a` until `b` is reached.
+fn mix_colors(a: &ColorValue, b: &ColorValue, p: f64) -> ColorValue {
+    let mix = |x: &RgbColor, y: &RgbColor| RgbColor {
+        r: x.r + (y.r - x.r) * p,
+        g: x.g + (y.g - x.g) * p,
+        b: x.b + (y.b - x.b) * p,
+        a: x.a + (y.a - x.a) * p,
+        extra: Default::default(),
+    };
+    match (a, b) {
+        (ColorValue::Srgb(x), ColorValue::Srgb(y)) => ColorValue::Srgb(mix(x, y)),
+        (ColorValue::DisplayP3(x), ColorValue::DisplayP3(y)) => ColorValue::DisplayP3(mix(x, y)),
+        _ if p >= 1.0 => b.clone(),
+        _ => a.clone(),
+    }
+}
+
+/// The gradient colour track at page time `t`: stop by stop. Keys with different numbers of stops switch when the
+/// later key is reached.
+pub fn gradient_value(keys: &[GradientKey], t: f64) -> Option<Vec<ColorValue>> {
+    if keys.is_empty() {
+        return None;
+    }
+    Some(match locate(keys, t) {
+        At::On(k) => k.colors.clone(),
+        At::Between(a, b, p) if a.colors.len() == b.colors.len() => a.colors.iter().zip(&b.colors).map(|(x, y)| mix_colors(x, y, p)).collect(),
+        At::Between(a, b, p) => if p >= 1.0 { b.colors.clone() } else { a.colors.clone() },
     })
 }
 
