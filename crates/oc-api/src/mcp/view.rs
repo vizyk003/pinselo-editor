@@ -423,7 +423,7 @@ pub fn design_view(doc: &Value, typed: &DesignDoc, page_id: Option<&str>) -> Map
             pm.insert("hidden".into(), json!(true));
         }
         if timed {
-            for (k, v) in super::motion::page_view(p, lengths.get(pid.as_str()).copied().unwrap_or(oc_schema::timeline::DEFAULT_PAGE_MS)) {
+            for (k, v) in super::motion::page_view(p, lengths.get(pid.as_str()).copied().unwrap_or(oc_schema::timeline::DEFAULT_PAGE_MS), (num(&doc["meta"]["dims"]["w"]), num(&doc["meta"]["dims"]["h"]))) {
                 pm.insert(k, v);
             }
         }

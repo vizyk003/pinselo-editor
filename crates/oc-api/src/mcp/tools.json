@@ -5757,6 +5757,274 @@
              "type": "null"
             }
            ]
+          },
+          "camera": {
+           "description": "Videos: a camera over the whole page (background included) with zoom, look, rotation (keyframe tracks like an element's) and shake. A part given replaces it, null removes it; camera: null removes the camera. Still exports show the page as it is",
+           "anyOf": [
+            {
+             "type": "object",
+             "properties": {
+              "zoom": {
+               "description": "How close the camera is (1 = the page as it is, 2 = twice as close); it is raised as far as needed for the page edges never to show, so pan or turn needs a little zoom",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": 0.1,
+                    "maximum": 20
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "look": {
+               "description": "The page point the camera centres on, [x, y] in page px (default the page centre); move it to pan",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "description": "[x, y] in page px",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                     "type": "number"
+                    }
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "rotation": {
+               "description": "Turn of the camera in degrees (the page turns the other way); a few degrees is a lot",
+               "anyOf": [
+                {
+                 "minItems": 1,
+                 "maxItems": 64,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "value": {
+                    "type": "number",
+                    "minimum": -360,
+                    "maximum": 360
+                   },
+                   "ease": {
+                    "description": "How the move arriving at this key accelerates (default ease, which is ease-in-out): a name, or a CSS cubic-bezier [x1, y1, x2, y2] (x1, x2 in 0–1; y1, y2 in -2–3, above 1 overshoots). hold jumps at the key; out-quart and out-expo arrive more softly than ease-out; out-back overshoots and settles; anticipate pulls back before it goes",
+                    "anyOf": [
+                     {
+                      "type": "string",
+                      "enum": [
+                       "linear",
+                       "ease",
+                       "ease-in",
+                       "ease-out",
+                       "ease-in-out",
+                       "back",
+                       "hold",
+                       "out-quart",
+                       "out-expo",
+                       "in-out-quart",
+                       "out-back",
+                       "anticipate"
+                      ]
+                     },
+                     {
+                      "type": "array",
+                      "items": {
+                       "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                     }
+                    ]
+                   }
+                  },
+                  "required": [
+                   "at",
+                   "value"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "shake": {
+               "description": "Bursts of camera shake, each { at, duration (default 0.5 s), amount (px of travel, default 8), frequency (new positions a second, default 12), seed (picks the pattern) }: an impact, a beat drop. null removes them",
+               "anyOf": [
+                {
+                 "maxItems": 32,
+                 "type": "array",
+                 "items": {
+                  "type": "object",
+                  "properties": {
+                   "at": {
+                    "description": "Page second of this key",
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 600
+                   },
+                   "duration": {
+                    "type": "number",
+                    "minimum": 0.05,
+                    "maximum": 60
+                   },
+                   "amount": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 200
+                   },
+                   "frequency": {
+                    "type": "number",
+                    "minimum": 0.5,
+                    "maximum": 60
+                   },
+                   "seed": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 4294967295
+                   }
+                  },
+                  "required": [
+                   "at"
+                  ]
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              },
+              "fixed": {
+               "description": "Top-level elements of this page the camera leaves in place (a logo, a lower-third); null clears",
+               "anyOf": [
+                {
+                 "maxItems": 100,
+                 "type": "array",
+                 "items": {
+                  "type": "string",
+                  "description": "Element id, or \"$ref\" of an element added earlier in this batch"
+                 }
+                },
+                {
+                 "type": "null"
+                }
+               ]
+              }
+             }
+            },
+            {
+             "type": "null"
+            }
+           ]
           }
          },
          "required": [

@@ -256,7 +256,7 @@ fn still_pages_stay_still() {
     let (mut still, mut dynamic) = (0, 0);
     for (file, doc, page) in &pages {
         let els = oc_schema::tree::descendants(&doc.elements, page);
-        if motion::page_is_dynamic(&els, false) {
+        if motion::page_is_dynamic(&doc.pages[page.as_str()], &els, false) {
             dynamic += 1;
             continue;
         }

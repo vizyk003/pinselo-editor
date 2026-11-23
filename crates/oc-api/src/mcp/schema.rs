@@ -222,6 +222,28 @@ fn page_time() -> Vec<(&'static str, Schema)> {
         ("entrance", z::obj([("type", z::enumeration(&super::motion::PAGE_ENTRANCES).optional()), ("duration", z::num().min(0.01).max(30.0).optional())]).nullable().optional()),
     ]
 }
+/// `camera` of `update_page`: zoom, where it looks, turn and shake over page time; elements it leaves in place.
+fn camera() -> Schema {
+    z::obj([
+        ("zoom", track(z::num().min(0.1).max(20.0))),
+        ("look", track(point())),
+        ("rotation", track(z::num().min(-360.0).max(360.0))),
+        (
+            "shake",
+            z::array(z::obj([
+                ("at", secs()),
+                ("duration", z::num().min(0.05).max(60.0).optional()),
+                ("amount", z::num().min(0.0).max(200.0).optional()),
+                ("frequency", z::num().min(0.5).max(60.0).optional()),
+                ("seed", z::num().int().min(0.0).max(4294967295.0).optional()),
+            ]))
+            .max(32.0)
+            .nullable()
+            .optional(),
+        ),
+        ("fixed", z::array(target()).max(100.0).nullable().optional()),
+    ])
+}
 /// A video or sound: an upload (`list_uploads`), stock (`search_media`), or a URL.
 fn media_source() -> Schema {
     z::union(vec![
@@ -397,6 +419,7 @@ fn op_schema(op: &str) -> Schema {
         "update_page" => {
             f.extend([("page", page_ref()), ("title", z::str().max(120.0).optional()), ("background", fill().optional()), ("notes", z::str().max(5000.0).optional())]);
             f.extend(page_time());
+            f.push(("camera", camera().nullable().optional()));
         }
         "add_video" => {
             f.extend([("ref", r#ref()), ("source", media_source())]);

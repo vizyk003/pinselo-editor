@@ -94,6 +94,48 @@ pub const TRANSITION_KINDS: &[&str] = &[
     "drop",
 ];
 
+fn lenient_camera<'de, D: serde::Deserializer<'de>>(d: D) -> Result<Option<PageCamera>, D::Error> {
+    let v = Option::<serde_json::Value>::deserialize(d)?;
+    Ok(v.and_then(|v| serde_json::from_value(v).ok()))
+}
+
+/// A page camera (videos). Tracks hold page-time keys like element keyframes: `zoom` (1 = the page as it is),
+/// `x` and `y` (where it looks, px from the page centre) and `rotate` (degrees). Zoom never goes below what keeps
+/// the page edges out of view.
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
+pub struct PageCamera {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub zoom: Option<Vec<crate::elements::Keyframe>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub x: Option<Vec<crate::elements::Keyframe>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub y: Option<Vec<crate::elements::Keyframe>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rotate: Option<Vec<crate::elements::Keyframe>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shake: Option<Vec<CameraShake>>,
+    /// Top-level elements the camera leaves where they are (a logo, a caption bar).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fixed: Option<Vec<String>>,
+    #[serde(flatten)]
+    pub extra: Extra,
+}
+
+/// A burst of camera shake from `start_ms` to `end_ms` (page time): up to `amount` px of travel, `hz` new
+/// positions a second, `seed` picking the pattern.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CameraShake {
+    pub start_ms: f64,
+    pub end_ms: f64,
+    pub amount: f64,
+    pub hz: f64,
+    #[serde(default)]
+    pub seed: u32,
+    #[serde(flatten)]
+    pub extra: Extra,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PageTransition {
@@ -146,6 +188,10 @@ pub struct Page {
     pub anim: Option<PageAnim>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mobile_layout: Option<MobileLayout>,
+    /// A camera over the page in videos: zoom, pan, turn and shake over page time. Read leniently: a camera that
+    /// does not read leaves the page as it is.
+    #[serde(default, deserialize_with = "lenient_camera", skip_serializing_if = "Option::is_none")]
+    pub camera: Option<PageCamera>,
     #[serde(flatten)]
     pub extra: Extra,
 }

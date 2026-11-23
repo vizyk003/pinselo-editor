@@ -1175,7 +1175,7 @@ pub fn element_view(el: &Value, rest: &Rest) -> Map<String, Value> {
 }
 
 /// A page's length and transition (seconds), for `get_design`.
-pub fn page_view(p: &Value, length_ms: f64) -> Map<String, Value> {
+pub fn page_view(p: &Value, length_ms: f64, dims: (f64, f64)) -> Map<String, Value> {
     let mut o = Map::new();
     o.insert("duration".into(), secs(length_ms));
     if !p["durationMs"].is_number() {
@@ -1192,7 +1192,123 @@ pub fn page_view(p: &Value, length_ms: f64) -> Map<String, Value> {
         let preset = s(a, "preset").unwrap_or("fade");
         o.insert("entrance".into(), json!({ "type": if preset == "shrink" { "scale" } else { preset }, "duration": secs(num(&a["durationMs"])) }));
     }
+    if let Some(c) = camera_view(&p["camera"], dims) {
+        o.insert("camera".into(), c);
+    }
     o
+}
+
+/// Shake bursts: the most an assistant may add, and the default new positions a second.
+const MAX_SHAKES: usize = 32;
+const SHAKE_HZ: f64 = 12.0;
+
+/// `camera` of `update_page` → the page's stored `camera` (`Null`: removed). Parts not named keep what is stored;
+/// a part given replaces it, `null` removes it. `look` is the page point the camera centres on, `fixed` the
+/// (already resolved) ids it leaves in place; `(w, h)` is the page size.
+pub fn camera_patch(spec: &Value, current: &Value, (w, h): (f64, f64), fixed: Option<Vec<String>>) -> Result<Value, String> {
+    if spec.is_null() {
+        return Ok(Value::Null);
+    }
+    let mut out = current.as_object().cloned().unwrap_or_default();
+    let mut set = |k: &str, v: Option<Value>| match v {
+        Some(v) => {
+            out.insert(k.into(), v);
+        }
+        None => {
+            out.remove(k);
+        }
+    };
+    let scalar = |name: &str, track: &Value, conv: &dyn Fn(f64) -> Value| -> Result<Option<Value>, String> {
+        if track.is_null() {
+            return Ok(None);
+        }
+        let keys = keys_of(&format!("camera.{name}"), track)?;
+        Ok(Some(Value::Array(keys.iter().map(|k| stored_key(k.t, conv(num(k.v)), k.ease)).collect())))
+    };
+    if let Some(t) = spec.get("zoom") {
+        set("zoom", scalar("zoom", t, &r4)?);
+    }
+    if let Some(t) = spec.get("rotation") {
+        set("rotate", scalar("rotation", t, &r2)?);
+    }
+    match spec.get("look") {
+        None => {}
+        Some(Value::Null) => {
+            set("x", None);
+            set("y", None);
+        }
+        Some(track) => {
+            let keys = keys_of("camera.look", track)?;
+            let (xs, ys): (Vec<Value>, Vec<Value>) = keys.iter().map(|k| {
+                let (x, y) = pair(k.v);
+                (stored_key(k.t, r2(x - w / 2.0), k.ease), stored_key(k.t, r2(y - h / 2.0), k.ease))
+            }).unzip();
+            set("x", Some(Value::Array(xs)));
+            set("y", Some(Value::Array(ys)));
+        }
+    }
+    match spec.get("shake") {
+        None => {}
+        Some(Value::Null) => set("shake", None),
+        Some(list) => {
+            let items = list.as_array().map(Vec::as_slice).unwrap_or(&[]);
+            if items.len() > MAX_SHAKES {
+                return Err(format!("camera.shake has {} bursts; at most {MAX_SHAKES}.", items.len()));
+            }
+            let mut v = Vec::with_capacity(items.len());
+            for b in items {
+                let at = ms(num(&b["at"]));
+                let dur = ms(f(b, "duration").unwrap_or(0.5));
+                let mut shake = json!({ "startMs": super::edit::jnum(at), "endMs": super::edit::jnum(at + dur), "amount": r2(f(b, "amount").unwrap_or(8.0)), "hz": r2(f(b, "frequency").unwrap_or(SHAKE_HZ)) });
+                if let Some(seed) = b.get("seed").and_then(Value::as_u64) {
+                    shake["seed"] = json!(seed);
+                }
+                v.push(shake);
+            }
+            set("shake", if v.is_empty() { None } else { Some(Value::Array(v)) });
+        }
+    }
+    if let Some(ids) = fixed {
+        set("fixed", if ids.is_empty() { None } else { Some(json!(ids)) });
+    } else if spec.get("fixed").is_some_and(Value::is_null) {
+        set("fixed", None);
+    }
+    Ok(if out.is_empty() { Value::Null } else { Value::Object(out) })
+}
+
+/// A stored camera as assistants write it.
+pub fn camera_view(cam: &Value, (w, h): (f64, f64)) -> Option<Value> {
+    use oc_schema::keyframes::keyframe_value;
+    let cam = cam.as_object()?;
+    let k = Value::Object(cam.clone());
+    let mut o = Map::new();
+    if let Some(tr) = track(&k, "zoom") {
+        o.insert("zoom".into(), Value::Array(tr.iter().map(|k| key_view(k.t, r4(k.v), ease_view(k))).collect()));
+    }
+    let (xs, ys) = (track(&k, "x"), track(&k, "y"));
+    if xs.is_some() || ys.is_some() {
+        let mut times: Vec<(f64, Option<Value>)> = xs.iter().chain(ys.iter()).flatten().map(|k| (k.t, ease_view(k))).collect();
+        times.sort_by(|p, q| p.0.total_cmp(&q.0));
+        times.dedup_by(|p, q| (p.0 - q.0).abs() < 0.5);
+        let look = times.into_iter().map(|(t, e)| key_view(t, json!([r2(w / 2.0 + keyframe_value(xs.as_deref(), t, 0.0)), r2(h / 2.0 + keyframe_value(ys.as_deref(), t, 0.0))]), e)).collect();
+        o.insert("look".into(), Value::Array(look));
+    }
+    if let Some(tr) = track(&k, "rotate") {
+        o.insert("rotation".into(), Value::Array(tr.iter().map(|k| key_view(k.t, r2(k.v), ease_view(k))).collect()));
+    }
+    if let Some(sh) = cam.get("shake").and_then(Value::as_array).filter(|a| !a.is_empty()) {
+        o.insert("shake".into(), Value::Array(sh.iter().map(|b| {
+            let mut v = json!({ "at": secs(num(&b["startMs"])), "duration": secs(num(&b["endMs"]) - num(&b["startMs"])), "amount": b["amount"], "frequency": b["hz"] });
+            if let Some(seed) = b.get("seed").filter(|s| s.as_u64().is_some_and(|s| s != 0)) {
+                v["seed"] = seed.clone();
+            }
+            v
+        }).collect()));
+    }
+    if let Some(fx) = cam.get("fixed").filter(|f| f.as_array().is_some_and(|a| !a.is_empty())) {
+        o.insert("fixed".into(), fx.clone());
+    }
+    if o.is_empty() { None } else { Some(Value::Object(o)) }
 }
 
 /// Element fields that make it move or come and go over time.
@@ -1207,7 +1323,7 @@ pub fn is_timed(doc: &Value) -> bool {
         return true;
     }
     let pages = doc["pages"].as_object().into_iter().flatten();
-    if pages.map(|(_, p)| p).any(|p| p["durationMs"].is_number() || p["transition"].is_object() || p["anim"].is_object()) {
+    if pages.map(|(_, p)| p).any(|p| p["durationMs"].is_number() || p["transition"].is_object() || p["anim"].is_object() || p["camera"].is_object()) {
         return true;
     }
     doc["elements"].as_object().into_iter().flatten().any(|(_, e)| e["deleted"] != true && (MOTION_FIELDS.iter().any(|k| e[*k].is_object()) || e["type"] == "video"))
@@ -1954,7 +2070,7 @@ mod tests {
         let p = page_patch(&json!({ "entrance": { "type": "scale", "duration": 0.4 } }), &Kit::default());
         assert_eq!(Value::Object(p.clone()), json!({ "anim": { "preset": "shrink", "durationMs": 400 } }));
         let page = json!({ "anim": p["anim"] });
-        assert_eq!(page_view(&page, 3000.0)["entrance"], json!({ "type": "scale", "duration": 0.4 }));
+        assert_eq!(page_view(&page, 3000.0, (1080.0, 1080.0))["entrance"], json!({ "type": "scale", "duration": 0.4 }));
         assert_eq!(Value::Object(page_patch(&json!({ "entrance": null }), &Kit::default())), json!({ "anim": null }));
     }
 

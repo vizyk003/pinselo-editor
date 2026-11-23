@@ -90,7 +90,7 @@ pub async fn frames(
             .filter(|e| shown(e))
             .flat_map(|e| video_slots(e).into_iter().map(move |v| (*e, v)))
             .collect();
-        let dynamic = page_is_dynamic(&els, captions);
+        let dynamic = page_is_dynamic(p, &els, captions);
         let settle_at = max(
             trans.map_or(0.0, |t| t.duration_ms),
             page_settle_ms(p, &els),

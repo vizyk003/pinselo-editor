@@ -799,6 +799,17 @@ pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> Di
     let page_no = sorted.iter().position(|p| p.id == page_id).map_or(0, |i| i + 1);
     let mut r = Resolver { doc, opts, dl, view: None, page_ms, page_no, page_total: sorted.len(), page };
     let top = children_of(&doc.elements, page_id);
+    // The page camera films the background and every top-level element but the ones it leaves fixed.
+    let camera = opts.time_ms.and_then(|t| crate::motion::camera_matrix(page, w, h, t));
+    let fixed: Vec<&str> = page.camera.as_ref().and_then(|c| c.fixed.as_ref()).map(|f| f.iter().map(String::as_str).collect()).unwrap_or_default();
+    if let Some(m) = camera
+        && !r.dl.background.is_empty()
+    {
+        let fills = r.dl.background.clone();
+        r.push(DLItem::Save { matrix: m });
+        r.push(DLItem::Path { path: format!("M0 0 L{} 0 L{} {} L0 {} Z", num_to_string(w), num_to_string(w), num_to_string(h), num_to_string(h)), fills, stroke: None, src_el: String::new() });
+        r.push(DLItem::Restore);
+    }
     for (i, raw) in top.into_iter().enumerate() {
         match opts.time_ms {
             None => r.emit(raw, 0, &IDENTITY_MOTION),
@@ -806,7 +817,14 @@ pub fn resolve_page(doc: &DesignDoc, page_id: &str, opts: &ResolveOptions) -> Di
                 let el = r.get(raw);
                 let window = element_window(&el, page_ms);
                 if let Some(m) = motion_at_time(&el, page, i, t, window, opts.click_steps.as_deref()) {
+                    let filmed = camera.filter(|_| !raw.id().is_some_and(|id| fixed.contains(&id)));
+                    if let Some(c) = filmed {
+                        r.push(DLItem::Save { matrix: c });
+                    }
                     r.emit(raw, 0, &m);
+                    if filmed.is_some() {
+                        r.push(DLItem::Restore);
+                    }
                 }
             }
         }

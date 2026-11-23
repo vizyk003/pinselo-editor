@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // The Pinselo document contract, implemented by crates/oc-schema (see ../README.md).
 /** Design + pages. docs/plan/03-document-model-and-renderer.md §2.2. */
-import type { Element } from './elements';
+import type { Element, Keyframe } from './elements';
 import type { AssetId, ElementId, PageId, Paint, Unit } from './primitives';
 export type Surface = 'graphic' | 'presentation' | 'video' | 'doc' | 'sheet' | 'whiteboard' | 'print' | 'website' | 'email';
 export declare const CURRENT_SCHEMA: 1;
@@ -65,6 +65,19 @@ export interface Page {
      * column; 'desktop' keeps the desktop layout scaled down.
      */
     mobileLayout?: 'auto' | 'desktop';
+    /** A camera over the page in videos (zoom, pan, turn, shake over page time). */
+    camera?: PageCamera;
+}
+/** Page camera: `zoom` (1 = as is; raised as needed so the page edges never show), `x`/`y` (where it looks, px
+ *  from the page centre) and `rotate` (degrees) are keyframe tracks in page time; `shake` bursts; `fixed`
+ *  top-level elements it leaves in place. */
+export interface PageCamera {
+    zoom?: Keyframe[];
+    x?: Keyframe[];
+    y?: Keyframe[];
+    rotate?: Keyframe[];
+    shake?: { startMs: number; endMs: number; amount: number; hz: number; seed?: number }[];
+    fixed?: ElementId[];
 }
 /** Page transitions (MV-010). */
 export type TransitionKind = 'fade' | 'dissolve' | 'slide' | 'push' | 'cover' | 'reveal' | 'zoom' | 'wipe' | 'iris' | 'split' | 'flip' | 'blur' | 'spin' | 'drop';

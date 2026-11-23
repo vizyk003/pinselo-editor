@@ -417,3 +417,54 @@ fn a_follow_cycle_or_a_missing_leader_moves_nobody() {
     c["follow"] = json!({ "id": "gone" });
     assert!(near(px(&at(&page_of(vec![c]), Some(0.0)), 200, 10, 50), RED, 2));
 }
+
+fn filmed(els: Vec<Value>, camera: Value) -> DesignDoc {
+    let mut d = serde_json::to_value(page_of(els)).unwrap();
+    d["pages"]["p"]["camera"] = camera;
+    de(&d)
+}
+
+#[test]
+fn the_camera_zooms_pans_and_leaves_fixed_elements() {
+    // A red square in the middle (90..110 × 40..60) and a blue bar fixed at the left edge.
+    let sq = shape("sq", "p", "a0", 90.0, 40.0, 20.0, 20.0, "rect", solid(1.0, 0.0, 0.0));
+    let bar = shape("bar", "p", "a1", 0.0, 0.0, 10.0, 100.0, "rect", solid(0.0, 0.0, 1.0));
+    let d = filmed(vec![sq.clone(), bar.clone()], json!({ "zoom": [{ "t": 0, "v": 2 }], "fixed": ["bar"] }));
+    let img = at(&d, Some(0.0));
+    // Twice as big about the centre: 80..120 × 30..70.
+    assert!(near(px(&img, 200, 82, 50), RED, 2) && near(px(&img, 200, 78, 50), WHITE, 2));
+    assert!(near(px(&img, 200, 5, 50), BLUE, 2), "the fixed bar stays");
+    assert!(near(px(&at(&d, None), 200, 82, 50), WHITE, 2), "no camera without a time");
+    // Looking 20 px right at zoom 2: the square moves 40 px left on screen (40..80).
+    let d = filmed(vec![sq], json!({ "zoom": [{ "t": 0, "v": 2 }], "x": [{ "t": 0, "v": 20 }] }));
+    let img = at(&d, Some(0.0));
+    assert!(near(px(&img, 200, 45, 50), RED, 2) && near(px(&img, 200, 85, 50), WHITE, 2));
+}
+
+#[test]
+fn the_camera_never_shows_the_page_edge() {
+    let doc = filmed(vec![], json!({ "x": [{ "t": 0, "v": 50 }], "rotate": [{ "t": 0, "v": 10 }] }));
+    let p = &doc.pages["p"];
+    let m = oc_render::motion::camera_matrix(p, 200.0, 100.0, 0.0).unwrap();
+    // Every screen corner maps back inside the page.
+    let inv = oc_geometry::matrix::invert(&m);
+    for (x, y) in [(0.0, 0.0), (200.0, 0.0), (200.0, 100.0), (0.0, 100.0)] {
+        let q = oc_geometry::matrix::apply(&inv, [x, y]);
+        assert!((-0.01..=200.01).contains(&q[0]) && (-0.01..=100.01).contains(&q[1]), "{q:?}");
+    }
+    assert!(m[0].hypot(m[1]) > 1.0, "zoomed in to hide the edges");
+}
+
+#[test]
+fn shake_is_repeatable_and_only_inside_its_burst() {
+    let doc = filmed(vec![], json!({ "shake": [{ "startMs": 1000, "endMs": 2000, "amount": 12, "hz": 10, "seed": 7 }] }));
+    let cam = doc.pages["p"].camera.clone().unwrap();
+    assert_eq!(oc_render::motion::camera_shake(&cam, 500.0), (0.0, 0.0, 0.0));
+    let a = oc_render::motion::camera_shake(&cam, 1500.0);
+    assert_eq!(a, oc_render::motion::camera_shake(&cam, 1500.0));
+    assert!(a.0 != 0.0 && a.0.abs() <= 12.0 && a.1.abs() <= 12.0);
+    // Fixed numbers: the same pattern in every build (integer hash, no clock).
+    assert_eq!(format!("{:.6} {:.6} {:.6}", a.0, a.1, a.2), "5.871440 1.993404 -0.290985");
+    let other = filmed(vec![], json!({ "shake": [{ "startMs": 1000, "endMs": 2000, "amount": 12, "hz": 10, "seed": 8 }] }));
+    assert_ne!(a, oc_render::motion::camera_shake(&other.pages["p"].camera.clone().unwrap(), 1500.0), "the seed picks the pattern");
+}

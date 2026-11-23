@@ -300,6 +300,7 @@ pub fn make_page() -> Page {
         transition: None,
         anim: None,
         mobile_layout: None,
+        camera: None,
         extra: Extra::new(),
     }
 }

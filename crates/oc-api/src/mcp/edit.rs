@@ -1019,6 +1019,27 @@ impl Run<'_> {
                     patch.insert("notes".into(), n.clone());
                 }
                 patch.extend(super::motion::page_patch(op, &self.ctx.kit));
+                if let Some(spec) = op.get("camera") {
+                    let fixed = match spec.get("fixed").and_then(Value::as_array) {
+                        None => None,
+                        Some(ids) => {
+                            let mut out = Vec::new();
+                            for v in ids.iter().filter_map(Value::as_str) {
+                                let id = self.id(v)?;
+                                let parent = self.el(v)?["parentId"].as_str().unwrap_or("").to_owned();
+                                if parent != pid {
+                                    return err(format!("camera.fixed: {v} is not a top-level element of this page; fix its group, or the element on this page."));
+                                }
+                                out.push(id);
+                            }
+                            Some(out)
+                        }
+                    };
+                    let (json, _) = self.doc();
+                    let dims = (num(&json["meta"]["dims"]["w"]), num(&json["meta"]["dims"]["h"]));
+                    let current = json["pages"][pid.as_str()]["camera"].clone();
+                    patch.insert("camera".into(), super::motion::camera_patch(spec, &current, dims, fixed).map_err(EditError)?);
+                }
                 if patch.is_empty() {
                     return err("Nothing to change: give at least one property.");
                 }
@@ -1947,6 +1968,48 @@ mod motion_tests {
         let (res, doc) = run(&ydoc, json!([{ "op": "update", "id": id("card"), "shadow": null }]), vec![], json!({}));
         assert!(res.error.is_none(), "{:?}", res.error);
         assert_eq!(doc["elements"][id("card").as_str()]["effects"], json!([{ "k": "blur", "radius": 2 }]));
+    }
+
+    #[test]
+    fn the_page_camera_is_set_read_back_and_removed() {
+        let ydoc = design(1080.0, 1920.0);
+        let camera = json!({
+            "zoom": [{ "at": 0, "value": 1 }, { "at": 3, "value": 1.4, "ease": "in-out-quart" }],
+            "look": [{ "at": 0, "value": [540, 960] }, { "at": 3, "value": [700, 600] }],
+            "rotation": [{ "at": 0, "value": 0 }, { "at": 3, "value": -4 }],
+            "shake": [{ "at": 1.2, "duration": 0.4, "amount": 14, "frequency": 18, "seed": 3 }],
+            "fixed": ["$logo"]
+        });
+        let ops = json!([
+            { "op": "update_page", "page": 1, "duration": 4 },
+            { "op": "add_shape", "ref": "logo", "page": 1, "shape": "rect", "x": 40, "y": 40, "w": 100, "h": 100 },
+            { "op": "update_page", "page": 1, "camera": camera }
+        ]);
+        let (res, doc) = run(&ydoc, ops, vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let id = |r: &str| res.refs[r].as_str().unwrap().to_owned();
+        let typed: oc_schema::DesignDoc = serde_json::from_value(doc.clone()).expect("valid design");
+        let page = typed.pages.values().next().unwrap();
+        assert!(page.camera.is_some(), "the renderer reads it");
+        assert!(oc_render_free_camera_check(&doc));
+        let v = Value::Object(view::design_view(&doc, &typed, None));
+        let mut want = camera.clone();
+        want["fixed"] = json!([id("logo")]);
+        assert_eq!(v["pages"][0]["camera"], want);
+        // A part given replaces it, null removes it; camera: null removes everything.
+        let (res, doc) = run(&ydoc, json!([{ "op": "update_page", "page": 1, "camera": { "shake": null, "rotation": null } }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        let cam = &doc["pages"].as_object().unwrap().values().next().unwrap()["camera"];
+        assert!(cam.get("shake").is_none() && cam.get("rotate").is_none() && cam.get("zoom").is_some());
+        let (res, doc) = run(&ydoc, json!([{ "op": "update_page", "page": 1, "camera": null }]), vec![], json!({}));
+        assert!(res.error.is_none(), "{:?}", res.error);
+        assert!(doc["pages"].as_object().unwrap().values().next().unwrap().get("camera").is_none_or(Value::is_null));
+    }
+
+    /// The stored camera has the fields the renderer reads (oc-api does not depend on oc-render).
+    fn oc_render_free_camera_check(doc: &Value) -> bool {
+        let cam = &doc["pages"].as_object().unwrap().values().next().unwrap()["camera"];
+        cam["zoom"][1]["v"] == json!(1.4) && cam["x"][1]["v"] == json!(160) && cam["y"][1]["v"] == json!(-360) && cam["shake"][0]["endMs"] == json!(1600) && cam["shake"][0]["hz"] == json!(18)
     }
 
     #[test]

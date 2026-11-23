@@ -642,11 +642,12 @@ pub fn element_keeps_moving(el: &Element) -> bool {
     }
 }
 
-/// Whether a page's frames can differ after [`page_settle_ms`] (and its transition): a shown video, captions on
-/// screen, or an element that keeps moving. `els` are all the page's elements, group children included. A page
-/// that is not dynamic can reuse its settled frame (video export) or stop redrawing (Present mode).
-pub fn page_is_dynamic(els: &[&Element], captions: bool) -> bool {
+/// Whether a page's frames can differ after [`page_settle_ms`] (and its transition): a moving camera, a shown
+/// video, captions on screen, or an element that keeps moving. `els` are all the page's elements, group children
+/// included. A page that is not dynamic can reuse its settled frame (video export) or stop redrawing (Present).
+pub fn page_is_dynamic(page: &Page, els: &[&Element], captions: bool) -> bool {
     captions
+        || camera_moves(page)
         || els.iter().any(|e| element_keeps_moving(e))
         || els.iter().any(|e| shown(e) && !oc_schema::timeline::video_slots(e).is_empty())
 }
@@ -810,6 +811,96 @@ const BLUR_GROW: f64 = 0.14;
 /// Number of click build steps on a page (0 = none).
 pub fn click_step_count(els: &[&Element]) -> f64 {
     els.iter().fold(0.0, |n, e| max(n, e.base().and_then(|b| b.anim.as_ref()).and_then(|a| a.on_click).unwrap_or(0.0)))
+}
+
+// ------------------------------------------------------------------------------------------------ page camera
+
+/// A 32-bit integer hash (lowbias32): the same on every platform, so shake is identical in preview and export.
+fn hash32(mut x: u32) -> u32 {
+    x ^= x >> 16;
+    x = x.wrapping_mul(0x7feb_352d);
+    x ^= x >> 15;
+    x = x.wrapping_mul(0x846c_a68b);
+    x ^= x >> 16;
+    x
+}
+
+/// Value noise in -1..1 at `x` (one new value per unit, eased between them) for stream `k` of pattern `seed`.
+fn noise(seed: u32, k: u32, x: f64) -> f64 {
+    let i = x.floor();
+    let f = x - i;
+    let at = |n: f64| {
+        let h = hash32(seed.wrapping_mul(0x9e37_79b9) ^ k.wrapping_mul(0x85eb_ca6b) ^ (n as i64 as u32));
+        (h as f64 / u32::MAX as f64) * 2.0 - 1.0
+    };
+    let s = f * f * (3.0 - 2.0 * f);
+    at(i) + (at(i + 1.0) - at(i)) * s
+}
+
+/// The shake offset (dx, dy px, rotation degrees) at page time `t`.
+pub fn camera_shake(cam: &oc_schema::design::PageCamera, t: f64) -> (f64, f64, f64) {
+    let mut out = (0.0, 0.0, 0.0);
+    for s in cam.shake.iter().flatten() {
+        if t < s.start_ms || t >= s.end_ms || s.amount.is_nan() || s.amount <= 0.0 || s.hz.is_nan() || s.hz <= 0.0 {
+            continue;
+        }
+        // Eases in and out over up to 150 ms so a burst never starts or stops with a jump.
+        let ramp = min(1.0, min((t - s.start_ms) / 150.0, (s.end_ms - t) / 150.0)).max(0.0);
+        let x = (t - s.start_ms) / 1000.0 * s.hz;
+        let a = s.amount * ramp;
+        out.0 += a * noise(s.seed, 1, x);
+        out.1 += a * noise(s.seed, 2, x);
+        out.2 += a * 0.04 * noise(s.seed, 3, x);
+    }
+    out
+}
+
+/// Whether the camera changes anything over time.
+pub fn camera_moves(page: &Page) -> bool {
+    page.camera.as_ref().is_some_and(|c| {
+        [&c.zoom, &c.x, &c.y, &c.rotate].iter().any(|k| k.as_ref().is_some_and(|k| !k.is_empty())) || c.shake.as_ref().is_some_and(|s| !s.is_empty())
+    })
+}
+
+/// The camera at page time `t` as a page-space matrix applied to what it films, or `None` without a camera. The
+/// zoom is raised as far as needed for the view (turned, panned) to stay inside the page, so its edges never show.
+pub fn camera_matrix(page: &Page, w: f64, h: f64, t: f64) -> Option<[f64; 6]> {
+    let cam = page.camera.as_ref()?;
+    if !camera_moves(page) {
+        return None;
+    }
+    let (sx, sy, sr) = camera_shake(cam, t);
+    let finite = |v: f64, d: f64| if v.is_finite() { v } else { d };
+    let want = max(0.01, finite(keyframe_value(cam.zoom.as_deref(), t, 1.0), 1.0));
+    let rot = finite(keyframe_value(cam.rotate.as_deref(), t, 0.0), 0.0) + sr;
+    // Where it looks, held inside the page.
+    let cx = min(w, max(0.0, w / 2.0 + finite(keyframe_value(cam.x.as_deref(), t, 0.0), 0.0) + sx));
+    let cy = min(h, max(0.0, h / 2.0 + finite(keyframe_value(cam.y.as_deref(), t, 0.0), 0.0) + sy));
+    let (c, s) = (cos(rot.to_radians()), sin(rot.to_radians()));
+    // The view's corners on the page at zoom z: the camera centre plus the turned half-size over z.
+    let fits = |z: f64| {
+        [(-1.0, -1.0), (1.0, -1.0), (1.0, 1.0), (-1.0, 1.0)].iter().all(|(a, b)| {
+            let (px, py) = (a * w / 2.0 / z, b * h / 2.0 / z);
+            let (qx, qy) = (cx + c * px - s * py, cy + s * px + c * py);
+            qx >= -1e-6 && qx <= w + 1e-6 && qy >= -1e-6 && qy <= h + 1e-6
+        })
+    };
+    let mut z = want;
+    if !fits(z) {
+        // The smallest zoom (to 1/64 px) that keeps the view inside: the view only shrinks as zoom grows.
+        let (mut lo, mut hi) = (z, max(z, 1.0) * 2.0);
+        while !fits(hi) && hi < 4096.0 {
+            hi *= 2.0;
+        }
+        for _ in 0..40 {
+            let mid = (lo + hi) / 2.0;
+            if fits(mid) { hi = mid } else { lo = mid }
+        }
+        z = hi;
+    }
+    // Content point p goes to: centre + z·R(−rot)·(p − camera centre).
+    let (a, b, cc, d) = (z * c, -z * s, z * s, z * c);
+    Some([a, b, cc, d, w / 2.0 - a * cx - cc * cy, h / 2.0 - b * cx - d * cy])
 }
 
 #[cfg(test)]

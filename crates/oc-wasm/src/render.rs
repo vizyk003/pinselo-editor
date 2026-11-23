@@ -170,12 +170,13 @@ pub fn page_settle_ms(page: JsValue, els: JsValue) -> Result<f64, JsError> {
     Ok(oc_render::motion::page_settle_ms(&p, &refs))
 }
 
-/// `pageIsDynamic(els, captions)`: whether the page's frames can change after its entrances settle.
+/// `pageIsDynamic(page, els, captions)`: whether the page's frames can change after its entrances settle.
 #[wasm_bindgen(js_name = pageIsDynamic)]
-pub fn page_is_dynamic(els: JsValue, captions: bool) -> Result<bool, JsError> {
+pub fn page_is_dynamic(page: JsValue, els: JsValue, captions: bool) -> Result<bool, JsError> {
+    let p: Page = arg("page", &page)?;
     let e = elements(&els)?;
     let refs: Vec<&Element> = e.iter().collect();
-    Ok(oc_render::motion::page_is_dynamic(&refs, captions))
+    Ok(oc_render::motion::page_is_dynamic(&p, &refs, captions))
 }
 
 /// `clickStepCount(els)`.
